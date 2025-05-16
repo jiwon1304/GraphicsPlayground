@@ -402,6 +402,12 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     <ClCompile Include="Engine\Source\ThirdParty\ImGui\include\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="Engine\Source\ThirdParty\tinyfiledialogs\include\tinyfiledialogs.cpp" />
     <ClCompile Include="LuaScripts\LuaScriptComponent.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModule.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleLODLevel.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleEmitter.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleSystem.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModuleRequired.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Particles\TypeData\ParticleModuleTypeDataBase.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <None Include="Shaders\CompositingShader.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -796,6 +802,12 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     <ClInclude Include="LuaScripts\LuaBindingHelpers.h" />
     <ClInclude Include="LuaScripts\LuaScriptComponent.h" />
     <ClInclude Include="LuaScripts\LuaScriptFileUtils.h" />
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModule.h" />
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleLODLevel.h" />
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleEmitter.h" />
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleSystem.h" />
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModuleRequired.h" />
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Particles\TypeData\ParticleModuleTypeDataBase.h" />
     <ClInclude Include="SoundManager.h" />
     <None Include="Shaders\EditorShaderConstants.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
