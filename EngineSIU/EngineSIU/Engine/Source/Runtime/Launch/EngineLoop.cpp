@@ -15,6 +15,7 @@
 #include "Renderer/DepthPrePass.h"
 #include "Renderer/TileLightCullingPass.h"
 #include "SubWindow/ParticleSubEngine.h"
+#include "SubWindow/ImGuiSubWindow.h"
 #include "SoundManager.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
@@ -266,10 +267,63 @@ void FEngineLoop::WindowInit(HINSTANCE hInstance)
 
 LRESULT CALLBACK FEngineLoop::AppWndProc(HWND hWnd, uint32 Msg, WPARAM wParam, LPARAM lParam)
 {
-    if (ImGui_ImplWin32_WndProcHandler(hWnd, Msg, wParam, lParam))
+    if (hWnd == GEngineLoop.AppWnd)
     {
-        return true;
+        ImGui::SetCurrentContext(GEngineLoop.UIManager->GetContext());
+        if (ImGui_ImplWin32_WndProcHandler(hWnd, Msg, wParam, lParam)) return true;
     }
+    else if (hWnd == GEngineLoop.ParticleViewerWnd)
+    {
+        ImGui::SetCurrentContext(GEngineLoop.ParticleSubEngine->SubUI->Context);
+
+        if (ImGui_ImplWin32_WndProcHandler(hWnd, Msg, wParam, lParam)) return true;
+
+        /** SubWindow Msg */
+        switch (Msg)
+        {
+        case WM_SIZE:
+            if (wParam != SIZE_MINIMIZED)
+            {
+                RECT ClientRect;
+                GetClientRect(hWnd, &ClientRect);
+
+                float FullWidth = static_cast<float>(ClientRect.right - ClientRect.left);
+                float FullHeight = static_cast<float>(ClientRect.bottom - ClientRect.top);
+
+                if (GEngineLoop.GetUnrealEditor())
+                {
+                    ParticleViewerGD.Resize(hWnd, FullWidth, FullHeight);
+                    //GEngineLoop.GetUnrealEditor()->OnResize(hWnd, EWindowType::WT_ParticleSubWindow);
+                }
+                GEngineLoop.ParticleSubEngine->ViewportClient->AspectRatio = (FullWidth * 0.75f) / FullHeight;
+            }
+            return 0;
+        case WM_CLOSE:
+            GEngineLoop.ParticleSubEngine->ViewportClient->CameraReset();
+            GEngineLoop.ParticleSubEngine->RequestShowWindow(false);
+            ::ShowWindow(hWnd, SW_HIDE);
+            return 0;
+
+        case WM_ACTIVATE:
+            if (ImGui::GetCurrentContext() == nullptr) break;
+            ImGui::SetCurrentContext(GEngineLoop.ParticleSubEngine->SubUI->Context);
+            GEngineLoop.CurrentImGuiContext = ImGui::GetCurrentContext();
+            return 0;
+        case WM_KEYDOWN:
+        case WM_LBUTTONDOWN:
+        case WM_RBUTTONDOWN:
+            ::SetFocus(hWnd);
+            break;
+        default:
+            return DefWindowProc(hWnd, Msg, wParam, lParam);
+        }
+    }
+
+
+    //if (ImGui_ImplWin32_WndProcHandler(hWnd, Msg, wParam, lParam))
+    //{
+    //    return true;
+    //}
 
     switch (Msg)
     {
@@ -279,6 +333,7 @@ LRESULT CALLBACK FEngineLoop::AppWndProc(HWND hWnd, uint32 Msg, WPARAM wParam, L
         {
             LevelEditor->SaveConfig();
         }
+        GEngineLoop.bIsExit = true;
         break;
     case WM_SIZE:
         if (wParam != SIZE_MINIMIZED)
@@ -300,6 +355,11 @@ LRESULT CALLBACK FEngineLoop::AppWndProc(HWND hWnd, uint32 Msg, WPARAM wParam, L
             }
         }
         GEngineLoop.UpdateUI();
+        break;
+    case WM_ACTIVATE:
+        if (ImGui::GetCurrentContext() == nullptr) break;
+        ImGui::SetCurrentContext(GEngineLoop.UIManager->GetContext());
+        GEngineLoop.CurrentImGuiContext = ImGui::GetCurrentContext();
         break;
     default:
         GEngineLoop.AppMessageHandler->ProcessMessage(hWnd, Msg, wParam, lParam);

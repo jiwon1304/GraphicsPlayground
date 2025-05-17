@@ -61,6 +61,7 @@ public:
 
 private:
     UImGuiManager* UIManager;
+    ImGuiContext* CurrentImGuiContext;
     //TODO: GWorld 제거, Editor들 EditorEngine으로 넣기
 
     std::unique_ptr<FSlateAppMessageHandler> AppMessageHandler;
