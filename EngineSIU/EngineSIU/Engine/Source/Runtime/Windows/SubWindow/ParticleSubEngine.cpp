@@ -6,7 +6,7 @@
 #include "Actors/Cube.h"
 #include "Animation/Skeleton.h"
 #include "Engine/AssetManager.h"
-
+#include "PropertyEditor/SubEditor/ParticleViewerPanel.h"
 UParticleSubEngine::UParticleSubEngine()
 {
 }
@@ -121,12 +121,12 @@ void UParticleSubEngine::Render()
         // Sub window rendering
         SubUI->BeginFrame();
 
-        //ParticleSystemViewerPanel* particlePanel = reinterpret_cast<ParticleSystemViewerPanel*>(UnrealEditor->GetSubParticlePanel("SubParticleViewerPanel").get());
-        //if (particlePanel)
-        //{
-        //    particlePanel->PrepareRender(ViewportClient); // 내부적으로 멤버 변수 RenderTargetRHI 설정
-        //}
-        //UnrealEditor->Render(EWindowType::WT_ParticleSubWindow);
+        ParticleViewerPanel* particlePanel = reinterpret_cast<ParticleViewerPanel*>(UnrealEditor->GetParticleSubPanel("ParticleViewerPanel").get());
+        if (particlePanel)
+        {
+            particlePanel->PrepareRender(ViewportClient); // 내부적으로 멤버 변수 RenderTargetRHI 설정
+        }
+        UnrealEditor->Render(EWindowType::WT_ParticleSubWindow);
         SubUI->EndFrame();
 
         //SubRenderer->ClearRender();

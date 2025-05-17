@@ -30,7 +30,7 @@ void USubEngine::Initialize(HWND& hWnd, FGraphicsDevice* InGraphics, FDXDBufferM
     SubRenderer = new FSubRenderer;
     UnrealEditor = InUnrealEd;
     SubUI = new FImGuiSubWindow(hWnd, InGraphics->Device, InGraphics->DeviceContext);
-    //UImGuiManager::ApplySharedStyle(InSubWindow->GetContext(), SubUI->Context);
+    UImGuiManager::ApplySharedStyle(InSubWindow->GetContext(), SubUI->Context);
     //SubRenderer->Initialize(InGraphics, InBufferManager, this);
 
     ViewportClient = new FEditorViewportClient();

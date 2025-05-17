@@ -332,7 +332,7 @@ LRESULT CALLBACK FEngineLoop::AppWndProc(HWND hWnd, uint32 Msg, WPARAM wParam, L
                 if (GEngineLoop.GetUnrealEditor())
                 {
                     ParticleViewerGD.Resize(hWnd, FullWidth, FullHeight);
-                    //GEngineLoop.GetUnrealEditor()->OnResize(hWnd, EWindowType::WT_ParticleSubWindow);
+                    GEngineLoop.GetUnrealEditor()->OnResize(hWnd, EWindowType::WT_ParticleSubWindow);
                 }
                 GEngineLoop.ParticleSubEngine->ViewportClient->AspectRatio = (FullWidth * 0.75f) / FullHeight;
             }
