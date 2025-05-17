@@ -12,6 +12,21 @@ void FGraphicsDevice::Initialize(HWND hWindow)
     CreateDepthStencilState();
     CreateRasterizerState();
     CreateAlphaBlendState();
+    CreateDepthStencilViewAndTexture();
+    CurrentRasterizer = RasterizerSolidBack;
+}
+
+void FGraphicsDevice::Initialize(HWND hWindow, ID3D11Device* InDevice)
+{
+    Device = InDevice;
+    Device->GetImmediateContext(&DeviceContext);
+
+    CreateSwapChain(hWindow);
+    CreateBackBuffer();
+    CreateDepthStencilState();
+    CreateRasterizerState();
+    CreateAlphaBlendState();
+    CreateDepthStencilViewAndTexture();
     CurrentRasterizer = RasterizerSolidBack;
 }
 
@@ -221,6 +236,18 @@ void FGraphicsDevice::ReleaseDepthStencilResources()
         DepthStencilState->Release();
         DepthStencilState = nullptr;
     }
+
+    if (DeviceDSV)
+    {
+        DeviceDSV->Release();
+        DeviceDSV = nullptr;
+    }
+
+    if (DeviceDSVTexture)
+    {
+        DeviceDSVTexture->Release();
+        DeviceDSVTexture = nullptr;
+    }
 }
 
 void FGraphicsDevice::Release()
@@ -293,6 +320,55 @@ void FGraphicsDevice::CreateAlphaBlendState()
     {
         MessageBox(NULL, L"AlphaBlendState 생성에 실패했습니다!", L"Error", MB_ICONERROR | MB_OK);
     }
+}
+
+void FGraphicsDevice::CreateSwapChain(HWND hWnd)
+{
+    // 스왑 체인 설정 구조체 초기화
+    SwapchainDesc.BufferDesc.Width = 0;                           // 창 크기에 맞게 자동으로 설정
+    SwapchainDesc.BufferDesc.Height = 0;                          // 창 크기에 맞게 자동으로 설정
+    SwapchainDesc.BufferDesc.Format = BackBufferFormat; // 색상 포맷
+    SwapchainDesc.SampleDesc.Count = 1;                           // 멀티 샘플링 비활성화
+    SwapchainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;  // 렌더 타겟으로 사용
+    SwapchainDesc.BufferCount = 2;                                // 더블 버퍼링
+    SwapchainDesc.OutputWindow = hWnd;                         // 렌더링할 창 핸들
+    SwapchainDesc.Windowed = TRUE;                                // 창 모드
+    SwapchainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;     // 스왑 방식
+
+    IDXGIFactory* DxgiFactory = nullptr;
+    {
+        IDXGIDevice* DxgiDevice = nullptr;
+        Device->QueryInterface(__uuidof(IDXGIDevice), (void**)&DxgiDevice);
+        IDXGIAdapter* Adapter = nullptr;
+        DxgiDevice->GetAdapter(&Adapter);
+        Adapter->GetParent(__uuidof(IDXGIFactory), (void**)&DxgiFactory);
+
+        if (Adapter) Adapter->Release();
+        if (DxgiDevice) DxgiDevice->Release();
+    }
+
+    // SwapChainDesc 설정 동일하게 진행
+    SwapchainDesc.OutputWindow = hWnd;
+
+    HRESULT hr = DxgiFactory->CreateSwapChain(Device, &SwapchainDesc, &SwapChain);
+    if (FAILED(hr))
+    {
+        MessageBox(hWnd, L"CreateSwapChain failed!", L"Error", MB_ICONERROR | MB_OK);
+    }
+
+    // 스왑 체인 정보 가져오기 (이후에 사용을 위해)
+    SwapChain->GetDesc(&SwapchainDesc);
+    ScreenWidth = SwapchainDesc.BufferDesc.Width;
+    ScreenHeight = SwapchainDesc.BufferDesc.Height;
+
+    Viewport.Width = ScreenWidth;
+    Viewport.Height = ScreenHeight;
+    Viewport.MinDepth = 0.0f;
+    Viewport.MaxDepth = 1.0f;
+    Viewport.TopLeftX = 0;
+    Viewport.TopLeftY = 0;
+
+    DxgiFactory->Release();
 }
 
 void FGraphicsDevice::ChangeRasterizer(EViewModeIndex ViewModeIndex)
@@ -439,3 +515,55 @@ uint32 FGraphicsDevice::DecodeUUIDColor(FVector4 UUIDColor) const
     return W | Z | Y | X;
 }
 */
+
+void FGraphicsDevice::CreateDepthStencilViewAndTexture()
+{
+    // 기존 DepthStencilView 및 Texture가 있다면 해제
+    if (DeviceDSV)
+    {
+        DeviceDSV->Release();
+        DeviceDSV = nullptr;
+    }
+    // DepthStencilBufferTexture도 멤버로 두고 관리한다면 여기서 해제
+    if (DeviceDSVTexture)
+    {
+        DeviceDSVTexture->Release();
+        DeviceDSVTexture = nullptr;
+    }
+
+
+    // Depth Stencil Texture 설명 설정
+    D3D11_TEXTURE2D_DESC DepthStencilTextureDesc = {};
+    DepthStencilTextureDesc.Width = ScreenWidth; // 백버퍼와 동일한 너비
+    DepthStencilTextureDesc.Height = ScreenHeight; // 백버퍼와 동일한 높이
+    DepthStencilTextureDesc.MipLevels = 1;
+    DepthStencilTextureDesc.ArraySize = 1;
+    DepthStencilTextureDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; // 대표적인 뎁스-스텐실 포맷
+    DepthStencilTextureDesc.SampleDesc.Count = 1; // 멀티샘플링 사용 안 함
+    DepthStencilTextureDesc.SampleDesc.Quality = 0;
+    DepthStencilTextureDesc.Usage = D3D11_USAGE_DEFAULT;
+    DepthStencilTextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+    DepthStencilTextureDesc.CPUAccessFlags = 0;
+    DepthStencilTextureDesc.MiscFlags = 0;
+
+    HRESULT hr = Device->CreateTexture2D(&DepthStencilTextureDesc, nullptr, &DeviceDSVTexture);
+    if (FAILED(hr))
+    {
+        // 오류 처리 (예: 로그 출력, 프로그램 종료 등)
+        return;
+    }
+
+    // Depth Stencil View 설명 설정
+    D3D11_DEPTH_STENCIL_VIEW_DESC DepthStencilViewDesc = {};
+    DepthStencilViewDesc.Format = DepthStencilTextureDesc.Format;
+    DepthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+    DepthStencilViewDesc.Texture2D.MipSlice = 0;
+
+    // Depth Stencil View 생성
+    hr = Device->CreateDepthStencilView(DeviceDSVTexture, &DepthStencilViewDesc, &DeviceDSV);
+    if (FAILED(hr))
+    {
+        // 오류 처리
+        return;
+    }
+}
