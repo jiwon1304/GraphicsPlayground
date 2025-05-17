@@ -33,6 +33,8 @@ public:
 
     void GetClientSize(uint32& OutWidth, uint32& OutHeight) const;
 
+    void OpenParticleSystemViewer();
+    void SubEngineControl();
 private:
     void WindowInit(HINSTANCE hInstance);
     static LRESULT CALLBACK AppWndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);

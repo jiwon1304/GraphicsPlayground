@@ -181,13 +181,32 @@ void FEngineLoop::Tick()
             }
         }
 
+        if (!bIsExit && ParticleViewerWnd && IsWindowVisible(ParticleViewerWnd))
+        {
+            while (PeekMessage(&Msg, ParticleViewerWnd, 0, 0, PM_REMOVE))
+            {
+                TranslateMessage(&Msg);
+                DispatchMessage(&Msg);
+            }
+        }
+        // Engine loop Break
+        if (bIsExit) break;
+
         const float DeltaTime = static_cast<float>(ElapsedTime / 1000.f);
 
         GEngine->Tick(DeltaTime);
         LevelEditor->Tick(DeltaTime);
+
         Render();
+        
         if (ParticleSubEngine->bIsShowing)
             ParticleSubEngine->Tick(DeltaTime);
+        
+        if (CurrentImGuiContext != nullptr)
+        {
+            ImGui::SetCurrentContext(CurrentImGuiContext);
+        }
+
         UIManager->BeginFrame();
         UnrealEditor->Render();
 
@@ -205,6 +224,8 @@ void FEngineLoop::Tick()
         }
 
         GraphicDevice.SwapBuffer();
+
+        SubEngineControl();
         do
         {
             Sleep(0);
@@ -222,6 +243,24 @@ void FEngineLoop::GetClientSize(uint32& OutWidth, uint32& OutHeight) const
             
     OutWidth = ClientRect.right - ClientRect.left;
     OutHeight = ClientRect.bottom - ClientRect.top;
+}
+
+void FEngineLoop::OpenParticleSystemViewer()
+{
+    if (ParticleSubEngine->bIsShowSubWindow)
+    {
+        if (ParticleViewerWnd)
+        {
+            ::ShowWindow(ParticleViewerWnd, SW_SHOW);
+        }
+        ParticleSubEngine->bIsShowSubWindow = false;
+    }
+}
+
+void FEngineLoop::SubEngineControl()
+{
+    OpenParticleSystemViewer();
+
 }
 
 void FEngineLoop::Exit()
