@@ -117,3 +117,8 @@ std::shared_ptr<UEditorPanel> UnrealEd::GetEditorPanel(const FString& PanelId)
 {
     return Panels[PanelId];
 }
+
+std::shared_ptr<UEditorPanel> UnrealEd::GetParticleSubPanel(const FString& PanelId)
+{
+    return ParticleSubPanels[PanelId];
+}
