@@ -1683,6 +1683,7 @@
     <ClCompile Include="Engine\Source\Runtime\Windows\SubWindow\SubEngine.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Windows\SubWindow\ImGuiSubWindow.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Windows\SubWindow\SubRenderer.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Windows\SubWindow\ParticleSubEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="EngineSIU.natvis" />
@@ -1762,6 +1763,7 @@
     <ClInclude Include="Engine\Source\Runtime\Windows\SubWindow\SubEngine.h" />
     <ClInclude Include="Engine\Source\Runtime\Windows\SubWindow\ImGuiSubWindow.h" />
     <ClInclude Include="Engine\Source\Runtime\Windows\SubWindow\SubRenderer.h" />
+    <ClInclude Include="Engine\Source\Runtime\Windows\SubWindow\ParticleSubEngine.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\CompositingShader.hlsl" />
