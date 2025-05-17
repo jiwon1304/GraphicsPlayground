@@ -17,7 +17,11 @@ class UParticleSystemComponent : public UFXSystemComponent
     DECLARE_CLASS(UParticleSystemComponent, UFXSystemComponent)
 public:
     UParticleSystemComponent();
-    TArray<FDynamicEmitterDataBase*>& GetEmitterRenderData();
+    inline TArray<FDynamicEmitterDataBase*>& GetEmitterRenderData()
+    {
+        return EmitterRenderData;
+    }
+
 private:
     TArray<struct FParticleEmitterInstance*> EmitterInstances;
 

@@ -38,12 +38,11 @@ void FParticleRenderPass::Initialize(FDXDBufferManager* InBufferManager, FGraphi
     CreateShader();
 }
 
-
 void FParticleRenderPass::PrepareRenderArr()
 {
     for (UParticleSystemComponent* Comp : TObjectRange<UParticleSystemComponent>())
     {
-        if (Comp && Comp->GetWorld() == GEngine->ActiveWorld/* && !Comp->IsHidden()*/)
+        if (Comp && Comp->GetWorld() == GEngine->ActiveWorld)
         {
             ParticleSystemComponents.Add(Comp);
         }
@@ -59,17 +58,12 @@ void FParticleRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& V
 {
     PrepareRenderState(Viewport);
     RenderAllParticleSystems(Viewport);
-
-    // Unbind render targets
     Graphics->DeviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 }
 
 void FParticleRenderPass::PrepareRenderState(const std::shared_ptr<FEditorViewportClient>& Viewport)
 {
-    ChangeViewMode(Viewport->GetViewMode());
-
     Graphics->DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
     BufferManager->BindConstantBuffer(TEXT("FObjectConstantBuffer"), 12, EShaderStage::Vertex);
 
     FViewportResource* ViewportResource = Viewport->GetViewportResource();
@@ -94,12 +88,30 @@ void FParticleRenderPass::RenderAllParticleSystems(const std::shared_ptr<FEditor
 
             const EDynamicEmitterType EmitterType = RenderData->GetSource().eEmitterType;
 
+            const FMatrix WorldMatrix = Comp->GetWorldMatrix();
+            const FVector4 UUIDColor = Comp->EncodeUUID() / 255.0f;
+            UpdateObjectConstant(WorldMatrix, UUIDColor, false);
+
+            // Shader 설정 분기 (Define 기반)
+            D3D_SHADER_MACRO DefineMesh[] = { {"PARTICLE_MESH", "1"}, {nullptr, nullptr} };
+            D3D_SHADER_MACRO DefineSprite[] = { {"PARTICLE_SPRITE", "1"}, {nullptr, nullptr} };
+
             switch (EmitterType)
             {
             case DET_Sprite:
+                ShaderManager->AddVertexShaderAndInputLayout(L"ParticleSpriteVS", L"Shaders/ParticleShader.hlsl", "mainVS", nullptr, 0, DefineSprite);
+                ShaderManager->AddPixelShader(L"ParticleSpritePS", L"Shaders/ParticleShader.hlsl", "mainPS", DefineSprite);
+                Graphics->DeviceContext->VSSetShader(ShaderManager->GetVertexShaderByKey(L"ParticleSpriteVS"), nullptr, 0);
+                Graphics->DeviceContext->IASetInputLayout(ShaderManager->GetInputLayoutByKey(L"ParticleSpriteVS"));
+                Graphics->DeviceContext->PSSetShader(ShaderManager->GetPixelShaderByKey(L"ParticleSpritePS"), nullptr, 0);
                 RenderSpriteEmitter(RenderData);
                 break;
             case DET_Mesh:
+                ShaderManager->AddVertexShaderAndInputLayout(L"ParticleMeshVS", L"Shaders/ParticleShader.hlsl", "mainVS", nullptr, 0, DefineMesh);
+                ShaderManager->AddPixelShader(L"ParticleMeshPS", L"Shaders/ParticleShader.hlsl", "mainPS", DefineMesh);
+                Graphics->DeviceContext->VSSetShader(ShaderManager->GetVertexShaderByKey(L"ParticleMeshVS"), nullptr, 0);
+                Graphics->DeviceContext->IASetInputLayout(ShaderManager->GetInputLayoutByKey(L"ParticleMeshVS"));
+                Graphics->DeviceContext->PSSetShader(ShaderManager->GetPixelShaderByKey(L"ParticleMeshPS"), nullptr, 0);
                 RenderMeshEmitter(RenderData);
                 break;
             default:
@@ -109,14 +121,12 @@ void FParticleRenderPass::RenderAllParticleSystems(const std::shared_ptr<FEditor
     }
 }
 
-
 void FParticleRenderPass::RenderSpriteEmitter(FDynamicEmitterDataBase* RenderData)
 {
-    FDynamicSpriteEmitterDataBase* SpriteDataBase = dynamic_cast<FDynamicSpriteEmitterDataBase*>(RenderData);
+    FDynamicSpriteEmitterDataBase* SpriteDataBase = static_cast<FDynamicSpriteEmitterDataBase*>(RenderData);
     if (!SpriteDataBase) return;
 
     const FDynamicSpriteEmitterReplayDataBase& Source = static_cast<const FDynamicSpriteEmitterReplayDataBase&>(SpriteDataBase->GetSource());
-
     const int32 Count = Source.ActiveParticleCount;
     if (Count == 0 || !Source.DataContainer.ParticleData) return;
 
@@ -142,10 +152,9 @@ void FParticleRenderPass::RenderSpriteEmitter(FDynamicEmitterDataBase* RenderDat
     Graphics->DeviceContext->Draw(Count * 6, 0);
 }
 
-
 void FParticleRenderPass::RenderMeshEmitter(FDynamicEmitterDataBase* RenderData)
 {
-    FDynamicMeshEmitterData* MeshData = dynamic_cast<FDynamicMeshEmitterData*>(RenderData);
+    FDynamicMeshEmitterData* MeshData = static_cast<FDynamicMeshEmitterData*>(RenderData);
     if (!MeshData) return;
 
     const FDynamicMeshEmitterReplayData& Source = static_cast<const FDynamicMeshEmitterReplayData&>(MeshData->GetSource());
@@ -171,7 +180,7 @@ void FParticleRenderPass::RenderMeshEmitter(FDynamicEmitterDataBase* RenderData)
     UINT Offset = 0;
     UINT VBStride = sizeof(FMeshParticleInstanceVertex);
     Graphics->DeviceContext->IASetVertexBuffers(0, 1, &VertexInfo.VertexBuffer, &VBStride, &Offset);
-    Graphics->DeviceContext->Draw(Count * 3, 0); // 예시
+    Graphics->DeviceContext->Draw(Count * 3, 0);
 }
 
 void FParticleRenderPass::UpdateObjectConstant(const FMatrix& WorldMatrix, const FVector4& UUIDColor, bool bIsSelected) const
@@ -185,37 +194,11 @@ void FParticleRenderPass::UpdateObjectConstant(const FMatrix& WorldMatrix, const
     BufferManager->UpdateConstantBuffer(TEXT("FObjectConstantBuffer"), ObjectData);
 }
 
-void FParticleRenderPass::ChangeViewMode(EViewModeIndex ViewMode)
-{
-    ID3D11VertexShader* VS = nullptr;
-    ID3D11InputLayout* Layout = nullptr;
-    ID3D11PixelShader* PS = nullptr;
-
-    switch (ViewMode)
-    {
-    case EViewModeIndex::VMI_Unlit:
-    default:
-        VS = ShaderManager->GetVertexShaderByKey(L"ParticleSpriteVS");
-        Layout = ShaderManager->GetInputLayoutByKey(L"ParticleSpriteVS");
-        PS = ShaderManager->GetPixelShaderByKey(L"ParticleSpritePS");
-        break;
-    }
-
-    Graphics->DeviceContext->VSSetShader(VS, nullptr, 0);
-    Graphics->DeviceContext->IASetInputLayout(Layout);
-    Graphics->DeviceContext->PSSetShader(PS, nullptr, 0);
-}
-
 void FParticleRenderPass::CreateShader()
 {
-    ShaderManager->AddVertexShader(L"ParticleSpriteVS", L"Shaders/ParticleSpriteShader.hlsl", "mainVS");
-    ShaderManager->AddPixelShader(L"ParticleSpritePS", L"Shaders/ParticleSpriteShader.hlsl", "mainPS");
-
-    ShaderManager->AddVertexShader(L"ParticleMeshVS", L"Shaders/ParticleMeshShader.hlsl", "mainVS");
-    ShaderManager->AddPixelShader(L"ParticleMeshPS", L"Shaders/ParticleMeshShader.hlsl", "mainPS");
+    // 셰이더 로딩은 ChangeViewMode에서 Define 포함으로 자동 처리
 }
 
 void FParticleRenderPass::ReleaseShader()
 {
-    // 해제할 리소스가 있다면 이곳에 정리
 }

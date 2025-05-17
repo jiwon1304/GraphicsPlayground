@@ -1,5 +1,7 @@
 #include "ParticleSystemComponent.h"
 
+#include "ParticleEmitterInstance.h"
+#include "ParticleHelper.h"
 UFXSystemComponent::UFXSystemComponent()
 {
 }
@@ -7,7 +9,5 @@ UFXSystemComponent::UFXSystemComponent()
 UParticleSystemComponent::UParticleSystemComponent()
 {
 }
-TArray<FDynamicEmitterDataBase*>& UParticleSystemComponent::GetEmitterRenderData()
-{
-    return EmitterRenderData;
-}
+
+
