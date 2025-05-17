@@ -198,14 +198,6 @@ void FEngineLoop::Tick()
         LevelEditor->Tick(DeltaTime);
 
         Render();
-        
-        if (ParticleSubEngine->bIsShowing)
-            ParticleSubEngine->Tick(DeltaTime);
-        
-        if (CurrentImGuiContext != nullptr)
-        {
-            ImGui::SetCurrentContext(CurrentImGuiContext);
-        }
 
         UIManager->BeginFrame();
         UnrealEditor->Render();
@@ -214,6 +206,14 @@ void FEngineLoop::Tick()
         EngineProfiler.Render(GraphicDevice.DeviceContext, GraphicDevice.ScreenWidth, GraphicDevice.ScreenHeight);
 
         UIManager->EndFrame();
+
+        if (ParticleSubEngine->bIsShowing)
+            ParticleSubEngine->Tick(DeltaTime);
+
+        if (CurrentImGuiContext != nullptr)
+        {
+            ImGui::SetCurrentContext(CurrentImGuiContext);
+        }
 
         // Pending 처리된 오브젝트 제거
         GUObjectArray.ProcessPendingDestroyObjects();
