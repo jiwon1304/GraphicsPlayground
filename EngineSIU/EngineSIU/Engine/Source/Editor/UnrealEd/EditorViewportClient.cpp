@@ -803,3 +803,10 @@ FVector FViewportCamera::GetUpVector() const
     Up = JungleMath::FVectorRotate(Up, ViewRotation);
     return Up;
 }
+
+void FEditorViewportClient::CameraReset()
+{
+    PerspectiveCamera.SetLocation(FVector(0.0f, 1.0f, 1.0f));
+    PerspectiveCamera.SetRotation(FVector(0, 0, -90));
+    CameraSpeedSetting = 1.0f;
+}

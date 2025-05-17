@@ -159,6 +159,7 @@ public:
     void CameraRotatePitch(float InValue);
     void PivotMoveRight(float InValue) const;
     void PivotMoveUp(float InValue) const;
+    void CameraReset();
 
     FMatrix& GetViewMatrix() { return View; }
     FMatrix& GetProjectionMatrix() { return Projection; }
