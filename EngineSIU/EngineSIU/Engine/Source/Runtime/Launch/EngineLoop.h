@@ -18,6 +18,7 @@ class SSplitterH;
 class FGraphicDevice;
 class SLevelEditor;
 class FDXDBufferManager;
+class USubEngine;
 
 class FEngineLoop
 {
@@ -50,6 +51,13 @@ public:
 
     FGPUTimingManager GPUTimingManager;
     FEngineProfiler EngineProfiler;
+
+    static FGraphicsDevice ParticleSystemViewerGD;
+    HWND ParticleSystemViewerWnd;
+    void ParticleSystemSubWindowInit(HINSTANCE hInstance);
+    void CleanupSubWindow();
+
+    USubEngine* ParticleSystemViewerSubEngine;
 
 private:
     UImGuiManager* UIManager;

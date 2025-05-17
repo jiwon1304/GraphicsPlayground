@@ -35,7 +35,7 @@ void USubEngine::Initialize(HWND& hWnd, FGraphicsDevice* InGraphics, FDXDBufferM
 
     ViewportClient = new FEditorViewportClient();
     ViewportClient->Initialize(EViewScreenLocation::EVL_MAX, FRect(0, 0, 800, 600), this);
-    //ViewportClient->CameraReset();
+    ViewportClient->CameraReset();
     ViewportClient->FarClip = 1000000;
 
 }

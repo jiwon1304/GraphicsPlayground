@@ -20,6 +20,7 @@
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 
 FGraphicsDevice FEngineLoop::GraphicDevice;
+FGraphicsDevice FEngineLoop::ParticleSystemViewerGD;
 FRenderer FEngineLoop::Renderer;
 UPrimitiveDrawBatch FEngineLoop::PrimitiveDrawBatch;
 FResourceManager FEngineLoop::ResourceManager;
@@ -94,6 +95,8 @@ int32 FEngineLoop::Init(HINSTANCE hInstance)
     GEngine = FObjectFactory::ConstructObject<UEditorEngine>(nullptr);
     GEngine->Init();
 
+
+    ParticleSystemSubWindowInit(hInstance);
 
     FSoundManager::GetInstance().Initialize();
     FSoundManager::GetInstance().LoadSound("fishdream", "Contents/Sounds/fishdream.mp3");
@@ -210,6 +213,10 @@ void FEngineLoop::GetClientSize(uint32& OutWidth, uint32& OutHeight) const
 
 void FEngineLoop::Exit()
 {
+
+    //ParticleSystemViewerSubEngine->Release();
+    CleanupSubWindow();
+
     LevelEditor->Release();
     UIManager->Shutdown();
     ResourceManager.Release(&Renderer);
@@ -298,4 +305,53 @@ void FEngineLoop::UpdateUI()
         GEngineLoop.GetUnrealEditor()->OnResize(AppWnd);
     }
     ViewportTypePanel::GetInstance().OnResize(AppWnd);
+}
+
+void FEngineLoop::ParticleSystemSubWindowInit(HINSTANCE hInstance)
+{
+    WCHAR SubWindowClass[] = L"ParticleWindowClass";
+    WCHAR SubTitle[] = L"Viewer";
+
+    WNDCLASSEXW wcexSub = {}; // WNDCLASSEXW 사용 권장
+    wcexSub.cbSize = sizeof(WNDCLASSEX);
+    wcexSub.style = CS_HREDRAW | CS_VREDRAW; // | CS_DBLCLKS 등 필요시 추가
+    wcexSub.lpfnWndProc = AppWndProc; // 서브 윈도우 프로시저 지정
+    wcexSub.cbClsExtra = 0;
+    wcexSub.cbWndExtra = 0;
+    wcexSub.hInstance = hInstance;
+    wcexSub.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wcexSub.lpszMenuName = nullptr;
+    wcexSub.lpszClassName = SubWindowClass;
+    //wcexSub.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON2));
+    if (!RegisterClassExW(&wcexSub))
+    {
+        // 오류 처리
+        UE_LOG(ELogLevel::Error, TEXT("Failed to register sub window class!"));
+        return;
+    }
+
+    // 서브 윈도우 생성 (크기, 위치, 스타일 조정 필요)
+    // WS_OVERLAPPEDWINDOW 는 타이틀 바, 메뉴, 크기 조절 등이 포함된 일반적인 창
+    // WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME 등으로 커스텀 가능
+    ParticleSystemViewerWnd = CreateWindowExW(
+        0, SubWindowClass, SubTitle, WS_OVERLAPPEDWINDOW, // WS_VISIBLE 제거 (초기에는 숨김)
+        CW_USEDEFAULT, CW_USEDEFAULT, 800, 600, // 원하는 크기
+        nullptr, // 부모 윈도우를 메인 윈도우로 설정 (선택 사항)
+        nullptr, hInstance, nullptr
+    );
+
+    if (!ParticleSystemViewerWnd)
+    {
+        UE_LOG(ELogLevel::Error, TEXT("Failed to create sub window!"));
+    }
+    else
+    {
+
+    }
+}
+
+void FEngineLoop::CleanupSubWindow()
+{
+    if (ParticleSystemViewerGD.Device)
+        ParticleSystemViewerGD.Release();
 }
