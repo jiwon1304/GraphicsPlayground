@@ -7,15 +7,15 @@
 #include "Animation/Skeleton.h"
 #include "Engine/AssetManager.h"
 
-UParticleSystemSubEngine::UParticleSystemSubEngine()
+UParticleSubEngine::UParticleSubEngine()
 {
 }
 
-UParticleSystemSubEngine::~UParticleSystemSubEngine()
+UParticleSubEngine::~UParticleSubEngine()
 {
 }
 
-void UParticleSystemSubEngine::Initialize(HWND& hWnd, FGraphicsDevice* InGraphics, FDXDBufferManager* InBufferManager, UImGuiManager* InSubWindow,
+void UParticleSubEngine::Initialize(HWND& hWnd, FGraphicsDevice* InGraphics, FDXDBufferManager* InBufferManager, UImGuiManager* InSubWindow,
     UnrealEd* InUnrealEd)
 {
     Super::Initialize(hWnd, InGraphics, InBufferManager, InSubWindow, InUnrealEd);
@@ -31,14 +31,14 @@ void UParticleSystemSubEngine::Initialize(HWND& hWnd, FGraphicsDevice* InGraphic
     ViewportClient->ViewFOV = 60.f;
 }
 
-void UParticleSystemSubEngine::Tick(float DeltaTime)
+void UParticleSubEngine::Tick(float DeltaTime)
 {
     ViewportClient->Tick(DeltaTime);
     Input(DeltaTime);
     Render();
 }
 
-void UParticleSystemSubEngine::Input(float DeltaTime)
+void UParticleSubEngine::Input(float DeltaTime)
 {
     if (::GetFocus() != *Wnd)
         return;
@@ -109,7 +109,7 @@ void UParticleSystemSubEngine::Input(float DeltaTime)
     }
 }
 
-void UParticleSystemSubEngine::Render()
+void UParticleSubEngine::Render()
 {
     if (Wnd && IsWindowVisible(*Wnd) && Graphics->Device)
     {
@@ -135,7 +135,7 @@ void UParticleSystemSubEngine::Render()
     }
 }
 
-void UParticleSystemSubEngine::Release()
+void UParticleSubEngine::Release()
 {
     USubEngine::Release();
     if (SubUI)

@@ -14,13 +14,13 @@
 #include "Engine/EditorEngine.h"
 #include "Renderer/DepthPrePass.h"
 #include "Renderer/TileLightCullingPass.h"
-
+#include "SubWindow/ParticleSubEngine.h"
 #include "SoundManager.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 
 FGraphicsDevice FEngineLoop::GraphicDevice;
-FGraphicsDevice FEngineLoop::ParticleSystemViewerGD;
+FGraphicsDevice FEngineLoop::ParticleViewerGD;
 FRenderer FEngineLoop::Renderer;
 UPrimitiveDrawBatch FEngineLoop::PrimitiveDrawBatch;
 FResourceManager FEngineLoop::ResourceManager;
@@ -96,8 +96,18 @@ int32 FEngineLoop::Init(HINSTANCE hInstance)
     GEngine->Init();
 
 
-    ParticleSystemSubWindowInit(hInstance);
+    ParticleSubWindowInit(hInstance);
+    if (ParticleViewerWnd)
+    {
+        ParticleViewerGD.Initialize(ParticleViewerWnd, GraphicDevice.Device);
+        ParticleViewerGD.ClearColor[0] = 0.03f;
+        ParticleViewerGD.ClearColor[1] = 0.03f;
+        ParticleViewerGD.ClearColor[2] = 0.03f;
+    }
 
+    ParticleSubEngine = FObjectFactory::ConstructObject<UParticleSubEngine>(nullptr);
+    ParticleSubEngine->Initialize(ParticleViewerWnd, &ParticleViewerGD, BufferManager, UIManager, UnrealEditor);
+    
     FSoundManager::GetInstance().Initialize();
     FSoundManager::GetInstance().LoadSound("fishdream", "Contents/Sounds/fishdream.mp3");
     FSoundManager::GetInstance().LoadSound("sizzle", "Contents/Sounds/sizzle.mp3");
@@ -175,6 +185,8 @@ void FEngineLoop::Tick()
         GEngine->Tick(DeltaTime);
         LevelEditor->Tick(DeltaTime);
         Render();
+        if (ParticleSubEngine->bIsShowing)
+            ParticleSubEngine->Tick(DeltaTime);
         UIManager->BeginFrame();
         UnrealEditor->Render();
 
@@ -214,7 +226,7 @@ void FEngineLoop::GetClientSize(uint32& OutWidth, uint32& OutHeight) const
 void FEngineLoop::Exit()
 {
 
-    //ParticleSystemViewerSubEngine->Release();
+    ParticleSubEngine->Release();
     CleanupSubWindow();
 
     LevelEditor->Release();
@@ -307,7 +319,7 @@ void FEngineLoop::UpdateUI()
     ViewportTypePanel::GetInstance().OnResize(AppWnd);
 }
 
-void FEngineLoop::ParticleSystemSubWindowInit(HINSTANCE hInstance)
+void FEngineLoop::ParticleSubWindowInit(HINSTANCE hInstance)
 {
     WCHAR SubWindowClass[] = L"ParticleWindowClass";
     WCHAR SubTitle[] = L"Viewer";
@@ -333,14 +345,14 @@ void FEngineLoop::ParticleSystemSubWindowInit(HINSTANCE hInstance)
     // 서브 윈도우 생성 (크기, 위치, 스타일 조정 필요)
     // WS_OVERLAPPEDWINDOW 는 타이틀 바, 메뉴, 크기 조절 등이 포함된 일반적인 창
     // WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME 등으로 커스텀 가능
-    ParticleSystemViewerWnd = CreateWindowExW(
+    ParticleViewerWnd = CreateWindowExW(
         0, SubWindowClass, SubTitle, WS_OVERLAPPEDWINDOW, // WS_VISIBLE 제거 (초기에는 숨김)
         CW_USEDEFAULT, CW_USEDEFAULT, 800, 600, // 원하는 크기
         nullptr, // 부모 윈도우를 메인 윈도우로 설정 (선택 사항)
         nullptr, hInstance, nullptr
     );
 
-    if (!ParticleSystemViewerWnd)
+    if (!ParticleViewerWnd)
     {
         UE_LOG(ELogLevel::Error, TEXT("Failed to create sub window!"));
     }
@@ -352,6 +364,6 @@ void FEngineLoop::ParticleSystemSubWindowInit(HINSTANCE hInstance)
 
 void FEngineLoop::CleanupSubWindow()
 {
-    if (ParticleSystemViewerGD.Device)
-        ParticleSystemViewerGD.Release();
+    if (ParticleViewerGD.Device)
+        ParticleViewerGD.Release();
 }

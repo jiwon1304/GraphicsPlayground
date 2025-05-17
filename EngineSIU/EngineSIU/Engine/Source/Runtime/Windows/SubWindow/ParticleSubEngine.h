@@ -2,12 +2,12 @@
 #include "SubEngine.h"
 
 class UStaticMeshComponent;
-class UParticleSystemSubEngine : public USubEngine
+class UParticleSubEngine : public USubEngine
 {
-    DECLARE_CLASS(UParticleSystemSubEngine, USubEngine)
+    DECLARE_CLASS(UParticleSubEngine, USubEngine)
 public:
-    UParticleSystemSubEngine();
-    ~UParticleSystemSubEngine();
+    UParticleSubEngine();
+    ~UParticleSubEngine();
 public:
     virtual void Initialize(HWND& hWnd, FGraphicsDevice* InGraphics, FDXDBufferManager* InBufferManager, UImGuiManager* InSubWindow, UnrealEd* InUnrealEd);
     virtual void Tick(float DeltaTime);
