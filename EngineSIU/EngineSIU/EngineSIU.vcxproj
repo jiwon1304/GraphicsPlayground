@@ -406,6 +406,7 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     <ClCompile Include="Engine\Source\Runtime\Windows\SubWindow\ImGuiSubWindow.cpp" />
     <ClCompile Include="LuaScripts\LuaScriptComponent.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Windows\SubWindow\ParticleSubEngine.cpp" />
+    <ClCompile Include="Engine\Source\Editor\PropertyEditor\SubEditor\ParticleViewerPanel.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Windows\SubWindow\SubEngine.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Windows\SubWindow\SubRenderer.cpp" />
@@ -806,6 +807,7 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     <ClInclude Include="LuaScripts\LuaScriptComponent.h" />
     <ClInclude Include="LuaScripts\LuaScriptFileUtils.h" />
     <ClInclude Include="Engine\Source\Runtime\Windows\SubWindow\ParticleSubEngine.h" />
+    <ClInclude Include="Engine\Source\Editor\PropertyEditor\SubEditor\ParticleViewerPanel.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Engine\Source\Runtime\Windows\SubWindow\SubEngine.h" />
     <ClInclude Include="Engine\Source\Runtime\Windows\SubWindow\SubRenderer.h" />
