@@ -19,7 +19,10 @@ void ParticleViewerPanel::Render()
 
     if (ImGui::Begin("TestWindow", nullptr, mainCanvasFlags))
     {
-        ImGui::Text("Particle Viewer");
+        if (ImGui::Button("Particle Viewer"))
+        {
+            UE_LOG(ELogLevel::Display, TEXT("Particle Viewer Button Clicked"));
+        }
         ImGui::End();
     }
 }

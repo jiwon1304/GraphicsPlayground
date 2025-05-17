@@ -18,6 +18,9 @@ void FSubRenderer::PrepareRender(FEditorViewportClient* Viewport)
     FRenderTargetRHI* RenderTargetRHI = ViewportResource->GetRenderTarget(EResourceType::ERT_Scene);
     FDepthStencilRHI* DepthStencilRHI = ViewportResource->GetDepthStencil(EResourceType::ERT_Scene);
 
+    D3D11_VIEWPORT vp = Viewport->GetD3DViewport();
+    Graphics->DeviceContext->RSSetViewports(1, &vp);
+
     Graphics->DeviceContext->OMSetRenderTargets(0, nullptr, nullptr);
     
     Graphics->DeviceContext->ClearRenderTargetView(
@@ -49,5 +52,18 @@ void FSubRenderer::PrepareRender(FEditorViewportClient* Viewport)
 }
 
 void FSubRenderer::Render()
+{
+    Graphics->DeviceContext->OMSetRenderTargets(
+        1,
+        &Graphics->BackBufferRTV,
+        Graphics->DeviceDSV
+    );
+}
+
+void FSubRenderer::ClearRender()
+{
+}
+
+void FSubRenderer::Release()
 {
 }

@@ -12,6 +12,8 @@ public:
     void Initialize(FGraphicsDevice* InGraphics, FDXDBufferManager* InBufferManager, USubEngine* InEngine);
     void PrepareRender(FEditorViewportClient* Viewport);
     void Render();
+    void ClearRender();
+    void Release();
 private:
 
     FGraphicsDevice* Graphics;

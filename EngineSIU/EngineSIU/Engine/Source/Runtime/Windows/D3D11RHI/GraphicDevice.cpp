@@ -459,6 +459,7 @@ void FGraphicsDevice::Prepare()
 {
     DeviceContext->OMSetRenderTargets(0, nullptr, nullptr);
     DeviceContext->ClearRenderTargetView(BackBufferRTV, ClearColor);
+    DeviceContext->ClearDepthStencilView(DeviceDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
 /* TODO: 픽셀 피킹 관련 함수로, 임시로 주석 처리

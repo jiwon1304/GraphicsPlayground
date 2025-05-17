@@ -115,9 +115,9 @@ void UParticleSubEngine::Render()
     {
         Graphics->Prepare();
 
-        //SubRenderer->PrepareRender(ViewportClient);
+        SubRenderer->PrepareRender(ViewportClient);
 
-        //SubRenderer->Render();
+        SubRenderer->Render();
         // Sub window rendering
         SubUI->BeginFrame();
 
@@ -129,7 +129,7 @@ void UParticleSubEngine::Render()
         UnrealEditor->Render(EWindowType::WT_ParticleSubWindow);
         SubUI->EndFrame();
 
-        //SubRenderer->ClearRender();
+        SubRenderer->ClearRender();
         // Sub swap
         Graphics->SwapBuffer();
     }
@@ -144,10 +144,10 @@ void UParticleSubEngine::Release()
         delete SubUI;
         SubUI = nullptr;
     }
-    //if (SubRenderer)
-    //{
-    //    SubRenderer->Release();
-    //    delete SubRenderer;
-    //    SubRenderer = nullptr;
-    //}
+    if (SubRenderer)
+    {
+        SubRenderer->Release();
+        delete SubRenderer;
+        SubRenderer = nullptr;
+    }
 }
