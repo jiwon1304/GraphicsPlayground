@@ -17,12 +17,12 @@ class UParticleSystemComponent : public UFXSystemComponent
     DECLARE_CLASS(UParticleSystemComponent, UFXSystemComponent)
 public:
     UParticleSystemComponent();
+    TArray<FDynamicEmitterDataBase*>& GetEmitterRenderData();
 private:
     TArray<struct FParticleEmitterInstance*> EmitterInstances;
 
     UParticleSystem* Template;
     TArray<class UMaterialInterface*> Materials;
-    TArray<USkeletalMeshComponent*> SkelMeshComponents;
 
     TArray<FDynamicEmitterDataBase*> EmitterRenderData;
 
