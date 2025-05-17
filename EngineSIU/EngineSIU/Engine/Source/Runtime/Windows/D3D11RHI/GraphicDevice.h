@@ -42,6 +42,7 @@ public:
     UINT ScreenHeight = 0;
 
     D3D11_VIEWPORT Viewport;
+    D3D11_VIEWPORT RenderViewport;
     
     FLOAT ClearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f }; // 화면을 초기화(clear) 할 때 사용할 색상(RGBA)
 
@@ -59,6 +60,8 @@ public:
     void SwapBuffer() const;
     
     void Resize(HWND hWindow);
+
+    void Resize(HWND hWnd, float Width, float Height);
     
     ID3D11RasterizerState* GetCurrentRasterizer() const { return CurrentRasterizer; }
 

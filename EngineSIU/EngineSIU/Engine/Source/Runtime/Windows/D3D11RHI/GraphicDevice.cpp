@@ -297,8 +297,48 @@ void FGraphicsDevice::Resize(HWND hWindow)
     Viewport.TopLeftY = 0;
 
     CreateBackBuffer();
+    CreateDepthStencilViewAndTexture();
 
     // TODO : Resize에 따른 Depth Pre-Pass 리사이징 필요
+}
+
+void FGraphicsDevice::Resize(HWND hWnd, float Width, float Height)
+{
+    DeviceContext->OMSetRenderTargets(0, nullptr, nullptr);
+
+    ReleaseFrameBuffer();
+
+    if (ScreenWidth == 0 || ScreenHeight == 0)
+    {
+        MessageBox(hWnd, L"Invalid width or height for ResizeBuffers!", L"Error", MB_ICONERROR | MB_OK);
+        return;
+    }
+
+    // SwapChain 크기 조정
+    HRESULT hr = S_OK;
+    hr = SwapChain->ResizeBuffers(0, Width, Height, BackBufferFormat, 0); // DXGI_FORMAT_B8G8R8A8_UNORM으로 시도
+    if (FAILED(hr))
+    {
+        MessageBox(hWnd, L"failed", L"ResizeBuffers failed ", MB_ICONERROR | MB_OK);
+        return;
+    }
+
+    SwapChain->GetDesc(&SwapchainDesc);
+    ScreenWidth = SwapchainDesc.BufferDesc.Width;
+    ScreenHeight = SwapchainDesc.BufferDesc.Height;
+
+    Viewport.Width = ScreenWidth;
+    Viewport.Height = ScreenHeight;
+
+    RenderViewport.Width = Viewport.Width * 0.75f;
+    RenderViewport.Height = Viewport.Height;
+    RenderViewport.TopLeftX = 0;
+    RenderViewport.TopLeftY = 0;
+    RenderViewport.MinDepth = 0;
+    RenderViewport.MaxDepth = 1.0f;
+
+    CreateBackBuffer();
+    CreateDepthStencilViewAndTexture();
 }
 
 void FGraphicsDevice::CreateAlphaBlendState()
