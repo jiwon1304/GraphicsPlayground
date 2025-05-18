@@ -1,0 +1,524 @@
+#include <cstdlib>
+
+#include "ParticleEmitterInstance.h"
+#include "ParticleEmitter.h"
+#include "ParticleModuleRequired.h"
+#include "ParticleLODLevel.h"
+#include "Components/ParticleSystemComponent.h"
+#include "Particles/ParticleHelper.h"
+#include "Particles/ParticleModuleSpawn.h"
+#include "Components/SceneComponent.h"
+
+
+void FParticleEmitterInstance::InitParameters(UParticleEmitter* InTemplate, UParticleSystemComponent* InComponent)
+{
+    SpriteTemplate = InTemplate;
+    Component = InComponent;
+    SetupEmitterDuration();
+}
+
+void FParticleEmitterInstance::Init()
+{
+    // !TODO : 여기서 뭐 해야돼..?
+    assert(SpriteTemplate);
+    SpawnFraction = 0;
+    SecondsSinceCreation = 0;
+    EmitterTime = 0;
+    ParticleCounter = 0;
+
+    UpdateTransforms();
+    Location = Component->GetComponentLocation();
+    OldLocation = Location;
+
+    ParticleSize = SpriteTemplate->ParticleSize;
+    
+    PayloadOffset = ParticleSize;
+
+}
+
+void FParticleEmitterInstance::Tick(float DeltaTime)
+{
+    if (!SpriteTemplate || !SpriteTemplate->GetCurrentLODLevel(this))
+    {
+        return;
+    }
+    
+    bool bFirstTime = (SecondsSinceCreation > 0.0f) ? false : true;
+
+    UParticleLODLevel* CurrentLODLevel = SpriteTemplate->GetCurrentLODLevel(this);
+    float EmitterDelay = Tick_EmitterTimeSetup(DeltaTime, CurrentLODLevel);
+
+    if (bEnabled)
+    {
+        KillParticles();
+
+        // ResetParticleParameters(); 아직 뭐하는 앤지 잘 모르겠음
+
+        // 		CurrentMaterial = LODLevel->RequiredModule->Material;
+
+        Tick_ModuleUpdate(DeltaTime, CurrentLODLevel);
+
+        SpawnFraction = Tick_SpawnParticles(DeltaTime, CurrentLODLevel, bFirstTime);
+
+        Tick_ModulePostUpdate(DeltaTime, CurrentLODLevel);
+
+        if (ActiveParticles > 0)
+        {
+            // !TODO : 얘네들도 알아보기
+            // UpdateOrbitData(DeltaTime);
+            // UpdateBoundingBox(DeltaTime);
+        }
+        Tick_ModuleFinalUpdate(DeltaTime, CurrentLODLevel);
+
+        // !TODO : 이 프로퍼티들도 어디에 쓰는 놈들인지 알아봐야 함
+        EmitterTime += EmitterDelay;
+
+        LastDeltaTime = DeltaTime;
+    }
+}
+
+float FParticleEmitterInstance::Tick_EmitterTimeSetup(float DeltaTime, UParticleLODLevel* InCurrentLODLevel)
+{
+    Location = Component->GetComponentLocation();
+    OldLocation = Location;
+
+    UpdateTransforms();
+    SecondsSinceCreation += DeltaTime;
+
+    bool bLooped = false;
+
+    EmitterTime = SecondsSinceCreation;
+    if (EmitterDuration > KINDA_SMALL_NUMBER)
+    {
+        EmitterTime = FMath::Fmod(SecondsSinceCreation, EmitterDuration);
+        bLooped = (SecondsSinceCreation - (EmitterDuration * LoopCount)) >= EmitterDuration;
+    }
+    if (bLooped)
+    {
+        LoopCount++;
+        // !TODO : burst
+    }
+
+    float EmitterDelay = CurrentDelay;
+    EmitterTime -= EmitterDelay;
+
+    return EmitterDelay;
+}
+
+float FParticleEmitterInstance::Tick_SpawnParticles(float DeltaTime, UParticleLODLevel* InCurrentLODlevel, bool bFirstTime)
+{
+    // !TODO : HaltSpawing관련 프로퍼티들 도입 검토
+    if (EmitterTime >= 0.0f)
+    {
+        if ((InCurrentLODlevel->RequiredModule->EmitterLoops == 0) ||
+            (LoopCount < InCurrentLODlevel->RequiredModule->EmitterLoops) ||
+            (SecondsSinceCreation < (EmitterDuration * InCurrentLODlevel->RequiredModule->EmitterLoops)) ||
+            bFirstTime)
+        {
+            bFirstTime = false;
+            SpawnFraction = Spawn(DeltaTime);
+        }
+    }
+    return SpawnFraction;
+}
+
+void FParticleEmitterInstance::Tick_ModuleUpdate(float DeltaTime, UParticleLODLevel* InCurrentLODLevel)
+{
+    UParticleLODLevel* HighestLODLevel = SpriteTemplate->GetCurrentLODLevel(this); // !NOTE : 지금은 하나만 사용중
+    if (!HighestLODLevel)
+    {
+        return;
+    }
+    for (int32 ModuleIndex = 0; ModuleIndex < InCurrentLODLevel->UpdateModules.Num(); ModuleIndex++)
+    {
+        UParticleModule* CurrentModule = InCurrentLODLevel->UpdateModules[ModuleIndex];
+        if (CurrentModule && CurrentModule->bEnabled && CurrentModule->bUpdateModule)
+        {
+            CurrentModule->Update(this, GetModuleDataOffset(HighestLODLevel->UpdateModules[ModuleIndex]), DeltaTime);
+        }
+    }
+}
+
+void FParticleEmitterInstance::Tick_ModulePostUpdate(float DeltaTime, UParticleLODLevel* CurrentLODLevel)
+{
+}
+
+void FParticleEmitterInstance::Tick_ModuleFinalUpdate(float DeltaTime, UParticleLODLevel* CurrentLODLevel)
+{
+}
+
+UParticleLODLevel* FParticleEmitterInstance::GetCurrentLODLevelChecked()
+{
+    assert(SpriteTemplate);
+    UParticleLODLevel* CurrentLODLevel = SpriteTemplate->GetCurrentLODLevel(this);
+    assert(CurrentLODLevel);
+    assert(CurrentLODLevel->RequiredModule);
+    return CurrentLODLevel;
+}
+
+void FParticleEmitterInstance::SpawnParticles(int32 Count, float StartTime, float Increment, const FVector& InitialLocation, const FVector& InitialVelocity)
+{
+    UParticleLODLevel* LODLevel = GetCurrentLODLevelChecked();
+
+    assert(ActiveParticles <= MaxActiveParticles);
+
+    assert(ActiveParticles + Count <= MaxActiveParticles);
+
+    Count = FMath::Min<int32>(Count, MaxActiveParticles - ActiveParticles);
+
+    // !TODO : 소환 시 이벤트 Payload 처리
+    
+    UParticleLODLevel* HighestLODLevel = SpriteTemplate->LODLevels[0];
+    float SpawnTime = StartTime;
+    float Interp = 1.0f;
+    const float InterpIncrement = (Count > 0 && Increment > 0.0f) ? (1.0f / (float)Count) : 0.0f;
+    for (int32 i = 0; i < Count; i++)
+    {
+        if (!ParticleData || ParticleIndices)
+        {
+            UE_LOG(ELogLevel::Error, TEXT("ParticleData is null or ParticleIndices is null"));
+            continue;
+        }
+
+        uint16 NextFreeIndex = ParticleIndices[ActiveParticles];
+        if (NextFreeIndex < MaxActiveParticles)
+        {
+            UE_LOG(ELogLevel::Error, TEXT("NextFreeIndex is out of range"));
+            // !TODO : ParticleIndice 고치는 로직 추가
+            continue;
+        }
+
+        DECLARE_PARTICLE_PTR(Particle, ParticleData + ParticleStride * NextFreeIndex);
+        const uint32 CurrentParticleIndex = ActiveParticles++;
+
+        PreSpawn(Particle, InitialLocation, InitialVelocity);
+        for (int32 ModuleIndex = 0; ModuleIndex < LODLevel->SpawnModules.Num(); ModuleIndex++)
+        {
+            UParticleModule* SpawnModule = LODLevel->SpawnModules[ModuleIndex];
+            if (SpawnModule->bEnabled)
+            {
+                UParticleModule* OffsetModule = HighestLODLevel->SpawnModules[ModuleIndex];
+                SpawnModule->Spawn(this, GetModuleDataOffset(OffsetModule), SpawnTime, Particle);
+            }
+        }
+        PostSpawn(Particle, Interp, SpawnTime);
+
+        if (Particle->RelativeTime > 1.0f)
+        {
+            KillParticle(CurrentParticleIndex);
+
+            continue;
+        }
+
+        // !TODO : Burst EventPayload
+    }
+}
+
+void FParticleEmitterInstance::PreSpawn(FBaseParticle* Particle, const FVector& InitialLocation, const FVector& InitialVelocity)
+{
+    assert(Particle);
+    assert(ParticleSize > 0);
+
+    // memzero , TODO : FMemory 
+    std::memset(Particle, 0, ParticleSize);
+
+    Particle->Location = InitialLocation;
+    Particle->BaseVelocity = InitialVelocity;
+    Particle->Velocity = InitialVelocity;
+
+    Particle->Location -= PositionOffsetThisTick;
+}
+
+float FParticleEmitterInstance::Spawn(float DeltaTime)
+{
+    UParticleLODLevel* LODLevel = GetCurrentLODLevelChecked();
+
+    float SpawnRate = 0.0f;
+    int32 SpawnCount = 0;
+    int32 BurstCount = 0; //  !TODO : 버스트는 어떻게 할지 검토 필요
+    float SpawnRateDivisor = 0.0f;
+    float OldLeftover = SpawnFraction; //  이전 프레임에서 남은 SpawnFraction;
+
+    UParticleLODLevel* HighestLODLevel = SpriteTemplate->LODLevels[0];
+
+    bool bProcessSpawnRate = true;
+    bool bProcessBurstList = true;
+
+    //int32 DetailMode = Component->GetCurrentDetailMode(); // 디테일 필요한가
+    for (int32 SpawnModIndex = 0; SpawnModIndex < LODLevel->SpawningModules.Num(); SpawnModIndex++)
+    {
+        UParticleModuleSpawnBase* SpawnModule = LODLevel->SpawningModules[SpawnModIndex];
+        if (SpawnModule && SpawnModule->bEnabled)
+        {
+            UParticleModule* OffsetModule = HighestLODLevel->SpawnModules[SpawnModIndex];
+            uint32 Offset = GetModuleDataOffset(OffsetModule);
+
+            int32 Number = 0;
+            float Rate = 0.0f;
+            if (SpawnModule->GetSpawnAmount(this, Offset, OldLeftover, DeltaTime, Number, Rate) == false)
+            {
+                bProcessSpawnRate = false;
+            }
+
+            Number = FMath::Max<int32>(0, Number);
+            Rate = FMath::Max<float>(0.0f, Rate);
+
+            SpawnCount += Number;
+            SpawnRate += Rate;
+
+            // !TODO : Burst
+        }
+    }
+
+    // 현재 프레임의 SpawnRate를 계산
+    if (bProcessSpawnRate)
+    {
+        float RateScale = LODLevel->SpawnModule->GetSpawnRate();
+        float SpawnScale = LODLevel->SpawnModule->GetSpawnScale();
+        SpawnRate += RateScale * SpawnScale;
+        SpawnRate = FMath::Max<float>(0.0f, SpawnRate);
+    }
+
+    // !TODO : Burst
+
+    // 여기서 파티클 생성
+    if (SpawnRate > 0.f || BurstCount > 0)
+    {
+        float SafetyLeftOver = OldLeftover;
+        float NewLeftOver = OldLeftover + DeltaTime * SpawnRate;
+        int32 Number = FMath::FloorToInt(NewLeftOver);
+        float Increment = SpawnRate > 0.0f ? (1.f / SpawnRate) : 0.0f;
+        float StartTime = DeltaTime + OldLeftover * Increment - Increment;
+        NewLeftOver = NewLeftOver - Number;
+
+        bool bProcessSpawn = true;
+        int32 NewCount = ActiveParticles + Number + BurstCount; // 일단 버스트 기능 없으므로 얘는 0
+
+        if (NewCount > 1000) // 이 값은 언리얼엔인의 FXConsoleVariables::MaxCpuParticlesPerFrame
+        {
+            int32 MaxNewParticles = 1000 - ActiveParticles;
+            BurstCount = FMath::Min(MaxNewParticles, BurstCount);
+            MaxNewParticles -= BurstCount;
+            Number = FMath::Min(MaxNewParticles, Number);
+            NewCount = ActiveParticles + Number + BurstCount;
+        }
+
+        if (NewCount > MaxActiveParticles)
+        {
+            bProcessSpawn = Resize(NewCount, true);
+        }
+
+        if (bProcessSpawn)
+        {
+            // !TODO : FParticleEventInstancePayload로 Spawn 이벤트 처리
+            const FVector InitialLocation = EmitterToSimulation.GetOrigin();
+
+            SpawnParticles(Number, StartTime, Increment, InitialLocation, FVector::ZeroVector);
+
+            // !TODO : Burst
+            return NewLeftOver;
+        }
+        return SafetyLeftOver;
+    }
+
+    return SpawnFraction;
+}
+
+void FParticleEmitterInstance::PostSpawn(FBaseParticle* Particle, float InterpolationPercentage, float SpawnTime)
+{
+    UParticleLODLevel* LODLevel = GetCurrentLODLevelChecked();
+
+    if (LODLevel->RequiredModule->bUseLocalSpace == false)
+    {
+        if (FVector::DistSquared(OldLocation, Location) > 1.f)
+        {
+            Particle->Location += (OldLocation - Location) * InterpolationPercentage;
+        }
+    }
+
+    Particle->OldLocation = Particle->Location;
+    Particle->Location += FVector(Particle->Velocity) * SpawnTime;
+
+    // !TODO : 파티클 State 플래그 체크
+    //Particle->
+}
+
+void FParticleEmitterInstance::UpdateTransforms()
+{
+    assert(SpriteTemplate);
+
+    UParticleLODLevel* LODLevel = GetCurrentLODLevelChecked();
+    FMatrix ComponentToWorld = Component != nullptr ?
+        Component->GetComponentTransform().ToMatrixNoScale() : FMatrix::Identity;
+
+    // !NOTE : 뭔가 이상하면 여기 살펴보기
+    FTransform EmitterLocalTransform(
+        LODLevel->RequiredModule->EmitterRotation,
+        LODLevel->RequiredModule->EmitterOrigin,
+        FVector(0, 0, 0)
+    );
+
+    FMatrix EmitterToComponent = EmitterLocalTransform.ToMatrixNoScale();
+
+    if (LODLevel->RequiredModule->bUseLocalSpace)
+    {
+        EmitterToSimulation = EmitterToComponent;
+        SimulationToWorld = ComponentToWorld;
+    }
+    else
+    {
+        EmitterToSimulation = EmitterToComponent * ComponentToWorld;
+        SimulationToWorld = FMatrix::Identity;
+    }
+}
+
+uint32 FParticleEmitterInstance::GetModuleDataOffset(UParticleModule* Module)
+{
+    assert(SpriteTemplate);
+
+    uint32* Offset = SpriteTemplate->ModuleOffsetMap.Find(Module);
+    return (Offset != nullptr) ? *Offset : 0;
+}
+
+void FParticleEmitterInstance::ApplyWorldOffset(FVector InOffset, bool bWorldShift)
+{
+    UpdateTransforms();
+    Location += InOffset;
+    OldLocation += InOffset;
+
+    UParticleLODLevel* LODLevel = GetCurrentLODLevelChecked();
+
+    if (!LODLevel->RequiredModule->bUseLocalSpace)
+    {
+        PositionOffsetThisTick = InOffset;
+    }
+}
+
+// !NOTE : FMemory 클래스를 만들어야 할 수도 있음
+bool FParticleEmitterInstance::Resize(int32 NewMaxActiveParticles, bool bSetMaxActiveCount)
+{
+    // 0. 요청된 파티클 수가 음수일 경우 0으로 처리합니다.
+    int32 EffectiveNewMaxActiveParticles = NewMaxActiveParticles;
+    if (EffectiveNewMaxActiveParticles < 0)
+    {
+        EffectiveNewMaxActiveParticles = 0;
+    }
+
+    if (EffectiveNewMaxActiveParticles == MaxActiveParticles)
+    {
+        return true;
+    }
+
+    size_t NewTotalSizeInBytes = 0; // realloc은 size_t를 인자로 받습니다.
+    if (ParticleStride > 0 && EffectiveNewMaxActiveParticles > 0)
+    {
+        NewTotalSizeInBytes = static_cast<size_t>(EffectiveNewMaxActiveParticles) * static_cast<size_t>(ParticleStride);
+    }
+
+    // 3. 계산된 새로운 총 메모리 크기가 0인 경우 (메모리 해제 요청):
+    if (NewTotalSizeInBytes == 0)
+    {
+        if (ParticleData != nullptr)
+        {
+            free(ParticleData); // 표준 free 함수 사용
+            ParticleData = nullptr;
+        }
+        if (bSetMaxActiveCount)
+        {
+            MaxActiveParticles = 0;
+        }
+        return true; // 메모리 해제는 성공으로 간주합니다.
+    }
+
+    uint8* TempData = static_cast<uint8*>(realloc(ParticleData, NewTotalSizeInBytes));
+
+    if (TempData == nullptr)
+    {
+        // realloc 실패 (요청된 크기가 0보다 큰 경우).
+        // 기존 ParticleData 포인터는 (원래 nullptr이 아니었다면) 여전히 유효하며 내용은 변경되지 않습니다.
+        // MaxActiveParticles도 변경하지 않아 실패한 요청을 반영하지 않습니다.
+        return false;
+    }
+
+    // realloc 성공.
+    ParticleData = TempData;
+    if (bSetMaxActiveCount)
+    {
+        MaxActiveParticles = EffectiveNewMaxActiveParticles;
+    }
+    // bSetMaxActiveCount가 false이면, 실제 버퍼 용량이 변경되었음에도 불구하고
+    // MaxActiveParticles는 이전 값을 유지합니다. 이는 bSetMaxActiveCount 플래그의
+    // 의도된 동작일 수 있습니다.
+
+    return true;
+}
+
+void FParticleEmitterInstance::KillParticles()
+{
+    for (int32 i = ActiveParticles - 1; i >= 0; i--)
+    {
+        const int32 CurrentIndex = ParticleIndices[i];
+        if (CurrentIndex < MaxActiveParticles)
+        {
+            const uint8* ParticleBase = ParticleData + CurrentIndex * ParticleStride;
+            FBaseParticle& Particle = *(FBaseParticle*)ParticleBase;
+
+            if (Particle.RelativeTime > 1.0f)
+            {
+                // !TODO : EventGenerator통해서 HandleParticleKilled 호출
+                ParticleIndices[i] = ParticleIndices[ActiveParticles - 1];
+                ParticleIndices[ActiveParticles - 1] = CurrentIndex;
+                ActiveParticles--;
+            }
+        }
+    }
+
+    // !TODO : CorruptIndice 발견 시 로직 추가 필요
+}
+
+void FParticleEmitterInstance::KillParticle(int32 Index)
+{
+    if (Index < ActiveParticles)
+    {
+        UParticleLODLevel* LODLevel = GetCurrentLODLevelChecked();
+        
+        int32 KillIndex = ParticleIndices[Index];
+
+        // Move it to the 'back' of the list
+        for (int32 i = Index; i < ActiveParticles - 1; i++)
+        {
+            ParticleIndices[i] = ParticleIndices[i + 1];
+        }
+        ParticleIndices[ActiveParticles - 1] = KillIndex;
+        ActiveParticles--;
+
+        // !TODO : EventPayload
+    }
+}
+
+void FParticleEmitterInstance::SetupEmitterDuration()
+{
+    if (SpriteTemplate == nullptr)
+    {
+        return;
+    }
+
+    int32 EDCount = EmitterDurations.Num();
+    // 어차피 지금은 LOD 하나만 사용중이라 1개임
+    if (EDCount == 0 || EDCount != SpriteTemplate->LODLevels.Num())
+    {
+        EmitterDurations.Empty();
+        EmitterDurations.AddUninitialized(SpriteTemplate->LODLevels.Num());
+    }
+
+    for (int32 LODIndex = 0; LODIndex < SpriteTemplate->LODLevels.Num(); LODIndex++)
+    {
+        UParticleLODLevel* TempLOD = SpriteTemplate->LODLevels[LODIndex];
+        UParticleModuleRequired* RequiredModule = TempLOD->RequiredModule;
+
+        CurrentDelay = RequiredModule->EmitterDelay + Component->EmitterDelay;
+        EmitterDurations[TempLOD->Level] = RequiredModule->EmitterDuration + CurrentDelay;
+
+        // !TODO : Range 기반 랜덤값 사용
+    }
+}
