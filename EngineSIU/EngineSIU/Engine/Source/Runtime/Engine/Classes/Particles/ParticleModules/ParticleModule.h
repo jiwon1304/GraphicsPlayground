@@ -47,6 +47,7 @@ public:
     * @return   uint32      파티클별 이 모듈이 필요로 하는 바이트의 수
     */ 
     virtual uint32 RequiredBytes(UParticleModuleTypeDataBase* TypeData) const { return 0; } // should be overridden by derived classes
+    virtual uint32 RequiredBytesPerInstance() const { return 0; } // should be overridden by derived classes
 
     virtual void Spawn(FParticleEmitterInstance* Owner, int32 Offset, float SpawnTime, FBaseParticle* ParticleBase);
     virtual void Update(FParticleEmitterInstance* Owner, int32 Offset, float DeltaTime);

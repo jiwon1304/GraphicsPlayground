@@ -1,6 +1,6 @@
 #include "ParticleLODLevel.h"
-#include "Particles/ParticleModuleSpawn.h"
-#include "Particles/ParticleModuleRequired.h"
+#include "Particles/ParticleModules/ParticleModuleSpawn.h"
+#include "Particles/ParticleModules/ParticleModuleRequired.h"
 
 void UParticleLODLevel::Initialize()
 {

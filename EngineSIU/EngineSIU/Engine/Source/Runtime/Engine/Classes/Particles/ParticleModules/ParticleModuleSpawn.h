@@ -1,5 +1,5 @@
 #pragma once
-#include "Particles/ParticleModuleSpawnBase.h"
+#include "ParticleModuleSpawnBase.h"
 
 class UParticleModuleSpawn : public UParticleModuleSpawnBase
 {

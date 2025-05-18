@@ -19,11 +19,19 @@ public:
 
     void Build();
     void CacheEmitterModuleInfo();
+    UParticleLODLevel* GetLODLevel(int32 LODLevel);
 
     FName EmitterName;
     int32 ParticleSize = 0;
+    int32 TypeDataOffset = 0;
+
+    int32 TypeDataInstanceOffset = 0;
+    int32 ReqInstanceBytes = 0;
 
     TArray<UParticleLODLevel*> LODLevels;
-
+    
     TMap<UParticleModule*, uint32> ModuleOffsetMap;
+    TMap<UParticleModule*, uint32> ModuleInstanceOffsetMap;
+
+    TArray<UParticleModule*> ModulesNeedingInstanceData;
 };

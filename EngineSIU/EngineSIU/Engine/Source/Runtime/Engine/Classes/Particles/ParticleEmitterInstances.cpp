@@ -2,11 +2,11 @@
 
 #include "ParticleEmitterInstances.h"
 #include "ParticleEmitter.h"
-#include "ParticleModuleRequired.h"
+#include "Particles/ParticleModules/ParticleModuleRequired.h"
 #include "ParticleLODLevel.h"
 #include "Components/ParticleSystemComponent.h"
 #include "Particles/ParticleHelper.h"
-#include "Particles/ParticleModuleSpawn.h"
+#include "Particles/ParticleModules/ParticleModuleSpawn.h"
 #include "Components/SceneComponent.h"
 
 

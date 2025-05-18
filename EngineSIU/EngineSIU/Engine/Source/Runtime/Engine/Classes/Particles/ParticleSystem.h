@@ -12,5 +12,6 @@ public:
     virtual ~UParticleSystem() override = default;
 
     TArray<class UParticleEmitter*> Emitters;
+    class UParticleSystemComponent* PreviewComponent = nullptr;
     void BuildEmitters();
 };

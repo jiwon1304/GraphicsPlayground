@@ -1,5 +1,5 @@
 #pragma once
-#include "Particles/ParticleModule.h"
+#include "ParticleModule.h"
 
 class UParticleEmitter;
 class UParticleSystemComponent;

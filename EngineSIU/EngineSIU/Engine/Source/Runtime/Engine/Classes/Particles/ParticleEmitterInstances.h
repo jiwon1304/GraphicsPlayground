@@ -7,6 +7,7 @@ class UParticleEmitter;
 class UParticleSystemComponent;
 class UParticleLODLevel;
 class UParticleModule;
+class UParticleModuleTypeDataMesh;
 
 struct FBaseParticle;
 struct FVector;
@@ -93,7 +94,6 @@ struct FParticleSpriteEmitterInstance : public FParticleEmitterInstance
     // !TODO : FParticleSpriteEmitterInstance에 필요한 함수들 추가
 };
 
-class UParticleModuleTypeDataMesh;
 struct FParticleMeshEmitterInstance : public FParticleEmitterInstance
 {
     UParticleModuleTypeDataMesh* MeshTypeData;

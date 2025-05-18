@@ -1,4 +1,6 @@
 #include "ParticleModuletypeDataMesh.h"
+#include "Particles/ParticleHelper.h"
+#include "Particles/ParticleEmitterInstances.h"
 
 FParticleEmitterInstance* UParticleModuleTypeDataMesh::CreateInstance(UParticleEmitter* InEmitterParent, UParticleSystemComponent* InComponent)
 {

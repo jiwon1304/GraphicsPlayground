@@ -1,5 +1,5 @@
 #pragma once
-#include "Particles/ParticleModule.h"
+#include "Particles/ParticleModules/ParticleModule.h"
 #include "Math/Vector.h"
 #include "Math/Quat.h"
 
