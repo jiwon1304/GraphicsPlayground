@@ -401,7 +401,8 @@ LRESULT CALLBACK FEngineLoop::AppWndProc(HWND hWnd, uint32 Msg, WPARAM wParam, L
         GEngineLoop.CurrentImGuiContext = ImGui::GetCurrentContext();
         break;
     default:
-        GEngineLoop.AppMessageHandler->ProcessMessage(hWnd, Msg, wParam, lParam);
+        if(hWnd == GEngineLoop.AppWnd && GEngineLoop.AppMessageHandler !=nullptr)
+            GEngineLoop.AppMessageHandler->ProcessMessage(hWnd, Msg, wParam, lParam);
         return DefWindowProc(hWnd, Msg, wParam, lParam);
     }
 
