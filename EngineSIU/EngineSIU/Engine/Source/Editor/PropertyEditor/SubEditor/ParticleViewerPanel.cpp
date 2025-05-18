@@ -59,13 +59,12 @@ void ParticleViewerPanel::RenderEmitterPanel()
     float BlockWidth = ItemWidth + WidthPad;
     float BlockHeight = viewportSize.y - HeightPad;
     float headerHeight = ImGui::GetTextLineHeightWithSpacing();
-    ImGui::BeginChild("Emitter", viewportSize, true);
+
+    ImGuiWindowFlags flags = ImGuiWindowFlags_HorizontalScrollbar;
+    ImGui::BeginChild("Emitter", viewportSize, true, flags);
+    InputEmitterPanel(); // Delete 키 입력 처리
 
     ImGui::Text("Emitter Editor");
-
-    int itemsPerRow = static_cast<int>(viewportSize.x / BlockWidth);
-    if (itemsPerRow < 1) itemsPerRow = 1; // 최소 1개는 보이도록
-    int currentColumn = 0;
 
     // Emitter 목록 출력
     for (int i = 0; i < EmitterList.Num(); ++i) {
@@ -86,6 +85,20 @@ void ParticleViewerPanel::RenderEmitterPanel()
             SelectedEmitterIndex = i;
         }
 
+        // 2) 우클릭 팝업 트리거
+        if (ImGui::IsMouseHoveringRect(blockMin, blockMax) &&
+            ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+        {
+            ImGui::OpenPopup("EmitterContextMenu");
+        }
+
+        // 3) 팝업 렌더링
+        if (ImGui::BeginPopup("EmitterContextMenu"))
+        {
+            RenderEmitterModulePopup(i);
+            ImGui::EndPopup();
+        }
+
         // 헤더 영역에만 색을 그려주기
         ImDrawList* dl = ImGui::GetWindowDrawList();
         // 헤더 배경 채우기
@@ -99,54 +112,21 @@ void ParticleViewerPanel::RenderEmitterPanel()
         ImGui::SetCursorScreenPos(blockMin);
         ImGui::Text("%s", EmitterList[i].Name.ToAnsiString().c_str());
 
-
-        // 개별 Emitter에 우클릭 메뉴
-        if (ImGui::BeginPopupContextItem("EmitterContextMenu")) {
-            RenderEmitterModulePopup(i);
-            ImGui::EndPopup();
-        }
-
         ImGui::Spacing();
         ImGui::Separator();
 
         for (auto& Module : EmitterList[i].Modules) {
-            bool changed = ImGui::Checkbox(Module.Name.ToAnsiString().c_str(), &Module.Enabled);
-            if (changed)
-                UE_LOG(ELogLevel::Display, TEXT("Module %s toggled to %s"),
-                    *Module.Name,
-                    Module.Enabled ? TEXT("ON") : TEXT("OFF"));
+            ImGui::Checkbox(Module.Name.ToAnsiString().c_str(), &Module.Enabled);
         }
 
 
         ImGui::EndChild();
         ImGui::PopID();
 
-        // 다음 열로 이동
-        if (++currentColumn >= itemsPerRow) {
-            currentColumn = 0;
-            ImGui::NewLine();
-        }
-        else {
-            ImGui::SameLine();
-        }
+        // 다음 아이템을 같은 줄에 붙이기
+        if (i + 1 < EmitterList.Num())
+            ImGui::SameLine(0, WidthPad);
 
-    }
-
-    // 빈 공간 감지
-    ImVec2 available = ImGui::GetContentRegionAvail();
-    ImGui::InvisibleButton("EmptySpaceButton", available);
-    if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
-        SelectedEmitterIndex = -1; // 빈 공간 클릭 시 선택 해제
-    }
-
-    if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
-        ImGui::OpenPopup("EmptySpaceContextMenu");
-    }
-
-    // 빈 공간에 우클릭 메뉴
-    if (ImGui::BeginPopup("EmptySpaceContextMenu")) {
-        RenderEmitterCreatePopup();
-        ImGui::EndPopup();
     }
 
     ImGui::EndChild();
@@ -201,6 +181,41 @@ void ParticleViewerPanel::RenderEmitterCreatePopup()
                 {"속도", true, ImVec4(0.3f, 0.3f, 0.8f, 1.0f)}
             }
             });
+    }
+}
+
+void ParticleViewerPanel::InputEmitterPanel()
+{
+    //Delete 키로 Emitter 삭제
+    if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
+        ImGui::IsKeyPressed(ImGuiKey_Delete))
+    {
+        if (SelectedEmitterIndex >= 0 && SelectedEmitterIndex < EmitterList.Num())
+        {
+            EmitterList.RemoveAt(SelectedEmitterIndex);
+            SelectedEmitterIndex = -1;
+        }
+    }
+
+    // 빈 공간 클릭 시 선택 해제 및 팝업 오픈
+    bool windowHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows);
+    bool anyItemHovered = ImGui::IsAnyItemHovered();
+    bool clickL = ImGui::IsMouseClicked(ImGuiMouseButton_Left);
+    bool clickR = ImGui::IsMouseClicked(ImGuiMouseButton_Right);
+
+    if (windowHovered && !anyItemHovered)
+    {
+        if (clickL)
+            SelectedEmitterIndex = -1;          // 빈 공간 좌클릭 → 선택 해제
+
+        if (clickR)
+            ImGui::OpenPopup("EmitterEmptyContextMenu"); // 빈 공간 우클릭 → 팝업 오픈
+    }
+
+    if (ImGui::BeginPopup("EmitterEmptyContextMenu"))
+    {
+        RenderEmitterCreatePopup();
+        ImGui::EndPopup();
     }
 }
 

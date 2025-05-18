@@ -36,6 +36,7 @@ private:
 private:
     void RenderEmitterModulePopup(int EmitterIndex);
     void RenderEmitterCreatePopup();
+    void InputEmitterPanel();
 private:
     TArray<EmitterData> EmitterList;
     int SelectedEmitterIndex = -1;
