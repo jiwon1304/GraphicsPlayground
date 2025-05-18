@@ -23,12 +23,14 @@ struct VS_INPUT
     float3 Position : POSITION;
     float RelativeTime : TEXCOORD0;
     float3 OldPosition : TEXCOORD1;
-    float2 Size : TEXCOORD2;
-    float Rotation : TEXCOORD3;
-    float SubImageIndex : TEXCOORD4;
-    float2 UV : TEXCOORD5;
+    float ParticleId : TEXCOORD2;
+    float2 Size : TEXCOORD3;
+    float Rotation : TEXCOORD4;
+    float SubImageIndex : TEXCOORD5;
     float4 Color : COLOR0;
+    float2 UV : TEXCOORD6;
 };
+
 #endif
 
 #if defined(PARTICLE_MESH)

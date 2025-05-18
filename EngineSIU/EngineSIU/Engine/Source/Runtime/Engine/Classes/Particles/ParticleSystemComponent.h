@@ -38,6 +38,9 @@ public:
     {
         return SpriteVertexData;
     }
+    void InitTestSpriteParticles();
+
+
 
 private:
     TArray<struct FParticleEmitterInstance*> EmitterInstances;

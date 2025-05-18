@@ -33,7 +33,31 @@ void FParticleRenderPass::Initialize(FDXDBufferManager* InBufferManager, FGraphi
 
 void FParticleRenderPass::CreateShader()
 {
-    ShaderManager->AddVertexShader(L"ParticleShader", L"Shaders/ParticleShader.hlsl", "mainVS");
+    D3D11_INPUT_ELEMENT_DESC ParticleInputLayout[] = {
+        { "POSITION",       0, DXGI_FORMAT_R32G32B32_FLOAT,     0, 0,   D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "TEXCOORD",       0, DXGI_FORMAT_R32_FLOAT,           0, 12,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "TEXCOORD",       1, DXGI_FORMAT_R32G32B32_FLOAT,     0, 16,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "TEXCOORD",       2, DXGI_FORMAT_R32_FLOAT,           0, 28,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "TEXCOORD",       3, DXGI_FORMAT_R32G32_FLOAT,        0, 32,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "TEXCOORD",       4, DXGI_FORMAT_R32_FLOAT,           0, 40,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "TEXCOORD",       5, DXGI_FORMAT_R32_FLOAT,           0, 44,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "COLOR",          0, DXGI_FORMAT_R32G32B32A32_FLOAT,  0, 48,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "TEXCOORD",       6, DXGI_FORMAT_R32G32_FLOAT,        0, 64,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+    };
+
+    HRESULT hr = ShaderManager->AddVertexShaderAndInputLayout(
+        L"ParticleShader",
+        L"Shaders/ParticleShader.hlsl",
+        "mainVS",
+        ParticleInputLayout,
+        ARRAYSIZE(ParticleInputLayout)
+    );
+
+    if (FAILED(hr))
+    {
+        return;
+    }
+
     ShaderManager->AddPixelShader(L"ParticleShader", L"Shaders/ParticleShader.hlsl", "mainPS");
 }
 
