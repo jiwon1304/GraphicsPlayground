@@ -1,6 +1,7 @@
 #pragma once
 #include "ParticleEmitter.h"
 
+// 새로운 에미터를 만들면 기본적으로 ParticleSpriteEmitter 형태로 만들어진다.
 class UParticleSpriteEmitter : public UParticleEmitter
 {
     DECLARE_CLASS(UParticleSpriteEmitter, UParticleEmitter)

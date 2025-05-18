@@ -36,6 +36,7 @@ public:
     UParticleModule() = default;
     virtual ~UParticleModule() override = default;
 
+    uint8 bSpawnModule : 1; 
     uint8 bEnabled : 1;
     uint8 bUpdateModule : 1;
 

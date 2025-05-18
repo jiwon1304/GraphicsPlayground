@@ -35,6 +35,11 @@ struct FParticleEmitterInstance
 
     // 한 번에 여러 개의 파티클이 생성될 때 정규화된 진행률
     float SpawnFraction = 0.0f;
+
+    // 인스턴스 데이터 및 페이로드 크기
+    uint8* InstanceData = nullptr;
+    int32 InstancePayloadSize = 0;
+
     // 파티클 데이터의 시작 주소
     uint8* ParticleData = nullptr;
     int32 ParticleSize = 0;
@@ -78,6 +83,7 @@ struct FParticleEmitterInstance
     // 월드좌표 변경 시 호출
     virtual void ApplyWorldOffset(FVector InOffset, bool bWorldShift);
     virtual bool Resize(int32 NewMaxActiveParticles, bool bSetMaxActiveCount);
+    uint8* GetModuleInstanceData(UParticleModule* InModule);
 
     void KillParticles();
     void KillParticle(int32 Index);

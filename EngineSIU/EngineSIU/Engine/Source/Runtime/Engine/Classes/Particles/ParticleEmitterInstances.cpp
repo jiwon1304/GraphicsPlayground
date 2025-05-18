@@ -458,6 +458,20 @@ bool FParticleEmitterInstance::Resize(int32 NewMaxActiveParticles, bool bSetMaxA
     return true;
 }
 
+uint8* FParticleEmitterInstance::GetModuleInstanceData(UParticleModule* InModule)
+{
+    if (InstanceData)
+    {
+        uint32* Offset = SpriteTemplate->ModuleInstanceOffsetMap.Find(InModule);
+        if (Offset)
+        {
+            assert(*Offset < (uint32)InstancePayloadSize);
+            return &(InstanceData[*Offset]);
+        }
+    }
+    return nullptr;
+}
+
 void FParticleEmitterInstance::KillParticles()
 {
     for (int32 i = ActiveParticles - 1; i >= 0; i--)

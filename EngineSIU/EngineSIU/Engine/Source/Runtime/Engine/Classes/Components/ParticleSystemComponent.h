@@ -29,9 +29,13 @@ public:
 
     void InitializeSystem();
     void InitParticles();
+    void ResetParticles();
+
     virtual void TickComponent(float DeltaTime) override;
+    void UpdateInstances();
 
     void SetTemplate(class UParticleSystem* InTemplate);
+    void ClearDynamicData();
 
     class UParticleSystem* Template = nullptr;
     uint8 bWasCompleted : 1;

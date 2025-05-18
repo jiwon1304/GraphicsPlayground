@@ -32,3 +32,4 @@ FParticleEmitterInstance* UParticleSpriteEmitter::CreateInstance(UParticleSystem
 
     return Instance;
 }
+

@@ -1,5 +1,17 @@
 #include "ParticleSystem.h"
 #include "Particles/ParticleEmitter.h"
+#include "Components/ParticleSystemComponent.h"
+
+void UParticleSystem::PostEditChangeProperty()
+{
+    if (!PreviewComponent)
+    {
+        UE_LOG(ELogLevel::Error, TEXT("PreviewComponent is Null!!!"));
+        return;
+    }
+
+    PreviewComponent->UpdateInstances();
+}
 
 void UParticleSystem::BuildEmitters()
 {

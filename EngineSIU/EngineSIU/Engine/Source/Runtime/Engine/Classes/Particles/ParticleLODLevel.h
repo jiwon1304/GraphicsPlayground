@@ -20,6 +20,7 @@ public:
     uint32 bEnabled : 1;
 
     virtual void UpdateModuleLists();
+    int32 GetModuleIndex(UParticleModule* InModule);
 
     UParticleModuleRequired* RequiredModule = nullptr;
 
@@ -31,7 +32,6 @@ public:
 
     // 업데이트 대상  모듈들
     TArray<UParticleModule*> UpdateModules;
-
 
     TArray<UParticleModuleSpawnBase*> SpawningModules;
 

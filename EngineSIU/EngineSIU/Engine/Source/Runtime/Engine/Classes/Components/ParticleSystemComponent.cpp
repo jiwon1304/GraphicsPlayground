@@ -41,6 +41,24 @@ void UParticleSystemComponent::InitParticles()
     }
 }
 
+void UParticleSystemComponent::ResetParticles()
+{
+    for (int32 EmitterIndex = 0; EmitterIndex < EmitterInstances.Num(); EmitterIndex++)
+    {
+        FParticleEmitterInstance* EmitterInstance = EmitterInstances[EmitterIndex];
+        if (EmitterInstance)
+        {
+            EmitterInstance->SpriteTemplate = nullptr;
+            EmitterInstance->Component = nullptr;
+
+            delete EmitterInstance;
+            EmitterInstances[EmitterIndex] = nullptr;
+        }
+    }
+    EmitterInstances.Empty();
+    ClearDynamicData();
+}
+
 void UParticleSystemComponent::TickComponent(float DeltaTime)
 {
     for (int32 EmitterIndex = 0; EmitterIndex < EmitterInstances.Num(); EmitterIndex++)
@@ -57,6 +75,12 @@ void UParticleSystemComponent::TickComponent(float DeltaTime)
     }
 }
 
+void UParticleSystemComponent::UpdateInstances()
+{
+    ResetParticles();
+    InitializeSystem();
+}
+
 void UParticleSystemComponent::SetTemplate(UParticleSystem* InTemplate)
 {
     if (InTemplate != Template)
@@ -65,4 +89,9 @@ void UParticleSystemComponent::SetTemplate(UParticleSystem* InTemplate)
         EmitterInstances.Empty();
         InitializeSystem();
     }
+}
+
+void UParticleSystemComponent::ClearDynamicData()
+{
+
 }

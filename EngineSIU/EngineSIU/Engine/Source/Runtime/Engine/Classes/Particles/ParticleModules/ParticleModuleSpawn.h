@@ -12,6 +12,8 @@ public:
         float DeltaTime, int32& Number, float& Rate) override
     {
         // !TODO : SpawnRate를 계산하는 로직을 구현합니다.
+        Number = FMath::FloorToInt(SpawnRate * DeltaTime);
+        Rate = SpawnRate;
         return true;
     }
 
