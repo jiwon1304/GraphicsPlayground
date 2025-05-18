@@ -34,10 +34,16 @@ void FSubRenderer::PrepareRender(FEditorViewportClient* Viewport)
         1.0f, 0
     );
 
+    //Graphics->DeviceContext->OMSetRenderTargets(
+    //    1,
+    //    &RenderTargetRHI->RTV,
+    //    nullptr
+    //);
+
     Graphics->DeviceContext->OMSetRenderTargets(
         1,
-        &RenderTargetRHI->RTV,
-        nullptr
+        &Graphics->BackBufferRTV,
+        Graphics->DeviceDSV
     );
 
     if (Viewport->GetViewMode() == EViewModeIndex::VMI_Wireframe)
@@ -53,11 +59,7 @@ void FSubRenderer::PrepareRender(FEditorViewportClient* Viewport)
 
 void FSubRenderer::Render()
 {
-    Graphics->DeviceContext->OMSetRenderTargets(
-        1,
-        &Graphics->BackBufferRTV,
-        Graphics->DeviceDSV
-    );
+
 }
 
 void FSubRenderer::ClearRender()
