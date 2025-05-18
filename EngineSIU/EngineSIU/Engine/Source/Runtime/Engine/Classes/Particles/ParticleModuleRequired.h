@@ -7,7 +7,7 @@ class UParticleModuleRequired : public UParticleModule
 {
     DECLARE_CLASS(UParticleModuleRequired, UParticleModule)
 public:
-    UParticleModuleRequired();
+    UParticleModuleRequired() = default;
     virtual ~UParticleModuleRequired() override = default;
 
     virtual void Update(FParticleEmitterInstance* Owner, int32 Offset, float DeltaTime) override;

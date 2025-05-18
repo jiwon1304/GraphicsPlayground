@@ -1,6 +1,6 @@
 #include <cstdlib>
 
-#include "ParticleEmitterInstance.h"
+#include "ParticleEmitterInstances.h"
 #include "ParticleEmitter.h"
 #include "ParticleModuleRequired.h"
 #include "ParticleLODLevel.h"
@@ -339,8 +339,13 @@ void FParticleEmitterInstance::PostSpawn(FBaseParticle* Particle, float Interpol
     Particle->OldLocation = Particle->Location;
     Particle->Location += FVector(Particle->Velocity) * SpawnTime;
 
-    // !TODO : 파티클 State 플래그 체크
+    // !TODO : 파티클 State 플래그 체크   
     //Particle->
+}
+
+bool FParticleEmitterInstance::FillReplayData(FDynamicEmitterReplayDataBase& OutData)
+{
+    return false;
 }
 
 void FParticleEmitterInstance::UpdateTransforms()
@@ -521,4 +526,23 @@ void FParticleEmitterInstance::SetupEmitterDuration()
 
         // !TODO : Range 기반 랜덤값 사용
     }
+}
+
+void FParticleSpriteEmitterInstance::InitParameters(UParticleEmitter* InTemplate, UParticleSystemComponent* InComponent)
+{
+}
+
+bool FParticleSpriteEmitterInstance::Resize(int32 NewMaxActiveParticles, bool bSetMaxActiveCount)
+{
+    return false;
+}
+
+void FParticleMeshEmitterInstance::InitParameters(UParticleEmitter* InTemplate, UParticleSystemComponent* InComponent)
+{
+
+}
+
+bool FParticleMeshEmitterInstance::Resize(int32 NewMaxActiveParticles, bool bSetMaxActiveCount)
+{
+    return false;
 }

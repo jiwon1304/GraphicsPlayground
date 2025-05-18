@@ -12,4 +12,9 @@ public:
     virtual ~UParticleModuleTypeDataBase() override = default;
 
     virtual FParticleEmitterInstance* CreateInstance(UParticleEmitter* InEmitterParent, UParticleSystemComponent* InComponent);
+
+    virtual EModuleType GetModuleType() const override
+    {
+        return EPMT_TypeData;
+    }
 };

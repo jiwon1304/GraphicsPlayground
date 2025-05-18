@@ -1,9 +1,9 @@
 #include "ParticleEmitter.h"
-#include "Particles/ParticleEmitterInstance.h"
+#include "Particles/ParticleEmitterInstances.h"
 #include "Components/ParticleSystemComponent.h"
 #include "Particles/ParticleLODLevel.h"
 #include "Particles/ParticleModule.h"
-#include "Particles/ParticleEmitterInstance.h"
+#include "Particles/ParticleEmitterInstances.h"
 #include "Particles/ParticleHelper.h"
 
 FParticleEmitterInstance* UParticleEmitter::CreateInstance(UParticleSystemComponent* InComponent)

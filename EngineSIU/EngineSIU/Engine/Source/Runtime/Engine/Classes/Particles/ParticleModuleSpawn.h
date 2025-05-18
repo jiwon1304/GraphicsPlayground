@@ -15,8 +15,14 @@ public:
         return true;
     }
 
-    float SpawnRate;
-    float SpawnScale;
+    virtual EModuleType GetModuleType() const override
+    {
+        return EPMT_Spawn;
+    }
+
+    float SpawnRate = 0.0f;
+    float SpawnScale = 0.0f;
+
     float GetSpawnRate() const
     {
         // !TODO : FRawDistribution이 없기 때문에 외부에서 작성해서 그냥 넣어주기

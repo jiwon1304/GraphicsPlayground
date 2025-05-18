@@ -6,6 +6,7 @@ class UParticleModule;
 class UParticleModuleSpawnBase;
 class UParticleModuleSpawn;
 class UParticleModuleRequired;
+class UParticleModuleTypeDataBase;
 
 class UParticleLODLevel : public UObject
 {
@@ -36,4 +37,5 @@ public:
 
     // SpawnRate/Burst 모듈. 모든 에미터에 공통으로 필요함
     class UParticleModuleSpawn* SpawnModule = nullptr;
+    class UParticleModuleTypeDataBase* TypeDataModule = nullptr;
 };

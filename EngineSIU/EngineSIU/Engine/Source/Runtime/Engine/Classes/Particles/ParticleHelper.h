@@ -64,5 +64,40 @@ enum EParticleStates
     STATE_CounterMask = (~STATE_Mask)
 };
 
+enum EDynamicEmitterType
+{
+    DET_Unknown = 0,
+    DET_Sprite,
+    DET_Mesh,
+    DET_Beam2,
+    DET_Ribbon,
+    DET_AnimTrail,
+    DET_Custom
+};
+
+struct FParticleDataContainer
+{
+    int32 MemBlockSize;
+    int32 ParticleDataNumBytes;
+    int32 ParticleIndicesNumShorts;
+    uint8* ParticleData; // this is also the memory block we allocated
+    uint16* ParticleIndices; // not allocated, this is at the end of the memory block
+
+    FParticleDataContainer()
+        : MemBlockSize(0)
+        , ParticleDataNumBytes(0)
+        , ParticleIndicesNumShorts(0)
+        , ParticleData(nullptr)
+        , ParticleIndices(nullptr)
+    {
+    }
+    ~FParticleDataContainer()
+    {
+        Free();
+    }
+    void Alloc(int32 InParticleDataNumBytes, int32 InParticleIndicesNumShorts);
+    void Free();
+};
+
 #define DECLARE_PARTICLE_PTR(Name,Address)		\
 	FBaseParticle* Name = (FBaseParticle*) (Address);

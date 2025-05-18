@@ -10,6 +10,7 @@ class UParticleModule;
 
 struct FBaseParticle;
 struct FVector;
+struct FDynamicEmitterReplayDataBase;
 
 struct FParticleEmitterInstance
 {
@@ -69,13 +70,36 @@ struct FParticleEmitterInstance
     virtual float Spawn(float DeltaTime);
     virtual void PostSpawn(FBaseParticle* Particle, float InterpolationPercentage, float SpawnTime);
 
+    // DynamicData
+    virtual bool FillReplayData(FDynamicEmitterReplayDataBase& OutData);
+
     void UpdateTransforms();
     // 월드좌표 변경 시 호출
     virtual void ApplyWorldOffset(FVector InOffset, bool bWorldShift);
-    bool Resize(int32 NewMaxActiveParticles, bool bSetMaxActiveCount);
+    virtual bool Resize(int32 NewMaxActiveParticles, bool bSetMaxActiveCount);
 
     void KillParticles();
     void KillParticle(int32 Index);
 
     void SetupEmitterDuration();
+};
+
+struct FParticleSpriteEmitterInstance : public FParticleEmitterInstance
+{
+
+    virtual void InitParameters(UParticleEmitter* InTemplate, UParticleSystemComponent* InComponent) override;
+    virtual bool Resize(int32 NewMaxActiveParticles, bool bSetMaxActiveCount = true) override;
+    // !TODO : FParticleSpriteEmitterInstance에 필요한 데이터들 추가
+    // !TODO : FParticleSpriteEmitterInstance에 필요한 함수들 추가
+};
+
+class UParticleModuleTypeDataMesh;
+struct FParticleMeshEmitterInstance : public FParticleEmitterInstance
+{
+    UParticleModuleTypeDataMesh* MeshTypeData;
+
+    virtual void InitParameters(UParticleEmitter* InTemplate, UParticleSystemComponent* InComponent) override;
+    virtual bool Resize(int32 NewMaxActiveParticles, bool bSetMaxActiveCount = true) override;
+    // !TODO : FParticleMeshEmitterInstance에 필요한 데이터들 추가
+    // !TODO : FParticleMeshEmitterInstance에 필요한 함수들 추가
 };

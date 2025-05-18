@@ -1,7 +1,7 @@
 #include "ParticleSystemComponent.h"
 #include "Particles/ParticleSystem.h"
 #include "Particles/ParticleEmitter.h"
-#include "Particles/ParticleEmitterInstance.h"
+#include "Particles/ParticleEmitterInstances.h"
 #include "Particles/ParticleLODLevel.h"
 
 void UParticleSystemComponent::InitializeSystem()

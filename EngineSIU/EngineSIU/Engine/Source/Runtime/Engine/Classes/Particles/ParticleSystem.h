@@ -13,4 +13,4 @@ public:
 
     TArray<class UParticleEmitter*> Emitters;
     void BuildEmitters();
-}
+};
