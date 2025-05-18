@@ -1690,6 +1690,7 @@
     <ClCompile Include="Engine\Source\Runtime\CoreUObject\UObject\ScriptStruct.cpp" />
     <ClCompile Include="Engine\Source\Runtime\CoreUObject\UObject\Struct.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Renderer\ParticleRenderPass.cpp" />
+    <ClCompile Include="Engine\Source\Contents\Actors\ParticleSystemActor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="EngineSIU.natvis" />
@@ -1776,6 +1777,7 @@
     <ClInclude Include="Engine\Source\Runtime\CoreUObject\UObject\ScriptStruct.h" />
     <ClInclude Include="Engine\Source\Runtime\CoreUObject\UObject\Struct.h" />
     <ClInclude Include="Engine\Source\Runtime\Renderer\ParticleRenderPass.h" />
+    <ClInclude Include="Engine\Source\Contents\Actors\ParticleSystemActor.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\CompositingShader.hlsl" />
@@ -1807,5 +1809,6 @@
     <None Include="Shaders\StaticMeshPixelShaderWorldTangent.hlsl" />
     <None Include="Shaders\SkeletalMeshPixelShader.hlsl" />
     <None Include="Shaders\SkeletalMeshVertexShader.hlsl" />
+    <None Include="Shaders\ParticleShader.hlsl" />
   </ItemGroup>
 </Project>

@@ -90,6 +90,8 @@ public:
     void GetQuadBuffer(FVertexInfo& OutVertexInfo, FIndexInfo& OutIndexInfo);
     void GetTextBuffer(const FWString& Text, FVertexInfo& OutVertexInfo, FIndexInfo& OutIndexInfo);
     void CreateQuadBuffer();
+    void CreateParticleSpriteQuad();
+
 private:
     // 16바이트 정렬
     inline UINT Align16(UINT Size) const { return (Size + 15) & ~15; }

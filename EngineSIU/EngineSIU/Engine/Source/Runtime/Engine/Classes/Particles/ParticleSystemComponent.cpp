@@ -2,6 +2,8 @@
 
 #include "ParticleEmitterInstance.h"
 #include "ParticleHelper.h"
+#include "Engine/Engine.h"
+
 UFXSystemComponent::UFXSystemComponent()
 {
 }
@@ -9,5 +11,3 @@ UFXSystemComponent::UFXSystemComponent()
 UParticleSystemComponent::UParticleSystemComponent()
 {
 }
-
-

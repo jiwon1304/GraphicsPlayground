@@ -359,6 +359,8 @@ struct FParticleSpriteVertex
     float SubImageIndex;
     /** The color of the particle. */
     FLinearColor Color;
+
+    FVector2D UV;
 };
 
 //	FParticleSpriteVertexDynamicParameter

@@ -1,37 +1,47 @@
-// ParticleShader.hlsl
-#include "ShaderRegisters.hlsl"
-
 #ifndef PARTICLE_SHADER
 #define PARTICLE_SHADER
 
-// Define 구분: 스프라이트 vs 메시 파티클
-// -D PARTICLE_SPRITE_SHADER 또는 -D PARTICLE_MESH_SHADER 정의 필요
+#include "ShaderRegisters.hlsl"
+
+// ==================== Config ====================
+
+#ifndef PARTICLE_MESH
+#define PARTICLE_SPRITE
+#endif
+
+cbuffer ParticleSettings : register(b4)
+{
+    int SubUVCols;
+    int SubUVRows;
+};
 
 // ==================== Vertex Structures ====================
 
-#ifdef PARTICLE_SPRITE_SHADER
+#if defined(PARTICLE_SPRITE)
 struct VS_INPUT
 {
-    float3 Position     : POSITION;
-    float RelativeTime  : TEXCOORD0;
-    float3 OldPosition  : TEXCOORD1;
-    float2 Size         : TEXCOORD2;
-    float Rotation      : TEXCOORD3;
+    float3 Position : POSITION;
+    float RelativeTime : TEXCOORD0;
+    float3 OldPosition : TEXCOORD1;
+    float2 Size : TEXCOORD2;
+    float Rotation : TEXCOORD3;
     float SubImageIndex : TEXCOORD4;
-    float4 Color        : COLOR0;
+    float2 UV : TEXCOORD5;
+    float4 Color : COLOR0;
 };
 #endif
 
-#ifdef PARTICLE_MESH_SHADER
+#if defined(PARTICLE_MESH)
 struct VS_INPUT
 {
-    float4 Transform0   : POSITION0;  // row0 of world transform
-    float4 Transform1   : POSITION1;
-    float4 Transform2   : POSITION2;
-    float4 Velocity     : VELOCITY;
-    float4 Color        : COLOR0;
-    float  SubUVLerp    : TEXCOORD0;
-    float  RelativeTime : TEXCOORD1;
+    float3 LocalPos       : POSITION;
+    float4 Color          : COLOR0;
+    float4 Transform0     : TEXCOORD0;
+    float4 Transform1     : TEXCOORD1;
+    float4 Transform2     : TEXCOORD2;
+    float4 Velocity       : TEXCOORD3;
+    int2   SubUVParams01  : TEXCOORD4;
+    float2 SubUVTime      : TEXCOORD5; // .x = SubUVLerp, .y = RelativeTime
 };
 #endif
 
@@ -44,43 +54,52 @@ struct VS_OUTPUT
 };
 
 // ==================== Vertex Shader ====================
-//#define PARTICLE_MESH_SHADER 1;
+
 VS_OUTPUT mainVS(VS_INPUT input)
 {
     VS_OUTPUT output;
 
-#ifdef PARTICLE_SPRITE_SHADER
-    // Billboard 회전 처리 (간단한 Z축 회전)
-    float2 quadPos = float2(0.5f, 0.5f); // TODO: 실제 Draw 시 Quad Vertex ID에 따라 좌표 세팅
+#if defined(PARTICLE_SPRITE)
+    // (1) 회전값을 기준으로 쿼드 오프셋 계산
     float s = sin(input.Rotation);
     float c = cos(input.Rotation);
-    float2 rotated = float2(
-        quadPos.x * input.Size.x * c - quadPos.y * input.Size.y * s,
-        quadPos.x * input.Size.x * s + quadPos.y * input.Size.y * c
+
+    float2 offset = float2(
+        input.UV.x * input.Size.x * c - input.UV.y * input.Size.y * s,
+        input.UV.x * input.Size.x * s + input.UV.y * input.Size.y * c
     );
 
-    float3 worldPos = input.Position + float3(rotated, 0);
-    output.WorldPos = worldPos;
+    // (2) 파티클 중심 위치를 월드 좌표로 변환
+    float3 worldCenter = mul(float4(input.Position, 1.0f), WorldMatrix).xyz;
+    float3 worldPos = worldCenter + float3(offset, 0);
+
+    // (3) 뷰/투영 변환
     float4 viewPos = mul(float4(worldPos, 1.0f), ViewMatrix);
     output.Position = mul(viewPos, ProjectionMatrix);
+    output.WorldPos = worldPos;
+
+    // (4) SubUV 계산
+    float2 frameSize = float2(1.0f / SubUVCols, 1.0f / SubUVRows);
+    float2 UVOffset = float2(fmod(input.SubImageIndex, SubUVCols), floor(input.SubImageIndex / SubUVCols)) * frameSize;
+    output.UV = UVOffset + (input.UV + 0.5f) * frameSize;
 
     output.Color = input.Color;
-    output.UV = float2(0.0f, 0.0f); // TODO: SubImage UV 계산
 #endif
 
-#ifdef PARTICLE_MESH_SHADER
-    // Mesh 파티클의 World Transform 적용
-    float3 localPos = float3(0, 0, 0); // TODO: 실제 정점 전달 필요
-    float3 worldPos = localPos.x * input.Transform0.xyz +
-                      localPos.y * input.Transform1.xyz +
-                      localPos.z * input.Transform2.xyz +
-                      input.Transform0.w * input.Transform1.w * input.Transform2.w;
+#if defined(PARTICLE_MESH)
+    // LocalPos를 Transform 행렬로 변환
+    float3 worldPos =
+        input.LocalPos.x * input.Transform0.xyz +
+        input.LocalPos.y * input.Transform1.xyz +
+        input.LocalPos.z * input.Transform2.xyz +
+        float3(input.Transform0.w, input.Transform1.w, input.Transform2.w);
 
-    output.WorldPos = worldPos;
     float4 viewPos = mul(float4(worldPos, 1.0f), ViewMatrix);
     output.Position = mul(viewPos, ProjectionMatrix);
+    output.WorldPos = worldPos;
+
     output.Color = input.Color;
-    output.UV = float2(0.0f, 0.0f); // TODO: SubUV 계산
+    output.UV = float2(0.0f, 0.0f); // TODO: SubUV 계산 추가 가능
 #endif
 
     return output;
@@ -92,6 +111,10 @@ float4 mainPS(VS_OUTPUT input) : SV_TARGET
 {
     float4 finalColor = input.Color;
     finalColor.rgb = LinearToSRGB(finalColor.rgb);
+
+    // 디버그용 컬러 제거
+    // finalColor.rgb = float3(1, 0, 0);
+
     return finalColor;
 }
 
