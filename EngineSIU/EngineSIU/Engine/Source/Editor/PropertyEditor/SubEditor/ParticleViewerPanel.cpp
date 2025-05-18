@@ -35,22 +35,40 @@ void ParticleViewerPanel::OnResize(HWND hWnd)
 }
 
 void ParticleViewerPanel::RenderPanelLayout()
-{
+{    
+    // 전체 남은 영역 크기 구하기
+    ImVec2 avail = ImGui::GetContentRegionAvail();
+    float leftW = avail.x * 0.5f;
+    float rightW = avail.x - leftW;
+    float halfH = avail.y * 0.5f;
+
+    // 왼쪽 절반 Viewport
+    ImGui::BeginChild("LeftViewport", ImVec2(leftW, avail.y), false);
     RenderViewportPanel();
+    ImGui::EndChild();
+
     ImGui::SameLine(0, 0);
+
+    // 오른쪽 그리기
+    ImGui::BeginGroup();
+
+    //오른쪽 상단 Emitter
+    ImGuiWindowFlags flags = ImGuiWindowFlags_HorizontalScrollbar;
+    ImGui::BeginChild("RightTopEmitter", ImVec2(rightW, halfH), true, flags);
     RenderEmitterPanel();
+    ImGui::EndChild();
+
+    //오른쪽 하단 Detail
+    ImGui::BeginChild("RightBottomDetail", ImVec2(rightW, avail.y - halfH), true);
     RenderDetailPanel();
-    ImGui::SameLine(0, 0);
-    RenderCurveEditorPanel();
+    ImGui::EndChild();
+
+    ImGui::EndGroup();
 }
 
 void ParticleViewerPanel::RenderViewportPanel()
 {
-    ImVec2 viewportSize = ImVec2(Width * 0.4f, Height * 0.5f);
-    ImGui::BeginChild("Viewport", viewportSize, true);
-
     ImGui::Text("Viewport");
-    ImGui::EndChild();
 }
 
 void ParticleViewerPanel::RenderEmitterPanel()
@@ -60,8 +78,6 @@ void ParticleViewerPanel::RenderEmitterPanel()
     float BlockHeight = viewportSize.y - HeightPad;
     float headerHeight = ImGui::GetTextLineHeightWithSpacing();
 
-    ImGuiWindowFlags flags = ImGuiWindowFlags_HorizontalScrollbar;
-    ImGui::BeginChild("Emitter", viewportSize, true, flags);
     InputEmitterPanel(); // Delete 키 입력 처리
 
     ImGui::Text("Emitter Editor");
@@ -126,47 +142,41 @@ void ParticleViewerPanel::RenderEmitterPanel()
         // 다음 아이템을 같은 줄에 붙이기
         if (i + 1 < EmitterList.Num())
             ImGui::SameLine(0, WidthPad);
-
     }
-
-    ImGui::EndChild();
 }
 
 void ParticleViewerPanel::RenderDetailPanel()
 {
-    ImVec2 viewportSize = ImVec2(Width * 0.4f, Height * 0.5f);
-    ImGui::BeginChild("Detail", viewportSize, true);
-
     ImGui::Text("Detail");
-    ImGui::EndChild();
 }
 
 void ParticleViewerPanel::RenderCurveEditorPanel()
 {
-    ImVec2 viewportSize = ImVec2(Width * 0.6f, Height * 0.5f);
-    ImGui::BeginChild("CurveEditor", viewportSize, true);
-
     ImGui::Text("CurveEditor");
-    ImGui::EndChild();
 }
 
 
 void ParticleViewerPanel::RenderEmitterModulePopup(int EmitterIndex)
 {
-    if (ImGui::MenuItem("이미터 이름변경")) {
-        // TODO: 이름 변경 로직
+    if (ImGui::MenuItem("이미터")) {
     }
-    if (ImGui::MenuItem("이미터 복제")) {
-        if (EmitterIndex != -1) {
-            EmitterList.Add(EmitterList[EmitterIndex]);
-        }
+    if (ImGui::MenuItem("파티클 시스템")) {
     }
-    if (ImGui::MenuItem("이미터 삭제")) {
-        if (EmitterIndex != -1) {
-            EmitterList.RemoveAt(EmitterIndex);
-            if (SelectedEmitterIndex == EmitterIndex)
-                SelectedEmitterIndex = -1;
-        }
+    if (ImGui::MenuItem("타입 데이터")) {
+    }
+    if (ImGui::MenuItem("가속")) {
+    }
+    if (ImGui::MenuItem("컬러")) {
+    }
+    if (ImGui::MenuItem("킬")) {
+    }
+    if (ImGui::MenuItem("수명")) {
+    }
+    if (ImGui::MenuItem("회전")) {
+    }
+    if (ImGui::MenuItem("스폰")) {
+    }
+    if (ImGui::MenuItem("속도")) {
     }
 }
 
