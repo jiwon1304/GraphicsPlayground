@@ -33,11 +33,6 @@ public:
         return EDynamicEmitterType::DET_Sprite;
     }
 
-    // [2] 현재 프레임의 Sprite Particle 버텍스 데이터를 반환
-    const TArray<FParticleSpriteVertex>& GetVertexData() const
-    {
-        return SpriteVertexData;
-    }
     void InitTestSpriteParticles();
 
 
@@ -48,7 +43,4 @@ private:
     UParticleSystem* Template;
     TArray<class UMaterialInterface*> Materials;
     TArray<FDynamicEmitterDataBase*> EmitterRenderData;
-
-    // Sprite용 버텍스 데이터
-    TArray<FParticleSpriteVertex> SpriteVertexData;
 };

@@ -103,22 +103,66 @@ void FParticleRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& V
 
     for (UParticleSystemComponent* Comp : ParticleComponents)
     {
-        if (!Comp) continue;
+        if (!Comp || Comp->GetEmitterRenderData().IsEmpty())
+            continue;
 
         const FString Key = Comp->GetName();
-        const TArray<FParticleSpriteVertex>& Vertices = Comp->GetVertexData();
 
-        if (Vertices.IsEmpty())
+        TArray<FParticleSpriteVertex> AllVertices;
+        for (FDynamicEmitterDataBase* BaseEmitterData : Comp->GetEmitterRenderData())
+        {
+            if (!BaseEmitterData || !BaseEmitterData->bValid)
+                continue;
+
+            const FDynamicEmitterReplayDataBase& ReplayData = BaseEmitterData->GetSource();
+            if (ReplayData.eEmitterType != EDynamicEmitterType::DET_Sprite)
+                continue;
+
+            const FDynamicSpriteEmitterReplayDataBase* SpriteData = static_cast<const FDynamicSpriteEmitterReplayDataBase*>(&ReplayData);
+
+            const uint8* ParticleData = SpriteData->DataContainer.ParticleData;
+            const uint16* ParticleIndices = SpriteData->DataContainer.ParticleIndices;
+            const int32 Stride = SpriteData->ParticleStride;
+            const int32 ActiveCount = SpriteData->ActiveParticleCount;
+
+            static const FVector2D UVs[6] = {
+                {-0.5f, -0.5f}, {0.5f, -0.5f}, {0.5f, 0.5f},
+                {-0.5f, -0.5f}, {0.5f, 0.5f}, {-0.5f, 0.5f}
+            };
+
+            for (int32 i = 0; i < ActiveCount; ++i)
+            {
+                const int32 ParticleIndex = ParticleIndices[i];
+                const FBaseParticle* P = reinterpret_cast<const FBaseParticle*>(ParticleData + ParticleIndex * Stride);
+
+                for (int j = 0; j < 6; ++j)
+                {
+                    FParticleSpriteVertex V;
+                    V.Position = P->Location;
+                    V.OldPosition = P->OldLocation;
+                    V.RelativeTime = P->RelativeTime;
+                    V.ParticleId = static_cast<float>(i);
+                    V.Size = FVector2D(P->Size.X, P->Size.Y);
+                    V.Rotation = P->Rotation;
+                    V.SubImageIndex = 0.0f;
+                    V.Color = P->Color;
+                    V.UV = UVs[j];
+                    AllVertices.Add(V);
+                }
+            }
+        }
+
+        if (AllVertices.IsEmpty())
             continue;
 
         FVertexInfo VertexInfo;
         if (!BufferManager->GetVertexBuffer(Key).VertexBuffer)
         {
-            BufferManager->CreateDynamicVertexBuffer(Key, Vertices, VertexInfo);
+            BufferManager->CreateDynamicVertexBuffer(Key, AllVertices, VertexInfo);
         }
         else
         {
-            BufferManager->UpdateDynamicVertexBuffer(Key, Vertices);
+            BufferManager->UpdateDynamicVertexBuffer(Key, AllVertices);
             VertexInfo = BufferManager->GetVertexBuffer(Key);
         }
 

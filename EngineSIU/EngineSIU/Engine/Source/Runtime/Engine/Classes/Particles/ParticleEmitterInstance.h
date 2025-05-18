@@ -7,6 +7,7 @@ class UParticleSystemComponent;
 
 class FParticleEmitterInstance
 {
+public:
     UParticleEmitter* SpriteTemplate;
 
     // Owner
