@@ -10,7 +10,6 @@ void FDXDBufferManager::Initialize(ID3D11Device* InDXDevice, ID3D11DeviceContext
     DXDevice = InDXDevice;
     DXDeviceContext = InDXDeviceContext;
     CreateQuadBuffer();
-    CreateParticleSpriteQuad();
 }
 
 void FDXDBufferManager::ReleaseBuffers()
@@ -163,29 +162,6 @@ void FDXDBufferManager::GetTextBuffer(const FWString& Text, FVertexInfo& OutVert
 {
     OutVertexInfo = GetTextVertexBuffer(Text);
     OutIndexInfo = GetTextIndexBuffer(Text);
-}
-void FDXDBufferManager::CreateParticleSpriteQuad()
-{
-    TArray<FParticleSpriteVertex> Vertices;
-    Vertices.SetNum(6);
-
-    static const FVector2D UVs[6] = {
-        {-0.5f, -0.5f}, {0.5f, -0.5f}, {0.5f, 0.5f},
-        {-0.5f, -0.5f}, {0.5f, 0.5f}, {-0.5f, 0.5f}
-    };
-
-    FVector WorldPos = FVector::ZeroVector;
-
-    for (int i = 0; i < 6; ++i)
-    {
-        Vertices[i].Position = WorldPos;
-        Vertices[i].UV = UVs[i];
-        Vertices[i].Color = FLinearColor::Red;
-        Vertices[i].Size = FVector2D(100, 100);
-    }
-
-    FVertexInfo VertexInfo;
-    CreateDynamicVertexBuffer(TEXT("ParticleQuad"), Vertices, VertexInfo);
 }
 
 
