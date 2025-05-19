@@ -252,7 +252,7 @@ float FParticleEmitterInstance::Spawn(float DeltaTime)
         UParticleModuleSpawnBase* SpawnModule = LODLevel->SpawningModules[SpawnModIndex];
         if (SpawnModule && SpawnModule->bEnabled)
         {
-            UParticleModule* OffsetModule = HighestLODLevel->SpawnModules[SpawnModIndex];
+            UParticleModule* OffsetModule = HighestLODLevel->SpawningModules[SpawnModIndex];
             uint32 Offset = GetModuleDataOffset(OffsetModule);
 
             int32 Number = 0;
@@ -294,9 +294,9 @@ float FParticleEmitterInstance::Spawn(float DeltaTime)
         NewLeftOver = NewLeftOver - Number;
 
         bool bProcessSpawn = true;
-        int32 NewCount = ActiveParticles + Number + BurstCount; // 일단 버스트 기능 없으므로 얘는 0
+        int32 NewCount = ActiveParticles + Number + BurstCount; // 일단 버스트 기능 없으므로 BurstCount는 0
 
-        if (NewCount > 1000) // 이 값은 언리얼엔인의 FXConsoleVariables::MaxCpuParticlesPerFrame
+        if (NewCount > 1000) // 이 값은 언리얼엔진의 FXConsoleVariables::MaxCpuParticlesPerFrame
         {
             int32 MaxNewParticles = 1000 - ActiveParticles;
             BurstCount = FMath::Min(MaxNewParticles, BurstCount);
@@ -307,7 +307,7 @@ float FParticleEmitterInstance::Spawn(float DeltaTime)
 
         if (NewCount > MaxActiveParticles)
         {
-            bProcessSpawn = Resize(NewCount, true);
+            bProcessSpawn = Resize(NewCount * 2, true); // 두 배로 리사이즈
         }
 
         if (bProcessSpawn)
