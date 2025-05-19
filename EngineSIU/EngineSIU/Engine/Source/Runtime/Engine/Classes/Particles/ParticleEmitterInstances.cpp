@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cstdlib>
 
 #include "ParticleEmitterInstances.h"
@@ -42,11 +43,11 @@ void FParticleEmitterInstance::Tick(float DeltaTime)
     {
         return;
     }
-    
-    bool bFirstTime = (SecondsSinceCreation > 0.0f) ? false : true;
 
-    UParticleLODLevel* CurrentLODLevel = SpriteTemplate->GetCurrentLODLevel(this);
-    float EmitterDelay = Tick_EmitterTimeSetup(DeltaTime, CurrentLODLevel);
+    bool bFirstTime = SecondsSinceCreation <= 0.0f;
+
+    UParticleLODLevel* LocalCurrentLODLevel = SpriteTemplate->GetCurrentLODLevel(this);
+    float EmitterDelay = Tick_EmitterTimeSetup(DeltaTime, LocalCurrentLODLevel);
 
     if (bEnabled)
     {
@@ -56,11 +57,11 @@ void FParticleEmitterInstance::Tick(float DeltaTime)
 
         // 		CurrentMaterial = LODLevel->RequiredModule->Material;
 
-        Tick_ModuleUpdate(DeltaTime, CurrentLODLevel);
+        Tick_ModuleUpdate(DeltaTime, LocalCurrentLODLevel);
 
-        SpawnFraction = Tick_SpawnParticles(DeltaTime, CurrentLODLevel, bFirstTime);
+        SpawnFraction = Tick_SpawnParticles(DeltaTime, LocalCurrentLODLevel, bFirstTime);
 
-        Tick_ModulePostUpdate(DeltaTime, CurrentLODLevel);
+        Tick_ModulePostUpdate(DeltaTime, LocalCurrentLODLevel);
 
         if (ActiveParticles > 0)
         {
@@ -68,7 +69,7 @@ void FParticleEmitterInstance::Tick(float DeltaTime)
             // UpdateOrbitData(DeltaTime);
             // UpdateBoundingBox(DeltaTime);
         }
-        Tick_ModuleFinalUpdate(DeltaTime, CurrentLODLevel);
+        Tick_ModuleFinalUpdate(DeltaTime, LocalCurrentLODLevel);
 
         // !TODO : 이 프로퍼티들도 어디에 쓰는 놈들인지 알아봐야 함
         EmitterTime += EmitterDelay;
@@ -105,14 +106,14 @@ float FParticleEmitterInstance::Tick_EmitterTimeSetup(float DeltaTime, UParticle
     return EmitterDelay;
 }
 
-float FParticleEmitterInstance::Tick_SpawnParticles(float DeltaTime, UParticleLODLevel* InCurrentLODlevel, bool bFirstTime)
+float FParticleEmitterInstance::Tick_SpawnParticles(float DeltaTime, UParticleLODLevel* InCurrentLODLevel, bool bFirstTime)
 {
     // !TODO : HaltSpawing관련 프로퍼티들 도입 검토
     if (EmitterTime >= 0.0f)
     {
-        if ((InCurrentLODlevel->RequiredModule->EmitterLoops == 0) ||
-            (LoopCount < InCurrentLODlevel->RequiredModule->EmitterLoops) ||
-            (SecondsSinceCreation < (EmitterDuration * InCurrentLODlevel->RequiredModule->EmitterLoops)) ||
+        if ((InCurrentLODLevel->RequiredModule->EmitterLoops == 0) ||
+            (LoopCount < InCurrentLODLevel->RequiredModule->EmitterLoops) ||
+            (SecondsSinceCreation < (EmitterDuration * InCurrentLODLevel->RequiredModule->EmitterLoops)) ||
             bFirstTime)
         {
             bFirstTime = false;
@@ -139,21 +140,21 @@ void FParticleEmitterInstance::Tick_ModuleUpdate(float DeltaTime, UParticleLODLe
     }
 }
 
-void FParticleEmitterInstance::Tick_ModulePostUpdate(float DeltaTime, UParticleLODLevel* CurrentLODLevel)
+void FParticleEmitterInstance::Tick_ModulePostUpdate(float DeltaTime, UParticleLODLevel* InCurrentLODLevel)
 {
 }
 
-void FParticleEmitterInstance::Tick_ModuleFinalUpdate(float DeltaTime, UParticleLODLevel* CurrentLODLevel)
+void FParticleEmitterInstance::Tick_ModuleFinalUpdate(float DeltaTime, UParticleLODLevel* InCurrentLODLevel)
 {
 }
 
-UParticleLODLevel* FParticleEmitterInstance::GetCurrentLODLevelChecked()
+UParticleLODLevel* FParticleEmitterInstance::GetCurrentLODLevelChecked() const
 {
     assert(SpriteTemplate);
-    UParticleLODLevel* CurrentLODLevel = SpriteTemplate->GetCurrentLODLevel(this);
-    assert(CurrentLODLevel);
-    assert(CurrentLODLevel->RequiredModule);
-    return CurrentLODLevel;
+    UParticleLODLevel* LocalCurrentLODLevel = SpriteTemplate->GetCurrentLODLevel(this);
+    assert(LocalCurrentLODLevel);
+    assert(LocalCurrentLODLevel->RequiredModule);
+    return LocalCurrentLODLevel;
 }
 
 void FParticleEmitterInstance::SpawnParticles(int32 Count, float StartTime, float Increment, const FVector& InitialLocation, const FVector& InitialVelocity)
@@ -377,7 +378,7 @@ void FParticleEmitterInstance::UpdateTransforms()
     }
 }
 
-uint32 FParticleEmitterInstance::GetModuleDataOffset(UParticleModule* Module)
+uint32 FParticleEmitterInstance::GetModuleDataOffset(UParticleModule* Module) const
 {
     assert(SpriteTemplate);
 
@@ -404,10 +405,7 @@ bool FParticleEmitterInstance::Resize(int32 NewMaxActiveParticles, bool bSetMaxA
 {
     // 0. 요청된 파티클 수가 음수일 경우 0으로 처리합니다.
     int32 EffectiveNewMaxActiveParticles = NewMaxActiveParticles;
-    if (EffectiveNewMaxActiveParticles < 0)
-    {
-        EffectiveNewMaxActiveParticles = 0;
-    }
+    EffectiveNewMaxActiveParticles = FMath::Max(EffectiveNewMaxActiveParticles, 0);
 
     if (EffectiveNewMaxActiveParticles == MaxActiveParticles)
     {
@@ -455,7 +453,7 @@ bool FParticleEmitterInstance::Resize(int32 NewMaxActiveParticles, bool bSetMaxA
     return true;
 }
 
-uint8* FParticleEmitterInstance::GetModuleInstanceData(UParticleModule* InModule)
+uint8* FParticleEmitterInstance::GetModuleInstanceData(UParticleModule* InModule) const
 {
     if (InstanceData)
     {

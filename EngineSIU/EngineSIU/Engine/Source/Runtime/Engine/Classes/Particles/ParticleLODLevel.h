@@ -8,34 +8,55 @@ class UParticleModuleSpawn;
 class UParticleModuleRequired;
 class UParticleModuleTypeDataBase;
 
+
 class UParticleLODLevel : public UObject
 {
     DECLARE_CLASS(UParticleLODLevel, UObject)
+
 public:
     UParticleLODLevel() = default;
     virtual ~UParticleLODLevel() override = default;
     void Initialize();
 
-    int32 Level = 0;
-    uint32 bEnabled : 1;
+    UPROPERTY
+    (int32, Level, = 0;)
+
+    UPROPERTY_WITH_BITFIELD(
+        BitField,
+        uint32, bEnabled, : 1;
+    )
 
     virtual void UpdateModuleLists();
     int32 GetModuleIndex(UParticleModule* InModule);
 
-    UParticleModuleRequired* RequiredModule = nullptr;
+    UPROPERTY
+    (UParticleModuleRequired*, RequiredModule, = nullptr;)
 
     // 모든 모듈들
-    TArray<UParticleModule*> Modules;
+    UPROPERTY
+    (TArray<UParticleModule*>, Modules)
 
     // 스폰된 모듈들
-    TArray<UParticleModule*> SpawnModules;
+    UPROPERTY_WITH_FLAGS(
+        Transient | DuplicateTransient,
+        TArray<UParticleModule*>, SpawnModules
+    )
 
     // 업데이트 대상  모듈들
-    TArray<UParticleModule*> UpdateModules;
+    UPROPERTY_WITH_FLAGS(
+        Transient | DuplicateTransient,
+        TArray<UParticleModule*>, UpdateModules
+    )
 
-    TArray<UParticleModuleSpawnBase*> SpawningModules;
+    UPROPERTY_WITH_FLAGS(
+        Transient | DuplicateTransient,
+        TArray<UParticleModuleSpawnBase*>, SpawningModules
+    )
 
     // SpawnRate/Burst 모듈. 모든 에미터에 공통으로 필요함
-    class UParticleModuleSpawn* SpawnModule = nullptr;
-    class UParticleModuleTypeDataBase* TypeDataModule = nullptr;
+    UPROPERTY
+    (UParticleModuleSpawn*, SpawnModule, = nullptr;)
+
+    UPROPERTY
+    (UParticleModuleTypeDataBase*, TypeDataModule, = nullptr;)
 };

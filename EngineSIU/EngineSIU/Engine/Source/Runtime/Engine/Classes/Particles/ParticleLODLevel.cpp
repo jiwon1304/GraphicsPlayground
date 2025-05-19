@@ -16,7 +16,7 @@ void UParticleLODLevel::UpdateModuleLists()
     SpawnModules.Empty();
     UpdateModules.Empty();
 
-    UParticleModule* Module = 0;
+    UParticleModule* Module = nullptr;
     int32 TypeDataModuleIndex = -1;
 
     for (int32 i = 0; i < Modules.Num(); i++)
