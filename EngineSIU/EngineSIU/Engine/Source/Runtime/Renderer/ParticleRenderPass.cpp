@@ -9,7 +9,8 @@
 #include "D3D11RHI/GraphicDevice.h"
 #include "UnrealClient.h"
 #include "RendererHelpers.h"
-#include "Particles/ParticleSystemComponent.h"
+#include "Components/ParticleSystemComponent.h"
+#include "Particles/ParticleEmitterInstances.h"
 #include "UObject/UObjectIterator.h"
 
 struct FSpriteVertex
@@ -82,7 +83,7 @@ void FParticleRenderPass::PrepareRenderArr()
     ParticleComponents.Empty();
     for (auto Comp : TObjectRange<UParticleSystemComponent>())
     {
-        if (Comp->GetWorld() == GEngine->ActiveWorld && Comp->GetEmitterType() == EDynamicEmitterType::DET_Sprite)
+        if (Comp->GetWorld() == GEngine->ActiveWorld)
         {
             ParticleComponents.Add(Comp);
         }
@@ -107,38 +108,29 @@ void FParticleRenderPass::PrepareRenderState(const std::shared_ptr<FEditorViewpo
     Graphics->DeviceContext->RSSetViewports(1, &ViewportResource->GetD3DViewport());
     Graphics->DeviceContext->OMSetRenderTargets(1, &RT->RTV, DS->DSV);
 }
-
 void FParticleRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& Viewport)
 {
     PrepareRenderState(Viewport);
 
     for (UParticleSystemComponent* Comp : ParticleComponents)
     {
-        if (!Comp || Comp->GetEmitterRenderData().IsEmpty())
+        if (!Comp || Comp->EmitterInstances.IsEmpty())
             continue;
 
         TArray<FSpriteParticleInstance> Instances;
 
-        for (FDynamicEmitterDataBase* BaseEmitterData : Comp->GetEmitterRenderData())
+        for (FParticleEmitterInstance* Emitter : Comp->EmitterInstances)
         {
-            if (!BaseEmitterData || !BaseEmitterData->bValid)
+            if (!Emitter || !Emitter->ParticleData || !Emitter->ParticleIndices)
                 continue;
 
-            const FDynamicEmitterReplayDataBase& ReplayData = BaseEmitterData->GetSource();
-            if (ReplayData.eEmitterType != EDynamicEmitterType::DET_Sprite)
-                continue;
-
-            const FDynamicSpriteEmitterReplayDataBase* SpriteData = static_cast<const FDynamicSpriteEmitterReplayDataBase*>(&ReplayData);
-
-            const uint8* ParticleData = SpriteData->DataContainer.ParticleData;
-            const uint16* ParticleIndices = SpriteData->DataContainer.ParticleIndices;
-            const int32 Stride = SpriteData->ParticleStride;
-            const int32 ActiveCount = SpriteData->ActiveParticleCount;
+            const int32 Stride = Emitter->ParticleStride;
+            const int32 ActiveCount = Emitter->ActiveParticles;
 
             for (int32 i = 0; i < ActiveCount; ++i)
             {
-                const int32 ParticleIndex = ParticleIndices[i];
-                const FBaseParticle* P = reinterpret_cast<const FBaseParticle*>(ParticleData + ParticleIndex * Stride);
+                const int32 ParticleIndex = Emitter->ParticleIndices[i];
+                const FBaseParticle* P = reinterpret_cast<const FBaseParticle*>(Emitter->ParticleData + ParticleIndex * Stride);
 
                 FSpriteParticleInstance Inst;
                 Inst.Position = P->Location;
