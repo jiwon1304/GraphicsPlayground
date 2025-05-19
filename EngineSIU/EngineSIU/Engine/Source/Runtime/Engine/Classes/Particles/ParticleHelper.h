@@ -83,9 +83,9 @@ struct FParticleDataContainer
     {
         Free();
     }
-    // !TODO 
-    void Alloc(int32 InParticleDataNumBytes, int32 InParticleIndicesNumShorts) {};
-    void Free() {};
+
+    void Alloc(int32 InParticleDataNumBytes, int32 InParticleIndicesNumShorts);
+    void Free();
 };
 
 struct FDynamicEmitterReplayDataBase

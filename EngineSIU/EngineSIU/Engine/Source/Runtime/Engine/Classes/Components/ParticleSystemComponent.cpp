@@ -1,6 +1,6 @@
 #include "ParticleSystemComponent.h"
 
-#include "ParticleHelper.h"
+#include "Particles/ParticleHelper.h"
 #include "Particles/ParticleSystem.h"
 #include "Particles/ParticleEmitter.h"
 #include "Particles/ParticleEmitterInstances.h"
