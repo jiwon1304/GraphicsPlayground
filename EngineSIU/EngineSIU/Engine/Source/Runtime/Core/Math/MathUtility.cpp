@@ -4,6 +4,31 @@
 #include "Vector.h"
 #include "Rotator.h"
 
+namespace
+{
+int32 GSRandSeed;
+}
+
+void FMath::SRandInit(int32 Seed)
+{
+    GSRandSeed = Seed;
+}
+
+int32 FMath::GetRandSeed()
+{
+    return GSRandSeed;
+}
+
+float FMath::SRand()
+{
+    GSRandSeed = (GSRandSeed * 196314165) + 907633515;
+    union { float f; int32 i; } Result;
+    union { float f; int32 i; } Temp;
+    constexpr float SRandTemp = 1.0f;
+    Temp.f = SRandTemp;
+    Result.i = (Temp.i & 0xff800000) | (GSRandSeed & 0x007fffff);
+    return Fractional(Result.f);
+}
 
 FVector FMath::VInterpNormalRotationTo(const FVector& Current, const FVector& Target, float DeltaTime, float RotationSpeedDegrees)
 {

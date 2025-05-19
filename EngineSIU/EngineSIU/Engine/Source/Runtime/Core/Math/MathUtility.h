@@ -1,4 +1,5 @@
-﻿#pragma once
+﻿// ReSharper disable CppClangTidyConcurrencyMtUnsafe
+#pragma once
 #include <cmath>
 #include <concepts>
 #include <numbers>
@@ -641,4 +642,31 @@ struct FMath
     {
         return Value - TruncToDouble(Value);
     }
+
+    // Random
+    /** 0부터 RAND_MAX(포함) 사이의 임의의 정수를 반환합니다. */
+    static FORCEINLINE int32 Rand() { return rand(); }
+
+    /** 0부터 MAX_int32(포함) 사이의 임의의 정수를 반환합니다. RAND_MAX가 15비트일 수 있으므로 여러 번 호출해서 값을 조합합니다. */
+    static FORCEINLINE int32 Rand32() { return ((rand() & 0x7fff) << 16) | ((rand() & 0x7fff) << 1) | (rand() & 0x1); }
+
+    /** 전역 난수 함수 Rand()와 FRand()에 사용할 시드를 설정합니다. */
+    static FORCEINLINE void RandInit(int32 Seed) { srand(Seed); }
+
+    /** 0부터 1(포함) 사이의 임의의 float 값을 반환합니다. */
+    static FORCEINLINE float FRand()
+    {
+        // FP32의 가수는 정밀도 손실 없이 24비트까지만 표현할 수 있습니다.
+        constexpr int32 RandMax = 0x00ffffff < RAND_MAX ? 0x00ffffff : RAND_MAX;
+        return static_cast<float>(Rand() & RandMax) / static_cast<float>(RandMax);
+    }
+
+    /** SRand() 호출에 사용할 시드를 설정합니다. */
+    static void SRandInit(int32 Seed);
+
+    /** 현재 SRand()에 사용 중인 시드를 반환합니다. */
+    static int32 GetRandSeed();
+
+    /** SRandInit()에서 설정한 시드를 사용하여 [0,1) 구간의 시드 기반 임의의 float 값을 반환합니다. */
+    static float SRand();
 };
