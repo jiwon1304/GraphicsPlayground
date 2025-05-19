@@ -83,6 +83,7 @@ struct FParticleDataContainer
     {
         Free();
     }
+    // !TODO 
     void Alloc(int32 InParticleDataNumBytes, int32 InParticleIndicesNumShorts) {};
     void Free() {};
 };
@@ -127,8 +128,10 @@ struct FDynamicSpriteEmitterDataBase : public FDynamicEmitterDataBase
     void SortSpriteParticles() {};
 };
 
+class UMaterial;
 struct FDynamicSpriteEmitterReplayDataBase : public FDynamicEmitterReplayDataBase
 {
+    UMaterial* Material = nullptr;
 };
 
 struct FDynamicSpriteEmitterReplayData : public FDynamicSpriteEmitterReplayDataBase
@@ -173,3 +176,10 @@ struct FDynamicMeshEmitterData : public FDynamicSpriteEmitterDataBase
 
 #define DECLARE_PARTICLE_PTR(Name,Address)		\
 	FBaseParticle* Name = (FBaseParticle*) (Address);
+
+#define SPAWN_INIT																										\
+	assert((Owner != NULL) && (Owner->Component != NULL));																\
+	const int32		ActiveParticles	= Owner->ActiveParticles;															\
+	const uint32	ParticleStride	= Owner->ParticleStride;															\
+	uint32			CurrentOffset	= Offset;																			\
+	FBaseParticle&	Particle		= *(ParticleBase);
