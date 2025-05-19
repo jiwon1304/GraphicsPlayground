@@ -626,4 +626,19 @@ struct FMath
     {
         return Value - FloorToDouble(Value);
     }
+
+    /**
+     * float의 부호가 있는 소수 부분을 반환합니다.
+     * @param Value 변환할 부동소수점 값
+     * @return 입력이 0 이상일 때 0 이상 1 미만의 float, 음수일 때 -1 이상 0 미만의 float을 반환합니다.
+     */
+    static FORCEINLINE float Fractional(float Value)
+    {
+        return Value - TruncToFloat(Value);
+    }
+
+    static FORCEINLINE double Fractional(double Value)
+    {
+        return Value - TruncToDouble(Value);
+    }
 };
