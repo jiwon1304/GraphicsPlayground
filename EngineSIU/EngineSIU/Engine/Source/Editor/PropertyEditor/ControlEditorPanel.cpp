@@ -48,6 +48,8 @@
 
 #include "Contents/Actors/ParticleSystemActor.h"
 #include "Engine/Classes/Engine/AssetManager.h"
+#include "Components/ParticleSystemComponent.h"
+#include "Particles/ParticleSystem.h"
 
 ControlEditorPanel::ControlEditorPanel()
 {
@@ -356,6 +358,8 @@ void ControlEditorPanel::CreateModifyButton(const ImVec2 ButtonSize, ImFont* Ico
             {.Label = "PARTICLE_SPRITE", .OBJ = OBJ_PARTICLE_SPRITE},
             {.Label = "PARTICLE_MESH", .OBJ = OBJ_PARTICLE_MESH},
             {.Label = "SequencerPlayer", .OBJ = OBJ_SEQUENCERPLAYER},
+            {.Label = "ParticleSystem", .OBJ = OBJ_PARTICLESYSTEM},
+
         };
 
         for (const auto& primitive : primitives)
@@ -512,6 +516,17 @@ void ControlEditorPanel::CreateModifyButton(const ImVec2 ButtonSize, ImFont* Ico
                 {
                     SpawnedActor = World->SpawnActor<ASequencerPlayer>();
                     SpawnedActor->SetActorLabel(TEXT("OBJ_SEQUENCERPLAYER"));
+                    break;
+                }
+                case OBJ_PARTICLESYSTEM:
+                {
+                    SpawnedActor = World->SpawnActor<AActor>();
+                    SpawnedActor->SetActorLabel(TEXT("OBJ_PARTICLE"));
+                    UParticleSystemComponent* ParticleComponent = SpawnedActor->AddComponent<UParticleSystemComponent>();
+                    UParticleSystem* Template = FObjectFactory::ConstructObject<UParticleSystem>(nullptr);
+                    ParticleComponent->SetTemplate(Template);
+                    ParticleComponent->InitializeSystem();
+                    break;
                 }
                 case OBJ_CAMERA:
                 case OBJ_PLAYER:
