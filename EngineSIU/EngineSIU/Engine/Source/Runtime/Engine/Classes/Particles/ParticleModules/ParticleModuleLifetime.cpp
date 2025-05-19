@@ -4,7 +4,7 @@
 
 void UParticleModuleLifetime::Spawn(FParticleEmitterInstance* Owner, int32 Offset, float SpawnTime, FBaseParticle* ParticleBase)
 {
-    FBaseParticle& Particle = *(FBaseParticle*)ParticleBase;
+    SPAWN_INIT;
 
     if (Particle.OneOverMaxLifetime > 0.f)
     {
@@ -16,4 +16,5 @@ void UParticleModuleLifetime::Spawn(FParticleEmitterInstance* Owner, int32 Offse
     }
 
     Particle.RelativeTime = Particle.RelativeTime > 1.0f ? Particle.RelativeTime : SpawnTime * Particle.OneOverMaxLifetime;
+    UE_LOG(ELogLevel::Warning, "OneOverMaxLifeTime : %f, RelativeTime : %f", Particle.OneOverMaxLifetime, Particle.RelativeTime);
 }

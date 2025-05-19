@@ -5,6 +5,7 @@
 #include "Particles/ParticleLODLevel.h"
 #include "Particles/ParticleModules/ParticleModule.h"
 #include "Particles/ParticleModules/ParticleModuleTypeDataBase.h"
+#include "UObject/ObjectFactory.h"
 
 FParticleEmitterInstance* UParticleEmitter::CreateInstance(UParticleSystemComponent* InComponent)
 {

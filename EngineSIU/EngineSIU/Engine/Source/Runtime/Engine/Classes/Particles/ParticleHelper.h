@@ -174,6 +174,9 @@ struct FDynamicMeshEmitterData : public FDynamicSpriteEmitterDataBase
     FDynamicMeshEmitterReplayData Source;
 };
 
+#define DECLARE_PARTICLE(Name,Address)		\
+	FBaseParticle& Name = *((FBaseParticle*) (Address));
+
 #define DECLARE_PARTICLE_PTR(Name,Address)		\
 	FBaseParticle* Name = (FBaseParticle*) (Address);
 
@@ -183,3 +186,11 @@ struct FDynamicMeshEmitterData : public FDynamicSpriteEmitterDataBase
 	const uint32	ParticleStride	= Owner->ParticleStride;															\
 	uint32			CurrentOffset	= Offset;																			\
 	FBaseParticle&	Particle		= *(ParticleBase);
+
+template <typename T>
+FORCEINLINE constexpr T Align(T Val, uint64 Alignment)
+{
+    //static_assert(TIsIntegral<T>::Value || TIsPointer<T>::Value, "Align expects an integer or pointer type");
+
+    return (T)(((uint64)Val + Alignment - 1) & ~(Alignment - 1));
+}

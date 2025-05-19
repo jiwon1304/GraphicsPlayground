@@ -29,12 +29,12 @@ public:
 
     UPROPERTY(
         EditAnywhere,
-        float, SpawnRate, = 0.0f;
+        float, SpawnRate, = 20.f;
     )
 
     UPROPERTY(
         EditAnywhere,
-        float, SpawnScale, = 0.0f;
+        float, SpawnScale, = 1.0f;
     )
 
     float GetSpawnRate() const

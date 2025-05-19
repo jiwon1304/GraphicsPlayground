@@ -35,6 +35,12 @@ void FParticleEmitterInstance::Init()
     ParticleSize = SpriteTemplate->ParticleSize;
     
     PayloadOffset = ParticleSize;
+
+    ParticleSize = Align(ParticleSize, 16);
+
+    ParticleStride = ParticleSize;
+
+    Resize(FMath::Min(SpriteTemplate->InitialAllocationCount, 100), true);
 }
 
 void FParticleEmitterInstance::Tick(float DeltaTime)
@@ -54,7 +60,7 @@ void FParticleEmitterInstance::Tick(float DeltaTime)
 
         KillParticles();
 
-        // ResetParticleParameters(); 아직 뭐하는 앤지 잘 모르겠음
+        ResetParticleParameters(DeltaTime);
 
         // 		CurrentMaterial = LODLevel->RequiredModule->Material;
 
@@ -76,6 +82,21 @@ void FParticleEmitterInstance::Tick(float DeltaTime)
         EmitterTime += EmitterDelay;
 
         LastDeltaTime = DeltaTime;
+    }
+}
+
+void FParticleEmitterInstance::ResetParticleParameters(float DeltaTime)
+{
+    for (int32 ParticleIndex = 0; ParticleIndex < ActiveParticles; ParticleIndex++)
+    {
+        DECLARE_PARTICLE(Particle, ParticleData + ParticleStride * ParticleIndices[ParticleIndex]);
+        Particle.Velocity = Particle.BaseVelocity;
+        //Particle.Size = GetParticleBaseSize(Particle);
+        Particle.RotationRate = Particle.BaseRotationRate;
+        Particle.Color = Particle.BaseColor;
+
+        Particle.RelativeTime += /*bSkipUpdate ? 0.0f : */Particle.OneOverMaxLifetime * DeltaTime;
+
     }
 }
 
@@ -183,15 +204,16 @@ void FParticleEmitterInstance::SpawnParticles(int32 Count, float StartTime, floa
         }
 
         uint16 NextFreeIndex = ParticleIndices[ActiveParticles];
-        if (NextFreeIndex < MaxActiveParticles)
+        if (NextFreeIndex >= MaxActiveParticles)
         {
             UE_LOG(ELogLevel::Error, TEXT("NextFreeIndex is out of range"));
             // !TODO : ParticleIndice 고치는 로직 추가
-            continue;
+            //continue;
         }
 
         DECLARE_PARTICLE_PTR(Particle, ParticleData + ParticleStride * NextFreeIndex);
         const uint32 CurrentParticleIndex = ActiveParticles++;
+        UE_LOG(ELogLevel::Display, "Current Active Particles : %d", ActiveParticles);
 
         PreSpawn(Particle, InitialLocation, InitialVelocity);
         for (int32 ModuleIndex = 0; ModuleIndex < LODLevel->SpawnModules.Num(); ModuleIndex++)
@@ -307,7 +329,7 @@ float FParticleEmitterInstance::Spawn(float DeltaTime)
 
         if (NewCount > MaxActiveParticles)
         {
-            bProcessSpawn = Resize(NewCount * 2, true); // 두 배로 리사이즈
+            bProcessSpawn = Resize(NewCount + FMath::TruncToInt(FMath::Sqrt(FMath::Sqrt((float)NewCount)) + 1), true);
         }
 
         if (bProcessSpawn)
