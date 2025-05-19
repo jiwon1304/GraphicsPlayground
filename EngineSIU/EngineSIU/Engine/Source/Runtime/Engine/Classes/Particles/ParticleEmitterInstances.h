@@ -12,6 +12,8 @@ class UParticleModuleTypeDataMesh;
 struct FBaseParticle;
 struct FVector;
 struct FDynamicEmitterReplayDataBase;
+struct FDynamicEmitterDataBase;
+
 
 struct FParticleEmitterInstance
 {
@@ -77,6 +79,7 @@ struct FParticleEmitterInstance
     virtual void PostSpawn(FBaseParticle* Particle, float InterpolationPercentage, float SpawnTime);
 
     // DynamicData
+    virtual FDynamicEmitterDataBase* GetDynamicData();
     virtual bool FillReplayData(FDynamicEmitterReplayDataBase& OutData);
 
     void UpdateTransforms();
@@ -96,6 +99,8 @@ struct FParticleSpriteEmitterInstance : public FParticleEmitterInstance
 
     virtual void InitParameters(UParticleEmitter* InTemplate, UParticleSystemComponent* InComponent) override;
     virtual bool Resize(int32 NewMaxActiveParticles, bool bSetMaxActiveCount = true) override;
+
+    virtual FDynamicEmitterDataBase* GetDynamicData() override;
     // !TODO : FParticleSpriteEmitterInstance에 필요한 데이터들 추가
     // !TODO : FParticleSpriteEmitterInstance에 필요한 함수들 추가
 };

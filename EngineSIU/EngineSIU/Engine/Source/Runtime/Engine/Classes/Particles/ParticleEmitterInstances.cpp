@@ -174,7 +174,7 @@ void FParticleEmitterInstance::SpawnParticles(int32 Count, float StartTime, floa
     const float InterpIncrement = (Count > 0 && Increment > 0.0f) ? (1.0f / (float)Count) : 0.0f;
     for (int32 i = 0; i < Count; i++)
     {
-        if (!ParticleData || ParticleIndices)
+        if (!ParticleData || !ParticleIndices)
         {
             UE_LOG(ELogLevel::Error, TEXT("ParticleData is null or ParticleIndices is null"));
             continue;
@@ -435,25 +435,22 @@ bool FParticleEmitterInstance::Resize(int32 NewMaxActiveParticles, bool bSetMaxA
         return true; // 메모리 해제는 성공으로 간주합니다.
     }
 
-    uint8* TempData = static_cast<uint8*>(realloc(ParticleData, NewTotalSizeInBytes));
+    // 파티클 데이터 realloc
+    ParticleData = (uint8*)realloc(ParticleData, ParticleStride * NewMaxActiveParticles);
+    assert(ParticleData);
 
-    if (TempData == nullptr)
+    if (ParticleIndices == nullptr)
     {
-        // realloc 실패 (요청된 크기가 0보다 큰 경우).
-        // 기존 ParticleData 포인터는 (원래 nullptr이 아니었다면) 여전히 유효하며 내용은 변경되지 않습니다.
-        // MaxActiveParticles도 변경하지 않아 실패한 요청을 반영하지 않습니다.
-        return false;
+        MaxActiveParticles = 0;
+    }
+    ParticleIndices = (uint16*)realloc(ParticleIndices, sizeof(uint16) * (NewMaxActiveParticles + 1));
+
+    for (int32 i = MaxActiveParticles; i < NewMaxActiveParticles; i++)
+    {
+        ParticleIndices[i] = i;
     }
 
-    // realloc 성공.
-    ParticleData = TempData;
-    if (bSetMaxActiveCount)
-    {
-        MaxActiveParticles = EffectiveNewMaxActiveParticles;
-    }
-    // bSetMaxActiveCount가 false이면, 실제 버퍼 용량이 변경되었음에도 불구하고
-    // MaxActiveParticles는 이전 값을 유지합니다. 이는 bSetMaxActiveCount 플래그의
-    // 의도된 동작일 수 있습니다.
+    MaxActiveParticles = NewMaxActiveParticles;
 
     return true;
 }
@@ -542,6 +539,11 @@ void FParticleEmitterInstance::SetupEmitterDuration()
     }
 }
 
+FDynamicEmitterDataBase* FParticleEmitterInstance::GetDynamicData()
+{
+    return nullptr;
+}
+
 void FParticleSpriteEmitterInstance::InitParameters(UParticleEmitter* InTemplate, UParticleSystemComponent* InComponent)
 {
 }
@@ -549,6 +551,23 @@ void FParticleSpriteEmitterInstance::InitParameters(UParticleEmitter* InTemplate
 bool FParticleSpriteEmitterInstance::Resize(int32 NewMaxActiveParticles, bool bSetMaxActiveCount)
 {
     return false;
+}
+
+FDynamicEmitterDataBase* FParticleSpriteEmitterInstance::GetDynamicData()
+{
+
+    UParticleLODLevel* LODLevel = SpriteTemplate->GetCurrentLODLevel(this);
+
+    FDynamicSpriteEmitterData* NewEmitterData = new FDynamicSpriteEmitterData(LODLevel->RequiredModule);
+    if (!FillReplayData(NewEmitterData->Source))
+    {
+        delete NewEmitterData;
+        return nullptr;
+    }
+
+    NewEmitterData->Init();
+
+    return NewEmitterData;
 }
 
 void FParticleMeshEmitterInstance::InitParameters(UParticleEmitter* InTemplate, UParticleSystemComponent* InComponent)

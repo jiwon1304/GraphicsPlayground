@@ -85,7 +85,6 @@ void UParticleEmitter::CacheEmitterModuleInfo()
                         UParticleLODLevel* CurLODLevel = LODLevels[LODIdx];
                         ModuleInstanceOffsetMap.Add(CurLODLevel->Modules[ModuleIdx], ReqInstanceBytes);
                     }
-                    ReqInstanceBytes += TempInstanceBytes;
                 }
             }
         }
