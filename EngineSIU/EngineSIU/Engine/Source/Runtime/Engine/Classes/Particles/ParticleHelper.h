@@ -113,7 +113,7 @@ struct FParticleDataContainer
 
 #define BEGIN_UPDATE_LOOP \
     { \
-        check((Owner != NULL) && (Owner->Component != NULL)); \
+        assert((Owner != NULL) && (Owner->Component != NULL)); \
         int32& ActiveParticles = Owner->ActiveParticles; \
         uint32 CurrentOffset = Offset; \
         const uint8* ParticleData = Owner->ParticleData; \
@@ -137,7 +137,7 @@ struct FParticleDataContainer
         continue;
 
 #define SPAWN_INIT \
-    check((Owner != NULL) && (Owner->Component != NULL)); \
+    assert((Owner != NULL) && (Owner->Component != NULL)); \
     const int32 ActiveParticles = Owner->ActiveParticles; \
     const uint32 ParticleStride = Owner->ParticleStride; \
     uint32 CurrentOffset = Offset; \
