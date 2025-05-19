@@ -45,6 +45,9 @@ private:
     ImVec4 EmitterTextColor = ImVec4(0.7059f, 0.7059f, 0.7059f, 1.0f); // Emitter 블록 텍스트 색상
     ImVec4 SelectedEmitterTextColor = ImVec4(1.0f, 0.39216f, 0.0f, 1.0f); // 선택된 Emitter 블록 텍스트 색상
 private:
+    int SelectedModuleIndex = -1;
+
+private:
 
     float Width = 800.0f; 
     float Height = 600.0f;
@@ -55,7 +58,7 @@ private:
 private:
     UParticleSystem* ParticleSystem = nullptr;
 private:
-    int CurrentIndex = 0;
+    int CurrentParticleSystemIndex = 0;
     TArray<FName> ParticleNames;
 };
 
