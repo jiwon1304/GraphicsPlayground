@@ -1,6 +1,7 @@
 #pragma once
 #include "Define.h"
 
+class UParticleModuleRequired;
 struct FParticleEmitterInstance;
 struct FParticleMeshEmitterInstance;
 struct FBaseParticle
@@ -181,8 +182,8 @@ struct FDynamicEmitterReplayDataBase
 
 struct FDynamicSpriteEmitterReplayDataBase : public FDynamicEmitterReplayDataBase
 {
-    FDynamicSpriteEmitterReplayDataBase();
-    ~FDynamicSpriteEmitterReplayDataBase();
+    FDynamicSpriteEmitterReplayDataBase()=default;
+    ~FDynamicSpriteEmitterReplayDataBase()=default;
 
     class UMaterialInterface* MaterialInterface;
     struct FParticleRequiredModule* RequiredModule;
@@ -194,7 +195,11 @@ struct FDynamicSpriteEmitterReplayDataBase : public FDynamicEmitterReplayDataBas
 
 struct FDynamicEmitterDataBase
 {
-    FDynamicEmitterDataBase(const class UParticleModuleRequired* RequiredModule);
+    FDynamicEmitterDataBase(const UParticleModuleRequired* RequiredModule)
+        : bSelected(false), bValid(false), EmitterIndex(0)
+    {
+        // 추가 초기화 필요 시 여기에
+    }
 
     virtual ~FDynamicEmitterDataBase()
     {
@@ -359,6 +364,8 @@ struct FParticleSpriteVertex
     float SubImageIndex;
     /** The color of the particle. */
     FLinearColor Color;
+
+    FVector2D UV;
 };
 
 //	FParticleSpriteVertexDynamicParameter
