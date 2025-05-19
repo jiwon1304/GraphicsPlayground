@@ -4,9 +4,11 @@
 class UParticleEmitter;
 class UParticleSystemComponent;
 
-class UParticleModuleTypeDataBase : public UParticleModule 
+
+class UParticleModuleTypeDataBase : public UParticleModule
 {
     DECLARE_CLASS(UParticleModuleTypeDataBase, UParticleModule)
+
 public:
     UParticleModuleTypeDataBase() = default;
     virtual ~UParticleModuleTypeDataBase() override = default;
