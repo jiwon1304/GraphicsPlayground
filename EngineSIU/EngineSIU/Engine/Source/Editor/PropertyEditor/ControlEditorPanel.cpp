@@ -54,6 +54,7 @@
 #include <Particles/ParticleModules/ParticleModuleLifetime.h>
 #include "Particles/ParticleLODLevel.h"
 
+#include "SubWindow/ParticleSubEngine.h"
 ControlEditorPanel::ControlEditorPanel()
 {
     SetSupportedWorldTypes(EWorldTypeBitFlag::Editor | EWorldTypeBitFlag::PIE | EWorldTypeBitFlag::SkeletalViewer);
@@ -107,6 +108,15 @@ void ControlEditorPanel::Render()
             if (ImGui::MenuItem("ImGui Demo"))
             {
                 bShowImGuiDemoWindow = true;
+            }
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("View"))
+        {
+            if (ImGui::MenuItem("Particle Viewer"))
+            {
+                GEngineLoop.ParticleSubEngine->RequestShowWindow(true);
             }
             ImGui::EndMenu();
         }

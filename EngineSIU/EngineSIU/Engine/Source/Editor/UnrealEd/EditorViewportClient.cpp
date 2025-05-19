@@ -37,7 +37,7 @@ void FEditorViewportClient::Draw(FViewport* Viewport)
 {
 }
 
-void FEditorViewportClient::Initialize(EViewScreenLocation InViewportIndex, const FRect& InRect)
+void FEditorViewportClient::Initialize(EViewScreenLocation InViewportIndex, const FRect& InRect, UEngine* InEngine)
 {
     ViewportIndex = static_cast<int32>(InViewportIndex);
     
@@ -47,7 +47,8 @@ void FEditorViewportClient::Initialize(EViewScreenLocation InViewportIndex, cons
     Viewport = new FViewport(InViewportIndex);
     Viewport->Initialize(InRect);
 
-    GizmoActor = FObjectFactory::ConstructObject<ATransformGizmo>(GEngine); // TODO : EditorEngine 외의 다른 Engine 형태가 추가되면 GEngine 대신 다른 방식으로 넣어주어야 함.
+    GizmoActor = FObjectFactory::ConstructObject<ATransformGizmo>(InEngine); // TODO : EditorEngine 외의 다른 Engine 형태가 추가되면 GEngine 대신 다른 방식으로 넣어주어야 함.
+    Engine = InEngine;
     GizmoActor->Initialize(this);
 }
 
@@ -504,7 +505,7 @@ void FEditorViewportClient::PivotMoveUp(const float InValue) const
 
 void FEditorViewportClient::UpdateViewMatrix()
 {
-    if (GEngine && GEngine->ActiveWorld->WorldType == EWorldType::PIE)
+    if (GEngine && GEngine->ActiveWorld->WorldType == EWorldType::PIE && Engine==GEngine)
     {
         FMinimalViewInfo ViewInfo;
         GetViewInfo(ViewInfo);
@@ -550,7 +551,7 @@ void FEditorViewportClient::UpdateProjectionMatrix()
 {
     AspectRatio = GetViewport()->GetD3DViewport().Width / GetViewport()->GetD3DViewport().Height;
 
-    if (GEngine && GEngine->ActiveWorld->WorldType == EWorldType::PIE)
+    if (GEngine && GEngine->ActiveWorld->WorldType == EWorldType::PIE && Engine==GEngine)
     {
         FMinimalViewInfo ViewInfo;
         GetViewInfo(ViewInfo);
@@ -801,4 +802,11 @@ FVector FViewportCamera::GetUpVector() const
     FVector Up = FVector(0.f, 0.f, 1.0f);
     Up = JungleMath::FVectorRotate(Up, ViewRotation);
     return Up;
+}
+
+void FEditorViewportClient::CameraReset()
+{
+    PerspectiveCamera.SetLocation(FVector(0.0f, 1.0f, 1.0f));
+    PerspectiveCamera.SetRotation(FVector(0, 0, -90));
+    CameraSpeedSetting = 1.0f;
 }

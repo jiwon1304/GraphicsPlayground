@@ -6,7 +6,7 @@
 class UAnimationAsset;
 class USkeleton;
 class USkeletalMesh;
-
+class UParticleSystem;
 enum class EAssetType : uint8
 {
     StaticMesh,
@@ -78,12 +78,14 @@ public:
 
     const TMap<FName, FAssetInfo>& GetAssetRegistry();
     TMap<FName, FAssetInfo>& GetAssetRegistryRef();
+    TMap<FName, UParticleSystem*>& GetParticleSystemMap() { return ParticleSystemMap; }
 
     USkeletalMesh* GetSkeletalMesh(const FName& Name);
     UStaticMesh* GetStaticMesh(const FName& Name);
     USkeleton* GetSkeleton(const FName& Name);
     UMaterial* GetMaterial(const FName& Name);
     UAnimationAsset* GetAnimation(const FName& Name);
+    UParticleSystem* GetParticleSystem(const FName& Name);
 
     void AddAssetInfo(const FAssetInfo& Info);
     void AddSkeleton(const FName& Key, USkeleton* Skeleton);
@@ -91,7 +93,7 @@ public:
     void AddMaterial(const FName& Key, UMaterial* Material);
     void AddStaticMesh(const FName& Key, UStaticMesh* StaticMesh);
     void AddAnimation(const FName& Key, UAnimationAsset* Animation);
-
+    void AddParticleSystem(const FName& Key, UParticleSystem* ParticleSystem);
 private:
     double FbxLoadTime = 0.0;
     double BinaryLoadTime = 0.0;
@@ -107,6 +109,7 @@ private:
     inline static TMap<FName, UStaticMesh*> StaticMeshMap;
     inline static TMap<FName, UMaterial*> MaterialMap;
     inline static TMap<FName, UAnimationAsset*> AnimationMap;
+    inline static TMap<FName, UParticleSystem*> ParticleSystemMap;
 
     bool LoadFbxBinary(const FString& FilePath, FAssetLoadResult& Result, const FString& BaseName, const FString& FolderPath);
 
