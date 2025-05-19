@@ -7,21 +7,27 @@ class UParticleSystemComponent;
 class UParticleModule;
 struct FParticleEmitterInstance;
 
+
 class UParticleEmitter : public UObject
 {
     DECLARE_CLASS(UParticleEmitter, UObject)
+
 public:
     UParticleEmitter() = default;
-    virtual ~UParticleEmitter() = default;
-    
+    virtual ~UParticleEmitter() override = default;
+
     virtual FParticleEmitterInstance* CreateInstance(UParticleSystemComponent* InComponent);
-    UParticleLODLevel* GetCurrentLODLevel(FParticleEmitterInstance* Instance);
+    UParticleLODLevel* GetCurrentLODLevel(const FParticleEmitterInstance* Instance) const;
 
     void Build();
     void CacheEmitterModuleInfo();
     UParticleLODLevel* GetLODLevel(int32 LODLevel);
 
-    FName EmitterName;
+    UPROPERTY_WITH_FLAGS(
+        EditAnywhere,
+        FName, EmitterName
+    )
+
     int32 ParticleSize = 0;
     int32 TypeDataOffset = 0;
 
@@ -29,7 +35,7 @@ public:
     int32 ReqInstanceBytes = 0;
 
     TArray<UParticleLODLevel*> LODLevels;
-    
+
     TMap<UParticleModule*, uint32> ModuleOffsetMap;
     TMap<UParticleModule*, uint32> ModuleInstanceOffsetMap;
 

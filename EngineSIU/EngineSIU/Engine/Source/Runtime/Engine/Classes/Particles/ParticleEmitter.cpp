@@ -1,10 +1,9 @@
 #include "ParticleEmitter.h"
-#include "Particles/ParticleEmitterInstances.h"
 #include "Components/ParticleSystemComponent.h"
-#include "Particles/ParticleLODLevel.h"
-#include "Particles/ParticleModules/ParticleModule.h"
 #include "Particles/ParticleEmitterInstances.h"
 #include "Particles/ParticleHelper.h"
+#include "Particles/ParticleLODLevel.h"
+#include "Particles/ParticleModules/ParticleModule.h"
 #include "Particles/ParticleModules/ParticleModuleTypeDataBase.h"
 
 FParticleEmitterInstance* UParticleEmitter::CreateInstance(UParticleSystemComponent* InComponent)
@@ -13,7 +12,7 @@ FParticleEmitterInstance* UParticleEmitter::CreateInstance(UParticleSystemCompon
     return nullptr;
 }
 
-UParticleLODLevel* UParticleEmitter::GetCurrentLODLevel(FParticleEmitterInstance* Instance)
+UParticleLODLevel* UParticleEmitter::GetCurrentLODLevel(const FParticleEmitterInstance* Instance) const
 {
     // !NOTE : 지금은 LOD레벨 1개
     return Instance->CurrentLODLevel;
@@ -43,10 +42,10 @@ void UParticleEmitter::CacheEmitterModuleInfo()
         if (ReqBytes)
         {
             TypeDataOffset = ParticleSize;
-            ParticleSize += ReqBytes;
+            ParticleSize += static_cast<int32>(ReqBytes);
         }
 
-        int32 TempInstanceBytes = HighTypeData->RequiredBytesPerInstance();
+        int32 TempInstanceBytes = static_cast<int32>(HighTypeData->RequiredBytesPerInstance());
         if (TempInstanceBytes)
         {
             TypeDataInstanceOffset = ReqInstanceBytes;
@@ -64,14 +63,14 @@ void UParticleEmitter::CacheEmitterModuleInfo()
 
         if (ParticleModule->IsA<UParticleModuleTypeDataBase>() == false) // 타입관련 모듈 아니라면(위에서 했음)
         {
-            int32 ReqBytes = ParticleModule->RequiredBytes(HighTypeData);
+            int32 ReqBytes = static_cast<int32>(ParticleModule->RequiredBytes(HighTypeData));
             if (ReqBytes)
             {
                 ModuleOffsetMap.Add(ParticleModule, ParticleSize);
                 // !TODO : 모듈들의 클래스 정보에 따라 따로 저장할 오프셋들을 지정, 저장
                 ParticleSize += ReqBytes;
 
-                int32 TempInstanceBytes = ParticleModule->RequiredBytesPerInstance();
+                int32 TempInstanceBytes = static_cast<int32>(ParticleModule->RequiredBytesPerInstance());
                 if (TempInstanceBytes)
                 {
                     ModuleInstanceOffsetMap.Add(ParticleModule, ReqInstanceBytes);
@@ -85,7 +84,7 @@ void UParticleEmitter::CacheEmitterModuleInfo()
                         UParticleLODLevel* CurLODLevel = LODLevels[LODIdx];
                         ModuleInstanceOffsetMap.Add(CurLODLevel->Modules[ModuleIdx], ReqInstanceBytes);
                     }
-                    ReqInstanceBytes += TempInstanceBytes;
+                    // ReqInstanceBytes += TempInstanceBytes; // TODO: 한번 확인해야 함
                 }
             }
         }
