@@ -15,6 +15,9 @@ struct FDynamicEmitterReplayDataBase;
 
 struct FParticleEmitterInstance
 {
+    FParticleEmitterInstance() = default;
+    virtual ~FParticleEmitterInstance() = default;
+
     // 에디터에서 세팅한 ParticleEmitter 그 자체
     UParticleEmitter* SpriteTemplate = nullptr;
     UParticleSystemComponent* Component = nullptr;
