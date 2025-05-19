@@ -1,4 +1,4 @@
-// ParticleRenderPass.cpp
+// ParticleRenderPass.cpp (Instancing Version)
 #include "ParticleRenderPass.h"
 
 #include "EngineLoop.h"
@@ -11,6 +11,23 @@
 #include "RendererHelpers.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "UObject/UObjectIterator.h"
+
+struct FSpriteVertex
+{
+    FVector2D UV;
+};
+
+struct FSpriteParticleInstance
+{
+    FVector Position;
+    float RelativeTime;
+    FVector OldPosition;
+    float ParticleId;
+    FVector2D Size;
+    float Rotation;
+    float SubImageIndex;
+    FLinearColor Color;
+};
 
 FParticleRenderPass::FParticleRenderPass()
     : BufferManager(nullptr), Graphics(nullptr), ShaderManager(nullptr)
@@ -29,46 +46,38 @@ void FParticleRenderPass::Initialize(FDXDBufferManager* InBufferManager, FGraphi
     ShaderManager = InShaderManager;
 
     CreateShader();
+
+    // Create static quad vertex buffer (6 vertices)
+    TArray<FSpriteVertex> QuadVertices = {
+        { {-0.5f, -0.5f} }, { {0.5f, -0.5f} }, { {0.5f, 0.5f} },
+        { {-0.5f, -0.5f} }, { {0.5f, 0.5f} }, { {-0.5f, 0.5f} },
+    };
+    BufferManager->CreateVertexBuffer(TEXT("QuadSpriteVertex"), QuadVertices, QuadVertexInfo);
 }
 
 void FParticleRenderPass::CreateShader()
 {
-    D3D11_INPUT_ELEMENT_DESC ParticleInputLayout[] = {
-        { "POSITION",       0, DXGI_FORMAT_R32G32B32_FLOAT,     0, 0,   D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "TEXCOORD",       0, DXGI_FORMAT_R32_FLOAT,           0, 12,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "TEXCOORD",       1, DXGI_FORMAT_R32G32B32_FLOAT,     0, 16,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "TEXCOORD",       2, DXGI_FORMAT_R32_FLOAT,           0, 28,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "TEXCOORD",       3, DXGI_FORMAT_R32G32_FLOAT,        0, 32,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "TEXCOORD",       4, DXGI_FORMAT_R32_FLOAT,           0, 40,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "TEXCOORD",       5, DXGI_FORMAT_R32_FLOAT,           0, 44,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "COLOR",          0, DXGI_FORMAT_R32G32B32A32_FLOAT,  0, 48,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "TEXCOORD",       6, DXGI_FORMAT_R32G32_FLOAT,        0, 64,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+    D3D11_INPUT_ELEMENT_DESC InputLayout[] = {
+        { "TEXCOORD",        0, DXGI_FORMAT_R32G32_FLOAT,        0, 0,   D3D11_INPUT_PER_VERTEX_DATA,   0 },
+        { "INSTANCE_POS",    0, DXGI_FORMAT_R32G32B32_FLOAT,     1, 0,   D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+        { "INSTANCE_TIME",   0, DXGI_FORMAT_R32_FLOAT,           1, 12,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+        { "INSTANCE_OLDPOS", 0, DXGI_FORMAT_R32G32B32_FLOAT,     1, 16,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+        { "INSTANCE_ID",     0, DXGI_FORMAT_R32_FLOAT,           1, 28,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+        { "INSTANCE_SIZE",   0, DXGI_FORMAT_R32G32_FLOAT,        1, 32,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+        { "INSTANCE_ROT",    0, DXGI_FORMAT_R32_FLOAT,           1, 40,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+        { "INSTANCE_SUBUV",  0, DXGI_FORMAT_R32_FLOAT,           1, 44,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+        { "INSTANCE_COLOR",  0, DXGI_FORMAT_R32G32B32A32_FLOAT,  1, 48,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
     };
 
-    HRESULT hr = ShaderManager->AddVertexShaderAndInputLayout(
-        L"ParticleShader",
-        L"Shaders/ParticleShader.hlsl",
-        "mainVS",
-        ParticleInputLayout,
-        ARRAYSIZE(ParticleInputLayout)
-    );
-
-    if (FAILED(hr))
-    {
-        return;
-    }
-
+    ShaderManager->AddVertexShaderAndInputLayout(L"ParticleShader", L"Shaders/ParticleShader.hlsl", "mainVS", InputLayout, ARRAYSIZE(InputLayout));
     ShaderManager->AddPixelShader(L"ParticleShader", L"Shaders/ParticleShader.hlsl", "mainPS");
 }
 
-void FParticleRenderPass::ReleaseShader()
-{
-}
+void FParticleRenderPass::ReleaseShader() {}
 
 void FParticleRenderPass::PrepareRenderArr()
 {
     ParticleComponents.Empty();
-
     for (auto Comp : TObjectRange<UParticleSystemComponent>())
     {
         if (Comp->GetWorld() == GEngine->ActiveWorld && Comp->GetEmitterType() == EDynamicEmitterType::DET_Sprite)
@@ -107,8 +116,8 @@ void FParticleRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& V
             continue;
 
         const FString Key = Comp->GetName();
+        TArray<FSpriteParticleInstance> Instances;
 
-        TArray<FParticleSpriteVertex> AllVertices;
         for (FDynamicEmitterDataBase* BaseEmitterData : Comp->GetEmitterRenderData())
         {
             if (!BaseEmitterData || !BaseEmitterData->bValid)
@@ -125,46 +134,30 @@ void FParticleRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& V
             const int32 Stride = SpriteData->ParticleStride;
             const int32 ActiveCount = SpriteData->ActiveParticleCount;
 
-            static const FVector2D UVs[6] = {
-                {-0.5f, -0.5f}, {0.5f, -0.5f}, {0.5f, 0.5f},
-                {-0.5f, -0.5f}, {0.5f, 0.5f}, {-0.5f, 0.5f}
-            };
-
             for (int32 i = 0; i < ActiveCount; ++i)
             {
                 const int32 ParticleIndex = ParticleIndices[i];
                 const FBaseParticle* P = reinterpret_cast<const FBaseParticle*>(ParticleData + ParticleIndex * Stride);
 
-                for (int j = 0; j < 6; ++j)
-                {
-                    FParticleSpriteVertex V;
-                    V.Position = P->Location;
-                    V.OldPosition = P->OldLocation;
-                    V.RelativeTime = P->RelativeTime;
-                    V.ParticleId = static_cast<float>(i);
-                    V.Size = FVector2D(P->Size.X, P->Size.Y);
-                    V.Rotation = P->Rotation;
-                    V.SubImageIndex = 0.0f;
-                    V.Color = P->Color;
-                    V.UV = UVs[j];
-                    AllVertices.Add(V);
-                }
+                FSpriteParticleInstance Inst;
+                Inst.Position = P->Location;
+                Inst.OldPosition = P->OldLocation;
+                Inst.RelativeTime = P->RelativeTime;
+                Inst.ParticleId = static_cast<float>(i);
+                Inst.Size = FVector2D(P->Size.X, P->Size.Y);
+                Inst.Rotation = P->Rotation;
+                Inst.SubImageIndex = 0.0f;
+                Inst.Color = P->Color;
+                Instances.Add(Inst);
             }
         }
 
-        if (AllVertices.IsEmpty())
+        if (Instances.IsEmpty())
             continue;
 
-        FVertexInfo VertexInfo;
-        if (!BufferManager->GetVertexBuffer(Key).VertexBuffer)
-        {
-            BufferManager->CreateDynamicVertexBuffer(Key, AllVertices, VertexInfo);
-        }
-        else
-        {
-            BufferManager->UpdateDynamicVertexBuffer(Key, AllVertices);
-            VertexInfo = BufferManager->GetVertexBuffer(Key);
-        }
+        // Upload instance buffer
+        FVertexInfo InstanceInfo;
+        BufferManager->CreateDynamicVertexBuffer(Key + TEXT("_Instance"), Instances, InstanceInfo);
 
         FObjectConstantBuffer ObjectData;
         FMatrix WorldMatrix = Comp->GetWorldMatrix();
@@ -174,10 +167,12 @@ void FParticleRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& V
         ObjectData.bIsSelected = false;
         BufferManager->UpdateConstantBuffer(TEXT("FObjectConstantBuffer"), ObjectData);
 
-        UINT Stride = sizeof(FParticleSpriteVertex);
-        UINT Offset = 0;
-        Graphics->DeviceContext->IASetVertexBuffers(0, 1, &VertexInfo.VertexBuffer, &Stride, &Offset);
-        Graphics->DeviceContext->Draw(VertexInfo.NumVertices, 0);
+        ID3D11Buffer* Buffers[2] = { QuadVertexInfo.VertexBuffer, InstanceInfo.VertexBuffer };
+        UINT Strides[2] = { sizeof(FSpriteVertex), sizeof(FSpriteParticleInstance) };
+        UINT Offsets[2] = { 0, 0 };
+
+        Graphics->DeviceContext->IASetVertexBuffers(0, 2, Buffers, Strides, Offsets);
+        Graphics->DeviceContext->DrawInstanced(6, Instances.Num(), 0, 0);
     }
 
     Graphics->DeviceContext->OMSetRenderTargets(0, nullptr, nullptr);

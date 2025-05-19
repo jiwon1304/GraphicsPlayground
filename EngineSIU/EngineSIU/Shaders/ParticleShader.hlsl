@@ -20,16 +20,19 @@ cbuffer ParticleSettings : register(b4)
 #if defined(PARTICLE_SPRITE)
 struct VS_INPUT
 {
-    float3 Position : POSITION;
-    float RelativeTime : TEXCOORD0;
-    float3 OldPosition : TEXCOORD1;
-    float ParticleId : TEXCOORD2;
-    float2 Size : TEXCOORD3;
-    float Rotation : TEXCOORD4;
-    float SubImageIndex : TEXCOORD5;
-    float4 Color : COLOR0;
-    float2 UV : TEXCOORD6;
+    float2 UV : TEXCOORD0; // Per-vertex (shared quad)
+
+    // Instance data (per particle)
+    float3 Position : INSTANCE_POS; // World-space center
+    float RelativeTime : INSTANCE_TIME;
+    float3 OldPosition : INSTANCE_OLDPOS;
+    float ParticleId : INSTANCE_ID;
+    float2 Size : INSTANCE_SIZE;
+    float Rotation : INSTANCE_ROT;
+    float SubImageIndex : INSTANCE_SUBUV;
+    float4 Color : INSTANCE_COLOR;
 };
+
 
 #endif
 

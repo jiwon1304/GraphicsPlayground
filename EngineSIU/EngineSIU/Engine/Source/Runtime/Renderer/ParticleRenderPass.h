@@ -30,4 +30,5 @@ private:
     FDXDShaderManager* ShaderManager;
 
     TArray<UParticleSystemComponent*> ParticleComponents;
+    FVertexInfo QuadVertexInfo;
 };
