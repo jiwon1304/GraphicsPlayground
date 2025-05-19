@@ -4,7 +4,7 @@
 
 struct FBaseParticle
 {
-    // 48 bytes
+    // 24 bytes
     FVector		OldLocation;			// Last frame's location, used for collision
     FVector		Location;				// Current location
 

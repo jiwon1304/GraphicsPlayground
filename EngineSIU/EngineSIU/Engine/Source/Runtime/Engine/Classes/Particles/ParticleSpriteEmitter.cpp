@@ -3,9 +3,10 @@
 #include "ParticleModules/ParticleModuleTypeDataBase.h"
 #include "ParticleEmitterInstances.h"
 
+
 FParticleEmitterInstance* UParticleSpriteEmitter::CreateInstance(UParticleSystemComponent* InComponent)
 {
-    FParticleEmitterInstance* Instance = 0;
+    FParticleEmitterInstance* Instance = nullptr;
 
     UParticleLODLevel* LODLevel = GetLODLevel(0);
     assert(LODLevel);
