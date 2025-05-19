@@ -53,6 +53,8 @@ void FParticleRenderPass::Initialize(FDXDBufferManager* InBufferManager, FGraphi
         { {-0.5f, -0.5f} }, { {0.5f, 0.5f} }, { {-0.5f, 0.5f} },
     };
     BufferManager->CreateVertexBuffer(TEXT("QuadSpriteVertex"), QuadVertices, QuadVertexInfo);
+    BufferManager->CreateDynamicVertexBuffer(TEXT("Global_SpriteInstance"), sizeof(FSpriteParticleInstance) * 1000, InstanceInfoSprite);
+
 }
 
 void FParticleRenderPass::CreateShader()
@@ -115,7 +117,6 @@ void FParticleRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& V
         if (!Comp || Comp->GetEmitterRenderData().IsEmpty())
             continue;
 
-        const FString Key = Comp->GetName();
         TArray<FSpriteParticleInstance> Instances;
 
         for (FDynamicEmitterDataBase* BaseEmitterData : Comp->GetEmitterRenderData())
@@ -156,8 +157,7 @@ void FParticleRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& V
             continue;
 
         // Upload instance buffer
-        FVertexInfo InstanceInfo;
-        BufferManager->CreateDynamicVertexBuffer(Key + TEXT("_Instance"), Instances, InstanceInfo);
+        BufferManager->UpdateDynamicVertexBuffer(TEXT("Global_SpriteInstance"), Instances);
 
         FObjectConstantBuffer ObjectData;
         FMatrix WorldMatrix = Comp->GetWorldMatrix();
@@ -167,7 +167,7 @@ void FParticleRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& V
         ObjectData.bIsSelected = false;
         BufferManager->UpdateConstantBuffer(TEXT("FObjectConstantBuffer"), ObjectData);
 
-        ID3D11Buffer* Buffers[2] = { QuadVertexInfo.VertexBuffer, InstanceInfo.VertexBuffer };
+        ID3D11Buffer* Buffers[2] = { QuadVertexInfo.VertexBuffer, InstanceInfoSprite.VertexBuffer };
         UINT Strides[2] = { sizeof(FSpriteVertex), sizeof(FSpriteParticleInstance) };
         UINT Offsets[2] = { 0, 0 };
 

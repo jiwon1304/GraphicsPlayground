@@ -28,7 +28,7 @@ private:
     FDXDBufferManager* BufferManager;
     FGraphicsDevice* Graphics;
     FDXDShaderManager* ShaderManager;
-
-    TArray<UParticleSystemComponent*> ParticleComponents;
+    FVertexInfo InstanceInfoSprite;
     FVertexInfo QuadVertexInfo;
+    TArray<UParticleSystemComponent*> ParticleComponents;
 };
