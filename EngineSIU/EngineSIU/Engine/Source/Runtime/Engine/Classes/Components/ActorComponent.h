@@ -84,5 +84,8 @@ private:
 
 public:
     /** Component가 초기화 되었을 때, 자동으로 활성화할지 여부 */
-    uint8 bAutoActive : 1 = true;
+    UPROPERTY_WITH_BITFIELD(
+        BitField,
+        uint8, bAutoActivate, : 1 = true;
+    )
 };
