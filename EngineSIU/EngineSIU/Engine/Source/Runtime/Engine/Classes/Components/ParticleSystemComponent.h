@@ -39,10 +39,9 @@ public:
 
     class UParticleSystem* Template = nullptr;
     uint8 bWasCompleted : 1;
-    uint8 bSuppressingSpawing : 1;
 
-    int LODLevel;
-    float EmitterDelay;
+    int LODLevel = 0;
+    float EmitterDelay = 0.f;
 
     TArray<struct FParticleEmitterInstance*> EmitterInstances;
 

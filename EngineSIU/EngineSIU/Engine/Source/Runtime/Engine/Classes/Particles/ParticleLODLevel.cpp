@@ -1,6 +1,7 @@
 #include "ParticleLODLevel.h"
 #include "Particles/ParticleModules/ParticleModuleSpawn.h"
 #include "Particles/ParticleModules/ParticleModuleRequired.h"
+#include "Particles/ParticleModules/ParticleModuleTypeDataBase.h"
 #include "UObject/Casts.h"
 #include "UObject/ObjectFactory.h"
 
