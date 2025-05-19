@@ -1,6 +1,6 @@
 #include "ParticleSystemComponent.h"
 
-#include "ParticleHelper.h"
+#include "Particles/ParticleHelper.h"
 #include "Particles/ParticleSystem.h"
 #include "Particles/ParticleEmitter.h"
 #include "Particles/ParticleEmitterInstances.h"
@@ -8,7 +8,11 @@
 
 void UParticleSystemComponent::InitializeSystem()
 {
-    assert(Template);
+    if (!Template)
+    {
+        UE_LOG(ELogLevel::Error, TEXT("Template ParticleSystem Should be assigned!!!!"));
+        return;
+    }
     InitParticles();
 }
 
