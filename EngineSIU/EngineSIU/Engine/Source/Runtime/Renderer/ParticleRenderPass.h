@@ -4,6 +4,7 @@
 #include "IRenderPass.h"
 #include "Define.h"
 
+struct FTexture;
 class UParticleSystemComponent;
 
 class FParticleRenderPass : public IRenderPass
@@ -31,4 +32,8 @@ private:
     FVertexInfo InstanceInfoSprite;
     FVertexInfo QuadVertexInfo;
     TArray<UParticleSystemComponent*> ParticleComponents;
+
+    //FDynamicSpriteEmitterReplayDataBase의
+    //MaterialInterface가 구현이 안 되어있어 임시 사용
+    std::shared_ptr<FTexture> TestTexture;
 };

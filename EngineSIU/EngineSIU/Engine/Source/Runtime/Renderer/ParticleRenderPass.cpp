@@ -101,6 +101,7 @@ void FParticleRenderPass::PrepareRenderState(const std::shared_ptr<FEditorViewpo
     Graphics->DeviceContext->VSSetShader(VS, nullptr, 0);
     Graphics->DeviceContext->IASetInputLayout(IL);
     Graphics->DeviceContext->PSSetShader(PS, nullptr, 0);
+    BufferManager->BindConstantBuffer(TEXT("FParticleSettingsConstants"), 4, EShaderStage::Vertex);
 
     FViewportResource* ViewportResource = Viewport->GetViewportResource();
     FRenderTargetRHI* RT = ViewportResource->GetRenderTarget(EResourceType::ERT_Scene);
@@ -111,7 +112,16 @@ void FParticleRenderPass::PrepareRenderState(const std::shared_ptr<FEditorViewpo
 void FParticleRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& Viewport)
 {
     PrepareRenderState(Viewport);
-
+    TestTexture = FEngineLoop::ResourceManager.GetTexture(L"Assets/Texture/T_Explosion_SubUV.png");
+    static float SubImageIndex = 0.0f;
+    static float SubImageIndexTimer = 0.0f;
+    SubImageIndexTimer += 0.05f;
+    if (SubImageIndexTimer>=1.0f)
+    {
+        SubImageIndexTimer = 0.0f;
+        SubImageIndex += 1.0f;
+        if (SubImageIndex >= 36)SubImageIndex = 0.0f;
+    }
     for (UParticleSystemComponent* Comp : ParticleComponents)
     {
         if (!Comp || Comp->EmitterInstances.IsEmpty())
@@ -131,7 +141,7 @@ void FParticleRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& V
             {
                 const int32 ParticleIndex = Emitter->ParticleIndices[i];
                 const FBaseParticle* P = reinterpret_cast<const FBaseParticle*>(Emitter->ParticleData + ParticleIndex * Stride);
-
+                
                 FSpriteParticleInstance Inst;
                 Inst.Position = P->Location;
                 Inst.OldPosition = P->OldLocation;
@@ -139,7 +149,7 @@ void FParticleRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& V
                 Inst.ParticleId = static_cast<float>(i);
                 Inst.Size = FVector2D(P->Size.X, P->Size.Y);
                 Inst.Rotation = P->Rotation;
-                Inst.SubImageIndex = 0.0f;
+                Inst.SubImageIndex = SubImageIndex;
                 Inst.Color = P->Color;
                 Instances.Add(Inst);
             }
@@ -158,11 +168,15 @@ void FParticleRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& V
         ObjectData.UUIDColor = Comp->EncodeUUID() / 255.0f;
         ObjectData.bIsSelected = false;
         BufferManager->UpdateConstantBuffer(TEXT("FObjectConstantBuffer"), ObjectData);
-
+        FParticleSettingsConstants ParticleSettings;
+        ParticleSettings.SubUVCols = 6;
+        ParticleSettings.SubUVRows = 6;
+        BufferManager->UpdateConstantBuffer("FParticleSettingsConstants", ParticleSettings);
         ID3D11Buffer* Buffers[2] = { QuadVertexInfo.VertexBuffer, InstanceInfoSprite.VertexBuffer };
         UINT Strides[2] = { sizeof(FSpriteVertex), sizeof(FSpriteParticleInstance) };
         UINT Offsets[2] = { 0, 0 };
-
+        Graphics->DeviceContext->PSSetShaderResources(0, 1, &TestTexture->TextureSRV);
+        Graphics->DeviceContext->PSSetSamplers(0, 1, &TestTexture->SamplerState);
         Graphics->DeviceContext->IASetVertexBuffers(0, 2, Buffers, Strides, Offsets);
         Graphics->DeviceContext->DrawInstanced(6, Instances.Num(), 0, 0);
     }
