@@ -3,24 +3,11 @@
 #include "UnrealEd/EditorPanel.h"
 #include "UnrealEd/EditorViewportClient.h"
 
-
-struct ModuleOption {
-    FString Name;
-    bool Enabled;
-    ImVec4 Color;
-};
-
-struct EmitterData {
-    FString Name;
-    TArray<ModuleOption> Modules;
-    bool Selected;
-};
-
 struct FRenderTargetRHI;
 struct FDepthStencilRHI;
 
 class UParticleSystem;
-
+class UParticleEmitter;
 class ParticleViewerPanel : public UEditorPanel
 {
 public:
@@ -46,7 +33,8 @@ private://File Panel
     void CreateNewParticleSystem(const FString& Name);
     void RemoveParticleSystem(const FName& AssetName);
 private:
-    TArray<EmitterData> EmitterList;
+    UParticleEmitter* CreateDefaultParticleEmitter();
+private:
     int SelectedEmitterIndex = -1;
     float ItemWidth = 200.0f;   // 각 Emitter 블록의 가로 크기
     float WidthPad = 10.0f;      // Emitter 넓이 간격
@@ -66,6 +54,8 @@ private:
 
 private:
     UParticleSystem* ParticleSystem = nullptr;
-
+private:
+    int CurrentIndex = 0;
+    TArray<FName> ParticleNames;
 };
 
