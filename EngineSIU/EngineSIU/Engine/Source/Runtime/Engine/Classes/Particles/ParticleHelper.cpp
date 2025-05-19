@@ -9,7 +9,7 @@ FDynamicEmitterDataBase::FDynamicEmitterDataBase(const UParticleModuleRequired* 
 
 void FParticleDataContainer::Alloc(int32 InParticleDataNumBytes, int32 InParticleIndicesNumShorts)
 {
-    assert(InParticleDataNumBytes > 0 && ParticleIndicesNumShorts >= 0 && InParticleDataNumBytes && sizeof(uint16) == 0);
+    assert(InParticleDataNumBytes > 0 && ParticleIndicesNumShorts >= 0 && InParticleDataNumBytes % sizeof(uint16) == 0);
 
     ParticleDataNumBytes = InParticleDataNumBytes;
     ParticleIndicesNumShorts = InParticleIndicesNumShorts;
