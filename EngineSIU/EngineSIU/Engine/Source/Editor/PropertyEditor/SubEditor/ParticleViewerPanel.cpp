@@ -176,10 +176,6 @@ void ParticleViewerPanel::RenderEmitterPanel()
         ImGui::Spacing();
         ImGui::Separator();
 
-        //for (auto& Module : Emitter->LODLevels[0]->Modules) {
-        //    ImGui::Text(ModuleTypeToString(Module->GetModuleType()));
-        //}
-
         int ModuleIndex = 0;
         for (auto& Module : Emitter->LODLevels[0]->Modules) {
             ImVec2 moduleMin = ImGui::GetCursorScreenPos();
@@ -221,6 +217,25 @@ void ParticleViewerPanel::RenderEmitterPanel()
 void ParticleViewerPanel::RenderDetailPanel()
 {
     ImGui::Text("Detail");
+
+    if (ParticleSystem == nullptr||SelectedEmitterIndex==-1||SelectedModuleIndex==-1||CurrentParticleSystemIndex==-1)
+        return;
+    UParticleModule* Module = ParticleSystem->Emitters[SelectedEmitterIndex]->LODLevels[0]->Modules[SelectedModuleIndex];
+    const UClass* Class = Module->GetClass();
+
+    for (; Class; Class = Class->GetSuperClass())
+    {
+        const TArray<FProperty*>& Properties = Class->GetProperties();
+        if (!Properties.IsEmpty())
+        {
+            ImGui::SeparatorText(*Class->GetName());
+        }
+
+        for (const FProperty* Prop : Properties)
+        {
+            Prop->DisplayInImGui(Module);
+        }
+    }
 }
 
 void ParticleViewerPanel::RenderCurveEditorPanel()
@@ -287,6 +302,7 @@ void ParticleViewerPanel::InputEmitterPanel()
 
                 // 선택 해제
                 SelectedEmitterIndex = -1;
+                SelectedModuleIndex = -1;
             }
         }
     }
@@ -300,7 +316,10 @@ void ParticleViewerPanel::InputEmitterPanel()
     if (windowHovered && !anyItemHovered)
     {
         if (clickL)
+        {
             SelectedEmitterIndex = -1;          // 빈 공간 좌클릭 → 선택 해제
+            SelectedModuleIndex = -1;          // Module 선택 해제
+        }
 
         if (clickR)
             ImGui::OpenPopup("EmitterEmptyContextMenu"); // 빈 공간 우클릭 → 팝업 오픈
@@ -363,6 +382,8 @@ void ParticleViewerPanel::RenderParticleSystemList()
                 CurrentParticleSystemIndex = i;
                 // 선택된 파티클 시스템을 가져오기
                 ParticleSystem = ParticleSystemMap[ParticleNames[i]];
+                SelectedEmitterIndex = -1; // Emitter 선택 해제
+                SelectedModuleIndex = -1; // Module 선택 해제
             }
             if (isSelected) {
                 ImGui::SetItemDefaultFocus();
@@ -372,12 +393,14 @@ void ParticleViewerPanel::RenderParticleSystemList()
     }
 
     // Remove 버튼
-    if (ImGui::Button("Remove Selected Particle")) {
+    if (ImGui::Button("현재 파티클 삭제")) {
         if (CurrentParticleSystemIndex < ParticleNames.Num()) {
             FName SelectedName = ParticleNames[CurrentParticleSystemIndex];
             ParticleSystemMap.Remove(SelectedName);
             ParticleSystem = nullptr; // 선택된 파티클 시스템 초기화
             CurrentParticleSystemIndex = -1;  // 인덱스 초기화
+            SelectedEmitterIndex = -1; // Emitter 선택 해제
+            SelectedModuleIndex = -1; // Module 선택 해제
         }
     }
 }
