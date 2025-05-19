@@ -7,6 +7,9 @@
 #include "Animation/Skeleton.h"
 #include "Engine/AssetManager.h"
 #include "PropertyEditor/SubEditor/ParticleViewerPanel.h"
+#include "Particles/ParticleSystem.h"
+#include "Particles/ParticleEmitter.h"
+#include "Particles/ParticleModules/ParticleModuleRequired.h"
 UParticleSubEngine::UParticleSubEngine()
 {
 }
@@ -24,11 +27,15 @@ void UParticleSubEngine::Initialize(HWND& hWnd, FGraphicsDevice* InGraphics, FDX
     EditorPlayer = FObjectFactory::ConstructObject<AEditorPlayer>(this);
     EditorPlayer->SetCoordMode(CDM_LOCAL);
 
-    UnrealSphereComponent = FObjectFactory::ConstructObject<UStaticMeshComponent>(this);
-    UnrealSphereComponent->SetStaticMesh(UAssetManager::Get().GetStaticMesh(L"Contents/Sphere.obj"));
-    UnrealSphereComponent->SetRelativeScale3D(FVector(4.f, 4.f, 4.f));
-    UnrealSphereComponent->SetRelativeLocation(FVector(0, 0, 0));
     ViewportClient->ViewFOV = 60.f;
+
+    //UnrealSphereComponent = FObjectFactory::ConstructObject<UStaticMeshComponent>(this);
+    //UnrealSphereComponent->SetStaticMesh(UAssetManager::Get().GetStaticMesh(L"Contents/Sphere.obj"));
+    //UnrealSphereComponent->SetRelativeScale3D(FVector(4.f, 4.f, 4.f));
+    //UnrealSphereComponent->SetRelativeLocation(FVector(0, 0, 0));
+
+
+
 }
 
 void UParticleSubEngine::Tick(float DeltaTime)

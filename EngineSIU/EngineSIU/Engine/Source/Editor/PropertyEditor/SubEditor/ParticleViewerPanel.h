@@ -19,6 +19,8 @@ struct EmitterData {
 struct FRenderTargetRHI;
 struct FDepthStencilRHI;
 
+class UParticleSystem;
+
 class ParticleViewerPanel : public UEditorPanel
 {
 public:
@@ -28,15 +30,21 @@ public:
 
 private:
     void RenderPanelLayout();
+    void RenderFilePanel();
     void RenderViewportPanel();
     void RenderEmitterPanel();
     void RenderDetailPanel();
     void RenderCurveEditorPanel();
 
-private:
+private://Emitter Panel
     void RenderEmitterModulePopup(int EmitterIndex);
     void RenderEmitterCreatePopup();
     void InputEmitterPanel();
+private://File Panel
+    void RenderParticleSystemList();
+    void RenderCreateParticlePopup();
+    void CreateNewParticleSystem(const FString& Name);
+    void RemoveParticleSystem(const FName& AssetName);
 private:
     TArray<EmitterData> EmitterList;
     int SelectedEmitterIndex = -1;
@@ -55,6 +63,9 @@ private:
 
     FRenderTargetRHI* RenderTargetRHI;
     FDepthStencilRHI* DepthStencilRHI;
+
+private:
+    UParticleSystem* ParticleSystem = nullptr;
 
 };
 

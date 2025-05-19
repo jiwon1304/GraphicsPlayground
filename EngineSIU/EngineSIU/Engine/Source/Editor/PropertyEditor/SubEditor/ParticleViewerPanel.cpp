@@ -1,6 +1,11 @@
 #include "ParticleViewerPanel.h"
 #include "Engine/UnrealClient.h"
 #include "UnrealEd/EditorViewportClient.h"
+#include "UObject/ObjectFactory.h"
+#include "Particles/ParticleSystem.h"
+#include "Particles/ParticleEmitter.h"
+#include "Particles/ParticleModules/ParticleModuleRequired.h"
+#include "Engine/AssetManager.h"
 
 void ParticleViewerPanel::PrepareRender(FEditorViewportClient* ViewportClient)
 {
@@ -35,7 +40,10 @@ void ParticleViewerPanel::OnResize(HWND hWnd)
 }
 
 void ParticleViewerPanel::RenderPanelLayout()
-{    
+{
+
+    RenderFilePanel();
+
     // 전체 남은 영역 크기 구하기
     ImVec2 avail = ImGui::GetContentRegionAvail();
     float leftW = avail.x * 0.5f;
@@ -66,6 +74,20 @@ void ParticleViewerPanel::RenderPanelLayout()
     ImGui::EndGroup();
 }
 
+void ParticleViewerPanel::RenderFilePanel()
+{
+
+    RenderParticleSystemList();
+
+    ImGui::SameLine();
+
+    if (ImGui::Button("새 파티클 생성하기")) {
+        ImGui::OpenPopup("Create New Particle System");
+    }
+
+    RenderCreateParticlePopup();
+}
+
 void ParticleViewerPanel::RenderViewportPanel()
 {
     ImGui::Text("Viewport");
@@ -83,7 +105,7 @@ void ParticleViewerPanel::RenderEmitterPanel()
     ImGui::Text("Emitter Editor");
 
     // Emitter 목록 출력
-    for (int i = 0; i < EmitterList.Num(); ++i) {
+    for (int i = 0; i < ParticleSystem->Emitters.Num(); ++i) {
         ImGui::PushID(i);
 
         ImVec2 blockMin = ImGui::GetCursorScreenPos();
@@ -196,6 +218,9 @@ void ParticleViewerPanel::RenderEmitterCreatePopup()
 
 void ParticleViewerPanel::InputEmitterPanel()
 {
+    if (ParticleSystem == nullptr)
+        return;
+
     //Delete 키로 Emitter 삭제
     if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
         ImGui::IsKeyPressed(ImGuiKey_Delete))
@@ -227,5 +252,104 @@ void ParticleViewerPanel::InputEmitterPanel()
         RenderEmitterCreatePopup();
         ImGui::EndPopup();
     }
+}
+
+void ParticleViewerPanel::CreateNewParticleSystem(const FString& Name)
+{
+    auto& ParticleSystemMap = UAssetManager::Get().GetParticleSystemMap();
+
+    ParticleSystem = FObjectFactory::ConstructObject<UParticleSystem>(nullptr);
+    ParticleSystemMap.Add(FName(*Name), ParticleSystem);
+}
+
+void ParticleViewerPanel::RenderParticleSystemList()
+{
+    auto& ParticleSystemMap = UAssetManager::Get().GetParticleSystemMap();
+
+
+    if (ParticleSystemMap.Num() == 0) {
+        ImGui::Text("No Particle Systems Found.");
+        ParticleSystem = nullptr; // 비어있으면 초기화
+        return;
+    }
+
+    static int CurrentIndex = 0;
+    static TArray<FName> ParticleNames;
+
+    // ParticleSystemMap의 이름 목록을 가져오기
+    ParticleNames.Empty();
+    for (auto& Pair : ParticleSystemMap) {
+        ParticleNames.Add(Pair.Key);
+    }
+
+    // 이름 배열로 ComboBox 표시
+    if (ImGui::BeginCombo("Particle Systems",
+        CurrentIndex < ParticleNames.Num() ? ParticleNames[CurrentIndex].ToString().ToAnsiString().c_str() : "Select Particle System"))
+    {
+        for (int i = 0; i < ParticleNames.Num(); ++i) {
+            const bool isSelected = (CurrentIndex == i);
+            if (ImGui::Selectable(ParticleNames[i].ToString().ToAnsiString().c_str(), isSelected)) {
+                CurrentIndex = i;
+                // 선택된 파티클 시스템을 가져오기
+                ParticleSystem = ParticleSystemMap[ParticleNames[i]];
+            }
+            if (isSelected) {
+                ImGui::SetItemDefaultFocus();
+            }
+        }
+        ImGui::EndCombo();
+    }
+
+    // Remove 버튼
+    if (ImGui::Button("Remove Selected Particle")) {
+        if (CurrentIndex < ParticleNames.Num()) {
+            FName SelectedName = ParticleNames[CurrentIndex];
+            ParticleSystemMap.Remove(SelectedName);
+            ParticleSystem = nullptr; // 선택된 파티클 시스템 초기화
+            CurrentIndex = 0;  // 인덱스 초기화
+        }
+    }
+}
+
+void ParticleViewerPanel::RenderCreateParticlePopup()
+{
+    static char NewParticleName[128] = "";
+
+    auto& ParticleSystemMap = UAssetManager::Get().GetParticleSystemMap();
+    // 팝업 열기
+    if (ImGui::BeginPopupModal("Create New Particle System", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+    {
+        ImGui::Text("파티클 시스템의 이름을 입력하세요:");
+        ImGui::InputText("##NewParticleName", NewParticleName, IM_ARRAYSIZE(NewParticleName));
+
+        // 생성 버튼
+        if (ImGui::Button("생성하기", ImVec2(120, 0)))
+        {
+            FString ParticleNameStr(NewParticleName);
+            if (!ParticleNameStr.IsEmpty() && !ParticleSystemMap.Contains(FName(*ParticleNameStr)))
+            {
+                CreateNewParticleSystem(ParticleNameStr);
+                ImGui::CloseCurrentPopup();
+            }
+            else
+            {
+                ImGui::Text("유효하지 않거나 중복된 이름입니다.");
+            }
+        }
+
+        ImGui::SameLine();
+
+        // 취소 버튼
+        if (ImGui::Button("취소", ImVec2(120, 0)))
+        {
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::EndPopup();
+    }
+}
+
+void ParticleViewerPanel::RemoveParticleSystem(const FName& AssetName)
+{
 }
 
