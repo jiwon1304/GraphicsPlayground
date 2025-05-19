@@ -21,6 +21,8 @@
 // inline을 하지않는 매크로
 #define FORCENOINLINE __declspec(noinline)
 
+#define RESTRICT __restrict
+
 #ifdef _DEBUG
     #define FORCEINLINE_DEBUGGABLE inline
 #else
