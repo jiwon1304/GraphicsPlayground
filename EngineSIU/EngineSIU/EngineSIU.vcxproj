@@ -417,10 +417,15 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     <ClCompile Include="Engine\Source\ThirdParty\ImGui\include\ImGui\imgui_tables.cpp" />
     <ClCompile Include="Engine\Source\ThirdParty\ImGui\include\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="Engine\Source\ThirdParty\tinyfiledialogs\include\tinyfiledialogs.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Windows\SubWindow\ImGuiSubWindow.cpp" />
     <ClCompile Include="LuaScripts\LuaScriptComponent.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleEmitter.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleSystem.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Windows\SubWindow\ParticleSubEngine.cpp" />
+    <ClCompile Include="Engine\Source\Editor\PropertyEditor\SubEditor\ParticleViewerPanel.cpp" />
     <ClCompile Include="SoundManager.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Windows\SubWindow\SubEngine.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Windows\SubWindow\SubRenderer.cpp" />
     <None Include="Shaders\CompositingShader.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -834,10 +839,16 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     <ClInclude Include="Engine\Source\ThirdParty\sol2\include\sol\forward.hpp" />
     <ClInclude Include="Engine\Source\ThirdParty\sol2\include\sol\sol.hpp" />
     <ClInclude Include="Engine\Source\ThirdParty\tinyfiledialogs\include\tinyfiledialogs.h" />
+    <ClInclude Include="Engine\Source\Runtime\Windows\SubWindow\ImGuiSubWindow.h" />
     <ClInclude Include="LuaScripts\LuaBindingHelpers.h" />
     <ClInclude Include="LuaScripts\LuaScriptComponent.h" />
     <ClInclude Include="LuaScripts\LuaScriptFileUtils.h" />
+    <ClInclude Include="Engine\Source\Runtime\Engine\ParticleHelper.h" />
+    <ClInclude Include="Engine\Source\Runtime\Windows\SubWindow\ParticleSubEngine.h" />
+    <ClInclude Include="Engine\Source\Editor\PropertyEditor\SubEditor\ParticleViewerPanel.h" />
     <ClInclude Include="SoundManager.h" />
+    <ClInclude Include="Engine\Source\Runtime\Windows\SubWindow\SubEngine.h" />
+    <ClInclude Include="Engine\Source\Runtime\Windows\SubWindow\SubRenderer.h" />
     <None Include="Shaders\EditorShaderConstants.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>

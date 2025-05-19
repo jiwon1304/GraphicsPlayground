@@ -8,11 +8,15 @@
 void UImGuiManager::Initialize(HWND hWnd, ID3D11Device* Device, ID3D11DeviceContext* DeviceContext)
 {
     IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
+    ImGuiContext = ImGui::CreateContext();
     ImGuiIO& IO = ImGui::GetIO();
     ImGui_ImplWin32_Init(hWnd);
     ImGui_ImplDX11_Init(Device, DeviceContext);
-    IO.Fonts->AddFontFromFileTTF(R"(C:\Windows\Fonts\malgun.ttf)", 18.0f, nullptr, IO.Fonts->GetGlyphRangesKorean());
+    SharedFont = IO.Fonts->AddFontFromFileTTF(R"(C:\Windows\Fonts\malgun.ttf)", 18.0f, nullptr, IO.Fonts->GetGlyphRangesKorean());
+
+    unsigned char* pixels;
+    int w, h;
+    IO.Fonts->GetTexDataAsRGBA32(&pixels, &w, &h); // 여기서 atlas 생성됨
 
     ImFontConfig FeatherFontConfig;
     FeatherFontConfig.PixelSnapH = true;
@@ -42,6 +46,7 @@ void UImGuiManager::Initialize(HWND hWnd, ID3D11Device* Device, ID3D11DeviceCont
 
 void UImGuiManager::BeginFrame() const
 {
+    ImGui::SetCurrentContext(ImGuiContext);
     ImGui_ImplDX11_NewFrame();
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
@@ -117,10 +122,25 @@ void UImGuiManager::PreferenceStyle() const
     ImGui::GetStyle().Colors[ImGuiCol_TabUnfocusedActive] = ImVec4{ 0.0f, 0.0f, 0.0f, 0.15f };
 }
 
+ImGuiContext* UImGuiManager::GetContext() const
+{
+    return ImGuiContext;
+}
+
 void UImGuiManager::Shutdown()
 {
+    ImGui::SetCurrentContext(ImGuiContext);
     ImGui_ImplDX11_Shutdown();
     ImGui_ImplWin32_Shutdown();
-    ImGui::DestroyContext();
+    ImGui::DestroyContext(ImGuiContext);
+}
+
+void UImGuiManager::ApplySharedStyle(::ImGuiContext* Context1, ::ImGuiContext* Context2)
+{
+    ImGui::SetCurrentContext(Context1);
+    ImGuiStyle& Style = ImGui::GetStyle();
+
+    ImGui::SetCurrentContext(Context2);
+    ImGui::GetStyle() = Style;
 }
 

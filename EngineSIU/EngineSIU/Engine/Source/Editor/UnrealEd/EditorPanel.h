@@ -9,6 +9,12 @@
 
 #endif // !__ICON_FONT_INDEX__
 
+enum EWindowType : uint8
+{
+    WT_Main,
+    WT_ParticleSubWindow
+};
+
 class UEditorPanel
 {
 public:
@@ -19,6 +25,7 @@ public:
     void  SetSupportedWorldTypes(EWorldTypeBitFlag mask) { SupportedMask = mask; }
     EWorldTypeBitFlag GetSupportedWorldTypes() const { return SupportedMask; }
 
+    EWindowType WindowType = WT_Main;
 private:
     EWorldTypeBitFlag SupportedMask = EWorldTypeBitFlag::None;
 };

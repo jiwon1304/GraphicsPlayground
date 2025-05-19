@@ -8,6 +8,12 @@ public:
     void BeginFrame() const;
     void EndFrame() const;
     void PreferenceStyle() const;
+    ImGuiContext* GetContext() const;
     void Shutdown();
+
+    static void ApplySharedStyle(ImGuiContext* Context1, ImGuiContext* Context2);
+    ImFont* SharedFont;
+private:
+    ImGuiContext* ImGuiContext = nullptr;
 };
 
