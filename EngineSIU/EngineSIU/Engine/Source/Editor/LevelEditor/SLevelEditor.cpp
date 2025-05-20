@@ -73,7 +73,7 @@ void SLevelEditor::Initialize(uint32 InEditorWidth, uint32 InEditorHeight)
             return;
         }
         ViewportClients[i] = std::make_shared<FEditorViewportClient>();
-        ViewportClients[i]->Initialize(Location, Rect);
+        ViewportClients[i]->Initialize(Location, Rect,GEngine);
     }
     
     ActiveViewportClient = ViewportClients[0];
@@ -469,6 +469,7 @@ void SLevelEditor::RegisterEditorInputDelegates()
 
     InputDelegatesHandles.Add(Handler->OnRawMouseInputDelegate.AddLambda([this](const FPointerEvent& InMouseEvent)
         {
+			if(::GetFocus()!=GEngineLoop.AppWnd) return;
             // Mouse Move 이벤트 일때만 실행
             if (
                 InMouseEvent.GetInputEvent() == IE_Axis

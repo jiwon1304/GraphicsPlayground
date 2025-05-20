@@ -2,6 +2,7 @@
 #include "Math/Vector.h"
 #include "Math/Color.h"
 
+class UParticleModuleRequired;
 struct FBaseParticle
 {
     // 24 bytes
@@ -37,9 +38,6 @@ struct FBaseParticle
     float Placeholder1;
 };
 
-/*-----------------------------------------------------------------------------
-    Particle State Flags
------------------------------------------------------------------------------*/
 enum EParticleStates
 {
     /** Ignore updates to the particle */
@@ -58,9 +56,7 @@ enum EParticleStates
     STATE_Particle_DelayCollisions = 0x40000000,
     /** Flag indicating the particle has had at least one collision */
     STATE_Particle_CollisionHasOccurred = 0x80000000,
-    /** State mask. */
     STATE_Mask = 0xFE000000,
-    /** Counter mask. */
     STATE_CounterMask = (~STATE_Mask)
 };
 
@@ -80,8 +76,8 @@ struct FParticleDataContainer
     int32 MemBlockSize;
     int32 ParticleDataNumBytes;
     int32 ParticleIndicesNumShorts;
-    uint8* ParticleData; // this is also the memory block we allocated
-    uint16* ParticleIndices; // not allocated, this is at the end of the memory block
+    uint8* ParticleData;
+    uint16* ParticleIndices;
 
     FParticleDataContainer()
         : MemBlockSize(0)
@@ -95,9 +91,106 @@ struct FParticleDataContainer
     {
         Free();
     }
+
     void Alloc(int32 InParticleDataNumBytes, int32 InParticleIndicesNumShorts);
     void Free();
 };
+
+struct FDynamicEmitterReplayDataBase
+{
+    EDynamicEmitterType eEmitterType;
+    int32 ActiveParticleCount;
+    int32 ParticleStride;
+    FParticleDataContainer DataContainer;
+    FVector Scale;
+    uint32 SortMode;
+
+    FDynamicEmitterReplayDataBase()
+        : eEmitterType(DET_Unknown),
+        ActiveParticleCount(0),
+        ParticleStride(0),
+        Scale(FVector(1.0f, 1.0f, 1.0f)),
+        SortMode(0)
+    {
+    }
+};
+
+struct FDynamicEmitterDataBase
+{
+    FDynamicEmitterDataBase(const UParticleModuleRequired* RequiredModule);
+
+    virtual const FDynamicEmitterReplayDataBase& GetSource() const = 0;
+    int32  EmitterIndex;
+};
+
+struct FDynamicSpriteEmitterDataBase : public FDynamicEmitterDataBase
+{
+    FDynamicSpriteEmitterDataBase(const UParticleModuleRequired* RequiredModule) :
+        FDynamicEmitterDataBase(RequiredModule)
+    {
+    }
+
+    virtual ~FDynamicSpriteEmitterDataBase()
+    {
+    }
+    void SortSpriteParticles() {};
+};
+
+class UMaterial;
+struct FDynamicSpriteEmitterReplayDataBase : public FDynamicEmitterReplayDataBase
+{
+    UMaterial* Material = nullptr;
+};
+
+struct FDynamicSpriteEmitterReplayData : public FDynamicSpriteEmitterReplayDataBase
+{
+};
+
+struct FDynamicSpriteEmitterData : public FDynamicSpriteEmitterDataBase
+{
+    FDynamicSpriteEmitterData(const UParticleModuleRequired* RequiredModule) :
+        FDynamicSpriteEmitterDataBase(RequiredModule)
+    {
+    }
+
+    ~FDynamicSpriteEmitterData()
+    {
+    }
+    void Init() {}
+    virtual const FDynamicEmitterReplayDataBase& GetSource() const override
+    {
+        return Source;
+    }
+    FDynamicSpriteEmitterReplayData Source;
+};
+
+struct FDynamicMeshEmitterReplayDataBase : FDynamicEmitterReplayDataBase
+{
+};
+
+struct FDynamicMeshEmitterReplayData : public FDynamicMeshEmitterReplayDataBase
+{
+};
+
+struct FDynamicMeshEmitterData : public FDynamicSpriteEmitterDataBase
+{
+    FDynamicMeshEmitterData() = default;
+
+    void Init() {}
+    virtual const FDynamicEmitterReplayDataBase& GetSource() const override
+    {
+        return Source;
+    }
+    FDynamicMeshEmitterReplayData Source;
+};
+
+template <typename T>
+FORCEINLINE constexpr T Align(T Val, uint64 Alignment)
+{
+    static_assert(std::is_integral_v<T> || std::is_pointer_v<T>, "Align expects an integer or pointer type");
+
+    return static_cast<T>((static_cast<uint64>(Val) + Alignment - 1) & ~(Alignment - 1));
+}
 
 /*-----------------------------------------------------------------------------
     Helper macros.

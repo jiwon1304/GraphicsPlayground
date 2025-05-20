@@ -14,12 +14,14 @@
 #include "Engine/EditorEngine.h"
 #include "Renderer/DepthPrePass.h"
 #include "Renderer/TileLightCullingPass.h"
-
+#include "SubWindow/ParticleSubEngine.h"
+#include "SubWindow/ImGuiSubWindow.h"
 #include "SoundManager.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 
 FGraphicsDevice FEngineLoop::GraphicDevice;
+FGraphicsDevice FEngineLoop::ParticleViewerGD;
 FRenderer FEngineLoop::Renderer;
 UPrimitiveDrawBatch FEngineLoop::PrimitiveDrawBatch;
 FResourceManager FEngineLoop::ResourceManager;
@@ -95,6 +97,18 @@ int32 FEngineLoop::Init(HINSTANCE hInstance)
     GEngine->Init();
 
 
+    ParticleSubWindowInit(hInstance);
+    if (ParticleViewerWnd)
+    {
+        ParticleViewerGD.Initialize(ParticleViewerWnd, GraphicDevice.Device);
+        ParticleViewerGD.ClearColor[0] = 0.03f;
+        ParticleViewerGD.ClearColor[1] = 0.03f;
+        ParticleViewerGD.ClearColor[2] = 0.03f;
+    }
+
+    ParticleSubEngine = FObjectFactory::ConstructObject<UParticleSubEngine>(nullptr);
+    ParticleSubEngine->Initialize(ParticleViewerWnd, &ParticleViewerGD, BufferManager, UIManager, UnrealEditor);
+    
     FSoundManager::GetInstance().Initialize();
     FSoundManager::GetInstance().LoadSound("fishdream", "Contents/Sounds/fishdream.mp3");
     FSoundManager::GetInstance().LoadSound("sizzle", "Contents/Sounds/sizzle.mp3");
@@ -167,11 +181,24 @@ void FEngineLoop::Tick()
             }
         }
 
+        if (!bIsExit && ParticleViewerWnd && IsWindowVisible(ParticleViewerWnd))
+        {
+            while (PeekMessage(&Msg, ParticleViewerWnd, 0, 0, PM_REMOVE))
+            {
+                TranslateMessage(&Msg);
+                DispatchMessage(&Msg);
+            }
+        }
+        // Engine loop Break
+        if (bIsExit) break;
+
         const float DeltaTime = static_cast<float>(ElapsedTime / 1000.f);
 
         GEngine->Tick(DeltaTime);
         LevelEditor->Tick(DeltaTime);
+
         Render();
+
         UIManager->BeginFrame();
         UnrealEditor->Render();
 
@@ -179,6 +206,14 @@ void FEngineLoop::Tick()
         EngineProfiler.Render(GraphicDevice.DeviceContext, GraphicDevice.ScreenWidth, GraphicDevice.ScreenHeight);
 
         UIManager->EndFrame();
+
+        if (ParticleSubEngine->bIsShowing)
+            ParticleSubEngine->Tick(DeltaTime);
+
+        if (CurrentImGuiContext != nullptr)
+        {
+            ImGui::SetCurrentContext(CurrentImGuiContext);
+        }
 
         // Pending 처리된 오브젝트 제거
         GUObjectArray.ProcessPendingDestroyObjects();
@@ -189,6 +224,8 @@ void FEngineLoop::Tick()
         }
 
         GraphicDevice.SwapBuffer();
+
+        SubEngineControl();
         do
         {
             Sleep(0);
@@ -208,8 +245,30 @@ void FEngineLoop::GetClientSize(uint32& OutWidth, uint32& OutHeight) const
     OutHeight = ClientRect.bottom - ClientRect.top;
 }
 
+void FEngineLoop::OpenParticleSystemViewer()
+{
+    if (ParticleSubEngine->bIsShowSubWindow)
+    {
+        if (ParticleViewerWnd)
+        {
+            ::ShowWindow(ParticleViewerWnd, SW_SHOW);
+        }
+        ParticleSubEngine->bIsShowSubWindow = false;
+    }
+}
+
+void FEngineLoop::SubEngineControl()
+{
+    OpenParticleSystemViewer();
+
+}
+
 void FEngineLoop::Exit()
 {
+
+    ParticleSubEngine->Release();
+    CleanupSubWindow();
+
     LevelEditor->Release();
     UIManager->Shutdown();
     ResourceManager.Release(&Renderer);
@@ -247,10 +306,63 @@ void FEngineLoop::WindowInit(HINSTANCE hInstance)
 
 LRESULT CALLBACK FEngineLoop::AppWndProc(HWND hWnd, uint32 Msg, WPARAM wParam, LPARAM lParam)
 {
-    if (ImGui_ImplWin32_WndProcHandler(hWnd, Msg, wParam, lParam))
+    if (hWnd == GEngineLoop.AppWnd)
     {
-        return true;
+        ImGui::SetCurrentContext(GEngineLoop.UIManager->GetContext());
+        if (ImGui_ImplWin32_WndProcHandler(hWnd, Msg, wParam, lParam)) return true;
     }
+    else if (hWnd == GEngineLoop.ParticleViewerWnd)
+    {
+        ImGui::SetCurrentContext(GEngineLoop.ParticleSubEngine->SubUI->Context);
+
+        if (ImGui_ImplWin32_WndProcHandler(hWnd, Msg, wParam, lParam)) return true;
+
+        /** SubWindow Msg */
+        switch (Msg)
+        {
+        case WM_SIZE:
+            if (wParam != SIZE_MINIMIZED)
+            {
+                RECT ClientRect;
+                GetClientRect(hWnd, &ClientRect);
+
+                float FullWidth = static_cast<float>(ClientRect.right - ClientRect.left);
+                float FullHeight = static_cast<float>(ClientRect.bottom - ClientRect.top);
+
+                if (GEngineLoop.GetUnrealEditor())
+                {
+                    ParticleViewerGD.Resize(hWnd, FullWidth, FullHeight);
+                    GEngineLoop.GetUnrealEditor()->OnResize(hWnd, EWindowType::WT_ParticleSubWindow);
+                }
+                GEngineLoop.ParticleSubEngine->ViewportClient->AspectRatio = (FullWidth * 0.75f) / FullHeight;
+            }
+            return 0;
+        case WM_CLOSE:
+            GEngineLoop.ParticleSubEngine->ViewportClient->CameraReset();
+            GEngineLoop.ParticleSubEngine->RequestShowWindow(false);
+            ::ShowWindow(hWnd, SW_HIDE);
+            return 0;
+
+        case WM_ACTIVATE:
+            if (ImGui::GetCurrentContext() == nullptr) break;
+            ImGui::SetCurrentContext(GEngineLoop.ParticleSubEngine->SubUI->Context);
+            GEngineLoop.CurrentImGuiContext = ImGui::GetCurrentContext();
+            return 0;
+        case WM_KEYDOWN:
+        case WM_LBUTTONDOWN:
+        case WM_RBUTTONDOWN:
+            ::SetFocus(hWnd);
+            break;
+        default:
+            return DefWindowProc(hWnd, Msg, wParam, lParam);
+        }
+    }
+
+
+    //if (ImGui_ImplWin32_WndProcHandler(hWnd, Msg, wParam, lParam))
+    //{
+    //    return true;
+    //}
 
     switch (Msg)
     {
@@ -260,6 +372,7 @@ LRESULT CALLBACK FEngineLoop::AppWndProc(HWND hWnd, uint32 Msg, WPARAM wParam, L
         {
             LevelEditor->SaveConfig();
         }
+        GEngineLoop.bIsExit = true;
         break;
     case WM_SIZE:
         if (wParam != SIZE_MINIMIZED)
@@ -282,8 +395,14 @@ LRESULT CALLBACK FEngineLoop::AppWndProc(HWND hWnd, uint32 Msg, WPARAM wParam, L
         }
         GEngineLoop.UpdateUI();
         break;
+    case WM_ACTIVATE:
+        if (ImGui::GetCurrentContext() == nullptr) break;
+        ImGui::SetCurrentContext(GEngineLoop.UIManager->GetContext());
+        GEngineLoop.CurrentImGuiContext = ImGui::GetCurrentContext();
+        break;
     default:
-        GEngineLoop.AppMessageHandler->ProcessMessage(hWnd, Msg, wParam, lParam);
+        if(hWnd == GEngineLoop.AppWnd && GEngineLoop.AppMessageHandler !=nullptr)
+            GEngineLoop.AppMessageHandler->ProcessMessage(hWnd, Msg, wParam, lParam);
         return DefWindowProc(hWnd, Msg, wParam, lParam);
     }
 
@@ -298,4 +417,53 @@ void FEngineLoop::UpdateUI()
         GEngineLoop.GetUnrealEditor()->OnResize(AppWnd);
     }
     ViewportTypePanel::GetInstance().OnResize(AppWnd);
+}
+
+void FEngineLoop::ParticleSubWindowInit(HINSTANCE hInstance)
+{
+    WCHAR SubWindowClass[] = L"ParticleWindowClass";
+    WCHAR SubTitle[] = L"Viewer";
+
+    WNDCLASSEXW wcexSub = {}; // WNDCLASSEXW 사용 권장
+    wcexSub.cbSize = sizeof(WNDCLASSEX);
+    wcexSub.style = CS_HREDRAW | CS_VREDRAW; // | CS_DBLCLKS 등 필요시 추가
+    wcexSub.lpfnWndProc = AppWndProc; // 서브 윈도우 프로시저 지정
+    wcexSub.cbClsExtra = 0;
+    wcexSub.cbWndExtra = 0;
+    wcexSub.hInstance = hInstance;
+    wcexSub.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wcexSub.lpszMenuName = nullptr;
+    wcexSub.lpszClassName = SubWindowClass;
+    //wcexSub.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON2));
+    if (!RegisterClassExW(&wcexSub))
+    {
+        // 오류 처리
+        UE_LOG(ELogLevel::Error, TEXT("Failed to register sub window class!"));
+        return;
+    }
+
+    // 서브 윈도우 생성 (크기, 위치, 스타일 조정 필요)
+    // WS_OVERLAPPEDWINDOW 는 타이틀 바, 메뉴, 크기 조절 등이 포함된 일반적인 창
+    // WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME 등으로 커스텀 가능
+    ParticleViewerWnd = CreateWindowExW(
+        0, SubWindowClass, SubTitle, WS_OVERLAPPEDWINDOW, // WS_VISIBLE 제거 (초기에는 숨김)
+        CW_USEDEFAULT, CW_USEDEFAULT, 800, 600, // 원하는 크기
+        nullptr, // 부모 윈도우를 메인 윈도우로 설정 (선택 사항)
+        nullptr, hInstance, nullptr
+    );
+
+    if (!ParticleViewerWnd)
+    {
+        UE_LOG(ELogLevel::Error, TEXT("Failed to create sub window!"));
+    }
+    else
+    {
+
+    }
+}
+
+void FEngineLoop::CleanupSubWindow()
+{
+    if (ParticleViewerGD.Device)
+        ParticleViewerGD.Release();
 }

@@ -5,6 +5,7 @@
 #include "Particles/ParticleLODLevel.h"
 #include "Particles/ParticleModules/ParticleModule.h"
 #include "Particles/ParticleModules/ParticleModuleTypeDataBase.h"
+#include "UObject/ObjectFactory.h"
 
 FParticleEmitterInstance* UParticleEmitter::CreateInstance(UParticleSystemComponent* InComponent)
 {
@@ -16,6 +17,19 @@ UParticleLODLevel* UParticleEmitter::GetCurrentLODLevel(const FParticleEmitterIn
 {
     // !NOTE : 지금은 LOD레벨 1개
     return Instance->CurrentLODLevel;
+}
+
+void UParticleEmitter::UpdateModuleLists()
+{
+    for (int32 LODIndex = 0; LODIndex < LODLevels.Num(); LODIndex++)
+    {
+        UParticleLODLevel* LODLevel = LODLevels[LODIndex];
+        if (LODLevel)
+        {
+            LODLevel->UpdateModuleLists();
+        }
+    }
+    Build();
 }
 
 void UParticleEmitter::Build()

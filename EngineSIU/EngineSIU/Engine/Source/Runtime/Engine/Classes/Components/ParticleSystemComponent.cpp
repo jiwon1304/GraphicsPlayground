@@ -1,6 +1,6 @@
 #include "ParticleSystemComponent.h"
 
-#include "ParticleHelper.h"
+#include "Particles/ParticleHelper.h"
 #include "Particles/ParticleSystem.h"
 #include "Particles/ParticleEmitter.h"
 #include "Particles/ParticleEmitterInstances.h"
@@ -8,7 +8,11 @@
 
 void UParticleSystemComponent::InitializeSystem()
 {
-    assert(Template);
+    if (!Template)
+    {
+        UE_LOG(ELogLevel::Error, TEXT("Template ParticleSystem Should be assigned!!!!"));
+        return;
+    }
     InitParticles();
 }
 
@@ -17,6 +21,8 @@ void UParticleSystemComponent::InitParticles()
     int32 NumInstances = EmitterInstances.Num();
     int32 NumEmitters = Template->Emitters.Num();
     const bool bIsFirstCreate = (NumInstances == 0);
+    EmitterInstances.Empty();
+    EmitterInstances.SetNum(NumEmitters);
 
     bWasCompleted = bIsFirstCreate ? false : bWasCompleted;
 
@@ -35,10 +41,11 @@ void UParticleSystemComponent::InitParticles()
             }
             Instance->bEnabled = true;
             Instance->InitParameters(Emitter, this);
-            Instance->Init();
 
             Instance->CurrentLODLevelIndex = LODLevel;
             Instance->CurrentLODLevel = Instance->SpriteTemplate->LODLevels[Instance->CurrentLODLevelIndex];
+
+            Instance->Init();
         }
     }
 }

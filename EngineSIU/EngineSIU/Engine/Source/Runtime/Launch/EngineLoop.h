@@ -18,6 +18,7 @@ class SSplitterH;
 class FGraphicDevice;
 class SLevelEditor;
 class FDXDBufferManager;
+class USubEngine;
 
 class FEngineLoop
 {
@@ -32,6 +33,8 @@ public:
 
     void GetClientSize(uint32& OutWidth, uint32& OutHeight) const;
 
+    void OpenParticleSystemViewer();
+    void SubEngineControl();
 private:
     void WindowInit(HINSTANCE hInstance);
     static LRESULT CALLBACK AppWndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
@@ -51,8 +54,16 @@ public:
     FGPUTimingManager GPUTimingManager;
     FEngineProfiler EngineProfiler;
 
+    static FGraphicsDevice ParticleViewerGD;
+    HWND ParticleViewerWnd;
+    void ParticleSubWindowInit(HINSTANCE hInstance);
+    void CleanupSubWindow();
+
+    USubEngine* ParticleSubEngine;
+
 private:
     UImGuiManager* UIManager;
+    ImGuiContext* CurrentImGuiContext;
     //TODO: GWorld 제거, Editor들 EditorEngine으로 넣기
 
     std::unique_ptr<FSlateAppMessageHandler> AppMessageHandler;

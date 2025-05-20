@@ -102,6 +102,15 @@ UAnimationAsset* UAssetManager::GetAnimation(const FName& Name)
     return nullptr;
 }
 
+UParticleSystem* UAssetManager::GetParticleSystem(const FName& Name)
+{
+    if (ParticleSystemMap.Contains(Name))
+    {
+        return ParticleSystemMap[Name];
+    }
+    return nullptr;
+}
+
 void UAssetManager::AddAssetInfo(const FAssetInfo& Info)
 {
     AssetRegistry->PathNameToAssetInfo.Add(Info.AssetName, Info);
@@ -130,6 +139,11 @@ void UAssetManager::AddStaticMesh(const FName& Key, UStaticMesh* StaticMesh)
 void UAssetManager::AddAnimation(const FName& Key, UAnimationAsset* Animation)
 {
     AnimationMap.Add(Key, Animation);
+}
+
+void UAssetManager::AddParticleSystem(const FName& Key, UParticleSystem* ParticleSystem)
+{
+    ParticleSystemMap.Add(Key, ParticleSystem);
 }
 
 void UAssetManager::LoadContentFiles()

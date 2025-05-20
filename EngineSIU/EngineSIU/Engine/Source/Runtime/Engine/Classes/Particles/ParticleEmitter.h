@@ -18,6 +18,7 @@ public:
 
     virtual FParticleEmitterInstance* CreateInstance(UParticleSystemComponent* InComponent);
     UParticleLODLevel* GetCurrentLODLevel(const FParticleEmitterInstance* Instance) const;
+    virtual void UpdateModuleLists();
 
     void Build();
     void CacheEmitterModuleInfo();
@@ -40,4 +41,9 @@ public:
     TMap<UParticleModule*, uint32> ModuleInstanceOffsetMap;
 
     TArray<UParticleModule*> ModulesNeedingInstanceData;
+
+    UPROPERTY(
+        EditAnywhere,
+        int32, InitialAllocationCount, = 20
+    )
 };
