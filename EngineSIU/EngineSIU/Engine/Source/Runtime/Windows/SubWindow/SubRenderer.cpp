@@ -18,13 +18,13 @@ void FSubRenderer::PrepareRender(const std::shared_ptr<FEditorViewportClient>& V
     ParticleRenderPass->AddParticleComponent(((UParticleSubEngine*)Engine)->GetParticleSystemComponent());
     const EViewModeIndex ViewMode = Viewport->GetViewMode();
     //TargetViewport = Viewport;
-    //UpdateViewCamera(Viewport);
+    UpdateViewCamera(Viewport);
     FViewportResource* ViewportResource = Viewport->GetViewportResource();
     //FRenderTargetRHI* RenderTargetRHI = ViewportResource->GetRenderTarget(EResourceType::ERT_Scene);
     //FDepthStencilRHI* DepthStencilRHI = ViewportResource->GetDepthStencil(EResourceType::ERT_Scene);
 
-    D3D11_VIEWPORT vp = Viewport->GetD3DViewport();
-    Graphics->DeviceContext->RSSetViewports(1, &vp);
+    //D3D11_VIEWPORT vp = Viewport->GetD3DViewport();
+    //Graphics->DeviceContext->RSSetViewports(1, &vp);
     
     //Graphics->DeviceContext->ClearRenderTargetView(
     //    RenderTargetRHI->RTV,
@@ -77,4 +77,17 @@ void FSubRenderer::Release()
         delete ParticleRenderPass;
         ParticleRenderPass = nullptr;
     }
+}
+
+void FSubRenderer::UpdateViewCamera(const std::shared_ptr<FEditorViewportClient>& Viewport)
+{
+    FCameraConstantBuffer CameraConstantBuffer;
+    CameraConstantBuffer.ViewMatrix = Viewport->GetViewMatrix();
+    CameraConstantBuffer.InvViewMatrix = FMatrix::Inverse(CameraConstantBuffer.ViewMatrix);
+    CameraConstantBuffer.ProjectionMatrix = Viewport->GetProjectionMatrix();
+    CameraConstantBuffer.InvProjectionMatrix = FMatrix::Inverse(CameraConstantBuffer.ProjectionMatrix);
+    CameraConstantBuffer.ViewLocation = Viewport->GetCameraLocation();
+    CameraConstantBuffer.NearClip = Viewport->GetCameraNearClip();
+    CameraConstantBuffer.FarClip = Viewport->GetCameraFarClip();
+    BufferManager->UpdateConstantBuffer("FCameraConstantBuffer", CameraConstantBuffer);
 }
