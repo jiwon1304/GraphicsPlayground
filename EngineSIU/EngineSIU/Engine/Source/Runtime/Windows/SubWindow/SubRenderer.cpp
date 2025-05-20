@@ -22,7 +22,8 @@ void FSubRenderer::PrepareRender(const std::shared_ptr<FEditorViewportClient>& V
     FViewportResource* ViewportResource = Viewport->GetViewportResource();
     //FRenderTargetRHI* RenderTargetRHI = ViewportResource->GetRenderTarget(EResourceType::ERT_Scene);
     //FDepthStencilRHI* DepthStencilRHI = ViewportResource->GetDepthStencil(EResourceType::ERT_Scene);
-
+    ViewportResource->ClearDepthStencils(Graphics->DeviceContext);
+    ViewportResource->ClearRenderTargets(Graphics->DeviceContext);
     //D3D11_VIEWPORT vp = Viewport->GetD3DViewport();
     //Graphics->DeviceContext->RSSetViewports(1, &vp);
     
@@ -43,20 +44,20 @@ void FSubRenderer::PrepareRender(const std::shared_ptr<FEditorViewportClient>& V
     //    nullptr
     //);
 
-    Graphics->DeviceContext->OMSetRenderTargets(
-        1,
-        &Graphics->BackBufferRTV,
-        Graphics->DeviceDSV
-    );
+    //Graphics->DeviceContext->OMSetRenderTargets(
+    //    1,
+    //    &Graphics->BackBufferRTV,
+    //    Graphics->DeviceDSV
+    //);
 
     //if (Viewport->GetViewMode() == EViewModeIndex::VMI_Wireframe)
     //    Graphics->DeviceContext->RSSetState(Graphics->RasterizerWireframeBack);
     //else
     //    Graphics->DeviceContext->RSSetState(Graphics->RasterizerSolidBack);
 
-    Graphics->DeviceContext->OMSetDepthStencilState(
-        Graphics->DepthStencilState,
-        0);
+    //Graphics->DeviceContext->OMSetDepthStencilState(
+    //    Graphics->DepthStencilState,
+    //    0);
 
 }
 
