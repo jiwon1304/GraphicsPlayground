@@ -159,3 +159,8 @@ void UParticleSubEngine::Release()
         SubRenderer = nullptr;
     }
 }
+
+UParticleSystemComponent* UParticleSubEngine::GetParticleSystemComponent() const
+{
+    return ParticleSystemComponent;
+}

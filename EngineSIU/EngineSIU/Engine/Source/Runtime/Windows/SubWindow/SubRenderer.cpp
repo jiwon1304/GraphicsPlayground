@@ -2,6 +2,7 @@
 #include "UnrealEd/EditorViewportClient.h"
 #include "Engine/UnrealClient.h"
 #include "Renderer/ParticleRenderPass.h"
+#include "SubWindow/ParticleSubEngine.h"
 void FSubRenderer::Initialize(FGraphicsDevice* InGraphics, FDXDBufferManager* InBufferManager, USubEngine* InEngine)
 {
     Engine = InEngine;
@@ -13,8 +14,8 @@ void FSubRenderer::Initialize(FGraphicsDevice* InGraphics, FDXDBufferManager* In
 
 void FSubRenderer::PrepareRender(const std::shared_ptr<FEditorViewportClient>& Viewport)
 {
-    ParticleRenderPass->PrepareRenderArr();
-
+    //ParticleRenderPass->PrepareRenderArr();
+    ParticleRenderPass->AddParticleComponent(((UParticleSubEngine*)Engine)->GetParticleSystemComponent());
     const EViewModeIndex ViewMode = Viewport->GetViewMode();
     //TargetViewport = Viewport;
     //UpdateViewCamera(Viewport);
@@ -22,8 +23,8 @@ void FSubRenderer::PrepareRender(const std::shared_ptr<FEditorViewportClient>& V
     //FRenderTargetRHI* RenderTargetRHI = ViewportResource->GetRenderTarget(EResourceType::ERT_Scene);
     //FDepthStencilRHI* DepthStencilRHI = ViewportResource->GetDepthStencil(EResourceType::ERT_Scene);
 
-    //D3D11_VIEWPORT vp = Viewport->GetD3DViewport();
-    //Graphics->DeviceContext->RSSetViewports(1, &vp);
+    D3D11_VIEWPORT vp = Viewport->GetD3DViewport();
+    Graphics->DeviceContext->RSSetViewports(1, &vp);
     
     //Graphics->DeviceContext->ClearRenderTargetView(
     //    RenderTargetRHI->RTV,
