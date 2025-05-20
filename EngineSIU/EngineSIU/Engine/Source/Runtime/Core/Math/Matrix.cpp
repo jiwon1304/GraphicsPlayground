@@ -1,4 +1,4 @@
-﻿#include "Matrix.h"
+#include "Matrix.h"
 
 #include <cmath>
 #include "MathSSE.h"
@@ -155,6 +155,22 @@ FVector FMatrix::ExtractScaling(float Tolerance)
 FVector FMatrix::GetOrigin() const
 {
     return FVector{M[3][0], M[3][1], M[3][2]};
+}
+void FMatrix::SetOrigin(const FVector& NewOrigin)
+{
+    M[3][0] = NewOrigin.X;
+    M[3][1] = NewOrigin.Y;
+    M[3][2] = NewOrigin.Z;
+}
+
+FVector4 FMatrix::GetColumn(int32 ColumnIndex) const
+{
+    return FVector4(
+        M[0][ColumnIndex],
+        M[1][ColumnIndex],
+        M[2][ColumnIndex],
+        M[3][ColumnIndex]
+    );
 }
 
 float FMatrix::Determinant() const

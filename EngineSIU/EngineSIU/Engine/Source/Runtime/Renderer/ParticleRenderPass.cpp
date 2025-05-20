@@ -10,6 +10,9 @@
 #include "UnrealClient.h"
 #include "RendererHelpers.h"
 #include "Components/ParticleSystemComponent.h"
+#include "Engine/FObjLoader.h"
+#include "Engine/StaticMesh.h"
+#include "Engine/Asset/StaticMeshAsset.h"
 #include "Particles/ParticleEmitterInstances.h"
 #include "UObject/UObjectIterator.h"
 
@@ -27,6 +30,11 @@ struct FSpriteParticleInstance
     FVector2D Size;
     float Rotation;
     float SubImageIndex;
+    FLinearColor Color;
+};
+struct FMeshParticleInstance
+{
+    FMatrix Transform;      // 전체 4x4 행렬
     FLinearColor Color;
 };
 
@@ -54,12 +62,27 @@ void FParticleRenderPass::Initialize(FDXDBufferManager* InBufferManager, FGraphi
         { {-0.5f, -0.5f} }, { {0.5f, 0.5f} }, { {-0.5f, 0.5f} },
     };
     BufferManager->CreateVertexBuffer(TEXT("QuadSpriteVertex"), QuadVertices, QuadVertexInfo);
-    BufferManager->CreateDynamicVertexBuffer(TEXT("Global_SpriteInstance"), sizeof(FSpriteParticleInstance) * 1000, InstanceInfoSprite);
+
+    BufferManager->CreateDynamicVertexBuffer(
+        TEXT("Global_SpriteInstance"), 
+        sizeof(FSpriteParticleInstance) * 1000, 
+        InstanceInfoSprite
+    );
+    BufferManager->CreateDynamicVertexBuffer(
+        TEXT("Global_MeshInstance"),
+        sizeof(FMeshParticleInstance) * 1000,
+        InstanceInfoMesh
+    );
 
 }
 
 void FParticleRenderPass::CreateShader()
 {
+    // Sprite용
+    D3D_SHADER_MACRO DefinesSprite[] = {
+        { "PARTICLE_SPRITE", "1" },
+        { nullptr, nullptr }
+    };
     D3D11_INPUT_ELEMENT_DESC InputLayout[] = {
         { "TEXCOORD",        0, DXGI_FORMAT_R32G32_FLOAT,        0, 0,   D3D11_INPUT_PER_VERTEX_DATA,   0 },
         { "INSTANCE_POS",    0, DXGI_FORMAT_R32G32B32_FLOAT,     1, 0,   D3D11_INPUT_PER_INSTANCE_DATA, 1 },
@@ -71,10 +94,26 @@ void FParticleRenderPass::CreateShader()
         { "INSTANCE_SUBUV",  0, DXGI_FORMAT_R32_FLOAT,           1, 44,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
         { "INSTANCE_COLOR",  0, DXGI_FORMAT_R32G32B32A32_FLOAT,  1, 48,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
     };
+    ShaderManager->AddVertexShaderAndInputLayout(L"ParticleShader_Sprite", L"Shaders/ParticleShader.hlsl", "mainVS", InputLayout, ARRAYSIZE(InputLayout), DefinesSprite);
+    ShaderManager->AddPixelShader(L"ParticleShader_Sprite", L"Shaders/ParticleShader.hlsl", "mainPS", DefinesSprite);
 
-    ShaderManager->AddVertexShaderAndInputLayout(L"ParticleShader", L"Shaders/ParticleShader.hlsl", "mainVS", InputLayout, ARRAYSIZE(InputLayout));
-    ShaderManager->AddPixelShader(L"ParticleShader", L"Shaders/ParticleShader.hlsl", "mainPS");
+    // Mesh용
+    D3D_SHADER_MACRO DefinesMesh[] = {
+        { "PARTICLE_MESH", "1" },
+        { nullptr, nullptr }
+    };
+    D3D11_INPUT_ELEMENT_DESC InputLayoutMesh[] = {
+        { "POSITION",           0, DXGI_FORMAT_R32G32B32_FLOAT,     0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "INSTANCE_TRANSFORM", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+        { "INSTANCE_TRANSFORM", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 16, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+        { "INSTANCE_TRANSFORM", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 32, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+        { "INSTANCE_TRANSFORM", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 48, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+        { "INSTANCE_COLOR",     0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 64, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+    };
+    ShaderManager->AddVertexShaderAndInputLayout(L"ParticleShader_Mesh", L"Shaders/ParticleShader.hlsl", "mainVS", InputLayoutMesh, ARRAYSIZE(InputLayoutMesh), DefinesMesh);
+    ShaderManager->AddPixelShader(L"ParticleShader_Mesh", L"Shaders/ParticleShader.hlsl", "mainPS", DefinesMesh);
 }
+
 
 void FParticleRenderPass::ReleaseShader() {}
 
@@ -94,13 +133,13 @@ void FParticleRenderPass::PrepareRenderState(const std::shared_ptr<FEditorViewpo
 {
     Graphics->DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-    ID3D11VertexShader* VS = ShaderManager->GetVertexShaderByKey(L"ParticleShader");
+    /*ID3D11VertexShader* VS = ShaderManager->GetVertexShaderByKey(L"ParticleShader");
     ID3D11InputLayout* IL = ShaderManager->GetInputLayoutByKey(L"ParticleShader");
     ID3D11PixelShader* PS = ShaderManager->GetPixelShaderByKey(L"ParticleShader");
 
     Graphics->DeviceContext->VSSetShader(VS, nullptr, 0);
     Graphics->DeviceContext->IASetInputLayout(IL);
-    Graphics->DeviceContext->PSSetShader(PS, nullptr, 0);
+    Graphics->DeviceContext->PSSetShader(PS, nullptr, 0);*/
     BufferManager->BindConstantBuffer(TEXT("FParticleSettingsConstants"), 4, EShaderStage::Vertex);
 
     FViewportResource* ViewportResource = Viewport->GetViewportResource();
@@ -128,11 +167,12 @@ void FParticleRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& V
             switch (ReplayData.eEmitterType)
             {
             case DET_Sprite:
-                RenderSpriteEmitter(Comp, Emitter, (const FDynamicSpriteEmitterReplayDataBase&)ReplayData);
+                RenderMeshEmitter(Comp, Emitter, (const FDynamicMeshEmitterReplayDataBase&)ReplayData);
+                //RenderSpriteEmitter(Comp, Emitter, (const FDynamicSpriteEmitterReplayDataBase&)ReplayData);
                 break;
 
             case DET_Mesh:
-                // 추후: RenderMeshEmitter(Comp, Emitter, (const FDynamicMeshEmitterReplayDataBase&)ReplayData);
+                RenderMeshEmitter(Comp, Emitter, (const FDynamicMeshEmitterReplayDataBase&)ReplayData);
                 break;
 
             default:
@@ -146,6 +186,13 @@ void FParticleRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& V
 void FParticleRenderPass::RenderSpriteEmitter(UParticleSystemComponent* Comp, FParticleEmitterInstance* Emitter, const FDynamicSpriteEmitterReplayDataBase& ReplayData)
 {
     //TestTexture = FEngineLoop::ResourceManager.GetTexture(L"Assets/Texture/T_Explosion_SubUV.png");
+    ID3D11VertexShader* VS = ShaderManager->GetVertexShaderByKey(L"ParticleShader_Sprite");
+    ID3D11InputLayout* IL = ShaderManager->GetInputLayoutByKey(L"ParticleShader_Sprite");
+    ID3D11PixelShader* PS = ShaderManager->GetPixelShaderByKey(L"ParticleShader_Sprite");
+
+    Graphics->DeviceContext->VSSetShader(VS, nullptr, 0);
+    Graphics->DeviceContext->IASetInputLayout(IL);
+    Graphics->DeviceContext->PSSetShader(PS, nullptr, 0);
 
     static float SubImageIndex = 0.0f;
     static float SubImageIndexTimer = 0.0f;
@@ -213,6 +260,87 @@ void FParticleRenderPass::RenderSpriteEmitter(UParticleSystemComponent* Comp, FP
     Graphics->DeviceContext->PSSetSamplers(0, 1, &Texture->SamplerState);
     Graphics->DeviceContext->IASetVertexBuffers(0, 2, Buffers, Strides, Offsets);
     Graphics->DeviceContext->DrawInstanced(6, Instances.Num(), 0, 0);
+}
+void FParticleRenderPass::RenderMeshEmitter(UParticleSystemComponent* Comp, FParticleEmitterInstance* Emitter, const FDynamicMeshEmitterReplayDataBase& ReplayData)
+{
+    ID3D11VertexShader* VS = ShaderManager->GetVertexShaderByKey(L"ParticleShader_Mesh");
+    ID3D11InputLayout* IL = ShaderManager->GetInputLayoutByKey(L"ParticleShader_Mesh");
+    ID3D11PixelShader* PS = ShaderManager->GetPixelShaderByKey(L"ParticleShader_Mesh");
+
+    Graphics->DeviceContext->VSSetShader(VS, nullptr, 0);
+    Graphics->DeviceContext->IASetInputLayout(IL);
+    Graphics->DeviceContext->PSSetShader(PS, nullptr, 0);
+
+
+    //나중에 파티클 모듈에서 가져와야함
+    UStaticMesh* Mesh = FObjManager::GetStaticMesh(TestMeshAssetName.ToString().ToWideString());
+    BufferManager->CreateVertexBuffer(
+        "TestMeshVertex",
+        Mesh->GetRenderData()->Vertices,
+        StaticMeshVertexInfo
+    );
+    BufferManager->CreateIndexBuffer(
+        "TestMeshIndex",
+        Mesh->GetRenderData()->Indices,
+        StaticMeshIndexInfo
+    );
+    if (!Mesh || !Mesh->GetRenderData()) return;
+
+    FStaticMeshRenderData* RenderData = Mesh->GetRenderData();
+    if (RenderData->Vertices.IsEmpty() || RenderData->Indices.IsEmpty()) return;
+
+    // 인스턴스 데이터 생성
+    TArray<FMeshParticleInstance> Instances;
+
+    const int32 Stride = Emitter->ParticleStride;
+    const int32 ActiveCount = Emitter->ActiveParticles;
+
+    for (int32 i = 0; i < ActiveCount; ++i)
+    {
+        const int32 ParticleIndex = Emitter->ParticleIndices[i];
+        const FBaseParticle* P = reinterpret_cast<const FBaseParticle*>(Emitter->ParticleData + ParticleIndex * Stride);
+
+        FMatrix ParticleTransform = FMatrix::Identity;
+        ParticleTransform.SetOrigin(P->Location);
+        FMatrix ScaleMat = FMatrix::CreateScaleMatrix(P->Size);
+
+        ParticleTransform *= ScaleMat;
+        FMeshParticleInstance Inst;
+        Inst.Transform = ParticleTransform;
+        Inst.Color = P->Color;
+        Instances.Add(Inst);
+    }
+
+    if (Instances.IsEmpty()) return;
+
+    BufferManager->UpdateDynamicVertexBuffer(TEXT("Global_MeshInstance"), Instances);
+
+    // Constant Buffer
+    FObjectConstantBuffer ObjectData;
+    FMatrix WorldMatrix = Comp->GetWorldMatrix();
+    ObjectData.WorldMatrix = WorldMatrix;
+    ObjectData.InverseTransposedWorld = FMatrix::Transpose(FMatrix::Inverse(WorldMatrix));
+    ObjectData.UUIDColor = Comp->EncodeUUID() / 255.0f;
+    ObjectData.bIsSelected = false;
+    BufferManager->UpdateConstantBuffer(TEXT("FObjectConstantBuffer"), ObjectData);
+
+    // 머티리얼 → 텍스처 바인딩
+    const FMaterialInfo& Mat = RenderData->Materials[0];
+    const FWString& TexturePath = Mat.TextureInfos[0].TexturePath;
+    std::shared_ptr<FTexture> Texture = FEngineLoop::ResourceManager.GetTexture(TexturePath);
+
+    Graphics->DeviceContext->PSSetShaderResources(0, 1, &Texture->TextureSRV);
+    Graphics->DeviceContext->PSSetSamplers(0, 1, &Texture->SamplerState);
+
+    // Vertex/Index/Instance 설정
+    ID3D11Buffer* Buffers[2] = { StaticMeshVertexInfo.VertexBuffer, InstanceInfoMesh.VertexBuffer };
+    UINT Strides[2] = { sizeof(FStaticMeshVertex), sizeof(FMeshParticleInstance) };
+    UINT Offsets[2] = { 0, 0 };
+
+    Graphics->DeviceContext->IASetVertexBuffers(0, 2, Buffers, Strides, Offsets);
+    Graphics->DeviceContext->IASetIndexBuffer(StaticMeshIndexInfo.IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+    Graphics->DeviceContext->DrawIndexedInstanced(RenderData->Indices.Num(), Instances.Num(), 0, 0, 0);
 }
 
 void FParticleRenderPass::ClearRenderArr()

@@ -42,14 +42,10 @@ struct VS_INPUT
 #if defined(PARTICLE_MESH)
 struct VS_INPUT
 {
-    float3 LocalPos       : POSITION;
-    float4 Color          : COLOR0;
-    float4 Transform0     : TEXCOORD0;
-    float4 Transform1     : TEXCOORD1;
-    float4 Transform2     : TEXCOORD2;
-    float4 Velocity       : TEXCOORD3;
-    int2   SubUVParams01  : TEXCOORD4;
-    float2 SubUVTime      : TEXCOORD5; // .x = SubUVLerp, .y = RelativeTime
+    float3 LocalPos : POSITION;
+
+    row_major float4x4 InstanceTransform : INSTANCE_TRANSFORM;
+    float4 Color : INSTANCE_COLOR;
 };
 #endif
 
@@ -110,18 +106,12 @@ VS_OUTPUT mainVS(VS_INPUT input)
 #endif
 
 #if defined(PARTICLE_MESH)
-    float3 worldPos =
-        input.LocalPos.x * input.Transform0.xyz +
-        input.LocalPos.y * input.Transform1.xyz +
-        input.LocalPos.z * input.Transform2.xyz +
-        float3(input.Transform0.w, input.Transform1.w, input.Transform2.w);
-
-    float4 viewPos = mul(float4(worldPos, 1.0f), ViewMatrix);
+    float4 worldPos = mul(float4(input.LocalPos, 1.0f), input.InstanceTransform);
+    float4 viewPos = mul(worldPos, ViewMatrix);
     output.Position = mul(viewPos, ProjectionMatrix);
-    output.WorldPos = worldPos;
-
+    output.WorldPos = worldPos.xyz;
     output.Color = input.Color;
-    output.UV = float2(0.0f, 0.0f);
+    output.UV = float2(0.0f, 0.0f); // optional, can extend later
 #endif
 
     return output;
@@ -133,21 +123,15 @@ VS_OUTPUT mainVS(VS_INPUT input)
 
 float4 mainPS(VS_OUTPUT input) : SV_TARGET
 {
-    //return float4(input.UV, 0, 1); // UV가 색상으로 보이는지 확인
-    /*float4 finalColor = input.Color;
-    finalColor.rgb = LinearToSRGB(finalColor.rgb);*/
-
-    // 디버그용 컬러 제거
+#if defined(PARTICLE_SPRITE)
     float4 texColor = SpriteTexture.Sample(SpriteSampler, input.UV);
     if (texColor.a < 0.1f || max(max(texColor.r, texColor.g), texColor.b) < 0.05f)
-    {
         discard;
-    }
-    float4 finalColor = /*input.Color * */texColor;
-    //finalColor.rgb = LinearToSRGB(finalColor.rgb);
-    
-     //finalColor.rgb = float3(1, 1, 0);
-    return finalColor;
+    return input.Color * texColor;
+
+#elif defined(PARTICLE_MESH)
+    return input.Color; // Mesh에서는 텍스처 없이 색상만 렌더
+#endif
 }
 
 #endif // PARTICLE_SHADER
