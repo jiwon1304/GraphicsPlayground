@@ -14,10 +14,6 @@ cbuffer ParticleSettings : register(b4)
     int SubUVCols;
     int SubUVRows;
 };
-
-// ==================== Texture Bindings ====================
-Texture2D SpriteTexture : register(t0);
-SamplerState SpriteSampler : register(s0);
 // ==================== Vertex Structures ====================
 
 #if defined(PARTICLE_SPRITE)
@@ -38,15 +34,21 @@ struct VS_INPUT
 
 
 #endif
-
 #if defined(PARTICLE_MESH)
+cbuffer MaterialConstants : register(b1)
+{
+    FMaterial Material;
+}
+
 struct VS_INPUT
 {
     float3 LocalPos : POSITION;
+    float2 UV       : TEXCOORD0;
 
     row_major float4x4 InstanceTransform : INSTANCE_TRANSFORM;
     float4 Color : INSTANCE_COLOR;
 };
+
 #endif
 
 struct VS_OUTPUT
@@ -111,7 +113,7 @@ VS_OUTPUT mainVS(VS_INPUT input)
     output.Position = mul(viewPos, ProjectionMatrix);
     output.WorldPos = worldPos.xyz;
     output.Color = input.Color;
-    output.UV = float2(0.0f, 0.0f); // optional, can extend later
+    output.UV = input.UV;
 #endif
 
     return output;
@@ -124,14 +126,18 @@ VS_OUTPUT mainVS(VS_INPUT input)
 float4 mainPS(VS_OUTPUT input) : SV_TARGET
 {
 #if defined(PARTICLE_SPRITE)
-    float4 texColor = SpriteTexture.Sample(SpriteSampler, input.UV);
+    float4 texColor = MaterialTextures[0].Sample(MaterialSamplers[0], input.UV);
     if (texColor.a < 0.1f || max(max(texColor.r, texColor.g), texColor.b) < 0.05f)
         discard;
-    return input.Color * texColor;
 
 #elif defined(PARTICLE_MESH)
-    return input.Color; // Mesh에서는 텍스처 없이 색상만 렌더
+    float4 texColor = MaterialTextures[0].Sample(MaterialSamplers[0], input.UV);
+    if (texColor.a < 0.1f)
+        discard;
 #endif
+    
+    //return float4(input.UV,0,1);
+    return /*input.Color * */texColor;
 }
 
 #endif // PARTICLE_SHADER

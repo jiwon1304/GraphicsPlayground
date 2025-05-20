@@ -103,13 +103,16 @@ void FParticleRenderPass::CreateShader()
         { nullptr, nullptr }
     };
     D3D11_INPUT_ELEMENT_DESC InputLayoutMesh[] = {
-        { "POSITION",           0, DXGI_FORMAT_R32G32B32_FLOAT,     0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "INSTANCE_TRANSFORM", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
-        { "INSTANCE_TRANSFORM", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 16, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
-        { "INSTANCE_TRANSFORM", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 32, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
-        { "INSTANCE_TRANSFORM", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 48, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
-        { "INSTANCE_COLOR",     0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 64, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+        { "POSITION",           0, DXGI_FORMAT_R32G32B32_FLOAT,     0, 0,  D3D11_INPUT_PER_VERTEX_DATA,   0 },
+        { "TEXCOORD",           0, DXGI_FORMAT_R32G32_FLOAT,        0, 56, D3D11_INPUT_PER_VERTEX_DATA,   0 }, // UV
+        { "INSTANCE_TRANSFORM", 0, DXGI_FORMAT_R32G32B32A32_FLOAT,  1, 0,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+        { "INSTANCE_TRANSFORM", 1, DXGI_FORMAT_R32G32B32A32_FLOAT,  1, 16, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+        { "INSTANCE_TRANSFORM", 2, DXGI_FORMAT_R32G32B32A32_FLOAT,  1, 32, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+        { "INSTANCE_TRANSFORM", 3, DXGI_FORMAT_R32G32B32A32_FLOAT,  1, 48, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+        { "INSTANCE_COLOR",     0, DXGI_FORMAT_R32G32B32A32_FLOAT,  1, 64, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
     };
+
+
     ShaderManager->AddVertexShaderAndInputLayout(L"ParticleShader_Mesh", L"Shaders/ParticleShader.hlsl", "mainVS", InputLayoutMesh, ARRAYSIZE(InputLayoutMesh), DefinesMesh);
     ShaderManager->AddPixelShader(L"ParticleShader_Mesh", L"Shaders/ParticleShader.hlsl", "mainPS", DefinesMesh);
 }
@@ -256,6 +259,20 @@ void FParticleRenderPass::RenderSpriteEmitter(UParticleSystemComponent* Comp, FP
     //Sprite니까 무조건 0번?
     std::shared_ptr<FTexture> Texture = 
         FEngineLoop::ResourceManager.GetTexture(ReplayData.Material->GetMaterialInfo().TextureInfos[0].TexturePath);
+
+    ID3D11ShaderResourceView* SRVs[9] = {};
+    ID3D11SamplerState* Samplers[9] = {};
+    if (ReplayData.Material->GetMaterialInfo().TextureInfos.IsValidIndex(0))
+    {
+        const FWString& TexturePath = ReplayData.Material[0].GetMaterialInfo().TextureInfos[0].TexturePath;
+        std::shared_ptr<FTexture> Texture = FEngineLoop::ResourceManager.GetTexture(TexturePath);
+        if (Texture)
+        {
+            SRVs[0] = Texture->TextureSRV;
+            Samplers[0] = Texture->SamplerState;
+        }
+    }
+
     Graphics->DeviceContext->PSSetShaderResources(0, 1, &Texture->TextureSRV);
     Graphics->DeviceContext->PSSetSamplers(0, 1, &Texture->SamplerState);
     Graphics->DeviceContext->IASetVertexBuffers(0, 2, Buffers, Strides, Offsets);
@@ -324,13 +341,28 @@ void FParticleRenderPass::RenderMeshEmitter(UParticleSystemComponent* Comp, FPar
     ObjectData.bIsSelected = false;
     BufferManager->UpdateConstantBuffer(TEXT("FObjectConstantBuffer"), ObjectData);
 
-    // 머티리얼 → 텍스처 바인딩
+    /*// 머티리얼 → 텍스처 바인딩
     const FMaterialInfo& Mat = RenderData->Materials[0];
     const FWString& TexturePath = Mat.TextureInfos[0].TexturePath;
-    std::shared_ptr<FTexture> Texture = FEngineLoop::ResourceManager.GetTexture(TexturePath);
+    std::shared_ptr<FTexture> Texture = FEngineLoop::ResourceManager.GetTexture(TexturePath);*/
 
-    Graphics->DeviceContext->PSSetShaderResources(0, 1, &Texture->TextureSRV);
-    Graphics->DeviceContext->PSSetSamplers(0, 1, &Texture->SamplerState);
+    // Diffuse texture only for now
+    ID3D11ShaderResourceView* SRVs[9] = {};
+    ID3D11SamplerState* Samplers[9] = {};
+    if (RenderData->Materials[0].TextureInfos.IsValidIndex(0))
+    {
+        const FWString& TexturePath = RenderData->Materials[0].TextureInfos[0].TexturePath;
+        std::shared_ptr<FTexture> Texture = FEngineLoop::ResourceManager.GetTexture(TexturePath);
+        if (Texture)
+        {
+            SRVs[0] = Texture->TextureSRV;
+            Samplers[0] = Texture->SamplerState;
+        }
+    }
+
+    Graphics->DeviceContext->PSSetShaderResources(0, 9, SRVs);
+    Graphics->DeviceContext->PSSetSamplers(0, 9, Samplers);
+
 
     // Vertex/Index/Instance 설정
     ID3D11Buffer* Buffers[2] = { StaticMeshVertexInfo.VertexBuffer, InstanceInfoMesh.VertexBuffer };

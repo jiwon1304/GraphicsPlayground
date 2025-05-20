@@ -514,6 +514,7 @@ void ControlEditorPanel::CreateModifyButton(const ImVec2 ButtonSize, ImFont* Ico
                 {
                     AParticleSystemActor* ParticleActor = World->SpawnActor<AParticleSystemActor>();
                     ParticleActor->SetActorLabel(TEXT("OBJ_PARTICLE_SPRITE"));
+                    ParticleActor->GetParticleSystemComponent()->InitTestParticles(EDynamicEmitterType::DET_Sprite);
                     // SpriteEmitter 기본 설정 적용 등은 여기서 추가 가능
                     break;
                 }
@@ -521,6 +522,7 @@ void ControlEditorPanel::CreateModifyButton(const ImVec2 ButtonSize, ImFont* Ico
                 {
                     AParticleSystemActor* ParticleActor = World->SpawnActor<AParticleSystemActor>();
                     ParticleActor->SetActorLabel(TEXT("OBJ_PARTICLE_MESH"));
+                    ParticleActor->GetParticleSystemComponent()->InitTestParticles(EDynamicEmitterType::DET_Mesh);
                     // MeshEmitter 기본 설정 적용 등은 여기서 추가 가능
                     break;
                 }

@@ -2,6 +2,7 @@
 #include "UObject/Object.h"
 #include "UObject/ObjectMacros.h"
 #include "Components/PrimitiveComponent.h"
+#include "Particles/ParticleHelper.h"
 
 struct FParticleEmitterInstance;
 class UParticleSystem;
@@ -42,7 +43,7 @@ public:
 
     void SetTemplate(UParticleSystem* InTemplate);
     void ClearDynamicData();
-    void InitTestSpriteParticles();
+    void InitTestParticles(EDynamicEmitterType Type);
 
     UPROPERTY(
         EditAnywhere,
