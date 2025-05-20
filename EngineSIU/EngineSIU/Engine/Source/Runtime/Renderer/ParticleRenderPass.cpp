@@ -385,3 +385,8 @@ void FParticleRenderPass::ClearRenderArr()
 {
     ParticleComponents.Empty();
 }
+
+void FParticleRenderPass::AddParticleComponent(UParticleSystemComponent* InParticleComponent)
+{
+    ParticleComponents.Add(InParticleComponent);
+}

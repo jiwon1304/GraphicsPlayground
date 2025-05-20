@@ -10,7 +10,7 @@ public:
     UParticleModuleSizeBase() = default;
     virtual ~UParticleModuleSizeBase() override = default;
 
-    virtual FName GetName() const override
+    virtual FName GetModuleName() const override
     {
         return FName(TEXT("SizeBase"));
     }

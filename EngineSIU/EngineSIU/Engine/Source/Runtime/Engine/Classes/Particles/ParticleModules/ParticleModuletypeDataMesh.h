@@ -15,7 +15,7 @@ public:
 
     virtual FParticleEmitterInstance* CreateInstance(UParticleEmitter* InEmitterParent, UParticleSystemComponent* InComponent) override;
 
-    virtual FName GetName() const override
+    virtual FName GetModuleName() const override
     {
         return FName(TEXT("MeshTypeData"));
     }

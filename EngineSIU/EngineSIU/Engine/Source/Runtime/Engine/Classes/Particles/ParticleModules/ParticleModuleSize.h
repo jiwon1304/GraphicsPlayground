@@ -36,7 +36,7 @@ public:
      *  @param  InRandomStream     랜덤 값을 추출할 때 사용할 랜덤 스트림
      */
     void SpawnEx(FParticleEmitterInstance* Owner, int32 Offset, float SpawnTime, FRandomStream* InRandomStream, FBaseParticle* ParticleBase);
-    virtual FName GetName() const override
+    virtual FName GetModuleName() const override
     {
         return FName(TEXT("Initial Size"));
     }
