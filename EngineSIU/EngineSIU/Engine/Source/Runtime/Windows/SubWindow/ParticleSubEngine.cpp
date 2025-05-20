@@ -10,6 +10,7 @@
 #include "Particles/ParticleSystem.h"
 #include "Particles/ParticleEmitter.h"
 #include "Particles/ParticleModules/ParticleModuleRequired.h"
+#include "Components/ParticleSystemComponent.h"
 UParticleSubEngine::UParticleSubEngine()
 {
 }
@@ -29,18 +30,18 @@ void UParticleSubEngine::Initialize(HWND& hWnd, FGraphicsDevice* InGraphics, FDX
 
     ViewportClient->ViewFOV = 60.f;
 
-    //UnrealSphereComponent = FObjectFactory::ConstructObject<UStaticMeshComponent>(this);
-    //UnrealSphereComponent->SetStaticMesh(UAssetManager::Get().GetStaticMesh(L"Contents/Sphere.obj"));
-    //UnrealSphereComponent->SetRelativeScale3D(FVector(4.f, 4.f, 4.f));
-    //UnrealSphereComponent->SetRelativeLocation(FVector(0, 0, 0));
-
-
-
+    ParticleSystemComponent = FObjectFactory::ConstructObject<UParticleSystemComponent>(this);
+    ParticleViewerPanel* particlePanel = reinterpret_cast<ParticleViewerPanel*>(UnrealEditor->GetParticleSubPanel("ParticleViewerPanel").get());
+    particlePanel->SetParticleSystemComponent(ParticleSystemComponent);
 }
 
 void UParticleSubEngine::Tick(float DeltaTime)
 {
     ViewportClient->Tick(DeltaTime);
+    if (ParticleSystemComponent->Template)
+    {
+        ParticleSystemComponent->TickComponent(DeltaTime);
+    }
     Input(DeltaTime);
     Render();
 }

@@ -1,8 +1,7 @@
 #pragma once
 #include "SubEngine.h"
 
-class UStaticMeshComponent;
-class UParticleSystem;
+class UParticleSystemComponent;
 class UParticleSubEngine : public USubEngine
 {
     DECLARE_CLASS(UParticleSubEngine, USubEngine)
@@ -16,7 +15,6 @@ public:
     virtual void Render();
     virtual void Release();
 private:
-    UStaticMeshComponent* UnrealSphereComponent = nullptr;
-    UParticleSystem* ParticleSystem = nullptr;
+    UParticleSystemComponent* ParticleSystemComponent = nullptr;
 };
 
