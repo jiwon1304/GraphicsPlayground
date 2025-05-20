@@ -308,6 +308,15 @@ void FParticleRenderPass::RenderMeshEmitter(
         RenderData->Indices,
         StaticMeshIndexInfo
     );
+    // [4-1] 정점/인스턴스 버퍼 바인딩
+    ID3D11Buffer* Buffers[2] = { StaticMeshVertexInfo.VertexBuffer, InstanceInfoMesh.VertexBuffer };
+    UINT Strides[2] = { sizeof(FStaticMeshVertex), sizeof(FMeshParticleInstance) };
+    UINT Offsets[2] = { 0, 0 };
+
+    Graphics->DeviceContext->IASetVertexBuffers(0, 2, Buffers, Strides, Offsets);
+
+    // [4-2] 인덱스 버퍼 바인딩
+    Graphics->DeviceContext->IASetIndexBuffer(StaticMeshIndexInfo.IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
     // [3] Instance 데이터 생성
     TArray<FMeshParticleInstance> Instances;
@@ -351,34 +360,52 @@ void FParticleRenderPass::RenderMeshEmitter(
     ObjectData.bIsSelected = false;
     BufferManager->UpdateConstantBuffer(TEXT("FObjectConstantBuffer"), ObjectData);
 
-    // [5] 텍스처 바인딩
-    ID3D11ShaderResourceView* SRVs[9] = {};
-    ID3D11SamplerState* Samplers[9] = {};
+    const TArray<FMaterialSubset>& Subsets = RenderData->MaterialSubsets;
 
-    const TArray<FTextureInfo>& TextureInfos = RenderData->Materials[0].TextureInfos;
-    if (TextureInfos.IsValidIndex(0))
+    for (int32 SubMeshIndex = 0; SubMeshIndex < Subsets.Num(); ++SubMeshIndex)
     {
-        const FWString& TexturePath = TextureInfos[0].TexturePath;
-        std::shared_ptr<FTexture> Texture = FEngineLoop::ResourceManager.GetTexture(TexturePath);
-        if (Texture)
+        const FMaterialSubset& Subset = Subsets[SubMeshIndex];
+        const uint32 IndexCount = Subset.IndexCount;
+        const uint32 StartIndex = Subset.IndexStart;
+
+        if (StartIndex + IndexCount > RenderData->Indices.Num())
         {
-            SRVs[0] = Texture->TextureSRV;
-            Samplers[0] = Texture->SamplerState;
+            UE_LOG(ELogLevel::Error, TEXT("SubMesh %d: Invalid index range (%d + %d > %d)"),
+                SubMeshIndex, StartIndex, IndexCount, RenderData->Indices.Num());
+            continue; // 에러 발생 방지
         }
+
+        // [2] 텍스처 바인딩
+        const TArray<FTextureInfo>& TextureInfos = RenderData->Materials[Subset.MaterialIndex].TextureInfos;
+        ID3D11ShaderResourceView* SRVs[9] = {};
+        ID3D11SamplerState* Samplers[9] = {};
+
+        if (TextureInfos.IsValidIndex(0))
+        {
+            const FWString& TexturePath = TextureInfos[0].TexturePath;
+            std::shared_ptr<FTexture> Texture = FEngineLoop::ResourceManager.GetTexture(TexturePath);
+            if (Texture)
+            {
+                SRVs[0] = Texture->TextureSRV;
+                Samplers[0] = Texture->SamplerState;
+            }
+        }
+
+        Graphics->DeviceContext->PSSetShaderResources(0, 9, SRVs);
+        Graphics->DeviceContext->PSSetSamplers(0, 9, Samplers);
+
+        // [3] 인덱싱된 인스턴스 드로우
+        const UINT StartIndexLocation = Subset.IndexStart;
+        //const UINT IndexCount = Subset.IndexCount;
+
+        Graphics->DeviceContext->DrawIndexedInstanced(
+            IndexCount,
+            Instances.Num(),
+            StartIndexLocation,
+            0,
+            0
+        );
     }
-
-    Graphics->DeviceContext->PSSetShaderResources(0, 9, SRVs);
-    Graphics->DeviceContext->PSSetSamplers(0, 9, Samplers);
-
-    // [6] Draw Call
-    ID3D11Buffer* Buffers[2] = { StaticMeshVertexInfo.VertexBuffer, InstanceInfoMesh.VertexBuffer };
-    UINT Strides[2] = { sizeof(FStaticMeshVertex), sizeof(FMeshParticleInstance) };
-    UINT Offsets[2] = { 0, 0 };
-
-    Graphics->DeviceContext->IASetVertexBuffers(0, 2, Buffers, Strides, Offsets);
-    Graphics->DeviceContext->IASetIndexBuffer(StaticMeshIndexInfo.IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-    Graphics->DeviceContext->DrawIndexedInstanced(RenderData->Indices.Num(), Instances.Num(), 0, 0, 0);
 }
 
 void FParticleRenderPass::ClearRenderArr()
