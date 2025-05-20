@@ -211,6 +211,9 @@ public:
 
     bool Normalize(float Tolerance = KINDA_SMALL_NUMBER);
 
+    float GetMin() const;
+    float GetMax() const;
+
     FVector GetUnsafeNormal() const;
     FVector GetSafeNormal(float Tolerance = KINDA_SMALL_NUMBER) const;
 
@@ -453,6 +456,16 @@ inline bool FVector::Normalize(float Tolerance)
         return true;
     }
     return false;
+}
+
+inline float FVector::GetMin() const
+{
+    return FMath::Min(FMath::Min(X, Y), Z);
+}
+
+inline float FVector::GetMax() const
+{
+    return FMath::Max(FMath::Max(X, Y), Z);
 }
 
 inline FVector FVector::GetUnsafeNormal() const

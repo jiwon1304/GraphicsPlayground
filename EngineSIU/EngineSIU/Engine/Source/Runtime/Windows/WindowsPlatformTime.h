@@ -37,6 +37,12 @@ public:
      * @return uint64 현재 CPU 사이클 수
      */
     static uint64 Cycles64();
+
+    /**
+     * 현재 CPU 사이클 수를 반환하는 함수
+     * @return uint32 현재 CPU 사이클 수
+     */
+    static uint32 Cycles();
 };
 
 typedef FWindowsPlatformTime FPlatformTime;
