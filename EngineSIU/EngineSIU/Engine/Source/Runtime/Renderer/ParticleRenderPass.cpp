@@ -106,8 +106,8 @@ void FParticleRenderPass::PrepareRenderState(const std::shared_ptr<FEditorViewpo
     FViewportResource* ViewportResource = Viewport->GetViewportResource();
     FRenderTargetRHI* RT = ViewportResource->GetRenderTarget(EResourceType::ERT_Scene);
     FDepthStencilRHI* DS = ViewportResource->GetDepthStencil(EResourceType::ERT_Scene);
-    //Graphics->DeviceContext->RSSetViewports(1, &ViewportResource->GetD3DViewport());
-    //Graphics->DeviceContext->OMSetRenderTargets(1, &RT->RTV, DS->DSV);
+    Graphics->DeviceContext->RSSetViewports(1, &ViewportResource->GetD3DViewport());
+    Graphics->DeviceContext->OMSetRenderTargets(1, &RT->RTV, DS->DSV);
 }
 void FParticleRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& Viewport)
 {
