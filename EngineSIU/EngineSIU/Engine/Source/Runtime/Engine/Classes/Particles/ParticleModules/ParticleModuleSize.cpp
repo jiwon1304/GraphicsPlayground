@@ -1,4 +1,4 @@
-﻿#include "ParticleModuleSize.h"
+#include "ParticleModuleSize.h"
 
 #include "ParticleModuleRequired.h"
 #include "Components/ParticleSystemComponent.h"
@@ -13,6 +13,7 @@ void UParticleModuleSize::PostInitProperties()
 {
     Super::PostInitProperties();
     InitializeDefaults();
+    bEnabled = true;
 }
 
 void UParticleModuleSize::InitializeDefaults()

@@ -33,3 +33,8 @@ void UParticleModule::Update(FParticleEmitterInstance* Owner, int32 Offset, floa
 void UParticleModule::FinalUpdate(FParticleEmitterInstance* Owner, int32 Offset, float DeltaTime)
 {
 }
+
+FName UParticleModule::GetName() const
+{
+    return FName("General");
+}

@@ -79,7 +79,10 @@ public:
     virtual ~UParticleModuleRequired() override = default;
 
     virtual void Update(FParticleEmitterInstance* Owner, int32 Offset, float DeltaTime) override;
-
+    virtual FName GetName() const override
+    {
+        return FName(TEXT("Required"));
+    }
 public:
     UPROPERTY(
         EditAnywhere,
@@ -110,7 +113,7 @@ public:
 
     UPROPERTY_WITH_FLAGS(
         EditAnywhere,
-        EParticleUVFlipMode, UVFlippingMode
+        EParticleUVFlipMode, UVFlippingMode, = EParticleUVFlipMode::None;
     )
     
     UPROPERTY(

@@ -1,6 +1,7 @@
 #pragma once
 #include "UObject/Object.h"
 #include "UObject/ObjectMacros.h"
+#include "UObject/NameTypes.h"
 
 struct FParticleEmitterInstance;
 struct FBaseParticle;
@@ -56,4 +57,7 @@ public:
     virtual void Spawn(FParticleEmitterInstance* Owner, int32 Offset, float SpawnTime, FBaseParticle* ParticleBase);
     virtual void Update(FParticleEmitterInstance* Owner, int32 Offset, float DeltaTime);
     virtual void FinalUpdate(FParticleEmitterInstance* Owner, int32 Offset, float DeltaTime);
+
+    virtual FName GetName() const;
+
 };

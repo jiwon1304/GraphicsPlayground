@@ -19,4 +19,9 @@ public:
     {
         return EPMT_TypeData;
     }
+
+    virtual FName GetName() const override
+    {
+        return FName(TEXT("TypeData"));
+    }
 };

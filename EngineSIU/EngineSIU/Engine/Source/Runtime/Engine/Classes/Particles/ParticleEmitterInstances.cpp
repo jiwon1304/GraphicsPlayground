@@ -370,7 +370,7 @@ void FParticleEmitterInstance::PostSpawn(FBaseParticle* Particle, float Interpol
     }
 
     Particle->OldLocation = Particle->Location;
-    Particle->Location += FVector(Particle->Velocity) * SpawnTime;
+    Particle->Location += Particle->Velocity * SpawnTime;
 
     // !TODO : 파티클 State 플래그 체크   
     //Particle->

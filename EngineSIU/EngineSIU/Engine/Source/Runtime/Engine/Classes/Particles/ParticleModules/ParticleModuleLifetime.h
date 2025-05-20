@@ -17,6 +17,11 @@ public:
     // !TODO : RawDistributionFloat 구현 후 그거 사용
     virtual void Spawn(FParticleEmitterInstance* Owner, int32 Offset, float SpawnTime, FBaseParticle* ParticleBase) override;
 
+    virtual FName GetName() const override
+    {
+        return FName(TEXT("Initial Lifetime"));
+    }
+
     UPROPERTY(
         EditAnywhere,
         float, MinLifetime, = 0.5f;
