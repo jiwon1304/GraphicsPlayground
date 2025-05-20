@@ -5,7 +5,7 @@
 class UDistributionVector;
 
 
-enum EDistributionVectorLockFlags : uint8
+enum class EDistributionVectorLockFlags : uint8
 {
     EDVLF_None,
     EDVLF_XY,

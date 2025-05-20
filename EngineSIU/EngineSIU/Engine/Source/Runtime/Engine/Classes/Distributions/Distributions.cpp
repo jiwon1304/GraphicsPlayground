@@ -9,6 +9,8 @@
 
 #include "DistributionFloat.h"
 #include "DistributionVector.h"
+#include "DistributionVectorUniform.h"
+#include "Particles/ParticleModules/ParticleModule.h"
 #include "UObject/Property.h"
 
 // UDistribution 객체들을 기본 서브 오브젝트가 되지 않도록 PostInitProps로 이동
@@ -792,20 +794,22 @@ void FRawDistribution::GetValue3Random(float Time, float* InValue, FRandomStream
     RandValues[0] = DIST_GET_RANDOM_VALUE(InRandomStream);
     RandValues[1] = DIST_GET_RANDOM_VALUE(InRandomStream);
     RandValues[2] = DIST_GET_RANDOM_VALUE(InRandomStream);
-    switch (LookupTable.LockFlag)
+    switch (static_cast<EDistributionVectorLockFlags>(LookupTable.LockFlag))
     {
-    case EDVLF_XY:
+    case EDistributionVectorLockFlags::EDVLF_XY:
         RandValues.Y = RandValues.X;
         break;
-    case EDVLF_XZ:
+    case EDistributionVectorLockFlags::EDVLF_XZ:
         RandValues.Z = RandValues.X;
         break;
-    case EDVLF_YZ:
+    case EDistributionVectorLockFlags::EDVLF_YZ:
         RandValues.Z = RandValues.Y;
         break;
-    case EDVLF_XYZ:
+    case EDistributionVectorLockFlags::EDVLF_XYZ:
         RandValues.Y = RandValues.X;
         RandValues.Z = RandValues.X;
+        break;
+    default:
         break;
     }
 
@@ -1014,6 +1018,582 @@ void UDistributionVector::GetRange(FVector& OutMin, FVector& OutMax) const
 {
     OutMin = FVector::ZeroVector;
     OutMax = FVector::ZeroVector;
+}
+
+void UDistributionVectorUniform::PostInitProperties()
+{
+    Super::PostInitProperties();
+    if (GetOuter()->IsA<UParticleModule>())
+    {
+        // Set to a bogus value for distributions created before VER_UE4_MOVE_DISTRIBUITONS_TO_POSTINITPROPS
+        // to be able to restore to the previous default value.
+        Min = FVector(UDistribution::DefaultValue);
+        Max = FVector(UDistribution::DefaultValue);
+    }
+}
+
+FVector UDistributionVectorUniform::GetValue(float F, UObject* Data, int32 Extreme, struct FRandomStream* InRandomStream) const
+{
+    FVector LocalMax = Max;
+    FVector LocalMin = Min;
+
+    // LocalMin.X = (MirrorFlags[0] == EDVMF_Different) ? LocalMin.X : ((MirrorFlags[0] == EDVMF_Mirror) ? -LocalMax.X : LocalMax.X);
+    // LocalMin.Y = (MirrorFlags[1] == EDVMF_Different) ? LocalMin.Y : ((MirrorFlags[1] == EDVMF_Mirror) ? -LocalMax.Y : LocalMax.Y);
+    // LocalMin.Z = (MirrorFlags[2] == EDVMF_Different) ? LocalMin.Z : ((MirrorFlags[2] == EDVMF_Mirror) ? -LocalMax.Z : LocalMax.Z);
+
+    float fX;
+    float fY;
+    float fZ;
+
+    bool bMin = true;
+    if (bUseExtremes)
+    {
+        if (Extreme == 0)
+        {
+            if (DIST_GET_RANDOM_VALUE(InRandomStream) > 0.5f)
+            {
+                bMin = false;
+            }
+        }
+        else if (Extreme > 0)
+        {
+            bMin = false;
+        }
+    }
+
+    switch (LockedAxes)
+    {
+    case EDistributionVectorLockFlags::EDVLF_XY:
+        if (bUseExtremes)
+        {
+            if (bMin)
+            {
+                fX = LocalMin.X;
+                fZ = LocalMin.Z;
+            }
+            else
+            {
+                fX = LocalMax.X;
+                fZ = LocalMax.Z;
+            }
+        }
+        else
+        {
+            fX = LocalMax.X + (LocalMin.X - LocalMax.X) * DIST_GET_RANDOM_VALUE(InRandomStream);
+            fZ = LocalMax.Z + (LocalMin.Z - LocalMax.Z) * DIST_GET_RANDOM_VALUE(InRandomStream);
+        }
+        fY = fX;
+        break;
+    case EDistributionVectorLockFlags::EDVLF_XZ:
+        if (bUseExtremes)
+        {
+            if (bMin)
+            {
+                fX = LocalMin.X;
+                fY = LocalMin.Y;
+            }
+            else
+            {
+                fX = LocalMax.X;
+                fY = LocalMax.Y;
+            }
+        }
+        else
+        {
+            fX = LocalMax.X + (LocalMin.X - LocalMax.X) * DIST_GET_RANDOM_VALUE(InRandomStream);
+            fY = LocalMax.Y + (LocalMin.Y - LocalMax.Y) * DIST_GET_RANDOM_VALUE(InRandomStream);
+        }
+        fZ = fX;
+        break;
+    case EDistributionVectorLockFlags::EDVLF_YZ:
+        if (bUseExtremes)
+        {
+            if (bMin)
+            {
+                fX = LocalMin.X;
+                fY = LocalMin.Y;
+            }
+            else
+            {
+                fX = LocalMax.X;
+                fY = LocalMax.Y;
+            }
+        }
+        else
+        {
+            fX = LocalMax.X + (LocalMin.X - LocalMax.X) * DIST_GET_RANDOM_VALUE(InRandomStream);
+            fY = LocalMax.Y + (LocalMin.Y - LocalMax.Y) * DIST_GET_RANDOM_VALUE(InRandomStream);
+        }
+        fZ = fY;
+        break;
+    case EDistributionVectorLockFlags::EDVLF_XYZ:
+        if (bUseExtremes)
+        {
+            if (bMin)
+            {
+                fX = LocalMin.X;
+            }
+            else
+            {
+                fX = LocalMax.X;
+            }
+        }
+        else
+        {
+            fX = LocalMax.X + (LocalMin.X - LocalMax.X) * DIST_GET_RANDOM_VALUE(InRandomStream);
+        }
+        fY = fX;
+        fZ = fX;
+        break;
+    case EDistributionVectorLockFlags::EDVLF_None:
+    default:
+        if (bUseExtremes)
+        {
+            if (bMin)
+            {
+                fX = LocalMin.X;
+                fY = LocalMin.Y;
+                fZ = LocalMin.Z;
+            }
+            else
+            {
+                fX = LocalMax.X;
+                fY = LocalMax.Y;
+                fZ = LocalMax.Z;
+            }
+        }
+        else
+        {
+            fX = LocalMax.X + (LocalMin.X - LocalMax.X) * DIST_GET_RANDOM_VALUE(InRandomStream);
+            fY = LocalMax.Y + (LocalMin.Y - LocalMax.Y) * DIST_GET_RANDOM_VALUE(InRandomStream);
+            fZ = LocalMax.Z + (LocalMin.Z - LocalMax.Z) * DIST_GET_RANDOM_VALUE(InRandomStream);
+        }
+        break;
+    }
+
+    return FVector{fX, fY, fZ};
+}
+
+ERawDistributionOperation UDistributionVectorUniform::GetOperation() const
+{
+    if (Min == Max)
+    {
+        // This may as well be a constant - don't bother doing the FMath::SRand scaling on it.
+        return RDO_None;
+    }
+    // override the operation to use
+    return bUseExtremes ? RDO_Extreme : RDO_Random;
+}
+
+uint8 UDistributionVectorUniform::GetLockFlag() const
+{
+    return static_cast<uint8>(LockedAxes);
+}
+
+
+uint32 UDistributionVectorUniform::InitializeRawEntry(float Time, float* Values) const
+{
+    // get the locked/mirrored min and max
+    FVector ValueMin = GetMinValue();
+    FVector ValueMax = GetMaxValue();
+    Values[0] = ValueMin.X;
+    Values[1] = ValueMin.Y;
+    Values[2] = ValueMin.Z;
+    Values[3] = ValueMax.X;
+    Values[4] = ValueMax.Y;
+    Values[5] = ValueMax.Z;
+
+    // six elements per value
+    return 6;
+}
+
+void UDistributionVectorUniform::GetRange(FVector& OutMin, FVector& OutMax) const
+{
+    OutMin = Min;
+    OutMax = Max;
+}
+
+
+FVector UDistributionVectorUniform::GetMinValue() const
+{
+    FVector LocalMax = Max;
+    FVector LocalMin = Min;
+
+    // for (int32 i = 0; i < 3; i++)
+    // {
+    //     switch (MirrorFlags[i])
+    //     {
+    //     case EDVMF_Same:	LocalMin[i] =  LocalMax[i];		break;
+    //     case EDVMF_Mirror:	LocalMin[i] = -LocalMax[i];		break;
+    //     }
+    // }
+
+    float fX;
+    float fY;
+    float fZ;
+
+    switch (LockedAxes)
+    {
+    case EDistributionVectorLockFlags::EDVLF_XY:
+        fX = LocalMin.X;
+        fY = LocalMin.X;
+        fZ = LocalMin.Z;
+        break;
+    case EDistributionVectorLockFlags::EDVLF_XZ:
+        fX = LocalMin.X;
+        fY = LocalMin.Y;
+        fZ = fX;
+        break;
+    case EDistributionVectorLockFlags::EDVLF_YZ:
+        fX = LocalMin.X;
+        fY = LocalMin.Y;
+        fZ = fY;
+        break;
+    case EDistributionVectorLockFlags::EDVLF_XYZ:
+        fX = LocalMin.X;
+        fY = fX;
+        fZ = fX;
+        break;
+    case EDistributionVectorLockFlags::EDVLF_None:
+    default:
+        fX = LocalMin.X;
+        fY = LocalMin.Y;
+        fZ = LocalMin.Z;
+        break;
+    }
+
+    return FVector{fX, fY, fZ};
+}
+
+FVector UDistributionVectorUniform::GetMaxValue() const
+{
+    FVector LocalMax = Max;
+
+    float fX;
+    float fY;
+    float fZ;
+
+    switch (LockedAxes)
+    {
+    case EDistributionVectorLockFlags::EDVLF_XY:
+        fX = LocalMax.X;
+        fY = LocalMax.X;
+        fZ = LocalMax.Z;
+        break;
+    case EDistributionVectorLockFlags::EDVLF_XZ:
+        fX = LocalMax.X;
+        fY = LocalMax.Y;
+        fZ = fX;
+        break;
+    case EDistributionVectorLockFlags::EDVLF_YZ:
+        fX = LocalMax.X;
+        fY = LocalMax.Y;
+        fZ = fY;
+        break;
+    case EDistributionVectorLockFlags::EDVLF_XYZ:
+        fX = LocalMax.X;
+        fY = fX;
+        fZ = fX;
+        break;
+    case EDistributionVectorLockFlags::EDVLF_None:
+    default:
+        fX = LocalMax.X;
+        fY = LocalMax.Y;
+        fZ = LocalMax.Z;
+        break;
+    }
+
+    return FVector{fX, fY, fZ};
+}
+
+int32 UDistributionVectorUniform::GetNumKeys() const
+{
+    return 1;
+}
+
+int32 UDistributionVectorUniform::GetNumSubCurves() const
+{
+    switch (LockedAxes)
+    {
+    case EDistributionVectorLockFlags::EDVLF_XY:
+    case EDistributionVectorLockFlags::EDVLF_XZ:
+    case EDistributionVectorLockFlags::EDVLF_YZ:
+        return 4;
+    case EDistributionVectorLockFlags::EDVLF_XYZ:
+        return 2;
+    }
+    return 6;
+}
+
+
+FColor UDistributionVectorUniform::GetSubCurveButtonColor(int32 SubCurveIndex, bool bIsSubCurveHidden) const
+{
+    const int32 SubCurves = GetNumSubCurves();
+
+    // Check for array out of bounds because it will crash the program
+    assert(SubCurveIndex >= 0);
+    assert(SubCurveIndex < SubCurves);
+
+    const bool bShouldGroupMinAndMax = ((SubCurves == 4) || (SubCurves == 6));
+    FColor ButtonColor;
+
+    switch (SubCurveIndex)
+    {
+    case 0:
+        // Red
+        ButtonColor = bIsSubCurveHidden ? FColor(32, 0, 0) : FColor::Red;
+        break;
+    case 1:
+        if (bShouldGroupMinAndMax)
+        {
+            // Dark red
+            ButtonColor = bIsSubCurveHidden ? FColor(28, 0, 0) : FColor(196, 0, 0);
+        }
+        else
+        {
+            // Green
+            ButtonColor = bIsSubCurveHidden ? FColor(0, 32, 0) : FColor::Green;
+        }
+        break;
+    case 2:
+        if (bShouldGroupMinAndMax)
+        {
+            // Green
+            ButtonColor = bIsSubCurveHidden ? FColor(0, 32, 0) : FColor::Green;
+        }
+        else
+        {
+            // Blue
+            ButtonColor = bIsSubCurveHidden ? FColor(0, 0, 32) : FColor::Blue;
+        }
+        break;
+    case 3:
+        // Dark green
+        ButtonColor = bIsSubCurveHidden ? FColor(0, 28, 0) : FColor(0, 196, 0);
+        break;
+    case 4:
+        // Blue
+        ButtonColor = bIsSubCurveHidden ? FColor(0, 0, 32) : FColor::Blue;
+        break;
+    case 5:
+        // Dark blue
+        ButtonColor = bIsSubCurveHidden ? FColor(0, 0, 28) : FColor(0, 0, 196);
+        break;
+    default:
+        // A bad sub-curve index was given. 
+        assert(false);
+        break;
+    }
+
+    return ButtonColor;
+}
+
+float UDistributionVectorUniform::GetKeyIn(int32 KeyIndex)
+{
+    assert(KeyIndex == 0);
+    return 0.f;
+}
+
+float UDistributionVectorUniform::GetKeyOut(int32 SubIndex, int32 KeyIndex)
+{
+    assert(SubIndex >= 0 && SubIndex < 6);
+    assert(KeyIndex == 0);
+
+    FVector LocalMax = Max;
+    FVector LocalMin = Min;
+
+    // for (int32 i = 0; i < 3; i++)
+    // {
+    //     switch (MirrorFlags[i])
+    //     {
+    //     case EDVMF_Same: LocalMin[i] = LocalMax[i];
+    //         break;
+    //     case EDVMF_Mirror: LocalMin[i] = -LocalMax[i];
+    //         break;
+    //     }
+    // }
+
+    switch (LockedAxes)
+    {
+    case EDistributionVectorLockFlags::EDVLF_XY:
+        LocalMin.Y = LocalMin.X;
+        break;
+    case EDistributionVectorLockFlags::EDVLF_XZ:
+        LocalMin.Z = LocalMin.X;
+        break;
+    case EDistributionVectorLockFlags::EDVLF_YZ:
+        LocalMin.Z = LocalMin.Y;
+        break;
+    case EDistributionVectorLockFlags::EDVLF_XYZ:
+        LocalMin.Y = LocalMin.X;
+        LocalMin.Z = LocalMin.X;
+        break;
+    case EDistributionVectorLockFlags::EDVLF_None:
+    default:
+        break;
+    }
+
+    switch (SubIndex)
+    {
+    case 0: return LocalMin.X;
+    case 1: return LocalMax.X;
+    case 2: return LocalMin.Y;
+    case 3: return LocalMax.Y;
+    case 4: return LocalMin.Z;
+    }
+    return LocalMax.Z;
+}
+
+FColor UDistributionVectorUniform::GetKeyColor(int32 SubIndex, int32 KeyIndex, const FColor& CurveColor)
+{
+    assert(SubIndex >= 0 && SubIndex < 6);
+    assert(KeyIndex == 0);
+
+    if (SubIndex == 0)
+    {
+        return FColor{128, 0, 0};
+    }
+    else if (SubIndex == 1)
+    {
+        return FColor::Red;
+    }
+    else if (SubIndex == 2)
+    {
+        return FColor{0, 128, 0};
+    }
+    else if (SubIndex == 3)
+    {
+        return FColor::Green;
+    }
+    else if (SubIndex == 4)
+    {
+        return FColor{0, 0, 128};
+    }
+    else
+    {
+        return FColor::Blue;
+    }
+}
+
+void UDistributionVectorUniform::GetInRange(float& MinIn, float& MaxIn) const
+{
+    MinIn = 0.f;
+    MaxIn = 0.f;
+}
+
+void UDistributionVectorUniform::GetOutRange(float& MinOut, float& MaxOut) const
+{
+    FVector LocalMax = Max;
+    FVector LocalMin = Min;
+
+    // for (int32 i = 0; i < 3; i++)
+    // {
+    //     switch (MirrorFlags[i])
+    //     {
+    //     case EDVMF_Same: LocalMin[i] = LocalMax[i];
+    //         break;
+    //     case EDVMF_Mirror: LocalMin[i] = -LocalMax[i];
+    //         break;
+    //     }
+    // }
+
+    FVector LocalMin2;
+    FVector LocalMax2;
+
+    switch (LockedAxes)
+    {
+    case EDistributionVectorLockFlags::EDVLF_XY:
+        LocalMin2 = FVector(LocalMin.X, LocalMin.X, LocalMin.Z);
+        LocalMax2 = FVector(LocalMax.X, LocalMax.X, LocalMax.Z);
+        break;
+    case EDistributionVectorLockFlags::EDVLF_XZ:
+        LocalMin2 = FVector(LocalMin.X, LocalMin.Y, LocalMin.X);
+        LocalMax2 = FVector(LocalMax.X, LocalMax.Y, LocalMax.X);
+        break;
+    case EDistributionVectorLockFlags::EDVLF_YZ:
+        LocalMin2 = FVector(LocalMin.X, LocalMin.Y, LocalMin.Y);
+        LocalMax2 = FVector(LocalMax.X, LocalMax.Y, LocalMax.Y);
+        break;
+    case EDistributionVectorLockFlags::EDVLF_XYZ:
+        LocalMin2 = FVector(LocalMin.X);
+        LocalMax2 = FVector(LocalMax.X);
+        break;
+    case EDistributionVectorLockFlags::EDVLF_None:
+    default:
+        LocalMin2 = FVector(LocalMin.X, LocalMin.Y, LocalMin.Z);
+        LocalMax2 = FVector(LocalMax.X, LocalMax.Y, LocalMax.Z);
+        break;
+    }
+
+    MinOut = LocalMin2.GetMin();
+    MaxOut = LocalMax2.GetMax();
+}
+
+// EInterpCurveMode UDistributionVectorUniform::GetKeyInterpMode(int32 KeyIndex) const
+// {
+//     assert(KeyIndex == 0);
+//     return CIM_Constant;
+// }
+
+void UDistributionVectorUniform::GetTangents(int32 SubIndex, int32 KeyIndex, float& ArriveTangent, float& LeaveTangent) const
+{
+    assert(SubIndex >= 0 && SubIndex < 6);
+    assert(KeyIndex == 0);
+    ArriveTangent = 0.f;
+    LeaveTangent = 0.f;
+}
+
+float UDistributionVectorUniform::EvalSub(int32 SubIndex, float InVal)
+{
+    return GetKeyOut(SubIndex, 0);
+}
+
+int32 UDistributionVectorUniform::CreateNewKey(float KeyIn)
+{
+    return 0;
+}
+
+void UDistributionVectorUniform::DeleteKey(int32 KeyIndex)
+{
+    assert(KeyIndex == 0);
+}
+
+int32 UDistributionVectorUniform::SetKeyIn(int32 KeyIndex, float NewInVal)
+{
+    assert(KeyIndex == 0);
+    return 0;
+}
+
+void UDistributionVectorUniform::SetKeyOut(int32 SubIndex, int32 KeyIndex, float NewOutVal)
+{
+    assert(SubIndex >= 0 && SubIndex < 6);
+    assert(KeyIndex == 0);
+
+    if (SubIndex == 0)
+        Min.X = FMath::Min<float>(NewOutVal, Max.X);
+    else if (SubIndex == 1)
+        Max.X = FMath::Max<float>(NewOutVal, Min.X);
+    else if (SubIndex == 2)
+        Min.Y = FMath::Min<float>(NewOutVal, Max.Y);
+    else if (SubIndex == 3)
+        Max.Y = FMath::Max<float>(NewOutVal, Min.Y);
+    else if (SubIndex == 4)
+        Min.Z = FMath::Min<float>(NewOutVal, Max.Z);
+    else
+        Max.Z = FMath::Max<float>(NewOutVal, Min.Z);
+
+    bIsDirty = true;
+}
+
+// void UDistributionVectorUniform::SetKeyInterpMode(int32 KeyIndex, EInterpCurveMode NewMode)
+// {
+//     assert(KeyIndex == 0);
+// }
+
+void UDistributionVectorUniform::SetTangents(int32 SubIndex, int32 KeyIndex, float ArriveTangent, float LeaveTangent)
+{
+    assert(SubIndex >= 0 && SubIndex < 6);
+    assert(KeyIndex == 0);
 }
 
 float UDistributionFloat::GetValue(float F, UObject* Data, struct FRandomStream* InRandomStream) const
