@@ -104,7 +104,21 @@ void ParticleViewerPanel::RenderFilePanel()
 
 void ParticleViewerPanel::RenderViewportPanel()
 {
-    ImGui::Text("Viewport");
+    FViewport* Viewport = ViewportClient->GetViewport();
+    if (Viewport)
+    {
+        FViewportResource* Resource = Viewport->GetViewportResource();
+        if (Resource)
+        {
+            FRenderTargetRHI* RenderTarget = Resource->GetRenderTarget(EResourceType::ERT_Scene);
+            if (RenderTarget && RenderTarget->SRV)
+            {
+                // ImGui는 SRV를 ImTextureID로 캐스팅해서 사용
+                ImVec2 contentSize = ImGui::GetContentRegionAvail();
+                ImGui::Image((ImTextureID)(RenderTarget->SRV), contentSize);
+            }
+        }
+    }
 }
 
 void ParticleViewerPanel::RenderEmitterPanel()
