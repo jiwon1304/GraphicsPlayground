@@ -504,6 +504,17 @@ FMatrix FMatrix::GetMatrixWithoutScale(float Tolerance) const
     return Result;
 }
 
+FVector4 FMatrix::TransformVector(const FVector& V) const
+{
+    return TransformFVector4(FVector4{V.X, V.Y, V.Z, 0.f});
+}
+
+FVector FMatrix::InverseTransformVector(const FVector& V) const
+{
+    const FMatrix InvSelf = Inverse(*this);
+    return InvSelf.TransformVector(V);
+}
+
 void FMatrix::RemoveScaling(float Tolerance)
 {
     const float SquareSum0 = (M[0][0] * M[0][0]) + (M[0][1] * M[0][1]) + (M[0][2] * M[0][2]);
