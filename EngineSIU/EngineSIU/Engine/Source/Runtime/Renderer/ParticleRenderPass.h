@@ -4,6 +4,7 @@
 #include "IRenderPass.h"
 #include "Define.h"
 
+struct FParticleMeshEmitterInstance;
 struct FDynamicMeshEmitterReplayDataBase;
 struct FDynamicSpriteEmitterReplayDataBase;
 struct FParticleEmitterInstance;
@@ -26,7 +27,7 @@ private:
     void CreateShader();
     void ReleaseShader();
     void RenderSpriteEmitter(UParticleSystemComponent* Comp, FParticleEmitterInstance* Emitter, const FDynamicSpriteEmitterReplayDataBase& ReplayData);
-    void RenderMeshEmitter(UParticleSystemComponent* Comp, FParticleEmitterInstance* Emitter, const FDynamicMeshEmitterReplayDataBase& ReplayData);
+    void RenderMeshEmitter(UParticleSystemComponent* Comp, FParticleMeshEmitterInstance* Emitter, const FDynamicMeshEmitterReplayDataBase& ReplayData);
 
     void PrepareRenderState(const std::shared_ptr<FEditorViewportClient>& Viewport);
 

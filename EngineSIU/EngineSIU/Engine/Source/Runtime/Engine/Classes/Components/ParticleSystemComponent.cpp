@@ -117,7 +117,7 @@ void UParticleSystemComponent::InitTestParticles(EDynamicEmitterType Type)
     else if (Type == DET_Mesh)
     {
         //MeshEmitter는 아직 구현안함
-        Emitter = new FParticleSpriteEmitterInstance();
+        Emitter = new FParticleMeshEmitterInstance();
     }
     else
     {
@@ -157,7 +157,7 @@ void UParticleSystemComponent::InitTestParticles(EDynamicEmitterType Type)
 
         Particle->Location = Positions[i];
         Particle->OldLocation = Positions[i];
-        Particle->Size = FVector(5.0f);
+        Particle->Size = FVector(i%4+1);
         Particle->BaseSize = Particle->Size;
         Particle->Color = Colors[i % 4];
         Particle->BaseColor = Particle->Color;
@@ -181,11 +181,6 @@ void UParticleSystemComponent::InitTestParticles(EDynamicEmitterType Type)
     Emitter->CurrentLODLevelIndex = 0;
     Emitter->CurrentLODLevel = LOD;
     Emitter->bEnabled = true;
-    if (Type==DET_Mesh)
-    {
-        Emitter->GetDynamicData()->GetSource();
-        Emitter->GetDynamicData()->SetEmitType(DET_Mesh);
-    }
 }
 
 

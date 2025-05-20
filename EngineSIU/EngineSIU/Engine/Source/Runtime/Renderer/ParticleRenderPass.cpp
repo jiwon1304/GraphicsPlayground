@@ -170,12 +170,11 @@ void FParticleRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& V
             switch (ReplayData.eEmitterType)
             {
             case DET_Sprite:
-                RenderMeshEmitter(Comp, Emitter, (const FDynamicMeshEmitterReplayDataBase&)ReplayData);
-                //RenderSpriteEmitter(Comp, Emitter, (const FDynamicSpriteEmitterReplayDataBase&)ReplayData);
+                RenderSpriteEmitter(Comp, Emitter, (const FDynamicSpriteEmitterReplayDataBase&)ReplayData);
                 break;
 
             case DET_Mesh:
-                RenderMeshEmitter(Comp, Emitter, (const FDynamicMeshEmitterReplayDataBase&)ReplayData);
+                RenderMeshEmitter(Comp, (FParticleMeshEmitterInstance*)Emitter, (const FDynamicMeshEmitterReplayDataBase&)ReplayData);
                 break;
 
             default:
@@ -278,7 +277,10 @@ void FParticleRenderPass::RenderSpriteEmitter(UParticleSystemComponent* Comp, FP
     Graphics->DeviceContext->IASetVertexBuffers(0, 2, Buffers, Strides, Offsets);
     Graphics->DeviceContext->DrawInstanced(6, Instances.Num(), 0, 0);
 }
-void FParticleRenderPass::RenderMeshEmitter(UParticleSystemComponent* Comp, FParticleEmitterInstance* Emitter, const FDynamicMeshEmitterReplayDataBase& ReplayData)
+void FParticleRenderPass::RenderMeshEmitter(
+    UParticleSystemComponent* Comp,
+    FParticleMeshEmitterInstance* Emitter,
+    const FDynamicMeshEmitterReplayDataBase& ReplayData)
 {
     ID3D11VertexShader* VS = ShaderManager->GetVertexShaderByKey(L"ParticleShader_Mesh");
     ID3D11InputLayout* IL = ShaderManager->GetInputLayoutByKey(L"ParticleShader_Mesh");
@@ -288,27 +290,27 @@ void FParticleRenderPass::RenderMeshEmitter(UParticleSystemComponent* Comp, FPar
     Graphics->DeviceContext->IASetInputLayout(IL);
     Graphics->DeviceContext->PSSetShader(PS, nullptr, 0);
 
+    // [1] Mesh 및 RenderData 가져오기
+    UStaticMesh* StaticMesh = ((FDynamicMeshEmitterData*)(Emitter->GetDynamicData()))->StaticMesh;
+    if (!StaticMesh || !StaticMesh->GetRenderData()) return;
 
-    //나중에 파티클 모듈에서 가져와야함
-    UStaticMesh* Mesh = FObjManager::GetStaticMesh(TestMeshAssetName.ToString().ToWideString());
+    FStaticMeshRenderData* RenderData = StaticMesh->GetRenderData();
+    if (RenderData->Vertices.IsEmpty() || RenderData->Indices.IsEmpty()) return;
+
+    // [2] Vertex/Index Buffer 초기화
     BufferManager->CreateVertexBuffer(
-        "TestMeshVertex",
-        Mesh->GetRenderData()->Vertices,
+        TEXT("ParticleMeshVertexBuffer"),
+        RenderData->Vertices,
         StaticMeshVertexInfo
     );
     BufferManager->CreateIndexBuffer(
-        "TestMeshIndex",
-        Mesh->GetRenderData()->Indices,
+        TEXT("ParticleMeshIndexBuffer"),
+        RenderData->Indices,
         StaticMeshIndexInfo
     );
-    if (!Mesh || !Mesh->GetRenderData()) return;
 
-    FStaticMeshRenderData* RenderData = Mesh->GetRenderData();
-    if (RenderData->Vertices.IsEmpty() || RenderData->Indices.IsEmpty()) return;
-
-    // 인스턴스 데이터 생성
+    // [3] Instance 데이터 생성
     TArray<FMeshParticleInstance> Instances;
-
     const int32 Stride = Emitter->ParticleStride;
     const int32 ActiveCount = Emitter->ActiveParticles;
 
@@ -317,22 +319,30 @@ void FParticleRenderPass::RenderMeshEmitter(UParticleSystemComponent* Comp, FPar
         const int32 ParticleIndex = Emitter->ParticleIndices[i];
         const FBaseParticle* P = reinterpret_cast<const FBaseParticle*>(Emitter->ParticleData + ParticleIndex * Stride);
 
-        FMatrix ParticleTransform = FMatrix::Identity;
-        ParticleTransform.SetOrigin(P->Location);
-        FMatrix ScaleMat = FMatrix::CreateScaleMatrix(P->Size);
+        // [1] Scale + Rotation (Z축 회전)
+        const FMatrix Location = FMatrix::CreateTranslationMatrix(P->Location);
+        const FMatrix Scale = FMatrix::CreateScaleMatrix(P->Size);
 
-        ParticleTransform *= ScaleMat;
+
+        FMatrix ParticleTransform = Scale*Location;
+
+        // [2] 위치는 Translation에 넣지 않음 — GPU에서 WorldMatrix 곱해줌
+        // ParticleTransform.SetOrigin(P->Location); // 제거
+
+        // [3] ParticleInstance 생성
         FMeshParticleInstance Inst;
         Inst.Transform = ParticleTransform;
         Inst.Color = P->Color;
+
         Instances.Add(Inst);
     }
+
 
     if (Instances.IsEmpty()) return;
 
     BufferManager->UpdateDynamicVertexBuffer(TEXT("Global_MeshInstance"), Instances);
 
-    // Constant Buffer
+    // [4] Constant Buffer
     FObjectConstantBuffer ObjectData;
     FMatrix WorldMatrix = Comp->GetWorldMatrix();
     ObjectData.WorldMatrix = WorldMatrix;
@@ -341,17 +351,14 @@ void FParticleRenderPass::RenderMeshEmitter(UParticleSystemComponent* Comp, FPar
     ObjectData.bIsSelected = false;
     BufferManager->UpdateConstantBuffer(TEXT("FObjectConstantBuffer"), ObjectData);
 
-    /*// 머티리얼 → 텍스처 바인딩
-    const FMaterialInfo& Mat = RenderData->Materials[0];
-    const FWString& TexturePath = Mat.TextureInfos[0].TexturePath;
-    std::shared_ptr<FTexture> Texture = FEngineLoop::ResourceManager.GetTexture(TexturePath);*/
-
-    // Diffuse texture only for now
+    // [5] 텍스처 바인딩
     ID3D11ShaderResourceView* SRVs[9] = {};
     ID3D11SamplerState* Samplers[9] = {};
-    if (RenderData->Materials[0].TextureInfos.IsValidIndex(0))
+
+    const TArray<FTextureInfo>& TextureInfos = RenderData->Materials[0].TextureInfos;
+    if (TextureInfos.IsValidIndex(0))
     {
-        const FWString& TexturePath = RenderData->Materials[0].TextureInfos[0].TexturePath;
+        const FWString& TexturePath = TextureInfos[0].TexturePath;
         std::shared_ptr<FTexture> Texture = FEngineLoop::ResourceManager.GetTexture(TexturePath);
         if (Texture)
         {
@@ -363,8 +370,7 @@ void FParticleRenderPass::RenderMeshEmitter(UParticleSystemComponent* Comp, FPar
     Graphics->DeviceContext->PSSetShaderResources(0, 9, SRVs);
     Graphics->DeviceContext->PSSetSamplers(0, 9, Samplers);
 
-
-    // Vertex/Index/Instance 설정
+    // [6] Draw Call
     ID3D11Buffer* Buffers[2] = { StaticMeshVertexInfo.VertexBuffer, InstanceInfoMesh.VertexBuffer };
     UINT Strides[2] = { sizeof(FStaticMeshVertex), sizeof(FMeshParticleInstance) };
     UINT Offsets[2] = { 0, 0 };

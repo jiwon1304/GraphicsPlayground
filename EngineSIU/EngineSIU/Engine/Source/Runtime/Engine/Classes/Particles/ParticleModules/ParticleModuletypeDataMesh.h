@@ -10,7 +10,7 @@ class UParticleModuleTypeDataMesh : public UParticleModuleTypeDataBase
     DECLARE_CLASS(UParticleModuleTypeDataMesh, UParticleModuleTypeDataBase)
 
 public:
-    UParticleModuleTypeDataMesh() = default;
+    UParticleModuleTypeDataMesh();
     virtual ~UParticleModuleTypeDataMesh() override = default;
 
     virtual FParticleEmitterInstance* CreateInstance(UParticleEmitter* InEmitterParent, UParticleSystemComponent* InComponent) override;

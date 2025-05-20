@@ -10,6 +10,7 @@
 #include "Particles/ParticleModules/ParticleModuleSpawn.h"
 #include "Components/Material/Material.h"
 #include "Components/SceneComponent.h"
+#include "Engine/FObjLoader.h"
 #include "Particles/ParticleModules/ParticleModuleTypeDataMesh.h"
 
 
@@ -667,8 +668,12 @@ FDynamicEmitterDataBase* FParticleMeshEmitterInstance::GetDynamicData()
         delete NewEmitterData;
         return nullptr;
     }
+    if (MeshTypeData!=nullptr)
+        NewEmitterData->Init(this, MeshTypeData->Mesh);
+    else
+        NewEmitterData->Init(this, FObjManager::GetStaticMesh(L"Contents/Reference/Reference.obj"));
 
-    NewEmitterData->Init(this, MeshTypeData->Mesh);
+    return NewEmitterData;
 }
 
 uint32 FParticleMeshEmitterInstance::RequiredBytes()

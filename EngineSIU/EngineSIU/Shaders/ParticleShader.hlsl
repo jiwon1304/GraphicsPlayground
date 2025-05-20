@@ -109,6 +109,7 @@ VS_OUTPUT mainVS(VS_INPUT input)
 
 #if defined(PARTICLE_MESH)
     float4 worldPos = mul(float4(input.LocalPos, 1.0f), input.InstanceTransform);
+    worldPos = mul(worldPos,WorldMatrix);
     float4 viewPos = mul(worldPos, ViewMatrix);
     output.Position = mul(viewPos, ProjectionMatrix);
     output.WorldPos = worldPos.xyz;
