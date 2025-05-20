@@ -118,8 +118,11 @@ struct FDynamicEmitterReplayDataBase
 struct FDynamicEmitterDataBase
 {
     FDynamicEmitterDataBase(const UParticleModuleRequired* RequiredModule);
+    virtual ~FDynamicEmitterDataBase() = default;
 
+public:
     virtual const FDynamicEmitterReplayDataBase& GetSource() const = 0;
+
     int32  EmitterIndex;
 };
 
@@ -130,10 +133,10 @@ struct FDynamicSpriteEmitterDataBase : public FDynamicEmitterDataBase
     {
     }
 
-    virtual ~FDynamicSpriteEmitterDataBase()
+public:
+    void SortSpriteParticles()
     {
     }
-    void SortSpriteParticles() {};
 };
 
 class UMaterial;
@@ -153,14 +156,14 @@ struct FDynamicSpriteEmitterData : public FDynamicSpriteEmitterDataBase
     {
     }
 
-    ~FDynamicSpriteEmitterData()
-    {
-    }
+public:
     void Init() {}
+
     virtual const FDynamicEmitterReplayDataBase& GetSource() const override
     {
         return Source;
     }
+
     FDynamicSpriteEmitterReplayData Source;
 };
 
@@ -174,13 +177,15 @@ struct FDynamicMeshEmitterReplayData : public FDynamicMeshEmitterReplayDataBase
 
 struct FDynamicMeshEmitterData : public FDynamicSpriteEmitterDataBase
 {
-    FDynamicMeshEmitterData() = default;
+    // TODO: 생성자 만들기
+    FDynamicMeshEmitterData();
 
     void Init() {}
     virtual const FDynamicEmitterReplayDataBase& GetSource() const override
     {
         return Source;
     }
+
     FDynamicMeshEmitterReplayData Source;
 };
 
