@@ -10,6 +10,7 @@
 #include "Engine/AssetManager.h"
 #include "Components/ParticleSystemComponent.h"
 #include "Particles/ParticleModules/ParticleModuleLifetime.h"
+#include "Particles/ParticleModules/ParticleModuleSize.h"
 #include "Particles/ParticleSpriteEmitter.h"
 
 const char* ModuleTypeToString(EModuleType ModuleType)
@@ -266,6 +267,10 @@ void ParticleViewerPanel::RenderEmitterModulePopup(int EmitterIndex)
     if (ImGui::MenuItem("킬")) {
     }
     if (ImGui::MenuItem("수명")) {
+        UParticleEmitter* Emitter = ParticleSystem->Emitters[EmitterIndex];
+        UParticleModuleLifetime* SpawnModule = FObjectFactory::ConstructObject<UParticleModuleLifetime>(Emitter->LODLevels[0]);
+        Emitter->LODLevels[0]->Modules.Add(SpawnModule);
+        ParticleSystem->PostEditChangeProperty();
     }
     if (ImGui::MenuItem("회전")) {
     }
@@ -276,6 +281,12 @@ void ParticleViewerPanel::RenderEmitterModulePopup(int EmitterIndex)
         ParticleSystem->PostEditChangeProperty();
     }
     if (ImGui::MenuItem("속도")) {
+    }
+    if (ImGui::MenuItem("크기")) {
+        UParticleEmitter* Emitter = ParticleSystem->Emitters[EmitterIndex];
+        UParticleModuleSize* SpawnModule = FObjectFactory::ConstructObject<UParticleModuleSize>(Emitter->LODLevels[0]);
+        Emitter->LODLevels[0]->Modules.Add(SpawnModule);
+        ParticleSystem->PostEditChangeProperty();
     }
 }
 
