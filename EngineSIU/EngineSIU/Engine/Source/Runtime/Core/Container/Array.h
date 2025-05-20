@@ -209,6 +209,14 @@ public:
     SizeType AddDefaulted();
 
     /**
+     * 배열 끝에 Count만큼의 요소를 추가하고, 0으로 초기화 (값 초기화)합니다.
+     * 숫자 타입은 0으로, 클래스 타입은 기본 생성자로 초기화됩니다.
+     * @param Count 추가하고 0으로 초기화할 요소의 개수. 기본값은 1입니다.
+     * @return 추가된 첫 번째 요소의 인덱스. Count가 0 이하라면 현재 Num()을 반환합니다.
+     */
+    SizeType AddZeroed(SizeType Count = 1);
+
+    /**
      * 배열 끝에 기본 생성된 요소를 Count개 만큼 추가합니다.
      * @param Count 추가할 요소의 개수
      * @return 추가된 첫 번째 요소의 인덱스. Count가 0 이하라면 현재 Num()을 반환할 수 있습니다.
@@ -626,6 +634,27 @@ typename TArray<T, AllocatorType>::SizeType TArray<T, AllocatorType>::AddDefault
     const SizeType StartIndex = Num();
     ContainerPrivate.emplace_back();
     return StartIndex;
+}
+
+template <typename T, typename AllocatorType>
+typename TArray<T, AllocatorType>::SizeType TArray<T, AllocatorType>::AddZeroed(SizeType Count)
+{
+    if (Count <= 0)
+    {
+        return Num(); // 추가할 요소가 없으면 현재 배열의 크기를 반환합니다.
+    }
+
+    const SizeType OldNum = Num(); // 요소를 추가하기 전의 크기를 저장합니다.
+
+    // ContainerPrivate.resize(NewSize)는 새로 추가되는 요소들을 값 초기화합니다.
+    // - T가 숫자 타입 (int, float 등)이면 0으로 초기화됩니다.
+    // - T가 클래스 타입이면 기본 생성자로 초기화됩니다.
+    // 이 동작은 Unreal Engine의 TArray::AddZeroed가 의도하는 바와 유사합니다.
+    // (Unreal Engine은 내부적으로 FMemory::Memzero를 사용하여 메모리를 직접 0으로 채우는 경우도 있지만,
+    // std::vector는 요소의 생성과 소멸을 관리하므로, resize를 통한 값 초기화가 더 적절합니다.)
+    ContainerPrivate.resize(OldNum + Count);
+
+    return OldNum; // 새로 추가된 요소들의 시작 인덱스를 반환합니다.
 }
 
 template <typename T, typename AllocatorType>

@@ -35,6 +35,10 @@ UObject* UObject::Duplicate(UObject* InOuter)
     return FObjectFactory::ConstructObject(GetClass(), InOuter);
 }
 
+void UObject::PostInitProperties()
+{
+}
+
 void UObject::Serialize(FArchive& Ar)
 {
     // TODO: Serialize 구현
