@@ -645,7 +645,7 @@ FDynamicEmitterDataBase* FParticleSpriteEmitterInstance::GetDynamicData()
 
 void FParticleMeshEmitterInstance::InitParameters(UParticleEmitter* InTemplate, UParticleSystemComponent* InComponent)
 {
-
+    FParticleEmitterInstance::InitParameters(InTemplate, InComponent);
 }
 
 bool FParticleMeshEmitterInstance::Resize(int32 NewMaxActiveParticles, bool bSetMaxActiveCount)

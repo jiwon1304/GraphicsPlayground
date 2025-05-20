@@ -266,6 +266,7 @@ void ParticleViewerPanel::RenderEmitterCreatePopup()
     if (ImGui::MenuItem("새 파티클 스프라이트 이미터")) {
         UParticleEmitter* NewEmitter = CreateDefaultParticleEmitter();
         ParticleSystem->Emitters.Add(NewEmitter);
+        ParticleSystem->PostEditChangeProperty();
     }
 }
 

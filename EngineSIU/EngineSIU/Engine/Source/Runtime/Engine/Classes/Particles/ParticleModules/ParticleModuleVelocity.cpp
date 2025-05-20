@@ -41,6 +41,11 @@ void UParticleModuleVelocity::Spawn(FParticleEmitterInstance* Owner, int32 Offse
     //SpawnEx(Owner, Offset, SpawnTime, nullptr, ParticleBase);
 }
 
+FName UParticleModuleVelocity::GetModuleName() const
+{
+    return FName(TEXT("Initial Velocity"));
+}
+
 void UParticleModuleVelocity::SpawnEx(
     FParticleEmitterInstance* Owner, int32 Offset, float SpawnTime, FRandomStream* InRandomStream, FBaseParticle* ParticleBase
 )

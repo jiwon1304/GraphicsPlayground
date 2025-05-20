@@ -15,8 +15,8 @@ void UParticleSystem::PostEditChangeProperty()
         }
     }
 
-    PreviewComponent->UpdateInstances();
     BuildEmitters();
+    PreviewComponent->UpdateInstances();
 }
 
 void UParticleSystem::BuildEmitters()
@@ -26,7 +26,7 @@ void UParticleSystem::BuildEmitters()
     {
         if (UParticleEmitter* Emitter = Emitters[EmitterIndex])
         {
-            Emitter->Build();
+            Emitter->UpdateModuleLists();
         }
     }
 }
