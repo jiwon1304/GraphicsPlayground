@@ -194,7 +194,7 @@ void ParticleViewerPanel::RenderEmitterPanel()
             );
 
             ImGui::SetCursorScreenPos(moduleMin);
-            ImGui::Text("%s", ModuleTypeToString(Module->GetModuleType()));
+            ImGui::Text("%s", Module->GetModuleName().ToString().ToAnsiString().c_str());
 
             ImGui::Spacing();
             ModuleIndex++;

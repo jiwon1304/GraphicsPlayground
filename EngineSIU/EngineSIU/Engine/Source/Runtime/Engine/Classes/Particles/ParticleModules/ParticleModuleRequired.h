@@ -79,7 +79,7 @@ public:
     virtual ~UParticleModuleRequired() override = default;
 
     virtual void Update(FParticleEmitterInstance* Owner, int32 Offset, float DeltaTime) override;
-    virtual FName GetName() const override
+    virtual FName GetModuleName() const override
     {
         return FName(TEXT("Required"));
     }

@@ -133,6 +133,6 @@ public:
     
     FRandomStream& GetRandomStream(FParticleEmitterInstance* Owner);
 
-    virtual FName GetName() const;
+    virtual FName GetModuleName() const;
 
 };
