@@ -112,8 +112,21 @@ consteval EPropertyType GetPropertyType()
     else if constexpr (TIsTMap<T>)                  { return EPropertyType::Map;    }
     else if constexpr (TIsTSet<T>)                  { return EPropertyType::Set;    }
 
-    // enum class만 지원
-    else if constexpr (std::is_scoped_enum_v<T>)    { return EPropertyType::Enum;   }
+    // Enum
+    else if constexpr (std::is_enum_v<T>)
+    {
+        // enum class만 지원
+        if constexpr (std::is_scoped_enum_v<T>)
+        {
+            return EPropertyType::Enum;
+        }
+        else
+        {
+            // enum class가 아니면 컴파일 에러
+            static_assert(TAlwaysFalse<T>, "Enum class must be scoped enum.");
+            return EPropertyType::Unknown;
+        }
+    }
 
     // 커스텀 구조체
     else if constexpr (std::is_class_v<T> && !std::derived_from<T, UObject>)

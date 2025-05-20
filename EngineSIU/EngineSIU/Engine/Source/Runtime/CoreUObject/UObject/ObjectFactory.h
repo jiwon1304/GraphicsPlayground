@@ -26,6 +26,8 @@ public:
 
         GUObjectArray.AddObject(Obj);
 
+        Obj->PostInitProperties();
+
         UE_LOGFMT(ELogLevel::Display, "Created Object: {}, Size: {}", Obj->GetName(), InClass->GetStructSize());
 
         return Obj;
