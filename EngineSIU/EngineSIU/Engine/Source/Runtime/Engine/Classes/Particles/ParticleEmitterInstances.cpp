@@ -39,6 +39,8 @@ void FParticleEmitterInstance::Init()
     ParticleStride = ParticleSize;
 
     Resize(FMath::Min(SpriteTemplate->InitialAllocationCount, 100), true);
+
+    RandomStream.Initialize("RandomSeed");
 }
 
 void FParticleEmitterInstance::Tick(float DeltaTime)
@@ -255,7 +257,7 @@ void FParticleEmitterInstance::SpawnParticles(int32 Count, float StartTime, floa
 
         DECLARE_PARTICLE_PTR(Particle, ParticleData + ParticleStride * NextFreeIndex);
         const uint32 CurrentParticleIndex = ActiveParticles++;
-        UE_LOG(ELogLevel::Display, "Current Active Particles : %d", ActiveParticles);
+        //UE_LOG(ELogLevel::Display, "Current Active Particles : %d", ActiveParticles);
 
         PreSpawn(Particle, InitialLocation, InitialVelocity);
         for (int32 ModuleIndex = 0; ModuleIndex < LODLevel->SpawnModules.Num(); ModuleIndex++)

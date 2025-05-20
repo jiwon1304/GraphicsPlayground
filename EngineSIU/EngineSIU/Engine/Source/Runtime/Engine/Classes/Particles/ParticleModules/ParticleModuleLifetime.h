@@ -28,6 +28,6 @@ public:
     )
     UPROPERTY(
         EditAnywhere,
-        float, MaxLifetime, = 2.0f;
+        float, MaxLifetime, = 1.0f;
     )
 };

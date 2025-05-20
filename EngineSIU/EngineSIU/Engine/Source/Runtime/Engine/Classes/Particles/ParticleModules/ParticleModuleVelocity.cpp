@@ -1,4 +1,4 @@
-﻿#include "ParticleModuleVelocity.h"
+#include "ParticleModuleVelocity.h"
 
 #include "ParticleModuleRequired.h"
 #include "Components/ParticleSystemComponent.h"
@@ -13,6 +13,7 @@
 UParticleModuleVelocity::UParticleModuleVelocity()
 {
     bSpawnModule = true;
+    bEnabled = true;
 }
 
 void UParticleModuleVelocity::InitializeDefaults()
@@ -36,8 +37,8 @@ void UParticleModuleVelocity::PostInitProperties()
 
 void UParticleModuleVelocity::Spawn(FParticleEmitterInstance* Owner, int32 Offset, float SpawnTime, FBaseParticle* ParticleBase)
 {
-    // SpawnEx(Owner, Offset, SpawnTime, &GetRandomStream(Owner), ParticleBase);
-    SpawnEx(Owner, Offset, SpawnTime, nullptr, ParticleBase);
+    SpawnEx(Owner, Offset, SpawnTime, &GetRandomStream(Owner), ParticleBase);
+    //SpawnEx(Owner, Offset, SpawnTime, nullptr, ParticleBase);
 }
 
 void UParticleModuleVelocity::SpawnEx(

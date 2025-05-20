@@ -2,6 +2,7 @@
 #include "Container/Array.h"
 #include "Math/Matrix.h"
 #include "Math/Vector.h"
+#include "Math/RandomStream.h"
 
 class UParticleEmitter;
 class UParticleSystemComponent;
@@ -83,6 +84,9 @@ struct FParticleEmitterInstance
     FMatrix EmitterToSimulation = FMatrix::Identity;
     /** 시뮬레이션 공간에서 월드 공간으로 변환하는 트랜스폼 행렬. */
     FMatrix SimulationToWorld = FMatrix::Identity;
+
+    /** Stream of random values to use with this component */
+    FRandomStream RandomStream;
 
     /** 현재 사용중인 머티리얼. */
     UMaterial* CurrentMaterial = nullptr;

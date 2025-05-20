@@ -1,6 +1,7 @@
 #pragma once
 #include "Math/Vector.h"
 #include "Math/Color.h"
+#include "Math/RandomStream.h"
 
 class UParticleModuleRequired;
 struct FBaseParticle
@@ -199,6 +200,11 @@ struct FMeshRotationPayloadData
     FVector	 CurContinuousRotation;
     FVector  RotationRate;
     FVector  RotationRateBase;
+};
+
+struct FParticleRandomSeedInstancePayload
+{
+    FRandomStream	RandomStream;
 };
 
 template <typename T>

@@ -56,6 +56,7 @@
 
 #include "SubWindow/ParticleSubEngine.h"
 #include <Particles/ParticleModules/ParticleModuleSize.h>
+#include <Particles/ParticleModules/ParticleModuleVelocity.h>
 ControlEditorPanel::ControlEditorPanel()
 {
     SetSupportedWorldTypes(EWorldTypeBitFlag::Editor | EWorldTypeBitFlag::PIE | EWorldTypeBitFlag::SkeletalViewer);
@@ -543,7 +544,9 @@ void ControlEditorPanel::CreateModifyButton(const ImVec2 ButtonSize, ImFont* Ico
                     UParticleSpriteEmitter* Emitter1 = FObjectFactory::ConstructObject<UParticleSpriteEmitter>(Template);
                     UParticleModuleLifetime* LifetimeModule = FObjectFactory::ConstructObject<UParticleModuleLifetime>(Emitter1);
                     UParticleModuleSize* SizeModule = FObjectFactory::ConstructObject<UParticleModuleSize>(Emitter1);
+                    UParticleModuleVelocity* VelocityModule = FObjectFactory::ConstructObject<UParticleModuleVelocity>(Emitter1);
                     LifetimeModule->bEnabled = true; // 이거 1로 초기화했는데 왜 0됨????
+
                     Template->Emitters.Add(Emitter1);
 
 
@@ -552,6 +555,7 @@ void ControlEditorPanel::CreateModifyButton(const ImVec2 ButtonSize, ImFont* Ico
                     Emitter1->LODLevels.Add(LODLevel);
                     LODLevel->Modules.Add(LifetimeModule);
                     LODLevel->Modules.Add(SizeModule);
+                    LODLevel->Modules.Add(VelocityModule);
                     LODLevel->UpdateModuleLists();
 
                     Template->PostEditChangeProperty();

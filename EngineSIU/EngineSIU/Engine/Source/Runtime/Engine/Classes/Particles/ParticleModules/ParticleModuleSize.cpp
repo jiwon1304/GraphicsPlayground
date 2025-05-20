@@ -30,8 +30,7 @@ void UParticleModuleSize::InitializeDefaults()
 
 void UParticleModuleSize::Spawn(FParticleEmitterInstance* Owner, int32 Offset, float SpawnTime, FBaseParticle* ParticleBase)
 {
-    // TODO: Random 만들어서 여기에 사용해야 할듯 + FRawDistributionVector도 만들고
-    SpawnEx(Owner, Offset, SpawnTime, nullptr, ParticleBase);
+    SpawnEx(Owner, Offset, SpawnTime, &GetRandomStream(Owner), ParticleBase);
 }
 
 void UParticleModuleSize::SpawnEx(
