@@ -100,6 +100,7 @@ struct FParticleEmitterInstance
 
     // Tick관련
     virtual void Tick(float DeltaTime);
+    virtual void ResetParticleParameters(float DeltaTime);
     virtual float Tick_EmitterTimeSetup(float DeltaTime, UParticleLODLevel* CurrentLODLevel);
     virtual float Tick_SpawnParticles(float DeltaTime, UParticleLODLevel* InCurrentLODLevel, bool bFirstTime);
     virtual void Tick_ModuleUpdate(float DeltaTime, UParticleLODLevel* InCurrentLODLevel);

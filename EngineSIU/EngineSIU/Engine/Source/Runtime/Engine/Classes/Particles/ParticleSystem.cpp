@@ -1,16 +1,22 @@
 #include "ParticleSystem.h"
 #include "Particles/ParticleEmitter.h"
 #include "Components/ParticleSystemComponent.h"
+#include "UObject/Casts.h"
 
 void UParticleSystem::PostEditChangeProperty()
 {
     if (!PreviewComponent)
     {
-        UE_LOG(ELogLevel::Error, TEXT("PreviewComponent is Null!!!"));
-        return;
+        PreviewComponent = Cast<UParticleSystemComponent>(GetOuter());
+        if (!PreviewComponent)
+        {
+            UE_LOG(ELogLevel::Error, TEXT("PreviewComponent is Null!!!"));
+            return;
+        }
     }
 
     PreviewComponent->UpdateInstances();
+    BuildEmitters();
 }
 
 void UParticleSystem::BuildEmitters()
