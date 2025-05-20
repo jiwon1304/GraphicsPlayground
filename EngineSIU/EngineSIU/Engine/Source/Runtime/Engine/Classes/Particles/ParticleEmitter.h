@@ -41,4 +41,9 @@ public:
     TMap<UParticleModule*, uint32> ModuleInstanceOffsetMap;
 
     TArray<UParticleModule*> ModulesNeedingInstanceData;
+
+    UPROPERTY(
+        EditAnywhere,
+        int32, InitialAllocationCount, = 20
+    )
 };
