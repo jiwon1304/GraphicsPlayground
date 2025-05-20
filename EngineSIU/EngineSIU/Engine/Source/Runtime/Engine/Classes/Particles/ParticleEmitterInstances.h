@@ -107,6 +107,7 @@ struct FParticleEmitterInstance
     virtual void Tick_ModuleUpdate(float DeltaTime, UParticleLODLevel* InCurrentLODLevel);
     virtual void Tick_ModulePostUpdate(float DeltaTime, UParticleLODLevel* InCurrentLODLevel);
     virtual void Tick_ModuleFinalUpdate(float DeltaTime, UParticleLODLevel* InCurrentLODLevel);
+    virtual void UpdateBoundingBox(float DeltaTime);
     virtual uint32 RequiredBytes();
 
     UParticleLODLevel* GetCurrentLODLevelChecked() const;

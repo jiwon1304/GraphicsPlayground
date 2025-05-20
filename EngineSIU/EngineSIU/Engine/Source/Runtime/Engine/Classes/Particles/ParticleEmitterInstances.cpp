@@ -72,9 +72,10 @@ void FParticleEmitterInstance::Tick(float DeltaTime)
         {
             // !TODO : 얘네들도 알아보기
             // UpdateOrbitData(DeltaTime);
-            // UpdateBoundingBox(DeltaTime);
+            UpdateBoundingBox(DeltaTime);
         }
         Tick_ModuleFinalUpdate(DeltaTime, LocalCurrentLODLevel);
+
 
         // !TODO : 이 프로퍼티들도 어디에 쓰는 놈들인지 알아봐야 함
         EmitterTime += EmitterDelay;
@@ -172,6 +173,38 @@ void FParticleEmitterInstance::Tick_ModulePostUpdate(float DeltaTime, UParticleL
 
 void FParticleEmitterInstance::Tick_ModuleFinalUpdate(float DeltaTime, UParticleLODLevel* InCurrentLODLevel)
 {
+}
+
+void FParticleEmitterInstance::UpdateBoundingBox(float DeltaTime)
+{
+    // !TODO : 실제 바운딩박스 업데이트 로직. 지금은 위치 및 회전만 업데이트
+    if (Component)
+    {
+        FVector NewLocation;
+        float NewRotation;
+
+        UParticleLODLevel* LODLevel = GetCurrentLODLevelChecked();
+
+        // 여기는 바운딩 박스 계산할 때 필요함
+        //const bool bUseLocalSpace = LODLevel->RequiredModule->bUseLocalSpace;
+
+        //const FMatrix ComponentToWorld = bUseLocalSpace
+        //    ? Component->GetWorldMatrix()
+        //    : FMatrix::Identity;
+
+        for (int32 i = 0; i < ActiveParticles; i++)
+        {
+            DECLARE_PARTICLE(Particle, ParticleData + ParticleStride * ParticleIndices[i]);
+            NewLocation = Particle.Location + Particle.Velocity * DeltaTime;
+            NewRotation = Particle.Rotation;
+
+            NewLocation += PositionOffsetThisTick;
+            Particle.OldLocation += PositionOffsetThisTick;
+
+            Particle.Location = NewLocation;
+            Particle.Rotation = FMath::Fmod(NewRotation, 2.f * (float)PI);
+        }
+    }
 }
 
 uint32 FParticleEmitterInstance::RequiredBytes()
