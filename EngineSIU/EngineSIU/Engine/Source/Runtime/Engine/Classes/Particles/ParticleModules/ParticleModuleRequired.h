@@ -3,6 +3,7 @@
 #include "Math/Vector.h"
 #include "Math/Quat.h"
 
+class UMaterial;
 
 class UParticleModuleRequired : public UParticleModule
 {
@@ -40,5 +41,10 @@ public:
     UPROPERTY(
         EditAnywhere,
         FRotator, EmitterRotation, = FRotator::ZeroRotator; // Rotation of the emitter
+    )
+
+    UPROPERTY(
+        EditAnywhere,
+        UMaterial*, Material, = nullptr;
     )
 };

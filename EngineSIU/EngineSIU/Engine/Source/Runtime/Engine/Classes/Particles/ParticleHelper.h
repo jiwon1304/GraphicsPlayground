@@ -148,7 +148,7 @@ struct FDynamicSpriteEmitterData : public FDynamicSpriteEmitterDataBase
     ~FDynamicSpriteEmitterData()
     {
     }
-    void Init() {}
+    void Init();
     virtual const FDynamicEmitterReplayDataBase& GetSource() const override
     {
         return Source;
@@ -166,12 +166,26 @@ struct FDynamicMeshEmitterReplayData : public FDynamicMeshEmitterReplayDataBase
 
 struct FDynamicMeshEmitterData : public FDynamicSpriteEmitterDataBase
 {
-    void Init() {}
+    FDynamicMeshEmitterData(const UParticleModuleRequired* RequiredModule);
+    void Init(const struct FParticleMeshEmitterInstance* EmitterInstance, class UStaticMesh* InStaticMesh);
     virtual const FDynamicEmitterReplayDataBase& GetSource() const override
     {
         return Source;
     }
     FDynamicMeshEmitterReplayData Source;
+    const FParticleMeshEmitterInstance* EmitterInstance;
+    class UStaticMesh* StaticMesh;
+};
+
+/** Mesh rotation data payload										*/
+struct FMeshRotationPayloadData
+{
+    FVector	 InitialOrientation;		// from mesh data module
+    FVector  InitRotation;				// from init rotation module
+    FVector  Rotation;
+    FVector	 CurContinuousRotation;
+    FVector  RotationRate;
+    FVector  RotationRateBase;
 };
 
 #define DECLARE_PARTICLE(Name,Address)		\

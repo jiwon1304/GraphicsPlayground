@@ -10,6 +10,7 @@
 #include "Particles/ParticleModules/ParticleModuleSpawn.h"
 #include "Components/Material/Material.h"
 #include "Components/SceneComponent.h"
+#include "Particles/ParticleModules/ParticleModuleTypeDataMesh.h"
 
 
 void FParticleEmitterInstance::InitParameters(UParticleEmitter* InTemplate, UParticleSystemComponent* InComponent)
@@ -33,11 +34,8 @@ void FParticleEmitterInstance::Init()
     OldLocation = Location;
 
     ParticleSize = SpriteTemplate->ParticleSize;
-    
     PayloadOffset = ParticleSize;
-
     ParticleSize = Align(ParticleSize, 16);
-
     ParticleStride = ParticleSize;
 
     Resize(FMath::Min(SpriteTemplate->InitialAllocationCount, 100), true);
@@ -145,6 +143,12 @@ float FParticleEmitterInstance::Tick_SpawnParticles(float DeltaTime, UParticleLO
     return SpawnFraction;
 }
 
+void FParticleEmitterInstance::Tick_MaterialOverrides(int32 EmitterIndex)
+{
+    UParticleLODLevel* LODLevel = SpriteTemplate->GetCurrentLODLevel(this);
+    CurrentMaterial = Component->EmitterMaterials[EmitterIndex];
+}
+
 void FParticleEmitterInstance::Tick_ModuleUpdate(float DeltaTime, UParticleLODLevel* InCurrentLODLevel)
 {
     UParticleLODLevel* HighestLODLevel = SpriteTemplate->GetCurrentLODLevel(this); // !NOTE : 지금은 하나만 사용중
@@ -168,6 +172,11 @@ void FParticleEmitterInstance::Tick_ModulePostUpdate(float DeltaTime, UParticleL
 
 void FParticleEmitterInstance::Tick_ModuleFinalUpdate(float DeltaTime, UParticleLODLevel* InCurrentLODLevel)
 {
+}
+
+uint32 FParticleEmitterInstance::RequiredBytes()
+{
+    return 0;
 }
 
 UParticleLODLevel* FParticleEmitterInstance::GetCurrentLODLevelChecked() const
@@ -208,7 +217,7 @@ void FParticleEmitterInstance::SpawnParticles(int32 Count, float StartTime, floa
         {
             UE_LOG(ELogLevel::Error, TEXT("NextFreeIndex is out of range"));
             // !TODO : ParticleIndice 고치는 로직 추가
-            //continue;
+            continue;
         }
 
         DECLARE_PARTICLE_PTR(Particle, ParticleData + ParticleStride * NextFreeIndex);
@@ -609,6 +618,33 @@ bool FParticleMeshEmitterInstance::Resize(int32 NewMaxActiveParticles, bool bSet
     return false;
 }
 
+FDynamicEmitterDataBase* FParticleMeshEmitterInstance::GetDynamicData()
+{
+    UParticleLODLevel* LODLevel = SpriteTemplate->GetCurrentLODLevel(this);
+
+    if (!bEnabled)
+        return nullptr;
+
+    FDynamicMeshEmitterData* NewEmitterData = new FDynamicMeshEmitterData(LODLevel->RequiredModule);
+
+    if (!FillReplayData(NewEmitterData->Source))
+    {
+        delete NewEmitterData;
+        return nullptr;
+    }
+
+    NewEmitterData->Init(this, MeshTypeData->Mesh);
+}
+
+uint32 FParticleMeshEmitterInstance::RequiredBytes()
+{
+    uint32 uiBytes = FParticleEmitterInstance::RequiredBytes();
+    MeshRotationOffset = PayloadOffset + uiBytes;
+    uiBytes += sizeof(FMeshRotationPayloadData);
+
+    return uiBytes;
+}
+
 bool FParticleMeshEmitterInstance::FillReplayData(FDynamicEmitterReplayDataBase& OutData)
 {
     if (!FParticleEmitterInstance::FillReplayData(OutData))
@@ -616,7 +652,7 @@ bool FParticleMeshEmitterInstance::FillReplayData(FDynamicEmitterReplayDataBase&
         return false;
     }
 
-    OutData.eEmitterType = DET_Sprite;
+    OutData.eEmitterType = DET_Mesh;
 
     FDynamicSpriteEmitterReplayData* NewReplayData = static_cast<FDynamicSpriteEmitterReplayData*>(&OutData);
 

@@ -9,7 +9,7 @@ class UParticleModuleLifetime : public UParticleModule
 {
     DECLARE_CLASS(UParticleModuleLifetime, UParticleModule)
 public:
-    UParticleModuleLifetime() = default;
+    UParticleModuleLifetime();
     virtual ~UParticleModuleLifetime() override = default;
 
     float LifeTime = 1.0f;// 기본값 1초로 한다

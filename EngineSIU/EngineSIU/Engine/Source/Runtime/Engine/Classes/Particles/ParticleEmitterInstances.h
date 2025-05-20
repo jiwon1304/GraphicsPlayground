@@ -103,9 +103,11 @@ struct FParticleEmitterInstance
     virtual void ResetParticleParameters(float DeltaTime);
     virtual float Tick_EmitterTimeSetup(float DeltaTime, UParticleLODLevel* CurrentLODLevel);
     virtual float Tick_SpawnParticles(float DeltaTime, UParticleLODLevel* InCurrentLODLevel, bool bFirstTime);
+    virtual void Tick_MaterialOverrides(int32 EmitterIndex);
     virtual void Tick_ModuleUpdate(float DeltaTime, UParticleLODLevel* InCurrentLODLevel);
     virtual void Tick_ModulePostUpdate(float DeltaTime, UParticleLODLevel* InCurrentLODLevel);
     virtual void Tick_ModuleFinalUpdate(float DeltaTime, UParticleLODLevel* InCurrentLODLevel);
+    virtual uint32 RequiredBytes();
 
     UParticleLODLevel* GetCurrentLODLevelChecked() const;
     uint32 GetModuleDataOffset(UParticleModule* Module) const;
@@ -143,12 +145,15 @@ struct FParticleSpriteEmitterInstance : public FParticleEmitterInstance
 
 struct FParticleMeshEmitterInstance : public FParticleEmitterInstance
 {
-    UParticleModuleTypeDataMesh* MeshTypeData;
+    UParticleModuleTypeDataMesh* MeshTypeData = nullptr;
 
+    bool MeshRotationActive;
+    int32 MeshRotationOffset;
+    
     virtual void InitParameters(UParticleEmitter* InTemplate, UParticleSystemComponent* InComponent) override;
     virtual bool Resize(int32 NewMaxActiveParticles, bool bSetMaxActiveCount = true) override;
+    virtual FDynamicEmitterDataBase* GetDynamicData() override;
+    virtual uint32 RequiredBytes() override;
 protected:
     virtual bool FillReplayData(FDynamicEmitterReplayDataBase& OutData);
-    // !TODO : FParticleMeshEmitterInstance에 필요한 데이터들 추가
-    // !TODO : FParticleMeshEmitterInstance에 필요한 함수들 추가
 };

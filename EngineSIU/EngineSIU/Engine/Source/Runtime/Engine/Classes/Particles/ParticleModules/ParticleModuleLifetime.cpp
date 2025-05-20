@@ -2,6 +2,12 @@
 #include "Particles/ParticleEmitterInstances.h"
 #include "Particles/ParticleHelper.h"
 
+UParticleModuleLifetime::UParticleModuleLifetime()
+{
+    bSpawnModule = true;
+    bUpdateModule = true;
+}
+
 void UParticleModuleLifetime::Spawn(FParticleEmitterInstance* Owner, int32 Offset, float SpawnTime, FBaseParticle* ParticleBase)
 {
     SPAWN_INIT;
