@@ -8,6 +8,7 @@
 #include "Distributions.h"
 
 #include "DistributionFloat.h"
+#include "DistributionFloatUniform.h"
 #include "DistributionVector.h"
 #include "DistributionVectorUniform.h"
 #include "Particles/ParticleModules/ParticleModule.h"
@@ -1601,6 +1602,126 @@ float UDistributionFloat::GetValue(float F, UObject* Data, struct FRandomStream*
     return 0.0;
 }
 
+bool FRawDistributionFloat::IsCreated()
+{
+    return HasLookupTable(/*bInitializeIfNeeded=*/ false) || (Distribution != nullptr);
+}
+
+#if WITH_EDITOR
+void FRawDistributionFloat::Initialize()
+{
+    // Nothing to do if we don't have a distribution.
+    if (Distribution == nullptr)
+    {
+        return;
+    }
+
+    // does this FRawDist need updating? (if UDist is dirty or somehow the distribution wasn't dirty, but we have no data)
+    bool bNeedsUpdating = false;
+    if (Distribution->bIsDirty || (LookupTable.IsEmpty() && Distribution->CanBeBaked()))
+    {
+        if (!Distribution->bIsDirty)
+        {
+            UE_LOG(
+                ELogLevel::Display, TEXT("Somehow Distribution %s wasn't dirty, but its FRawDistribution wasn't ever initialized!"),
+                *Distribution->GetName()
+            );
+        }
+        bNeedsUpdating = true;
+    }
+    // only initialize if we need to
+    if (!bNeedsUpdating)
+    {
+        return;
+    }
+
+    // always empty out the lookup table
+    LookupTable.Empty();
+
+    // distribution is no longer dirty (if it was)
+    // template objects aren't marked as dirty, because any UDists that uses this as an archetype, 
+    // aren't the default values, and has already been saved, needs to know to build the FDist
+    // if (!Distribution->IsTemplate())
+    // {
+    //     Distribution->bIsDirty = false;
+    // }
+
+    // if the distribution can't be baked out, then we do nothing here
+    if (!Distribution->CanBeBaked())
+    {
+        return;
+    }
+
+    // Build and optimize the lookup table.
+    BuildLookupTable(&LookupTable, Distribution);
+    OptimizeLookupTable(&LookupTable, LOOKUP_TABLE_ERROR_THRESHOLD);
+
+    // fill out our min/max
+    Distribution->GetOutRange(MinValue, MaxValue);
+}
+#endif // WITH_EDITOR
+
+const FRawDistribution* FRawDistributionFloat::GetFastRawDistribution()
+{
+    if (!IsSimple() || !HasLookupTable())
+    {
+        return 0;
+    }
+
+    // if we get here, we better have been initialized!
+    assert(!LookupTable.IsEmpty());
+
+    return this;
+}
+
+float FRawDistributionFloat::GetValue(float F, UObject* Data, struct FRandomStream* InRandomStream)
+{
+    if (!HasLookupTable())
+    {
+        if (!Distribution)
+        {
+            return 0.0f;
+        }
+        return Distribution->GetValue(F, Data, InRandomStream);
+    }
+
+    // if we get here, we better have been initialized!
+    assert(!LookupTable.IsEmpty());
+
+    float Value;
+    FRawDistribution::GetValue1(F, &Value, 0, InRandomStream);
+    return Value;
+}
+
+void FRawDistributionFloat::GetOutRange(float& MinOut, float& MaxOut)
+{
+    if (!HasLookupTable() && Distribution)
+    {
+        assert(Distribution);
+        Distribution->GetOutRange(MinOut, MaxOut);
+    }
+    else
+    {
+        MinOut = MinValue;
+        MaxOut = MaxValue;
+    }
+}
+
+void FRawDistributionFloat::InitLookupTable()
+{
+#if WITH_EDITOR
+    // make sure it's up to date
+    if (Distribution)
+    {
+        if (Distribution->bIsDirty)
+        {
+            // Distribution->ConditionalPostLoad();
+            Initialize();
+        }
+    }
+#endif
+}
+
 float UDistributionFloat::GetFloatValue(float F)
 {
     return GetValue(F);
@@ -1622,4 +1743,186 @@ uint32 UDistributionFloat::InitializeRawEntry(float Time, float* Values) const
 {
     Values[0] = GetValue(Time);
     return 1;
+}
+
+void UDistributionFloatUniform::PostInitProperties()
+{
+    Super::PostInitProperties();
+    if (GetOuter()->IsA<UParticleModule>())
+    {
+        // Set to a bogus value for distributions created before VER_UE4_MOVE_DISTRIBUITONS_TO_POSTINITPROPS
+        // to be able to restore to the previous default value.
+        Min = UDistribution::DefaultValue;
+        Max = UDistribution::DefaultValue;
+    }
+}
+
+float UDistributionFloatUniform::GetValue(float F, UObject* Data, FRandomStream* InRandomStream) const
+{
+    return Max + (Min - Max) * DIST_GET_RANDOM_VALUE(InRandomStream);
+}
+
+ERawDistributionOperation UDistributionFloatUniform::GetOperation() const
+{
+    if (Min == Max)
+    {
+        // This may as well be a constant - don't bother doing the FMath::SRand scaling on it.
+        return RDO_None;
+    }
+    return RDO_Random;
+}
+
+uint32 UDistributionFloatUniform::InitializeRawEntry(float Time, float* Values) const
+{
+    Values[0] = Min;
+    Values[1] = Max;
+    return 2;
+}
+
+int32 UDistributionFloatUniform::GetNumKeys() const
+{
+    return 1;
+}
+
+int32 UDistributionFloatUniform::GetNumSubCurves() const
+{
+    return 2;
+}
+
+FColor UDistributionFloatUniform::GetSubCurveButtonColor(int32 SubCurveIndex, bool bIsSubCurveHidden) const
+{
+    // Check for array out of bounds because it will crash the program
+    assert(SubCurveIndex >= 0);
+    assert(SubCurveIndex < GetNumSubCurves());
+
+    FColor ButtonColor;
+
+    switch (SubCurveIndex)
+    {
+    case 0:
+        // Red
+        ButtonColor = bIsSubCurveHidden ? FColor(32, 0, 0) : FColor::Red;
+        break;
+    case 1:
+        // Green
+        ButtonColor = bIsSubCurveHidden ? FColor(0, 32, 0) : FColor::Green;
+        break;
+    default:
+        // A bad sub-curve index was given. 
+        assert(false);
+        break;
+    }
+
+    return ButtonColor;
+}
+
+float UDistributionFloatUniform::GetKeyIn(int32 KeyIndex)
+{
+    assert(KeyIndex == 0);
+    return 0.f;
+}
+
+float UDistributionFloatUniform::GetKeyOut(int32 SubIndex, int32 KeyIndex)
+{
+    assert(SubIndex == 0 || SubIndex == 1);
+    assert(KeyIndex == 0);
+    return (SubIndex == 0) ? Min : Max;
+}
+
+FColor UDistributionFloatUniform::GetKeyColor(int32 SubIndex, int32 KeyIndex, const FColor& CurveColor)
+{
+    // There can only be as many as two sub-curves for this distribution.
+    assert(SubIndex == 0 || SubIndex == 1);
+    // There can be only be one key for this distribution.
+    assert(KeyIndex == 0);
+
+    FColor KeyColor;
+
+    if (0 == SubIndex)
+    {
+        KeyColor = FColor::Red;
+    }
+    else
+    {
+        KeyColor = FColor::Green;
+    }
+
+    return KeyColor;
+}
+
+void UDistributionFloatUniform::GetInRange(float& MinIn, float& MaxIn) const
+{
+    MinIn = 0.f;
+    MaxIn = 0.f;
+}
+
+void UDistributionFloatUniform::GetOutRange(float& MinOut, float& MaxOut) const
+{
+    MinOut = Min;
+    MaxOut = Max;
+}
+
+// EInterpCurveMode UDistributionFloatUniform::GetKeyInterpMode(int32 KeyIndex) const
+// {
+//     assert( KeyIndex == 0 );
+//     return CIM_Constant;
+// }
+
+void UDistributionFloatUniform::GetTangents(int32 SubIndex, int32 KeyIndex, float& ArriveTangent, float& LeaveTangent) const
+{
+    assert(SubIndex == 0 || SubIndex == 1);
+    assert(KeyIndex == 0);
+    ArriveTangent = 0.f;
+    LeaveTangent = 0.f;
+}
+
+float UDistributionFloatUniform::EvalSub(int32 SubIndex, float InVal)
+{
+    assert(SubIndex == 0 || SubIndex == 1);
+    return (SubIndex == 0) ? Min : Max;
+}
+
+int32 UDistributionFloatUniform::CreateNewKey(float KeyIn)
+{
+    return 0;
+}
+
+void UDistributionFloatUniform::DeleteKey(int32 KeyIndex)
+{
+    assert(KeyIndex == 0);
+}
+
+int32 UDistributionFloatUniform::SetKeyIn(int32 KeyIndex, float NewInVal)
+{
+    assert(KeyIndex == 0);
+    return 0;
+}
+
+void UDistributionFloatUniform::SetKeyOut(int32 SubIndex, int32 KeyIndex, float NewOutVal)
+{
+    assert(SubIndex == 0 || SubIndex == 1);
+    assert(KeyIndex == 0);
+
+    // We ensure that we can't move the Min past the Max.
+    if (SubIndex == 0)
+    {
+        Min = FMath::Min<float>(NewOutVal, Max);
+    }
+    else
+    {
+        Max = FMath::Max<float>(NewOutVal, Min);
+    }
+
+    bIsDirty = true;
+}
+
+// void UDistributionFloatUniform::SetKeyInterpMode(int32 KeyIndex, EInterpCurveMode NewMode)
+// {
+//     assert(KeyIndex == 0);
+// }
+
+void UDistributionFloatUniform::SetTangents(int32 SubIndex, int32 KeyIndex, float ArriveTangent, float LeaveTangent)
+{
+    assert(SubIndex == 0 || SubIndex == 1);
+    assert(KeyIndex == 0);
 }
