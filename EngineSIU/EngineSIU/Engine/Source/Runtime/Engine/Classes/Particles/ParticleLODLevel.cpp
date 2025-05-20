@@ -58,7 +58,7 @@ void UParticleLODLevel::UpdateModuleLists()
 
     if (TypeDataModuleIndex != -1)
     {
-        Modules.RemoveAt(TypeDataModuleIndex);
+        //Modules.RemoveAt(TypeDataModuleIndex);
     }
 }
 

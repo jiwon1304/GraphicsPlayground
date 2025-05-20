@@ -48,4 +48,6 @@ public:
         // !TODO : FRawDistribution이 없기 때문에 외부에서 작성해서 그냥 넣어주기
         return SpawnScale;
     }
+
+    virtual FName GetModuleName() const override;
 };
