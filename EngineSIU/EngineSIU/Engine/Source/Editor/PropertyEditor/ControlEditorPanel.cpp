@@ -50,6 +50,9 @@
 #include "Engine/Classes/Engine/AssetManager.h"
 #include "Components/ParticleSystemComponent.h"
 #include "Particles/ParticleSystem.h"
+#include "Particles/ParticleSpriteEmitter.h"
+#include <Particles/ParticleModules/ParticleModuleLifetime.h>
+#include "Particles/ParticleLODLevel.h"
 
 #include "SubWindow/ParticleSubEngine.h"
 ControlEditorPanel::ControlEditorPanel()
@@ -532,10 +535,24 @@ void ControlEditorPanel::CreateModifyButton(const ImVec2 ButtonSize, ImFont* Ico
                 {
                     SpawnedActor = World->SpawnActor<AActor>();
                     SpawnedActor->SetActorLabel(TEXT("OBJ_PARTICLE"));
-                    UParticleSystemComponent* ParticleComponent = SpawnedActor->AddComponent<UParticleSystemComponent>();
-                    UParticleSystem* Template = FObjectFactory::ConstructObject<UParticleSystem>(nullptr);
+                    SpawnedActor->SetActorTickInEditor(true);
+                    UParticleSystemComponent* ParticleComponent = SpawnedActor->AddComponent<UParticleSystemComponent>("ParticleSystemComponent_0");
+                    ParticleComponent->SetupAttachment(SpawnedActor->GetRootComponent());
+                    UParticleSystem* Template = FObjectFactory::ConstructObject<UParticleSystem>(ParticleComponent);
+                    UParticleSpriteEmitter* Emitter1 = FObjectFactory::ConstructObject<UParticleSpriteEmitter>(Template);
+                    UParticleModuleLifetime* LifetimeModule = FObjectFactory::ConstructObject<UParticleModuleLifetime>(Emitter1);
+                    LifetimeModule->bEnabled = true; // 이거 1로 초기화했는데 왜 0됨????
+                    Template->Emitters.Add(Emitter1);
+
+                    UParticleLODLevel* LODLevel = FObjectFactory::ConstructObject<UParticleLODLevel>(Emitter1);
+                    LODLevel->Initialize();
+                    Emitter1->LODLevels.Add(LODLevel);
+                    LODLevel->Modules.Add(LifetimeModule);
+                    LODLevel->UpdateModuleLists();
+
+                    Template->PostEditChangeProperty();
                     ParticleComponent->SetTemplate(Template);
-                    ParticleComponent->InitializeSystem();
+
                     break;
                 }
                 case OBJ_CAMERA:

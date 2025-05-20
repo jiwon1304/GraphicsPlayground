@@ -45,6 +45,12 @@ private:
 public:
     virtual UObject* Duplicate(UObject* InOuter);
 
+    /**
+     * C++ 생성자 호출 이후, 그리고 설정 파일에서 불러온 값을 포함한 모든 프로퍼티가 초기화된 후에 호출됩니다.
+     * 이 시점에서는 아직 직렬화나 기타 설정 작업이 수행되기 전입니다.
+     */
+    virtual void PostInitProperties();
+
     UObject* GetOuter() const { return OuterPrivate; }
     virtual UWorld* GetWorld() const;
     virtual void Serialize(FArchive& Ar);

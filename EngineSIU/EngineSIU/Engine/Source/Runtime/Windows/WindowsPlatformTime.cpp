@@ -51,3 +51,8 @@ uint64 FWindowsPlatformTime::Cycles64()
     QueryPerformanceCounter(&CycleCount);
     return static_cast<uint64>(CycleCount.QuadPart);
 }
+
+uint32 FWindowsPlatformTime::Cycles()
+{
+    return static_cast<uint32>(Cycles64());
+}

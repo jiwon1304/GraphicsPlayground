@@ -23,6 +23,8 @@ void UParticleSystemComponent::InitParticles()
     int32 NumInstances = EmitterInstances.Num();
     int32 NumEmitters = Template->Emitters.Num();
     const bool bIsFirstCreate = (NumInstances == 0);
+    EmitterInstances.Empty();
+    EmitterInstances.SetNum(NumEmitters);
 
     bWasCompleted = bIsFirstCreate ? false : bWasCompleted;
 
@@ -41,10 +43,11 @@ void UParticleSystemComponent::InitParticles()
             }
             Instance->bEnabled = true;
             Instance->InitParameters(Emitter, this);
-            Instance->Init();
 
             Instance->CurrentLODLevelIndex = LODLevel;
             Instance->CurrentLODLevel = Instance->SpriteTemplate->LODLevels[Instance->CurrentLODLevelIndex];
+
+            Instance->Init();
         }
     }
 }
