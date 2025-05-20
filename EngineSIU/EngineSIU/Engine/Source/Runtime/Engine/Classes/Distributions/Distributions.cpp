@@ -1665,7 +1665,7 @@ const FRawDistribution* FRawDistributionFloat::GetFastRawDistribution()
 {
     if (!IsSimple() || !HasLookupTable())
     {
-        return 0;
+        return nullptr;
     }
 
     // if we get here, we better have been initialized!
