@@ -14,6 +14,12 @@ FParticleEmitterInstance* UParticleEmitter::CreateInstance(UParticleSystemCompon
 
 UParticleLODLevel* UParticleEmitter::GetCurrentLODLevel(const FParticleEmitterInstance* Instance) const
 {
+    //null 반환해서 아래와 같이 수정
+    if (LODLevels.Num() > 0 && LODLevels[0] && LODLevels[0]->bEnabled)
+    {
+        return LODLevels[0];
+    }
+    return nullptr;
     // !NOTE : 지금은 LOD레벨 1개
     return Instance->CurrentLODLevel;
 }

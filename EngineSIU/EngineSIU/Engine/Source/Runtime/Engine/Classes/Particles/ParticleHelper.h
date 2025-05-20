@@ -132,6 +132,11 @@ class UMaterial;
 struct FDynamicSpriteEmitterReplayDataBase : public FDynamicEmitterReplayDataBase
 {
     UMaterial* Material = nullptr;
+
+    FDynamicSpriteEmitterReplayDataBase()
+    {
+        eEmitterType = DET_Sprite;
+    }
 };
 
 struct FDynamicSpriteEmitterReplayData : public FDynamicSpriteEmitterReplayDataBase
@@ -158,6 +163,10 @@ struct FDynamicSpriteEmitterData : public FDynamicSpriteEmitterDataBase
 
 struct FDynamicMeshEmitterReplayDataBase : FDynamicEmitterReplayDataBase
 {
+    FDynamicMeshEmitterReplayDataBase()
+    {
+        eEmitterType = DET_Mesh;
+    }
 };
 
 struct FDynamicMeshEmitterReplayData : public FDynamicMeshEmitterReplayDataBase
