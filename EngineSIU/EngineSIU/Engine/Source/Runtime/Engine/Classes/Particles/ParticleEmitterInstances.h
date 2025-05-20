@@ -2,6 +2,7 @@
 #include "Container/Array.h"
 #include "Math/Matrix.h"
 #include "Math/Vector.h"
+#include "Math/RandomStream.h"
 
 class UParticleEmitter;
 class UParticleSystemComponent;
@@ -84,6 +85,9 @@ struct FParticleEmitterInstance
     /** 시뮬레이션 공간에서 월드 공간으로 변환하는 트랜스폼 행렬. */
     FMatrix SimulationToWorld = FMatrix::Identity;
 
+    /** Stream of random values to use with this component */
+    FRandomStream RandomStream;
+
     /** 현재 사용중인 머티리얼. */
     UMaterial* CurrentMaterial = nullptr;
 
@@ -103,9 +107,12 @@ struct FParticleEmitterInstance
     virtual void ResetParticleParameters(float DeltaTime);
     virtual float Tick_EmitterTimeSetup(float DeltaTime, UParticleLODLevel* CurrentLODLevel);
     virtual float Tick_SpawnParticles(float DeltaTime, UParticleLODLevel* InCurrentLODLevel, bool bFirstTime);
+    virtual void Tick_MaterialOverrides(int32 EmitterIndex);
     virtual void Tick_ModuleUpdate(float DeltaTime, UParticleLODLevel* InCurrentLODLevel);
     virtual void Tick_ModulePostUpdate(float DeltaTime, UParticleLODLevel* InCurrentLODLevel);
     virtual void Tick_ModuleFinalUpdate(float DeltaTime, UParticleLODLevel* InCurrentLODLevel);
+    virtual void UpdateBoundingBox(float DeltaTime);
+    virtual uint32 RequiredBytes();
 
     UParticleLODLevel* GetCurrentLODLevelChecked() const;
     uint32 GetModuleDataOffset(UParticleModule* Module) const;
@@ -143,12 +150,15 @@ struct FParticleSpriteEmitterInstance : public FParticleEmitterInstance
 
 struct FParticleMeshEmitterInstance : public FParticleEmitterInstance
 {
-    UParticleModuleTypeDataMesh* MeshTypeData;
+    UParticleModuleTypeDataMesh* MeshTypeData = nullptr;
 
+    bool MeshRotationActive;
+    int32 MeshRotationOffset;
+    
     virtual void InitParameters(UParticleEmitter* InTemplate, UParticleSystemComponent* InComponent) override;
     virtual bool Resize(int32 NewMaxActiveParticles, bool bSetMaxActiveCount = true) override;
+    virtual FDynamicEmitterDataBase* GetDynamicData() override;
+    virtual uint32 RequiredBytes() override;
 protected:
     virtual bool FillReplayData(FDynamicEmitterReplayDataBase& OutData);
-    // !TODO : FParticleMeshEmitterInstance에 필요한 데이터들 추가
-    // !TODO : FParticleMeshEmitterInstance에 필요한 함수들 추가
 };

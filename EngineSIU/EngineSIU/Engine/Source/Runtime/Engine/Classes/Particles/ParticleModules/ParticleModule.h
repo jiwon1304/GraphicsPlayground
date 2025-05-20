@@ -1,9 +1,13 @@
 #pragma once
 #include "UObject/Object.h"
 #include "UObject/ObjectMacros.h"
+#include "UObject/NameTypes.h"
+#include "Particles/ParticleHelper.h"
 
 struct FParticleEmitterInstance;
 struct FBaseParticle;
+struct FRandomStream;
+
 class UParticleModuleTypeDataBase;
 
 
@@ -28,6 +32,76 @@ enum EModuleType : int
     /** SubUV related modules							*/
     EPMT_SubUV,
     EPMT_MAX,
+};
+
+struct FParticleRandomSeedInfo
+{
+    DECLARE_STRUCT(FParticleRandomSeedInfo)
+
+    /** The name to expose to the placed instances for setting this seed */
+    UPROPERTY_WITH_FLAGS(
+        EditAnywhere, 
+        FName, ParameterName
+    )
+
+    /**
+     *	If true, the module will attempt to get the seed from the owner
+     *	instance. If that fails, it will fall back to getting it from
+     *	the RandomSeeds array.
+     */
+    UPROPERTY_WITH_FLAGS(
+        EditAnywhere, 
+        bool, bGetSeedFromInstance
+    )
+
+    /**
+     *	If true, the seed value retrieved from the instance will be an
+     *	index into the array of seeds.
+     */
+    UPROPERTY_WITH_FLAGS(
+        EditAnywhere, 
+        bool, bInstanceSeedIsIndex
+    )
+
+    /**
+     *	If true, then reset the seed upon the emitter looping.
+     *	For looping environmental effects this should likely be set to false to avoid
+     *	a repeating pattern.
+     */
+    UPROPERTY_WITH_FLAGS(
+        EditAnywhere,
+        bool , bResetSeedOnEmitterLooping
+    )
+
+    /**
+    *	If true, then randomly select a seed entry from the RandomSeeds array
+    */
+    UPROPERTY_WITH_FLAGS(
+        EditAnywhere,
+        bool, bRandomlySelectSeedArray
+    )
+
+    /**
+     *	The random seed values to utilize for the module.
+     *	More than 1 means the instance will randomly select one.
+     */
+    UPROPERTY_WITH_FLAGS(
+        EditAnywhere,
+        TArray<int32>, RandomSeeds
+    )
+
+    FParticleRandomSeedInfo()
+        : bGetSeedFromInstance(false)
+        , bInstanceSeedIsIndex(false)
+        , bResetSeedOnEmitterLooping(true)
+        , bRandomlySelectSeedArray(false)
+    {
+    }
+
+    FORCEINLINE int32 GetInstancePayloadSize() const
+    {
+        return ((RandomSeeds.Num() > 0) ? sizeof(FParticleRandomSeedInstancePayload) : 0);
+    }
 };
 
 class UParticleModule : public UObject
@@ -56,4 +130,9 @@ public:
     virtual void Spawn(FParticleEmitterInstance* Owner, int32 Offset, float SpawnTime, FBaseParticle* ParticleBase);
     virtual void Update(FParticleEmitterInstance* Owner, int32 Offset, float DeltaTime);
     virtual void FinalUpdate(FParticleEmitterInstance* Owner, int32 Offset, float DeltaTime);
+    
+    FRandomStream& GetRandomStream(FParticleEmitterInstance* Owner);
+
+    virtual FName GetName() const;
+
 };

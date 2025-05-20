@@ -1,6 +1,7 @@
 #pragma once
 #include "Math/Vector.h"
 #include "Math/Color.h"
+#include "Math/RandomStream.h"
 
 class UParticleModuleRequired;
 struct FBaseParticle
@@ -156,9 +157,10 @@ struct FDynamicSpriteEmitterData : public FDynamicSpriteEmitterDataBase
     {
     }
 
-public:
-    void Init() {}
-
+    ~FDynamicSpriteEmitterData()
+    {
+    }
+    void Init();
     virtual const FDynamicEmitterReplayDataBase& GetSource() const override
     {
         return Source;
@@ -177,16 +179,32 @@ struct FDynamicMeshEmitterReplayData : public FDynamicMeshEmitterReplayDataBase
 
 struct FDynamicMeshEmitterData : public FDynamicSpriteEmitterDataBase
 {
-    // TODO: 생성자 만들기
-    FDynamicMeshEmitterData();
-
-    void Init() {}
+    FDynamicMeshEmitterData(const UParticleModuleRequired* RequiredModule);
+    void Init(const struct FParticleMeshEmitterInstance* EmitterInstance, class UStaticMesh* InStaticMesh);
     virtual const FDynamicEmitterReplayDataBase& GetSource() const override
     {
         return Source;
     }
 
     FDynamicMeshEmitterReplayData Source;
+    const FParticleMeshEmitterInstance* EmitterInstance;
+    class UStaticMesh* StaticMesh;
+};
+
+/** Mesh rotation data payload										*/
+struct FMeshRotationPayloadData
+{
+    FVector	 InitialOrientation;		// from mesh data module
+    FVector  InitRotation;				// from init rotation module
+    FVector  Rotation;
+    FVector	 CurContinuousRotation;
+    FVector  RotationRate;
+    FVector  RotationRateBase;
+};
+
+struct FParticleRandomSeedInstancePayload
+{
+    FRandomStream	RandomStream;
 };
 
 template <typename T>

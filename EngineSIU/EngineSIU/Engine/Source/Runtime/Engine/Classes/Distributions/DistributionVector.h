@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Distribution.h"
 #include "Distributions.h"
 

@@ -7,5 +7,5 @@ FParticleEmitterInstance* UParticleModuleTypeDataMesh::CreateInstance(UParticleE
     // !TODO : 기본 메시 세팅
 
     FParticleEmitterInstance* Instance = new FParticleMeshEmitterInstance();
-    return nullptr;
+    return Instance;
 }

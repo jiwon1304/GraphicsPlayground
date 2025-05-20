@@ -5,6 +5,7 @@
 
 struct FParticleEmitterInstance;
 class UParticleSystem;
+class UMaterial;
 
 
 // !TODO : 지금은 하는게 없음. 기능 추가되면 별개의 스크립트로 분리
@@ -43,6 +44,8 @@ public:
     void SetTemplate(UParticleSystem* InTemplate);
     void ClearDynamicData();
     void InitTestSpriteParticles();
+    UMaterial* GetMaterial(int32 ElementIndex) const;
+    void SetMaterial(int32 ElementIndex, UMaterial* Material);
 
     UPROPERTY(
         EditAnywhere,
@@ -55,4 +58,5 @@ public:
     float EmitterDelay = 0.f;
 
     TArray<FParticleEmitterInstance*> EmitterInstances;
+    TArray<UMaterial*> EmitterMaterials;
 };
