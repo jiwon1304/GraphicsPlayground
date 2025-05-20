@@ -12,7 +12,6 @@ class UParticleSystemComponent;
 class ParticleViewerPanel : public UEditorPanel
 {
 public:
-    void PrepareRender(FEditorViewportClient* ViewportClient);
     virtual void Render() override;
     virtual void OnResize(HWND hWnd) override; // HWND는 Windows 특정 타입
 

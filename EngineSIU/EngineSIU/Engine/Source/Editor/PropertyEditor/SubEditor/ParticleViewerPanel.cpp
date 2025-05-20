@@ -29,13 +29,6 @@ const char* ModuleTypeToString(EModuleType ModuleType)
     }
 }
 
-void ParticleViewerPanel::PrepareRender(FEditorViewportClient* ViewportClient)
-{
-    const EViewModeIndex ViewMode = ViewportClient->GetViewMode();
-    FViewportResource* ViewportResource = ViewportClient->GetViewportResource();
-    RenderTargetRHI = ViewportResource->GetRenderTarget(EResourceType::ERT_Scene);
-    DepthStencilRHI = ViewportResource->GetDepthStencil(EResourceType::ERT_Scene);
-}
 
 void ParticleViewerPanel::Render()
 {
