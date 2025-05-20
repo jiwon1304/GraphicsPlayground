@@ -145,7 +145,7 @@ void FParticleRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& V
 }
 void FParticleRenderPass::RenderSpriteEmitter(UParticleSystemComponent* Comp, FParticleEmitterInstance* Emitter, const FDynamicSpriteEmitterReplayDataBase& ReplayData)
 {
-    TestTexture = FEngineLoop::ResourceManager.GetTexture(L"Assets/Texture/T_Explosion_SubUV.png");
+    //TestTexture = FEngineLoop::ResourceManager.GetTexture(L"Assets/Texture/T_Explosion_SubUV.png");
 
     static float SubImageIndex = 0.0f;
     static float SubImageIndexTimer = 0.0f;
@@ -206,8 +206,11 @@ void FParticleRenderPass::RenderSpriteEmitter(UParticleSystemComponent* Comp, FP
     UINT Strides[2] = { sizeof(FSpriteVertex), sizeof(FSpriteParticleInstance) };
     UINT Offsets[2] = { 0, 0 };
 
-    Graphics->DeviceContext->PSSetShaderResources(0, 1, &TestTexture->TextureSRV);
-    Graphics->DeviceContext->PSSetSamplers(0, 1, &TestTexture->SamplerState);
+    //Sprite니까 무조건 0번?
+    std::shared_ptr<FTexture> Texture = 
+        FEngineLoop::ResourceManager.GetTexture(ReplayData.Material->GetMaterialInfo().TextureInfos[0].TexturePath);
+    Graphics->DeviceContext->PSSetShaderResources(0, 1, &Texture->TextureSRV);
+    Graphics->DeviceContext->PSSetSamplers(0, 1, &Texture->SamplerState);
     Graphics->DeviceContext->IASetVertexBuffers(0, 2, Buffers, Strides, Offsets);
     Graphics->DeviceContext->DrawInstanced(6, Instances.Num(), 0, 0);
 }

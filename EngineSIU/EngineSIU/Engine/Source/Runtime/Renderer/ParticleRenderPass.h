@@ -38,5 +38,5 @@ private:
 
     //FDynamicSpriteEmitterReplayDataBase의
     //MaterialInterface가 구현이 안 되어있어 임시 사용
-    std::shared_ptr<FTexture> TestTexture;
+    //std::shared_ptr<FTexture> TestTexture;
 };
