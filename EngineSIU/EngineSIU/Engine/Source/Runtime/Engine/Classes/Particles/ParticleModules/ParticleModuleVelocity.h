@@ -44,7 +44,7 @@ public:
 
     //~ Begin UParticleModule Interface
     virtual void Spawn(FParticleEmitterInstance* Owner, int32 Offset, float SpawnTime, FBaseParticle* ParticleBase) override;
-    //~ Begin UParticleModule Interface
+    //~ End UParticleModule Interface
 
     /**
      *	Extended version of spawn, allows for using a random stream for distribution value retrieval
