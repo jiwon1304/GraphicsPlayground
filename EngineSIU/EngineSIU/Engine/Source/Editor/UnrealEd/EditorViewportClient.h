@@ -16,7 +16,7 @@ class FViewportResource;
 class ATransformGizmo;
 class USceneComponent;
 struct FMinimalViewInfo;
-
+class UEngine;
 struct FViewportCamera
 {
 public:
@@ -88,7 +88,7 @@ public:
 
     virtual void Draw(FViewport* Viewport) override;
     virtual UWorld* GetWorld() const override { return nullptr; }
-    void Initialize(EViewScreenLocation InViewportIndex, const FRect& InRect);
+    void Initialize(EViewScreenLocation InViewportIndex, const FRect& InRect, UEngine* InEngine);
     void Tick(float DeltaTime);
     void Release() const;
 
@@ -159,6 +159,7 @@ public:
     void CameraRotatePitch(float InValue);
     void PivotMoveRight(float InValue) const;
     void PivotMoveUp(float InValue) const;
+    void CameraReset();
 
     FMatrix& GetViewMatrix() { return View; }
     FMatrix& GetProjectionMatrix() { return Projection; }
@@ -245,4 +246,6 @@ private:
     ATransformGizmo* GizmoActor = nullptr;
     USceneComponent* PickedGizmoComponent = nullptr;
     bool bShowGizmo = true;
+
+    UEngine* Engine = nullptr;
 };

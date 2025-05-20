@@ -2,7 +2,7 @@
 #include "ParticleRenderPass.h"
 
 #include "EngineLoop.h"
-#include "ParticleHelper.h"
+#include "Particles/ParticleHelper.h"
 #include "Engine/Engine.h"
 #include "UnrealEd/EditorViewportClient.h"
 #include "D3D11RHI/DXDShaderManager.h"
