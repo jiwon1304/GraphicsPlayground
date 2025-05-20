@@ -16,7 +16,7 @@ void FSubRenderer::PrepareRender(const std::shared_ptr<FEditorViewportClient>& V
 {
     //ParticleRenderPass->PrepareRenderArr();
     ParticleRenderPass->AddParticleComponent(((UParticleSubEngine*)Engine)->GetParticleSystemComponent());
-    const EViewModeIndex ViewMode = Viewport->GetViewMode();
+    //const EViewModeIndex ViewMode = Viewport->GetViewMode();
     //TargetViewport = Viewport;
     UpdateViewCamera(Viewport);
     FViewportResource* ViewportResource = Viewport->GetViewportResource();

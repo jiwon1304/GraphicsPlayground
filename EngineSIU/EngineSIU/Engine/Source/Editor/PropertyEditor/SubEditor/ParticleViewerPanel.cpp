@@ -463,5 +463,10 @@ void ParticleViewerPanel::SetParticleSystemComponent(UParticleSystemComponent* I
     ParticleSystemComponent = InParticleSystemComponent;
 }
 
+void ParticleViewerPanel::SetViewportClient(std::shared_ptr<FEditorViewportClient> InViewportClient)
+{
+    ViewportClient = InViewportClient;
+}
+
 
 
