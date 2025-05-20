@@ -15,6 +15,9 @@ cbuffer ParticleSettings : register(b4)
     int SubUVRows;
 };
 
+// ==================== Texture Bindings ====================
+Texture2D SpriteTexture : register(t0);
+SamplerState SpriteSampler : register(s0);
 // ==================== Vertex Structures ====================
 
 #if defined(PARTICLE_SPRITE)
@@ -103,7 +106,6 @@ VS_OUTPUT mainVS(VS_INPUT input)
         floor(input.SubImageIndex / SubUVCols)
     ) * frameSize;
     output.UV = UVOffset + (input.UV + 0.5f) * frameSize;
-
     output.Color = input.Color;
 #endif
 
@@ -131,12 +133,20 @@ VS_OUTPUT mainVS(VS_INPUT input)
 
 float4 mainPS(VS_OUTPUT input) : SV_TARGET
 {
-    float4 finalColor = input.Color;
-    finalColor.rgb = LinearToSRGB(finalColor.rgb);
+    //return float4(input.UV, 0, 1); // UV가 색상으로 보이는지 확인
+    /*float4 finalColor = input.Color;
+    finalColor.rgb = LinearToSRGB(finalColor.rgb);*/
 
     // 디버그용 컬러 제거
+    float4 texColor = SpriteTexture.Sample(SpriteSampler, input.UV);
+    if (texColor.a < 0.1f || max(max(texColor.r, texColor.g), texColor.b) < 0.05f)
+    {
+        discard;
+    }
+    float4 finalColor = /*input.Color * */texColor;
+    //finalColor.rgb = LinearToSRGB(finalColor.rgb);
+    
      //finalColor.rgb = float3(1, 1, 0);
-
     return finalColor;
 }
 

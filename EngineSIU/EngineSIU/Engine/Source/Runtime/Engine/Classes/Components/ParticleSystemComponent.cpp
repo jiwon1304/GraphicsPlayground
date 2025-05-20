@@ -1,10 +1,12 @@
 #include "ParticleSystemComponent.h"
 
+#include "Material/Material.h"
 #include "Particles/ParticleHelper.h"
 #include "Particles/ParticleSystem.h"
 #include "Particles/ParticleEmitter.h"
 #include "Particles/ParticleEmitterInstances.h"
 #include "Particles/ParticleLODLevel.h"
+#include "Particles/ParticleModules/ParticleModuleRequired.h"
 
 void UParticleSystemComponent::InitializeSystem()
 {
@@ -106,30 +108,23 @@ void UParticleSystemComponent::ClearDynamicData()
 }
 void UParticleSystemComponent::InitTestSpriteParticles()
 {
-    // [1] 더미 EmitterInstance 생성
-    FParticleEmitterInstance* Emitter = new FParticleEmitterInstance();
-
-    Emitter->SpriteTemplate = nullptr;
+    FParticleSpriteEmitterInstance* Emitter = new FParticleSpriteEmitterInstance();
     Emitter->Component = this;
 
     Emitter->ParticleStride = sizeof(FBaseParticle);
     Emitter->MaxActiveParticles = 64;
     Emitter->ActiveParticles = 0;
 
-    // [2] 메모리 할당
     const int32 ParticleBytes = Emitter->ParticleStride * Emitter->MaxActiveParticles;
-    const int32 IndexCount = Emitter->MaxActiveParticles;
-
     Emitter->ParticleData = new uint8[ParticleBytes];
     std::memset(Emitter->ParticleData, 0, ParticleBytes);
 
-    Emitter->ParticleIndices = new uint16[IndexCount];
-    std::memset(Emitter->ParticleIndices, 0, IndexCount * sizeof(uint16));
+    Emitter->ParticleIndices = new uint16[Emitter->MaxActiveParticles];
+    for (int32 i = 0; i < Emitter->MaxActiveParticles; ++i)
+        Emitter->ParticleIndices[i] = i;
 
-    // [3] 등록
     EmitterInstances.Add(Emitter);
 
-    // [4] 테스트 파티클 생성
     const int32 ParticleCount = 20;
     const FVector Positions[ParticleCount] = {
         { 0,  0,  0}, {10,  5,  2}, {20, -4,  3}, {30,  2,  1}, {40, -6,  5},
@@ -137,13 +132,9 @@ void UParticleSystemComponent::InitTestSpriteParticles()
         { 0, -8,  1}, {10, -9,  2}, {20,  6,  0}, {30,  7,  3}, {40,  0,  1},
         { 5,  3,  4}, {15, -2,  2}, {25,  8,  5}, {35, -7,  3}, {45,  1,  6},
     };
+    const FLinearColor Colors[] = { FLinearColor::Red, FLinearColor::Green, FLinearColor::Blue, FLinearColor::Yellow };
 
-    const FLinearColor Colors[] = {
-        FLinearColor::Red, FLinearColor::Green, FLinearColor::Blue,
-        FLinearColor::Yellow
-    };
-
-    for (int32 i = 0; i < ParticleCount; ++i)
+    for (int32 i = 0; i < 20; ++i)
     {
         uint8* Ptr = Emitter->ParticleData + i * Emitter->ParticleStride;
         FBaseParticle* Particle = reinterpret_cast<FBaseParticle*>(Ptr);
@@ -156,16 +147,23 @@ void UParticleSystemComponent::InitTestSpriteParticles()
         Particle->BaseColor = Particle->Color;
         Particle->RelativeTime = 0.5f;
         Particle->OneOverMaxLifetime = 1.0f;
-        Particle->Rotation = 0.0f;
-        Particle->RotationRate = 0.0f;
-        Particle->BaseRotationRate = 0.0f;
-        Particle->Velocity = FVector::ZeroVector;
-        Particle->BaseVelocity = FVector::ZeroVector;
-        Particle->Flags = 0;
-        Particle->Placeholder0 = Particle->Placeholder1 = 0.0f;
-
-        Emitter->ParticleIndices[i] = i;
     }
 
-    Emitter->ActiveParticles = ParticleCount;
+    Emitter->ActiveParticles = 20;
+
+    // SpriteTemplate 및 LODLevel 설정 필수
+    Emitter->SpriteTemplate = new UParticleEmitter();
+    UParticleLODLevel* LOD = new UParticleLODLevel();
+    UParticleModuleRequired* RequiredModule = new UParticleModuleRequired();
+    RequiredModule->EmitterDuration = 5.0f;
+    RequiredModule->EmitterLoops = 0;
+    RequiredModule->bUseLocalSpace = false;
+
+    LOD->RequiredModule = RequiredModule;
+    LOD->bEnabled = true;
+    Emitter->SpriteTemplate->LODLevels.Add(LOD);
+    Emitter->CurrentLODLevelIndex = 0;
+    Emitter->CurrentLODLevel = LOD;
+    Emitter->bEnabled = true;
+
 }
