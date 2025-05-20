@@ -57,6 +57,15 @@ public:
 
     FMatrix GetMatrixWithoutScale(float Tolerance = SMALL_NUMBER) const;
 
+    FVector4 TransformVector(const FVector& V) const;
+
+    /**
+     *	이 매트릭스의 역행렬로 방향 벡터를 변환합니다. (위치 정보는 무시됨)
+     *	표면 노멀(또는 평면)을 변환하고 비균일 스케일링까지 올바르게 적용하려면
+     *	행렬 역행렬의 adjoint를 사용하는 TransformByUsingAdjointT를 사용하세요.
+     */
+    FVector InverseTransformVector(const FVector& V) const;
+
     void RemoveScaling(float Tolerance = SMALL_NUMBER);
 
     bool Equals(const FMatrix& Other, float Tolerance = KINDA_SMALL_NUMBER) const;

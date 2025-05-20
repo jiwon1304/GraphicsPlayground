@@ -9,7 +9,7 @@ class UParticleModuleLifetime : public UParticleModule
 {
     DECLARE_CLASS(UParticleModuleLifetime, UParticleModule)
 public:
-    UParticleModuleLifetime() = default;
+    UParticleModuleLifetime();
     virtual ~UParticleModuleLifetime() override = default;
 
     float LifeTime = 1.0f;// 기본값 1초로 한다
@@ -17,12 +17,17 @@ public:
     // !TODO : RawDistributionFloat 구현 후 그거 사용
     virtual void Spawn(FParticleEmitterInstance* Owner, int32 Offset, float SpawnTime, FBaseParticle* ParticleBase) override;
 
+    virtual FName GetName() const override
+    {
+        return FName(TEXT("Initial Lifetime"));
+    }
+
     UPROPERTY(
         EditAnywhere,
         float, MinLifetime, = 0.5f;
     )
     UPROPERTY(
         EditAnywhere,
-        float, MaxLifetime, = 2.0f;
+        float, MaxLifetime, = 1.0f;
     )
 };
