@@ -556,3 +556,8 @@ struct FCPUSkinningConstants
     int bCPUSKinning;
     FVector Padding;
 };
+struct FParticleSettingsConstants
+{
+    int SubUVCols;
+    int SubUVRows;
+};

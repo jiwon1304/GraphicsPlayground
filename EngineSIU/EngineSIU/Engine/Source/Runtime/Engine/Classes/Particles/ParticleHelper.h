@@ -1,4 +1,5 @@
 #pragma once
+#include "Components/Material/Material.h"
 #include "Math/Vector.h"
 #include "Math/Color.h"
 #include "Math/RandomStream.h"
@@ -144,6 +145,18 @@ class UMaterial;
 struct FDynamicSpriteEmitterReplayDataBase : public FDynamicEmitterReplayDataBase
 {
     UMaterial* Material = nullptr;
+
+    FDynamicSpriteEmitterReplayDataBase()
+    {
+        eEmitterType = DET_Sprite;
+        //테스트용 하드코딩 경로
+        FTextureInfo TexInfo;
+        TexInfo.TextureName = TEXT("T_Explosion_SubUV");
+        TexInfo.TexturePath = L"Assets/Texture/T_Explosion_SubUV.png"; // 경로는 Wide
+        TexInfo.bIsSRGB = true;
+        if (!Material)Material = new UMaterial();
+        Material->GetMaterialInfo().TextureInfos.Add(TexInfo);
+    }
 };
 
 struct FDynamicSpriteEmitterReplayData : public FDynamicSpriteEmitterReplayDataBase
@@ -171,6 +184,10 @@ struct FDynamicSpriteEmitterData : public FDynamicSpriteEmitterDataBase
 
 struct FDynamicMeshEmitterReplayDataBase : FDynamicEmitterReplayDataBase
 {
+    FDynamicMeshEmitterReplayDataBase()
+    {
+        eEmitterType = DET_Mesh;
+    }
 };
 
 struct FDynamicMeshEmitterReplayData : public FDynamicMeshEmitterReplayDataBase

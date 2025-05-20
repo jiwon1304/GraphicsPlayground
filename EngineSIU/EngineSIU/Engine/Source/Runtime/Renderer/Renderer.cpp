@@ -144,7 +144,10 @@ void FRenderer::CreateConstantBuffers()
 
     UINT CPUSkinningBufferSize = sizeof(FCPUSkinningConstants);
     BufferManager->CreateBufferGeneric<FCPUSkinningConstants>("FCPUSkinningConstants", nullptr, CPUSkinningBufferSize, D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
-    
+
+    UINT ParticleSettingsBufferSize = sizeof(FParticleSettingsConstants);
+    BufferManager->CreateBufferGeneric<FParticleSettingsConstants>("FParticleSettingsConstants", nullptr, ParticleSettingsBufferSize, D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
+
     // TODO: 함수로 분리
     ID3D11Buffer* ObjectBuffer = BufferManager->GetConstantBuffer(TEXT("FObjectConstantBuffer"));
     ID3D11Buffer* CameraConstantBuffer = BufferManager->GetConstantBuffer(TEXT("FCameraConstantBuffer"));

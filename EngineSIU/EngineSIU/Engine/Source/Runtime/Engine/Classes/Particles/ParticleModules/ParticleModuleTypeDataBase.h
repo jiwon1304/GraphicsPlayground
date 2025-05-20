@@ -20,7 +20,7 @@ public:
         return EPMT_TypeData;
     }
 
-    virtual FName GetName() const override
+    virtual FName GetModuleName() const override
     {
         return FName(TEXT("TypeData"));
     }

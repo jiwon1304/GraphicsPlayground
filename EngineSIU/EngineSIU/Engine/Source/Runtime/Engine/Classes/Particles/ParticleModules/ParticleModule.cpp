@@ -43,7 +43,7 @@ FRandomStream& UParticleModule::GetRandomStream(FParticleEmitterInstance* Owner)
 }
 
 
-FName UParticleModule::GetName() const
+FName UParticleModule::GetModuleName() const
 {
     return FName("General");
 }

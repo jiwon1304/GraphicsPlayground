@@ -10,6 +10,7 @@
 #include "Particles/ParticleSystem.h"
 #include "Particles/ParticleEmitter.h"
 #include "Particles/ParticleModules/ParticleModuleRequired.h"
+#include "Components/ParticleSystemComponent.h"
 UParticleSubEngine::UParticleSubEngine()
 {
 }
@@ -23,25 +24,22 @@ void UParticleSubEngine::Initialize(HWND& hWnd, FGraphicsDevice* InGraphics, FDX
 {
     Super::Initialize(hWnd, InGraphics, InBufferManager, InSubWindow, InUnrealEd);
 
-
     EditorPlayer = FObjectFactory::ConstructObject<AEditorPlayer>(this);
     EditorPlayer->SetCoordMode(CDM_LOCAL);
 
-    ViewportClient->ViewFOV = 60.f;
-
-    //UnrealSphereComponent = FObjectFactory::ConstructObject<UStaticMeshComponent>(this);
-    //UnrealSphereComponent->SetStaticMesh(UAssetManager::Get().GetStaticMesh(L"Contents/Sphere.obj"));
-    //UnrealSphereComponent->SetRelativeScale3D(FVector(4.f, 4.f, 4.f));
-    //UnrealSphereComponent->SetRelativeLocation(FVector(0, 0, 0));
-
-
-
+    ParticleSystemComponent = FObjectFactory::ConstructObject<UParticleSystemComponent>(this);
+    ParticleViewerPanel* particlePanel = reinterpret_cast<ParticleViewerPanel*>(UnrealEditor->GetParticleSubPanel("ParticleViewerPanel").get());
+    particlePanel->SetParticleSystemComponent(ParticleSystemComponent);
 }
 
 void UParticleSubEngine::Tick(float DeltaTime)
 {
-    ViewportClient->Tick(DeltaTime);
     Input(DeltaTime);
+    ViewportClient->Tick(DeltaTime);
+    if (ParticleSystemComponent->Template)
+    {
+        ParticleSystemComponent->TickComponent(DeltaTime);
+    }
     Render();
 }
 
@@ -124,15 +122,18 @@ void UParticleSubEngine::Render()
 
         SubRenderer->PrepareRender(ViewportClient);
 
-        SubRenderer->Render();
+        SubRenderer->Render(ViewportClient);
         // Sub window rendering
         SubUI->BeginFrame();
 
-        ParticleViewerPanel* particlePanel = reinterpret_cast<ParticleViewerPanel*>(UnrealEditor->GetParticleSubPanel("ParticleViewerPanel").get());
-        if (particlePanel)
-        {
-            particlePanel->PrepareRender(ViewportClient); // 내부적으로 멤버 변수 RenderTargetRHI 설정
-        }
+        //UI를 위한 렌더 타겟 설정
+        FGraphicsDevice* Graphics = &FEngineLoop::ParticleViewerGD;
+        Graphics->DeviceContext->OMSetRenderTargets(
+            1,
+            &Graphics->BackBufferRTV,
+            Graphics->DeviceDSV
+        );
+
         UnrealEditor->Render(EWindowType::WT_ParticleSubWindow);
         SubUI->EndFrame();
 
@@ -157,4 +158,9 @@ void UParticleSubEngine::Release()
         delete SubRenderer;
         SubRenderer = nullptr;
     }
+}
+
+UParticleSystemComponent* UParticleSubEngine::GetParticleSystemComponent() const
+{
+    return ParticleSystemComponent;
 }

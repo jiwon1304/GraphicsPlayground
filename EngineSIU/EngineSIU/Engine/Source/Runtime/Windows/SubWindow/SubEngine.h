@@ -34,7 +34,7 @@ public:
     POINT LastMousePos;
     bool bRBClicked = false;
 
-    FEditorViewportClient* ViewportClient;
+    std::shared_ptr<FEditorViewportClient> ViewportClient;
     bool bIsShowSubWindow;
     bool bIsShowing = false;
 

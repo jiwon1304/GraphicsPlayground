@@ -8,6 +8,10 @@
 #include "Particles/ParticleModules/ParticleModuleSpawn.h"
 #include "Particles/ParticleLODLevel.h"
 #include "Engine/AssetManager.h"
+#include "Components/ParticleSystemComponent.h"
+#include "Particles/ParticleModules/ParticleModuleLifetime.h"
+#include "Particles/ParticleModules/ParticleModuleSize.h"
+#include "Particles/ParticleSpriteEmitter.h"
 
 const char* ModuleTypeToString(EModuleType ModuleType)
 {
@@ -25,13 +29,6 @@ const char* ModuleTypeToString(EModuleType ModuleType)
     }
 }
 
-void ParticleViewerPanel::PrepareRender(FEditorViewportClient* ViewportClient)
-{
-    const EViewModeIndex ViewMode = ViewportClient->GetViewMode();
-    FViewportResource* ViewportResource = ViewportClient->GetViewportResource();
-    RenderTargetRHI = ViewportResource->GetRenderTarget(EResourceType::ERT_Scene);
-    DepthStencilRHI = ViewportResource->GetDepthStencil(EResourceType::ERT_Scene);
-}
 
 void ParticleViewerPanel::Render()
 {
@@ -59,7 +56,6 @@ void ParticleViewerPanel::OnResize(HWND hWnd)
 
 void ParticleViewerPanel::RenderPanelLayout()
 {
-
     RenderFilePanel();
 
     // 전체 남은 영역 크기 구하기
@@ -176,10 +172,6 @@ void ParticleViewerPanel::RenderEmitterPanel()
         ImGui::Spacing();
         ImGui::Separator();
 
-        //for (auto& Module : Emitter->LODLevels[0]->Modules) {
-        //    ImGui::Text(ModuleTypeToString(Module->GetModuleType()));
-        //}
-
         int ModuleIndex = 0;
         for (auto& Module : Emitter->LODLevels[0]->Modules) {
             ImVec2 moduleMin = ImGui::GetCursorScreenPos();
@@ -202,7 +194,7 @@ void ParticleViewerPanel::RenderEmitterPanel()
             );
 
             ImGui::SetCursorScreenPos(moduleMin);
-            ImGui::Text("%s", ModuleTypeToString(Module->GetModuleType()));
+            ImGui::Text("%s", Module->GetModuleName().ToString().ToAnsiString().c_str());
 
             ImGui::Spacing();
             ModuleIndex++;
@@ -221,6 +213,30 @@ void ParticleViewerPanel::RenderEmitterPanel()
 void ParticleViewerPanel::RenderDetailPanel()
 {
     ImGui::Text("Detail");
+
+    if (ParticleSystem == nullptr || SelectedEmitterIndex == -1 || SelectedModuleIndex == -1 || CurrentParticleSystemIndex == -1)
+        return;
+    UParticleModule* Module = ParticleSystem->Emitters[SelectedEmitterIndex]->LODLevels[0]->Modules[SelectedModuleIndex];
+    const UClass* Class = Module->GetClass();
+
+    for (; Class; Class = Class->GetSuperClass())
+    {
+        const TArray<FProperty*>& Properties = Class->GetProperties();
+        if (!Properties.IsEmpty())
+        {
+            ImGui::SeparatorText(*Class->GetName());
+        }
+
+        for (const FProperty* Prop : Properties)
+        {
+            Prop->DisplayInImGui(Module);
+        }
+    }
+
+    if (ImGui::Button("Apply"))
+    {
+        ParticleSystem->PostEditChangeProperty();
+    }
 }
 
 void ParticleViewerPanel::RenderCurveEditorPanel()
@@ -231,29 +247,18 @@ void ParticleViewerPanel::RenderCurveEditorPanel()
 
 void ParticleViewerPanel::RenderEmitterModulePopup(int EmitterIndex)
 {
-    if (ImGui::MenuItem("이미터")) {
+    TArray<UClass*> ChildModule;
+    GetChildOfClass(UParticleModule::StaticClass(), ChildModule);
+    ChildModule.RemoveAt(0);
+    for (UClass* Child : ChildModule) {
+        if (ImGui::MenuItem(Child->GetName().ToAnsiString().c_str())) {
+            UParticleEmitter* Emitter = ParticleSystem->Emitters[EmitterIndex];
+            UParticleModule* SpawnModule = FObjectFactory::ConstructObject<UParticleModule>(Child, Emitter);
+            Emitter->LODLevels[0]->Modules.Add(SpawnModule);
+            ParticleSystem->PostEditChangeProperty();
+        }
     }
-    if (ImGui::MenuItem("파티클 시스템")) {
-    }
-    if (ImGui::MenuItem("타입 데이터")) {
-    }
-    if (ImGui::MenuItem("가속")) {
-    }
-    if (ImGui::MenuItem("컬러")) {
-    }
-    if (ImGui::MenuItem("킬")) {
-    }
-    if (ImGui::MenuItem("수명")) {
-    }
-    if (ImGui::MenuItem("회전")) {
-    }
-    if (ImGui::MenuItem("스폰")) {
-        UParticleEmitter* Emitter = ParticleSystem->Emitters[EmitterIndex];
-        UParticleModuleSpawn* SpawnModule = FObjectFactory::ConstructObject<UParticleModuleSpawn>(Emitter->LODLevels[0]);
-        Emitter->LODLevels[0]->Modules.Add(SpawnModule);
-    }
-    if (ImGui::MenuItem("속도")) {
-    }
+
 }
 
 void ParticleViewerPanel::RenderEmitterCreatePopup()
@@ -284,9 +289,10 @@ void ParticleViewerPanel::InputEmitterPanel()
             else {
                 // Module이 선택되지 않았으면 Emitter 삭제
                 ParticleSystem->Emitters.RemoveAt(SelectedEmitterIndex);
-
+                ParticleSystem->PostEditChangeProperty();
                 // 선택 해제
                 SelectedEmitterIndex = -1;
+                SelectedModuleIndex = -1;
             }
         }
     }
@@ -300,7 +306,10 @@ void ParticleViewerPanel::InputEmitterPanel()
     if (windowHovered && !anyItemHovered)
     {
         if (clickL)
+        {
             SelectedEmitterIndex = -1;          // 빈 공간 좌클릭 → 선택 해제
+            SelectedModuleIndex = -1;          // Module 선택 해제
+        }
 
         if (clickR)
             ImGui::OpenPopup("EmitterEmptyContextMenu"); // 빈 공간 우클릭 → 팝업 오픈
@@ -317,9 +326,10 @@ void ParticleViewerPanel::CreateNewParticleSystem(const FString& Name)
 {
     auto& ParticleSystemMap = UAssetManager::Get().GetParticleSystemMap();
 
-    ParticleSystem = FObjectFactory::ConstructObject<UParticleSystem>(nullptr);
+    ParticleSystem = FObjectFactory::ConstructObject<UParticleSystem>(ParticleSystemComponent);
     UParticleEmitter* NewEmitter = CreateDefaultParticleEmitter();
-    ParticleSystem->Emitters.Add(NewEmitter);   
+    ParticleSystem->Emitters.Add(NewEmitter);
+    ParticleSystem->PostEditChangeProperty();
     ParticleSystemMap.Add(FName(*Name), ParticleSystem);
 
     // ParticleNames 목록을 새로 업데이트
@@ -354,7 +364,7 @@ void ParticleViewerPanel::RenderParticleSystemList()
 
     // 이름 배열로 ComboBox 표시
     if (ImGui::BeginCombo("Particle Systems",
-        CurrentParticleSystemIndex >=0 && CurrentParticleSystemIndex < ParticleNames.Num() ? 
+        CurrentParticleSystemIndex >= 0 && CurrentParticleSystemIndex < ParticleNames.Num() ?
         ParticleNames[CurrentParticleSystemIndex].ToString().ToAnsiString().c_str() : "Select Particle System"))
     {
         for (int i = 0; i < ParticleNames.Num(); ++i) {
@@ -363,6 +373,10 @@ void ParticleViewerPanel::RenderParticleSystemList()
                 CurrentParticleSystemIndex = i;
                 // 선택된 파티클 시스템을 가져오기
                 ParticleSystem = ParticleSystemMap[ParticleNames[i]];
+                ParticleSystem->PostEditChangeProperty();
+                ParticleSystemComponent->SetTemplate(ParticleSystem);
+                SelectedEmitterIndex = -1; // Emitter 선택 해제
+                SelectedModuleIndex = -1; // Module 선택 해제
             }
             if (isSelected) {
                 ImGui::SetItemDefaultFocus();
@@ -372,12 +386,14 @@ void ParticleViewerPanel::RenderParticleSystemList()
     }
 
     // Remove 버튼
-    if (ImGui::Button("Remove Selected Particle")) {
+    if (ImGui::Button("현재 파티클 삭제")) {
         if (CurrentParticleSystemIndex < ParticleNames.Num()) {
             FName SelectedName = ParticleNames[CurrentParticleSystemIndex];
             ParticleSystemMap.Remove(SelectedName);
             ParticleSystem = nullptr; // 선택된 파티클 시스템 초기화
             CurrentParticleSystemIndex = -1;  // 인덱스 초기화
+            SelectedEmitterIndex = -1; // Emitter 선택 해제
+            SelectedModuleIndex = -1; // Module 선택 해제
         }
     }
 }
@@ -400,6 +416,7 @@ void ParticleViewerPanel::RenderCreateParticlePopup()
             if (!ParticleNameStr.IsEmpty() && !ParticleSystemMap.Contains(FName(*ParticleNameStr)))
             {
                 CreateNewParticleSystem(ParticleNameStr);
+                ParticleSystemComponent->SetTemplate(ParticleSystem);
                 ImGui::CloseCurrentPopup();
             }
             else
@@ -426,12 +443,23 @@ void ParticleViewerPanel::RemoveParticleSystem(const FName& AssetName)
 
 UParticleEmitter* ParticleViewerPanel::CreateDefaultParticleEmitter()
 {
-    UParticleEmitter* NewEmitter = FObjectFactory::ConstructObject<UParticleEmitter>(ParticleSystem);
+    UParticleSpriteEmitter* NewEmitter = FObjectFactory::ConstructObject<UParticleSpriteEmitter>(ParticleSystem);
     NewEmitter->EmitterName = FName("Particle Emitter");
-    NewEmitter->LODLevels.Add(FObjectFactory::ConstructObject<UParticleLODLevel>(NewEmitter));
-    NewEmitter->LODLevels[0]->Modules.Add(FObjectFactory::ConstructObject<UParticleModuleRequired>(NewEmitter->LODLevels[0]));
-    NewEmitter->LODLevels[0]->Modules.Add(FObjectFactory::ConstructObject<UParticleModuleSpawn>(NewEmitter->LODLevels[0]));
+
+    UParticleLODLevel* LODLevel = FObjectFactory::ConstructObject<UParticleLODLevel>(NewEmitter);
+    LODLevel->Initialize();
+    NewEmitter->LODLevels.Add(LODLevel);
+    NewEmitter->LODLevels[0]->Modules.Add(FObjectFactory::ConstructObject<UParticleModuleRequired>(NewEmitter));
+    NewEmitter->LODLevels[0]->Modules.Add(FObjectFactory::ConstructObject<UParticleModuleSpawn>(NewEmitter));
+    NewEmitter->LODLevels[0]->Modules.Add(FObjectFactory::ConstructObject<UParticleModuleLifetime>(NewEmitter));
+    NewEmitter->LODLevels[0]->Modules[2]->bEnabled = true; //TODO 생성자 받아오면 삭제
+    LODLevel->UpdateModuleLists();
     return NewEmitter;
+}
+
+void ParticleViewerPanel::SetParticleSystemComponent(UParticleSystemComponent* InParticleSystemComponent)
+{
+    ParticleSystemComponent = InParticleSystemComponent;
 }
 
 

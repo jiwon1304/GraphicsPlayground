@@ -101,6 +101,7 @@ void FParticleRenderPass::PrepareRenderState(const std::shared_ptr<FEditorViewpo
     Graphics->DeviceContext->VSSetShader(VS, nullptr, 0);
     Graphics->DeviceContext->IASetInputLayout(IL);
     Graphics->DeviceContext->PSSetShader(PS, nullptr, 0);
+    BufferManager->BindConstantBuffer(TEXT("FParticleSettingsConstants"), 4, EShaderStage::Vertex);
 
     FViewportResource* ViewportResource = Viewport->GetViewportResource();
     FRenderTargetRHI* RT = ViewportResource->GetRenderTarget(EResourceType::ERT_Scene);
@@ -114,63 +115,112 @@ void FParticleRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& V
 
     for (UParticleSystemComponent* Comp : ParticleComponents)
     {
-        if (!Comp || Comp->EmitterInstances.IsEmpty())
-            continue;
-
-        TArray<FSpriteParticleInstance> Instances;
+        if (!Comp || Comp->EmitterInstances.IsEmpty()) continue;
 
         for (FParticleEmitterInstance* Emitter : Comp->EmitterInstances)
         {
-            if (!Emitter || !Emitter->ParticleData || !Emitter->ParticleIndices)
-                continue;
+            if (!Emitter) continue;
 
-            const int32 Stride = Emitter->ParticleStride;
-            const int32 ActiveCount = Emitter->ActiveParticles;
+            FDynamicEmitterDataBase* DynamicData = Emitter->GetDynamicData();
+            if (!DynamicData) continue;
 
-            for (int32 i = 0; i < ActiveCount; ++i)
+            const FDynamicEmitterReplayDataBase& ReplayData = DynamicData->GetSource();
+            switch (ReplayData.eEmitterType)
             {
-                const int32 ParticleIndex = Emitter->ParticleIndices[i];
-                const FBaseParticle* P = reinterpret_cast<const FBaseParticle*>(Emitter->ParticleData + ParticleIndex * Stride);
+            case DET_Sprite:
+                RenderSpriteEmitter(Comp, Emitter, (const FDynamicSpriteEmitterReplayDataBase&)ReplayData);
+                break;
 
-                FSpriteParticleInstance Inst;
-                Inst.Position = P->Location;
-                Inst.OldPosition = P->OldLocation;
-                Inst.RelativeTime = P->RelativeTime;
-                Inst.ParticleId = static_cast<float>(i);
-                Inst.Size = FVector2D(P->Size.X, P->Size.Y);
-                Inst.Rotation = P->Rotation;
-                Inst.SubImageIndex = 0.0f;
-                Inst.Color = P->Color;
-                Instances.Add(Inst);
+            case DET_Mesh:
+                // 추후: RenderMeshEmitter(Comp, Emitter, (const FDynamicMeshEmitterReplayDataBase&)ReplayData);
+                break;
+
+            default:
+                break;
             }
         }
-
-        if (Instances.IsEmpty())
-            continue;
-
-        // Upload instance buffer
-        BufferManager->UpdateDynamicVertexBuffer(TEXT("Global_SpriteInstance"), Instances);
-
-        FObjectConstantBuffer ObjectData;
-        FMatrix WorldMatrix = Comp->GetWorldMatrix();
-        ObjectData.WorldMatrix = WorldMatrix;
-        ObjectData.InverseTransposedWorld = FMatrix::Transpose(FMatrix::Inverse(WorldMatrix));
-        ObjectData.UUIDColor = Comp->EncodeUUID() / 255.0f;
-        ObjectData.bIsSelected = false;
-        BufferManager->UpdateConstantBuffer(TEXT("FObjectConstantBuffer"), ObjectData);
-
-        ID3D11Buffer* Buffers[2] = { QuadVertexInfo.VertexBuffer, InstanceInfoSprite.VertexBuffer };
-        UINT Strides[2] = { sizeof(FSpriteVertex), sizeof(FSpriteParticleInstance) };
-        UINT Offsets[2] = { 0, 0 };
-
-        Graphics->DeviceContext->IASetVertexBuffers(0, 2, Buffers, Strides, Offsets);
-        Graphics->DeviceContext->DrawInstanced(6, Instances.Num(), 0, 0);
     }
 
     Graphics->DeviceContext->OMSetRenderTargets(0, nullptr, nullptr);
+}
+void FParticleRenderPass::RenderSpriteEmitter(UParticleSystemComponent* Comp, FParticleEmitterInstance* Emitter, const FDynamicSpriteEmitterReplayDataBase& ReplayData)
+{
+    //TestTexture = FEngineLoop::ResourceManager.GetTexture(L"Assets/Texture/T_Explosion_SubUV.png");
+
+    static float SubImageIndex = 0.0f;
+    static float SubImageIndexTimer = 0.0f;
+    SubImageIndexTimer += 0.05f;
+    if (SubImageIndexTimer >= 1.0f)
+    {
+        SubImageIndexTimer = 0.0f;
+        SubImageIndex += 1.0f;
+        if (SubImageIndex >= 36) SubImageIndex = 0.0f;
+    }
+
+    TArray<FSpriteParticleInstance> Instances;
+
+    const int32 Stride = Emitter->ParticleStride;
+    const int32 ActiveCount = Emitter->ActiveParticles;
+
+    for (int32 i = 0; i < ActiveCount; ++i)
+    {
+        const int32 ParticleIndex = Emitter->ParticleIndices[i];
+        const FBaseParticle* P = reinterpret_cast<const FBaseParticle*>(Emitter->ParticleData + ParticleIndex * Stride);
+
+        //TODO: ParticleData에서 SubUV 정보 가져오기
+        //Inst도 다른 곳에서 가져와야 함
+        FSpriteParticleInstance Inst;
+        Inst.Position = P->Location;
+        Inst.OldPosition = P->OldLocation;
+        Inst.RelativeTime = P->RelativeTime;
+        Inst.ParticleId = static_cast<float>(i);
+        Inst.Size = FVector2D(P->Size.X, P->Size.Y);
+        Inst.Rotation = P->Rotation;
+        Inst.SubImageIndex = SubImageIndex;
+        Inst.Color = P->Color;
+        Instances.Add(Inst);
+    }
+
+    if (Instances.IsEmpty()) return;
+
+    // Upload instance buffer
+    BufferManager->UpdateDynamicVertexBuffer(TEXT("Global_SpriteInstance"), Instances);
+
+    // Set Object Constant Buffer
+    FObjectConstantBuffer ObjectData;
+    FMatrix WorldMatrix = Comp->GetWorldMatrix();
+    ObjectData.WorldMatrix = WorldMatrix;
+    ObjectData.InverseTransposedWorld = FMatrix::Transpose(FMatrix::Inverse(WorldMatrix));
+    ObjectData.UUIDColor = Comp->EncodeUUID() / 255.0f;
+    ObjectData.bIsSelected = false;
+    BufferManager->UpdateConstantBuffer(TEXT("FObjectConstantBuffer"), ObjectData);
+
+    // SubUV 정보 바인딩
+    FParticleSettingsConstants ParticleSettings;
+    ParticleSettings.SubUVCols = 6;
+    ParticleSettings.SubUVRows = 6;
+    BufferManager->UpdateConstantBuffer("FParticleSettingsConstants", ParticleSettings);
+
+    // Draw
+    ID3D11Buffer* Buffers[2] = { QuadVertexInfo.VertexBuffer, InstanceInfoSprite.VertexBuffer };
+    UINT Strides[2] = { sizeof(FSpriteVertex), sizeof(FSpriteParticleInstance) };
+    UINT Offsets[2] = { 0, 0 };
+
+    //Sprite니까 무조건 0번?
+    std::shared_ptr<FTexture> Texture = 
+        FEngineLoop::ResourceManager.GetTexture(ReplayData.Material->GetMaterialInfo().TextureInfos[0].TexturePath);
+    Graphics->DeviceContext->PSSetShaderResources(0, 1, &Texture->TextureSRV);
+    Graphics->DeviceContext->PSSetSamplers(0, 1, &Texture->SamplerState);
+    Graphics->DeviceContext->IASetVertexBuffers(0, 2, Buffers, Strides, Offsets);
+    Graphics->DeviceContext->DrawInstanced(6, Instances.Num(), 0, 0);
 }
 
 void FParticleRenderPass::ClearRenderArr()
 {
     ParticleComponents.Empty();
+}
+
+void FParticleRenderPass::AddParticleComponent(UParticleSystemComponent* InParticleComponent)
+{
+    ParticleComponents.Add(InParticleComponent);
 }

@@ -423,7 +423,7 @@ bool FParticleEmitterInstance::FillReplayData(FDynamicEmitterReplayDataBase& Out
     {
         return false;
     }
-    OutData.eEmitterType = DET_Unknown;
+    //OutData.eEmitterType = DET_Unknown;
 
     OutData.ActiveParticleCount = ActiveParticles;
     OutData.ParticleStride = ParticleStride;
