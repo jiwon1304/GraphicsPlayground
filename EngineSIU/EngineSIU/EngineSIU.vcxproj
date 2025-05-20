@@ -352,8 +352,8 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleLODLevel.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModules\ParticleModule.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModules\ParticleModuleRequired.cpp" />
-      <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModules\ParticleModuleSize.cpp"/>
-      <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModules\ParticleModuleSizeBase.cpp"/>
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModules\ParticleModuleSize.cpp"/>
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModules\ParticleModuleSizeBase.cpp"/>
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModules\ParticleModuleSpawn.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModules\ParticleModuleSpawnPerUnit.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModules\ParticleModuleTypeDataBase.cpp" />
@@ -721,8 +721,8 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleHelper.h" />
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleLODLevel.h" />
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModules\ParticleModule.h" />
-      <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModules\ParticleModuleSize.h"/>
-      <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModules\ParticleModuleSizeBase.h"/>
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModules\ParticleModuleSize.h"/>
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModules\ParticleModuleSizeBase.h"/>
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModules\ParticleModuleSpawn.h" />
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModules\ParticleModuleSpawnBase.h" />
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModules\ParticleModuleSpawnPerUnit.h" />
