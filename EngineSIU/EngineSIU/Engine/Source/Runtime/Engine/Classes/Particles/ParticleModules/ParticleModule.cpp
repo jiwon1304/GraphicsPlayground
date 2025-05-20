@@ -2,6 +2,7 @@
 #include "Particles/ParticleSystem.h"
 #include "UObject/Casts.h"
 #include "Particles/ParticleHelper.h"
+#include "Particles/ParticleEmitterInstances.h"
 
 void UParticleModule::PostEditChangeProperty()
 {
@@ -32,4 +33,17 @@ void UParticleModule::Update(FParticleEmitterInstance* Owner, int32 Offset, floa
 
 void UParticleModule::FinalUpdate(FParticleEmitterInstance* Owner, int32 Offset, float DeltaTime)
 {
+}
+
+FRandomStream& UParticleModule::GetRandomStream(FParticleEmitterInstance* Owner)
+{
+    // TODO: 여기에 return 문을 삽입합니다.
+    assert(Owner);
+    return Owner->RandomStream;
+}
+
+
+FName UParticleModule::GetName() const
+{
+    return FName("General");
 }

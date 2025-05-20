@@ -6,6 +6,7 @@
 #include "Particles/ParticleEmitter.h"
 #include "Particles/ParticleEmitterInstances.h"
 #include "Particles/ParticleLODLevel.h"
+#include "Material/Material.h"
 #include "Particles/ParticleModules/ParticleModuleRequired.h"
 
 void UParticleSystemComponent::InitializeSystem()
@@ -166,4 +167,45 @@ void UParticleSystemComponent::InitTestSpriteParticles()
     Emitter->CurrentLODLevel = LOD;
     Emitter->bEnabled = true;
 
+}
+
+UMaterial* UParticleSystemComponent::GetMaterial(int32 ElementIndex) const
+{
+    if (EmitterMaterials.IsValidIndex(ElementIndex) && EmitterMaterials[ElementIndex] != nullptr)
+    {
+        return EmitterMaterials[ElementIndex];
+    }
+    if (Template && Template->Emitters.IsValidIndex(ElementIndex))
+    {
+        UParticleEmitter* Emitter = Template->Emitters[ElementIndex];
+        if (Emitter && Emitter->LODLevels.Num() > 0)
+        {
+            UParticleLODLevel* EmitterLODLevel = Emitter->LODLevels[0];
+            if (EmitterLODLevel && EmitterLODLevel->RequiredModule)
+            {
+                return EmitterLODLevel->RequiredModule->Material;
+            }
+        }
+    }
+    return nullptr;
+}
+
+void UParticleSystemComponent::SetMaterial(int32 ElementIndex, UMaterial* Material)
+{
+    if (Template && Template->Emitters.IsValidIndex(ElementIndex))
+    {
+        if (!EmitterMaterials.IsValidIndex(ElementIndex))
+        {
+            EmitterMaterials.AddDefaulted(ElementIndex + 1 - EmitterMaterials.Num());
+        }
+        EmitterMaterials[ElementIndex] = Material;
+    }
+
+    for (int32 EmitterIndex = 0; EmitterIndex < EmitterInstances.Num(); ++EmitterIndex)
+    {
+        if (FParticleEmitterInstance* Inst = EmitterInstances[EmitterIndex])
+        {
+            Inst->Tick_MaterialOverrides(EmitterIndex);
+        }
+    }
 }

@@ -1,5 +1,7 @@
 #include "ParticleHelper.h"
 #include "Particles/ParticleModules/ParticleModuleRequired.h"
+#include "ParticleEmitterInstances.h"
+#include "Engine/StaticMesh.h"
 
 FDynamicEmitterDataBase::FDynamicEmitterDataBase(const UParticleModuleRequired* RequiredModule)
     :EmitterIndex(INDEX_NONE)
@@ -47,3 +49,22 @@ void FParticleDataContainer::Free()
 //{
 //    ::operator delete(Ptr);
 //}
+
+FDynamicMeshEmitterData::FDynamicMeshEmitterData(const UParticleModuleRequired* RequiredModule)
+    : FDynamicSpriteEmitterDataBase(RequiredModule)
+{
+
+}
+
+void FDynamicMeshEmitterData::Init(const FParticleMeshEmitterInstance* InEmitterInstance, UStaticMesh* InStaticMesh)
+{
+    EmitterInstance = InEmitterInstance;
+    StaticMesh = InStaticMesh;
+
+    // !TODO 머티리얼 가져오기
+    assert(StaticMesh);
+}
+
+void FDynamicSpriteEmitterData::Init()
+{
+}

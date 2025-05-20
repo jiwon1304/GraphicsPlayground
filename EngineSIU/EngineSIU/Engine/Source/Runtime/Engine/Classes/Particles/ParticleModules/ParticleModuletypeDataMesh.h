@@ -15,6 +15,10 @@ public:
 
     virtual FParticleEmitterInstance* CreateInstance(UParticleEmitter* InEmitterParent, UParticleSystemComponent* InComponent) override;
 
+    virtual FName GetName() const override
+    {
+        return FName(TEXT("MeshTypeData"));
+    }
     UPROPERTY(
         EditAnywhere,
         UStaticMesh*, Mesh, = nullptr;
