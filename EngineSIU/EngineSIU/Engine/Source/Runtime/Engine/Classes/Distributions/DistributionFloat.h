@@ -2,6 +2,85 @@
 #include "Distribution.h"
 #include "Distributions.h"
 
+class UDistributionFloat;
+
+
+struct FRawDistributionFloat : public FRawDistribution
+{
+    DECLARE_STRUCT(FRawDistributionFloat)
+
+private:
+    UPROPERTY(
+        float, MinValue
+    )
+
+    UPROPERTY(
+        float, MaxValue
+    )
+
+public:
+    UPROPERTY_WITH_FLAGS(
+        EditAnywhere,
+        UDistributionFloat*, Distribution
+    )
+
+
+    FRawDistributionFloat()
+        : MinValue(0)
+        , MaxValue(0)
+        , Distribution(nullptr)
+    {
+    }
+
+    /** Whether the distribution data has been cooked or the object itself is available */
+    bool IsCreated();
+
+#if WITH_EDITOR
+    /**`
+     * Initialize a raw distribution from the original Unreal distribution
+     */
+    void Initialize();
+#endif
+    /**
+     * Gets a pointer to the raw distribution if you can just call FRawDistribution::GetValue1 on it, otherwise NULL 
+     */
+    const FRawDistribution* GetFastRawDistribution();
+
+    /**
+     * Get the value at the specified F
+     */
+    float GetValue(float F = 0.0f, UObject* Data = nullptr, struct FRandomStream* InRandomStream = nullptr);
+
+    /**
+     * Get the min and max values
+     */
+    void GetOutRange(float& MinOut, float& MaxOut);
+
+    /**
+     * Is this distribution a uniform type? (ie, does it have two values per entry?)
+     */
+    inline bool IsUniform() const { return LookupTable.SubEntryStride != 0; }
+
+    void InitLookupTable();
+
+    FORCEINLINE bool HasLookupTable(bool bInitializeIfNeeded = true)
+    {
+#if WITH_EDITOR
+        if (bInitializeIfNeeded)
+        {
+            InitLookupTable();
+        }
+#endif
+        return !LookupTable.IsEmpty();
+    }
+
+    FORCEINLINE bool OkForParallel()
+    {
+        HasLookupTable(); // initialize if required
+        return true;      // even if they stay distributions, this should probably be ok as long as nobody is changing them at runtime
+        //return !Distribution || HasLookupTable();
+    }
+};
 
 class UDistributionFloat : public UDistribution
 {

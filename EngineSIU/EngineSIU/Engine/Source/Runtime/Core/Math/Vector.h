@@ -104,7 +104,7 @@ public:
     explicit FVector(float Scalar) : X(Scalar), Y(Scalar), Z(Scalar) {}
 
     explicit FVector(const FRotator& InRotator);
-    explicit FVector(const FVector4& InVector4);
+    FVector(const FVector4& InVector4);
 
     // Vector(0, 0, 0)
     static const FVector ZeroVector;
