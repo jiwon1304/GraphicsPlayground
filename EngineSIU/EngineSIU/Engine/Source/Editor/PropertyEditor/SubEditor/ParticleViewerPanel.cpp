@@ -238,6 +238,11 @@ void ParticleViewerPanel::RenderDetailPanel()
             Prop->DisplayInImGui(Module);
         }
     }
+
+    if (ImGui::Button("Apply"))
+    {
+        ParticleSystem->PostEditChangeProperty();
+    }
 }
 
 void ParticleViewerPanel::RenderCurveEditorPanel()
@@ -465,6 +470,7 @@ UParticleEmitter* ParticleViewerPanel::CreateDefaultParticleEmitter()
     NewEmitter->LODLevels[0]->Modules.Add(FObjectFactory::ConstructObject<UParticleModuleRequired>(NewEmitter));
     NewEmitter->LODLevels[0]->Modules.Add(FObjectFactory::ConstructObject<UParticleModuleSpawn>(NewEmitter));
     NewEmitter->LODLevels[0]->Modules.Add(FObjectFactory::ConstructObject<UParticleModuleLifetime>(NewEmitter));
+    NewEmitter->LODLevels[0]->Modules[2]->bEnabled = true; //TODO 생성자 받아오면 삭제
     LODLevel->UpdateModuleLists();
     return NewEmitter;
 }
