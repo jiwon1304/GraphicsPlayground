@@ -12,6 +12,7 @@
 #include "Components/SceneComponent.h"
 #include "Engine/FObjLoader.h"
 #include "Particles/ParticleModules/ParticleModuleTypeDataMesh.h"
+#include "ParticleModules/ParticleModuleSubUV.h"
 
 
 void FParticleEmitterInstance::InitParameters(UParticleEmitter* InTemplate, UParticleSystemComponent* InComponent)
@@ -36,6 +37,7 @@ void FParticleEmitterInstance::Init()
 
     ParticleSize = SpriteTemplate->ParticleSize;
     PayloadOffset = ParticleSize;
+    ParticleSize += RequiredBytes();
     ParticleSize = Align(ParticleSize, 16);
     ParticleStride = ParticleSize;
 
@@ -211,7 +213,26 @@ void FParticleEmitterInstance::UpdateBoundingBox(float DeltaTime)
 
 uint32 FParticleEmitterInstance::RequiredBytes()
 {
-    return 0;
+    uint32 uiBytes = 0;
+    //bool bHasSubUV = false;
+    //UParticleLODLevel* LODLevel = SpriteTemplate->GetCurrentLODLevel(this);
+    //if (LODLevel)
+    //{
+    //    for (int32 ModuleIndex = 0; ModuleIndex < LODLevel->Modules.Num(); ModuleIndex++)
+    //    {
+    //        if (LODLevel->Modules[ModuleIndex]->IsA<UParticleModuleSubUV>())
+    //        {
+    //            bHasSubUV = true;
+    //        }
+    //    }
+    //}
+
+    //if (bHasSubUV)
+    //{
+    //    SubUVDataOffset = PayloadOffset;
+    //    uiBytes = sizeof(FSubUVPayload);
+    //}
+    return uiBytes;
 }
 
 UParticleLODLevel* FParticleEmitterInstance::GetCurrentLODLevelChecked() const
@@ -655,6 +676,9 @@ bool FParticleSpriteEmitterInstance::FillReplayData(FDynamicEmitterReplayDataBas
 
     FDynamicSpriteEmitterReplayData* NewReplayData = static_cast<FDynamicSpriteEmitterReplayData*>(&OutData);
     NewReplayData->Material = GetCurrentMaterial();
+
+    NewReplayData->SubImages_Horizontal = SubImages_Horizontal;
+    NewReplayData->SubImages_Vertical = SubImages_Vertical;
 
     return true;
 }
