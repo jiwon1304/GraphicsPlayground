@@ -377,7 +377,7 @@ void FRenderer::RenderWorldScene(const std::shared_ptr<FEditorViewportClient>& V
             StaticMeshRenderPass->Render(Viewport);
         }
     }
-    if (true/*ShowFlag & EEngineShowFlags::SF_Particles*/)
+    if (ShowFlag & EEngineShowFlags::SF_Particles)
     {
         ParticleRenderPass->Render(Viewport);
     }
