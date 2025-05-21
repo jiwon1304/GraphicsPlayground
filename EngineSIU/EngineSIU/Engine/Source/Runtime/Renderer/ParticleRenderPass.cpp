@@ -296,15 +296,17 @@ void FParticleRenderPass::RenderMeshEmitter(
 
     FStaticMeshRenderData* RenderData = StaticMesh->GetRenderData();
     if (RenderData->Vertices.IsEmpty() || RenderData->Indices.IsEmpty()) return;
+    FString VertexBufferKey = FString::Printf(TEXT("ParticleMeshVertexBuffer_%s"), *StaticMesh->GetName());
+    FString IndexBufferKey = FString::Printf(TEXT("ParticleMeshIndexBuffer_%s"), *StaticMesh->GetName());
 
     // [2] Vertex/Index Buffer 초기화
     BufferManager->CreateVertexBuffer(
-        TEXT("ParticleMeshVertexBuffer"),
+        VertexBufferKey,
         RenderData->Vertices,
         StaticMeshVertexInfo
     );
     BufferManager->CreateIndexBuffer(
-        TEXT("ParticleMeshIndexBuffer"),
+        IndexBufferKey,
         RenderData->Indices,
         StaticMeshIndexInfo
     );
