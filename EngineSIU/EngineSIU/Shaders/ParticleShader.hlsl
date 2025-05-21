@@ -56,6 +56,7 @@ struct VS_OUTPUT
     float4 Color : COLOR;
     float4 UV : TEXCOORD0;
     float3 WorldPos : TEXCOORD1;
+    float LerpAlpha : TEXCOORD2;
 };
 
 // ==================== Vertex Shader ====================
@@ -119,8 +120,10 @@ VS_OUTPUT mainVS(VS_INPUT input)
     // 보간용 UV 두 개를 넘김 (PixelShader에서 보간)
     output.UV.xy = UV0; // TEXCOORD0.xy
     output.UV.zw = UV1; // TEXCOORD0.zw (pack)
-    output.Color.rgb = input.Color.rgb;
-    output.Color.a = LerpAlpha;
+    output.Color = input.Color;
+    if (all(input.Color.rgb < 0.001f))
+        output.Color.rgb = float3(1, 1, 1);
+    output.LerpAlpha = LerpAlpha;
 #endif
 
 #if defined(PARTICLE_MESH)
@@ -145,7 +148,7 @@ float4 mainPS(VS_OUTPUT input) : SV_TARGET
 #if defined(PARTICLE_SPRITE)
     float2 UV0 = input.UV.xy;
     float2 UV1 = input.UV.zw;
-    float LerpAlpha = input.Color.a;
+    float LerpAlpha = input.LerpAlpha;
 
     float4 texColor0 = MaterialTextures[0].Sample(MaterialSamplers[0], UV0);
     float4 texColor1 = MaterialTextures[0].Sample(MaterialSamplers[0], UV1);
@@ -161,7 +164,7 @@ float4 mainPS(VS_OUTPUT input) : SV_TARGET
 #endif
     
     //return float4(input.UV,0,1);
-    return texColor * float4(input.Color.rgb == 0 ? float3(1,1,1):input.Color.rgb, 1.0f);
+    return texColor * input.Color;
 }
 
 #endif // PARTICLE_SHADER

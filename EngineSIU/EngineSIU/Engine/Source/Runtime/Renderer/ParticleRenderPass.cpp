@@ -248,7 +248,8 @@ void FParticleRenderPass::RenderSpriteEmitter(UParticleSystemComponent* Comp, FP
         Inst.Size = FVector2D(P->Size.X, P->Size.Y);
         Inst.Rotation = P->Rotation;
         Inst.SubImageIndex = P->RelativeTime * TotalFrames;
-        Inst.Color = P->Color;
+        Inst.Color = FLinearColor(1,1,1,0.2f);
+        //Inst.Color = P->Color;
         Instances.Add(Inst);
     }
 
