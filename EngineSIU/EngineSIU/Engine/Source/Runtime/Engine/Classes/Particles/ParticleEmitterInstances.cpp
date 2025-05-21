@@ -214,24 +214,24 @@ void FParticleEmitterInstance::UpdateBoundingBox(float DeltaTime)
 uint32 FParticleEmitterInstance::RequiredBytes()
 {
     uint32 uiBytes = 0;
-    bool bHasSubUV = false;
-    UParticleLODLevel* LODLevel = SpriteTemplate->GetCurrentLODLevel(this);
-    if (LODLevel)
-    {
-        for (int32 ModuleIndex = 0; ModuleIndex < LODLevel->Modules.Num(); ModuleIndex++)
-        {
-            if (LODLevel->Modules[ModuleIndex]->IsA<UParticleModuleSubUV>())
-            {
-                bHasSubUV = true;
-            }
-        }
-    }
+    //bool bHasSubUV = false;
+    //UParticleLODLevel* LODLevel = SpriteTemplate->GetCurrentLODLevel(this);
+    //if (LODLevel)
+    //{
+    //    for (int32 ModuleIndex = 0; ModuleIndex < LODLevel->Modules.Num(); ModuleIndex++)
+    //    {
+    //        if (LODLevel->Modules[ModuleIndex]->IsA<UParticleModuleSubUV>())
+    //        {
+    //            bHasSubUV = true;
+    //        }
+    //    }
+    //}
 
-    if (bHasSubUV)
-    {
-        SubUVDataOffset = PayloadOffset;
-        uiBytes = sizeof(FSubUVPayload);
-    }
+    //if (bHasSubUV)
+    //{
+    //    SubUVDataOffset = PayloadOffset;
+    //    uiBytes = sizeof(FSubUVPayload);
+    //}
     return uiBytes;
 }
 
@@ -676,6 +676,9 @@ bool FParticleSpriteEmitterInstance::FillReplayData(FDynamicEmitterReplayDataBas
 
     FDynamicSpriteEmitterReplayData* NewReplayData = static_cast<FDynamicSpriteEmitterReplayData*>(&OutData);
     NewReplayData->Material = GetCurrentMaterial();
+
+    NewReplayData->SubImages_Horizontal = SubImages_Horizontal;
+    NewReplayData->SubImages_Vertical = SubImages_Vertical;
 
     return true;
 }

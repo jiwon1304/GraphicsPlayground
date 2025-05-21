@@ -67,6 +67,10 @@ struct FParticleEmitterInstance
     /** 각 파티클 데이터 내 특정 모듈 데이터(페이로드) 시작점 오프셋. */
     int32 PayloadOffset = 0;
 
+    /** 서브 UV 가로 및 세로. */
+    int32 SubImages_Horizontal = 1;
+    int32 SubImages_Vertical = 1;
+
     /** 활성 파티클의 인덱스를 저장하는 배열 포인터 (효율적 관리 및 접근용). */
     uint16* ParticleIndices = nullptr;
     /** 이 이미터가 동시에 유지할 수 있는 최대 활성 파티클 수. */
