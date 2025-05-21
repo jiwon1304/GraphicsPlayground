@@ -29,7 +29,7 @@ struct FSpriteParticleInstance
     float ParticleId;
     FVector2D Size;
     float Rotation;
-    float SubImageIndex;
+    int32 SubImageIndex;
     FLinearColor Color;
 };
 struct FMeshParticleInstance
@@ -91,7 +91,7 @@ void FParticleRenderPass::CreateShader()
         { "INSTANCE_ID",     0, DXGI_FORMAT_R32_FLOAT,           1, 28,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
         { "INSTANCE_SIZE",   0, DXGI_FORMAT_R32G32_FLOAT,        1, 32,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
         { "INSTANCE_ROT",    0, DXGI_FORMAT_R32_FLOAT,           1, 40,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
-        { "INSTANCE_SUBUV",  0, DXGI_FORMAT_R32_FLOAT,           1, 44,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+        { "INSTANCE_SUBUV",  0, DXGI_FORMAT_R32_SINT,           1, 44,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
         { "INSTANCE_COLOR",  0, DXGI_FORMAT_R32G32B32A32_FLOAT,  1, 48,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
     };
     ShaderManager->AddVertexShaderAndInputLayout(L"ParticleShader_Sprite", L"Shaders/ParticleShader.hlsl", "mainVS", InputLayout, ARRAYSIZE(InputLayout), DefinesSprite);
@@ -196,15 +196,16 @@ void FParticleRenderPass::RenderSpriteEmitter(UParticleSystemComponent* Comp, FP
     Graphics->DeviceContext->IASetInputLayout(IL);
     Graphics->DeviceContext->PSSetShader(PS, nullptr, 0);
 
-    static float SubImageIndex = 0.0f;
+    //TODO: 애니메이션 모듈 추가되면 지우기
     static float SubImageIndexTimer = 0.0f;
+    static int SubImageOffset = 0;
     SubImageIndexTimer += 0.05f;
     if (SubImageIndexTimer >= 1.0f)
     {
         SubImageIndexTimer = 0.0f;
-        SubImageIndex += 1.0f;
-        if (SubImageIndex >= 36) SubImageIndex = 0.0f;
+        SubImageOffset++;
     }
+    
 
     TArray<FSpriteParticleInstance> Instances;
 
@@ -217,7 +218,6 @@ void FParticleRenderPass::RenderSpriteEmitter(UParticleSystemComponent* Comp, FP
         const FBaseParticle* P = reinterpret_cast<const FBaseParticle*>(Emitter->ParticleData + ParticleIndex * Stride);
 
         //TODO: ParticleData에서 SubUV 정보 가져오기
-        //Inst도 다른 곳에서 가져와야 함
         FSpriteParticleInstance Inst;
         Inst.Position = P->Location;
         Inst.OldPosition = P->OldLocation;
@@ -225,7 +225,7 @@ void FParticleRenderPass::RenderSpriteEmitter(UParticleSystemComponent* Comp, FP
         Inst.ParticleId = static_cast<float>(i);
         Inst.Size = FVector2D(P->Size.X, P->Size.Y);
         Inst.Rotation = P->Rotation;
-        Inst.SubImageIndex = SubImageIndex;
+        Inst.SubImageIndex = (ReplayData.SubUVDataOffset+SubImageOffset)%(ReplayData.SubImages_Horizontal * ReplayData.SubImages_Vertical);
         Inst.Color = P->Color;
         Instances.Add(Inst);
     }
@@ -246,8 +246,8 @@ void FParticleRenderPass::RenderSpriteEmitter(UParticleSystemComponent* Comp, FP
 
     // SubUV 정보 바인딩
     FParticleSettingsConstants ParticleSettings;
-    ParticleSettings.SubUVCols = 6;
-    ParticleSettings.SubUVRows = 6;
+    ParticleSettings.SubUVCols = ReplayData.SubImages_Horizontal;
+    ParticleSettings.SubUVRows = ReplayData.SubImages_Vertical;
     BufferManager->UpdateConstantBuffer("FParticleSettingsConstants", ParticleSettings);
 
     // Draw

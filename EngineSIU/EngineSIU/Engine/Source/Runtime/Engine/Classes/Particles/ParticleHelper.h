@@ -146,16 +146,25 @@ struct FDynamicSpriteEmitterReplayDataBase : public FDynamicEmitterReplayDataBas
 {
     UMaterial* Material = nullptr;
 
+    int32 SubUVDataOffset;
+    int32 SubImages_Horizontal;
+    int32 SubImages_Vertical;
     FDynamicSpriteEmitterReplayDataBase()
     {
         eEmitterType = DET_Sprite;
         //테스트용 하드코딩 경로
-        FTextureInfo TexInfo;
-        TexInfo.TextureName = TEXT("T_Explosion_SubUV");
-        TexInfo.TexturePath = L"Assets/Texture/T_Explosion_SubUV.png"; // 경로는 Wide
-        TexInfo.bIsSRGB = true;
-        if (!Material)Material = new UMaterial();
-        Material->GetMaterialInfo().TextureInfos.Add(TexInfo);
+        if (!Material)
+        {
+            Material = new UMaterial();
+            FTextureInfo TexInfo;
+            TexInfo.TextureName = TEXT("T_Explosion_SubUV");
+            TexInfo.TexturePath = L"Assets/Texture/T_Explosion_SubUV.png"; // 경로는 Wide
+            SubImages_Horizontal = 6;
+            SubImages_Vertical = 6;
+            SubUVDataOffset = 0;
+            TexInfo.bIsSRGB = true;
+            Material->GetMaterialInfo().TextureInfos.Add(TexInfo);
+        }
     }
 };
 

@@ -19,16 +19,15 @@ cbuffer ParticleSettings : register(b4)
 #if defined(PARTICLE_SPRITE)
 struct VS_INPUT
 {
-    float2 UV : TEXCOORD0; // Per-vertex (shared quad)
+    float2 UV : TEXCOORD0;
 
-    // Instance data (per particle)
-    float3 Position : INSTANCE_POS; // World-space center
+    float3 Position : INSTANCE_POS;
     float RelativeTime : INSTANCE_TIME;
     float3 OldPosition : INSTANCE_OLDPOS;
     float ParticleId : INSTANCE_ID;
     float2 Size : INSTANCE_SIZE;
     float Rotation : INSTANCE_ROT;
-    float SubImageIndex : INSTANCE_SUBUV;
+    int SubImageIndex : INSTANCE_SUBUV;
     float4 Color : INSTANCE_COLOR;
 };
 
@@ -99,10 +98,10 @@ VS_OUTPUT mainVS(VS_INPUT input)
 
     // [7] SubUV
     float2 frameSize = float2(1.0f / SubUVCols, 1.0f / SubUVRows);
-    float2 UVOffset = float2(
-        fmod(input.SubImageIndex, SubUVCols),
-        floor(input.SubImageIndex / SubUVCols)
-    ) * frameSize;
+    int SubUVCol = input.SubImageIndex % SubUVCols;
+    int SubUVRow = input.SubImageIndex / SubUVCols;
+    float2 UVOffset = float2(SubUVCol, SubUVRow) * frameSize;
+
     output.UV = UVOffset + (input.UV + 0.5f) * frameSize;
     output.Color = input.Color;
 #endif
