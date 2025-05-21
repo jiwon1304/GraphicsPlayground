@@ -1029,6 +1029,12 @@ void UDistributionVector::GetRange(FVector& OutMin, FVector& OutMax) const
     OutMax = FVector::ZeroVector;
 }
 
+void UDistributionVector::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+    Super::PostEditChangeProperty(PropertyChangedEvent);
+    bIsDirty = true;
+}
+
 void UDistributionVectorUniform::PostInitProperties()
 {
     Super::PostInitProperties();
@@ -1752,6 +1758,12 @@ void UDistributionFloat::GetOutRange(float& MinOut, float& MaxOut) const
 {
     MinOut = 0.0f;
     MaxOut = 0.0f;
+}
+
+void UDistributionFloat::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+    Super::PostEditChangeProperty(PropertyChangedEvent);
+    bIsDirty = true;
 }
 
 uint32 UDistributionFloat::InitializeRawEntry(float Time, float* Values) const
