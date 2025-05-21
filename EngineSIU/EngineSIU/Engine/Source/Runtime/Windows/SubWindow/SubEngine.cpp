@@ -38,6 +38,7 @@ void USubEngine::Initialize(HWND& hWnd, FGraphicsDevice* InGraphics, FDXDBufferM
     ViewportClient->CameraReset();
     ViewportClient->FarClip = 1000000;
     ViewportClient->ViewFOV = 60.f;
+    ViewportClient->SetCameraSpeed(5.0f);
 
 }
 

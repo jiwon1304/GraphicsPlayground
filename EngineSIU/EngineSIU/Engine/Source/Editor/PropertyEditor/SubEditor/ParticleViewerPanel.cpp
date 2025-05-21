@@ -297,7 +297,7 @@ void ParticleViewerPanel::InputEmitterPanel()
             // Module이 선택된 경우 Module 삭제
             if (SelectedModuleIndex >= 0 && SelectedModuleIndex < SelectedEmitter->LODLevels[0]->Modules.Num()) {
                 SelectedEmitter->LODLevels[0]->Modules.RemoveAt(SelectedModuleIndex);
-
+                ParticleSystem->PostEditChangeProperty();
                 // 선택 해제
                 SelectedModuleIndex = -1;
             }
