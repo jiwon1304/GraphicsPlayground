@@ -195,7 +195,7 @@ void FParticleRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& V
             switch (ReplayData.eEmitterType)
             {
             case DET_Sprite:
-                RenderSpriteEmitter(Comp, Emitter, (const FDynamicSpriteEmitterReplayDataBase&)ReplayData);
+                RenderSpriteEmitter(Viewport,Comp, Emitter, (const FDynamicSpriteEmitterReplayDataBase&)ReplayData);
                 break;
 
             case DET_Mesh:
@@ -212,7 +212,7 @@ void FParticleRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& V
     Graphics->DeviceContext->OMSetDepthStencilState(nullptr, 0);
     Graphics->DeviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 }
-void FParticleRenderPass::RenderSpriteEmitter(UParticleSystemComponent* Comp, FParticleEmitterInstance* Emitter, const FDynamicSpriteEmitterReplayDataBase& ReplayData)
+void FParticleRenderPass::RenderSpriteEmitter(const std::shared_ptr<FEditorViewportClient>& Viewport,UParticleSystemComponent* Comp, FParticleEmitterInstance* Emitter, const FDynamicSpriteEmitterReplayDataBase& ReplayData)
 {
     //TestTexture = FEngineLoop::ResourceManager.GetTexture(L"Assets/Texture/T_Explosion_SubUV.png");
     ID3D11VertexShader* VS = ShaderManager->GetVertexShaderByKey(L"ParticleShader_Sprite");
@@ -253,13 +253,26 @@ void FParticleRenderPass::RenderSpriteEmitter(UParticleSystemComponent* Comp, FP
     FParticleSettingsConstants ParticleSettings;
     ParticleSettings.SubUVCols = ReplayData.SubImages_Horizontal;
     ParticleSettings.SubUVRows = ReplayData.SubImages_Vertical;
-    float TotalFrames = ParticleSettings.SubUVCols * ParticleSettings.SubUVRows;
+    int TotalFrames = ParticleSettings.SubUVCols * ParticleSettings.SubUVRows-1;
     BufferManager->UpdateConstantBuffer("FParticleSettingsConstants", ParticleSettings);
 
-    TArray<FSpriteParticleInstance> Instances;
+    //TArray<FSpriteParticleInstance> Instances;
 
     const int32 Stride = Emitter->ParticleStride;
     const int32 ActiveCount = Emitter->ActiveParticles;
+    struct FSortableParticle
+    {
+        float DistanceToCamera;
+        FSpriteParticleInstance Instance;
+
+        bool operator<(const FSortableParticle& Other) const
+        {
+            return DistanceToCamera > Other.DistanceToCamera; // 뒤에서부터 그리기 (카메라 기준 먼 것부터)
+        }
+    };
+    TArray<FSortableParticle> SortedParticles;
+
+    FVector CameraPos = Viewport->PerspectiveCamera.GetLocation(); // 또는 Viewport->GetViewOrigin() 사용
 
     for (int32 i = 0; i < ActiveCount; ++i)
     {
@@ -274,10 +287,22 @@ void FParticleRenderPass::RenderSpriteEmitter(UParticleSystemComponent* Comp, FP
         Inst.ParticleId = static_cast<float>(i);
         Inst.Size = FVector2D(P->Size.X, P->Size.Y);
         Inst.Rotation = P->Rotation;
-        Inst.SubImageIndex = P->RelativeTime * TotalFrames;
+        Inst.SubImageIndex = P->RelativeTime * static_cast<float> (TotalFrames);
         //Inst.Color = FLinearColor(1,1,1,0.8f);
         Inst.Color = P->Color;
-        Instances.Add(Inst);
+        //Instances.Add(Inst);
+
+        float DistSq = FVector::DistSquared(CameraPos, P->Location);
+        SortedParticles.Add({ DistSq, Inst });
+    }
+    SortedParticles.Sort();
+
+    TArray<FSpriteParticleInstance> Instances;
+    Instances.Reserve(SortedParticles.Num());
+
+    for (const FSortableParticle& Sortable : SortedParticles)
+    {
+        Instances.Add(Sortable.Instance);
     }
 
     if (Instances.IsEmpty()) return;

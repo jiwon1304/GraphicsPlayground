@@ -104,8 +104,8 @@ VS_OUTPUT mainVS(VS_INPUT input)
     float LerpAlpha = frac(ImageIndex); // 보간 알파
 
     // 현재 프레임
-    int Frame0 = int(BaseIndex);
     int MaxFrame = SubUVCols * SubUVRows - 1;
+    int Frame0 = min(BaseIndex,BaseIndex);
     int Frame1 = min(Frame0 + 1, MaxFrame);
 
     int Col0 = Frame0 % SubUVCols;
@@ -123,6 +123,8 @@ VS_OUTPUT mainVS(VS_INPUT input)
     output.Color = input.Color;
     if (all(input.Color.rgb < 0.001f))
         output.Color.rgb = float3(1, 1, 1);
+    if (input.Color.a<0.001f)
+        output.Color.a = 1;
     output.LerpAlpha = LerpAlpha;
 #endif
 
@@ -164,7 +166,7 @@ float4 mainPS(VS_OUTPUT input) : SV_TARGET
 #endif
     
     //return float4(input.UV,0,1);
-    return texColor * input.Color;
+    return float4(texColor.rgb, 1.0f) * input.Color;
 }
 
 #endif // PARTICLE_SHADER

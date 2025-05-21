@@ -26,7 +26,7 @@ public:
 private:
     void CreateShader();
     void ReleaseShader();
-    void RenderSpriteEmitter(UParticleSystemComponent* Comp, FParticleEmitterInstance* Emitter, const FDynamicSpriteEmitterReplayDataBase& ReplayData);
+    void RenderSpriteEmitter(const std::shared_ptr<FEditorViewportClient>& Viewport,UParticleSystemComponent* Comp, FParticleEmitterInstance* Emitter, const FDynamicSpriteEmitterReplayDataBase& ReplayData);
     void RenderMeshEmitter(UParticleSystemComponent* Comp, FParticleMeshEmitterInstance* Emitter, const FDynamicMeshEmitterReplayDataBase& ReplayData);
 
     void PrepareRenderState(const std::shared_ptr<FEditorViewportClient>& Viewport);
