@@ -55,6 +55,24 @@ void FParticleRenderPass::Initialize(FDXDBufferManager* InBufferManager, FGraphi
     ShaderManager = InShaderManager;
 
     CreateShader();
+    // === [1] Alpha Blend State 생성 ===
+    D3D11_BLEND_DESC BlendDesc = {};
+    BlendDesc.RenderTarget[0].BlendEnable = TRUE;
+    BlendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+    BlendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+    BlendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+    BlendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+    BlendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+    BlendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+    BlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+    Graphics->Device->CreateBlendState(&BlendDesc, &AlphaBlendState);
+
+    // === [2] DepthStencil State (Z-Write Off) 생성 ===
+    D3D11_DEPTH_STENCIL_DESC DepthDesc = {};
+    DepthDesc.DepthEnable = TRUE;
+    DepthDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO; // ✅ 깊이 기록 안함
+    DepthDesc.DepthFunc = D3D11_COMPARISON_LESS;
+    Graphics->Device->CreateDepthStencilState(&DepthDesc, &NoZWriteState);
 
     // Create static quad vertex buffer (6 vertices)
     TArray<FSpriteVertex> QuadVertices = {
@@ -118,7 +136,9 @@ void FParticleRenderPass::CreateShader()
 }
 
 
-void FParticleRenderPass::ReleaseShader() {}
+void FParticleRenderPass::ReleaseShader()
+{
+}
 
 void FParticleRenderPass::PrepareRenderArr()
 {
@@ -150,6 +170,11 @@ void FParticleRenderPass::PrepareRenderState(const std::shared_ptr<FEditorViewpo
     FDepthStencilRHI* DS = ViewportResource->GetDepthStencil(EResourceType::ERT_Scene);
     Graphics->DeviceContext->RSSetViewports(1, &ViewportResource->GetD3DViewport());
     Graphics->DeviceContext->OMSetRenderTargets(1, &RT->RTV, DS->DSV);
+
+    // ✅ BlendState, DepthStencilState 설정
+    float BlendFactor[4] = { 0, 0, 0, 0 };
+    Graphics->DeviceContext->OMSetBlendState(AlphaBlendState, BlendFactor, 0xffffffff);
+    Graphics->DeviceContext->OMSetDepthStencilState(NoZWriteState, 0);
 }
 void FParticleRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& Viewport)
 {
@@ -183,6 +208,8 @@ void FParticleRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& V
         }
     }
 
+    Graphics->DeviceContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
+    Graphics->DeviceContext->OMSetDepthStencilState(nullptr, 0);
     Graphics->DeviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 }
 void FParticleRenderPass::RenderSpriteEmitter(UParticleSystemComponent* Comp, FParticleEmitterInstance* Emitter, const FDynamicSpriteEmitterReplayDataBase& ReplayData)
@@ -248,8 +275,8 @@ void FParticleRenderPass::RenderSpriteEmitter(UParticleSystemComponent* Comp, FP
         Inst.Size = FVector2D(P->Size.X, P->Size.Y);
         Inst.Rotation = P->Rotation;
         Inst.SubImageIndex = P->RelativeTime * TotalFrames;
-        Inst.Color = FLinearColor(1,1,1,0.2f);
-        //Inst.Color = P->Color;
+        //Inst.Color = FLinearColor(1,1,1,0.8f);
+        Inst.Color = P->Color;
         Instances.Add(Inst);
     }
 
