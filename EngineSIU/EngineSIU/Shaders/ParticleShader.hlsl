@@ -54,6 +54,7 @@ struct VS_OUTPUT
 {
     float4 Position : SV_POSITION;
     float4 Color : COLOR;
+    // UV.xy: 첫 번째 SubUV 프레임, UV.zw: 두 번째 SubUV 프레임 (SubUV 보간용)
     float4 UV : TEXCOORD0;
     float3 WorldPos : TEXCOORD1;
     float LerpAlpha : TEXCOORD2;
