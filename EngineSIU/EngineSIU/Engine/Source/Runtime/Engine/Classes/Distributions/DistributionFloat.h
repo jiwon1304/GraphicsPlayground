@@ -32,6 +32,8 @@ public:
     {
     }
 
+    virtual ~FRawDistributionFloat();
+
     /** Whether the distribution data has been cooked or the object itself is available */
     bool IsCreated();
 

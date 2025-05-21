@@ -853,6 +853,14 @@ bool FRawDistributionVector::IsCreated()
 }
 
 #if WITH_EDITOR
+FRawDistributionVector::~FRawDistributionVector()
+{
+    if (IsValid(Distribution))
+    {
+        Distribution->MarkAsGarbage();
+    }
+}
+
 void FRawDistributionVector::Initialize()
 {
     // Nothing to do if we don't have a distribution.
@@ -1599,6 +1607,14 @@ void UDistributionVectorUniform::SetTangents(int32 SubIndex, int32 KeyIndex, flo
 float UDistributionFloat::GetValue(float F, UObject* Data, struct FRandomStream* InRandomStream) const
 {
     return 0.0;
+}
+
+FRawDistributionFloat::~FRawDistributionFloat()
+{
+    if (IsValid(Distribution))
+    {
+        Distribution->MarkAsGarbage();
+    }
 }
 
 bool FRawDistributionFloat::IsCreated()

@@ -49,6 +49,7 @@ public:
     {
     }
 
+    virtual ~FRawDistributionVector();
 
 #if WITH_EDITOR
     /**
