@@ -9,6 +9,7 @@ struct FDepthStencilRHI;
 class UParticleSystem;
 class UParticleEmitter;
 class UParticleSystemComponent;
+class FEditorViewportClient;
 class ParticleViewerPanel : public UEditorPanel
 {
 public:
@@ -36,6 +37,7 @@ private:
     UParticleEmitter* CreateDefaultParticleEmitter();
 public:
     void SetParticleSystemComponent(UParticleSystemComponent* InParticleSystemComponent);
+    void SetViewportClient(std::shared_ptr<FEditorViewportClient> InViewportClient);
 private:
     int SelectedEmitterIndex = -1;
     float ItemWidth = 200.0f;   // 각 Emitter 블록의 가로 크기
@@ -59,7 +61,9 @@ private:
 
 private:
     UParticleSystem* ParticleSystem = nullptr;
+private://From ParticleSubEngine
     UParticleSystemComponent* ParticleSystemComponent = nullptr;
+    std::shared_ptr<FEditorViewportClient> ViewportClient;
 private:
     int CurrentParticleSystemIndex = 0;
     TArray<FName> ParticleNames;
