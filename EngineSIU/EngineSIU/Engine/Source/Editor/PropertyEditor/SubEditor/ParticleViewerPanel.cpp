@@ -466,15 +466,12 @@ UParticleEmitter* ParticleViewerPanel::CreateDefaultParticleEmitter()
     NewEmitter->LODLevels.Add(LODLevel);
 
     UParticleModuleRequired* ParticleModuleRequired = FObjectFactory::ConstructObject<UParticleModuleRequired>(NewEmitter);
-    ParticleModuleRequired->bEnabled = true;
     NewEmitter->LODLevels[0]->Modules.Add(ParticleModuleRequired);
 
     UParticleModuleSpawn* ParticleModuleSpawn = FObjectFactory::ConstructObject<UParticleModuleSpawn>(NewEmitter);
-    ParticleModuleSpawn->bEnabled = true;
     NewEmitter->LODLevels[0]->Modules.Add(ParticleModuleSpawn);
 
     UParticleModuleLifetime* ParticleModuleLifetime = FObjectFactory::ConstructObject<UParticleModuleLifetime>(NewEmitter);
-    ParticleModuleLifetime->bEnabled = true;
     NewEmitter->LODLevels[0]->Modules.Add(ParticleModuleLifetime);
 
     LODLevel->UpdateModuleLists();
