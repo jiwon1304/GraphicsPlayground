@@ -152,7 +152,7 @@ struct FParticleMeshEmitterInstance : public FParticleEmitterInstance
 {
     UParticleModuleTypeDataMesh* MeshTypeData = nullptr;
 
-    bool MeshRotationActive;
+    bool MeshRotationActive = false;
     int32 MeshRotationOffset;
     
     virtual void InitParameters(UParticleEmitter* InTemplate, UParticleSystemComponent* InComponent) override;
