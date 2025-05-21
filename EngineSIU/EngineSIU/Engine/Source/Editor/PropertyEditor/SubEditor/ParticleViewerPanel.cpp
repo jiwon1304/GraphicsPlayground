@@ -13,6 +13,7 @@
 #include "Particles/ParticleModules/ParticleModuleSize.h"
 #include "Particles/ParticleSpriteEmitter.h"
 #include "Particles/ParticleModules/ParticleModuleTypeDataBase.h"
+#include <Particles/ParticleModules/ParticleModuleVelocity.h>
 
 
 void ParticleViewerPanel::Render()
@@ -456,14 +457,25 @@ UParticleEmitter* ParticleViewerPanel::CreateDefaultParticleEmitter()
     LODLevel->Initialize();
     NewEmitter->LODLevels.Add(LODLevel);
 
-    UParticleModuleRequired* ParticleModuleRequired = FObjectFactory::ConstructObject<UParticleModuleRequired>(NewEmitter);
-    NewEmitter->LODLevels[0]->Modules.Add(ParticleModuleRequired);
+    //UParticleModuleRequired* ParticleModuleRequired = FObjectFactory::ConstructObject<UParticleModuleRequired>(NewEmitter);
+    //ParticleModuleRequired->bEnabled = true;
+    //NewEmitter->LODLevels[0]->Modules.Add(ParticleModuleRequired);
 
-    UParticleModuleSpawn* ParticleModuleSpawn = FObjectFactory::ConstructObject<UParticleModuleSpawn>(NewEmitter);
-    NewEmitter->LODLevels[0]->Modules.Add(ParticleModuleSpawn);
+    //UParticleModuleSpawn* ParticleModuleSpawn = FObjectFactory::ConstructObject<UParticleModuleSpawn>(NewEmitter);
+    //ParticleModuleSpawn->bEnabled = true;
+    //NewEmitter->LODLevels[0]->Modules.Add(ParticleModuleSpawn);
 
     UParticleModuleLifetime* ParticleModuleLifetime = FObjectFactory::ConstructObject<UParticleModuleLifetime>(NewEmitter);
+    ParticleModuleLifetime->bEnabled = true;
     NewEmitter->LODLevels[0]->Modules.Add(ParticleModuleLifetime);
+
+    UParticleModuleSize* ParticleModuleSize = FObjectFactory::ConstructObject<UParticleModuleSize>(NewEmitter);
+    ParticleModuleSize->bEnabled = true;
+    NewEmitter->LODLevels[0]->Modules.Add(ParticleModuleSize);
+
+    UParticleModuleVelocity* ParticleModuleVelocity = FObjectFactory::ConstructObject<UParticleModuleVelocity>(NewEmitter);
+    ParticleModuleVelocity->bEnabled = true;
+    NewEmitter->LODLevels[0]->Modules.Add(ParticleModuleVelocity);
 
     LODLevel->UpdateModuleLists();
     return NewEmitter;
