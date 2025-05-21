@@ -197,11 +197,14 @@ void FParticleRenderPass::RenderSpriteEmitter(UParticleSystemComponent* Comp, FP
     Graphics->DeviceContext->PSSetShader(PS, nullptr, 0);
 
     //TODO: 애니메이션 모듈 추가되면 지우기
+
+    //blend 테스트용
+    /*
     static float SubImageIndexTimer = 0.0f;
     static float SubImageOffset = 0;
     SubImageOffset += 0.05f;
-    if (SubImageOffset >= 35.0f)SubImageOffset = 0.0f;
-    
+    if (SubImageOffset >= 35.0f)SubImageOffset = 0.0f;*/
+    //no blend 테스트용
     /*
     SubImageIndexTimer += 0.05f;
     if (SubImageIndexTimer >= 1.0f)
@@ -210,7 +213,21 @@ void FParticleRenderPass::RenderSpriteEmitter(UParticleSystemComponent* Comp, FP
         SubImageOffset += 1.0f;
         if (SubImageOffset >= 35.0f)SubImageOffset = 0.0f;
     }*/
-    
+    // Set Object Constant Buffer
+    FObjectConstantBuffer ObjectData;
+    FMatrix WorldMatrix = Comp->GetWorldMatrix();
+    ObjectData.WorldMatrix = WorldMatrix;
+    ObjectData.InverseTransposedWorld = FMatrix::Transpose(FMatrix::Inverse(WorldMatrix));
+    ObjectData.UUIDColor = Comp->EncodeUUID() / 255.0f;
+    ObjectData.bIsSelected = false;
+    BufferManager->UpdateConstantBuffer(TEXT("FObjectConstantBuffer"), ObjectData);
+
+    // SubUV 정보 바인딩
+    FParticleSettingsConstants ParticleSettings;
+    ParticleSettings.SubUVCols = ReplayData.SubImages_Horizontal;
+    ParticleSettings.SubUVRows = ReplayData.SubImages_Vertical;
+    float TotalFrames = ParticleSettings.SubUVCols * ParticleSettings.SubUVRows;
+    BufferManager->UpdateConstantBuffer("FParticleSettingsConstants", ParticleSettings);
 
     TArray<FSpriteParticleInstance> Instances;
 
@@ -230,7 +247,7 @@ void FParticleRenderPass::RenderSpriteEmitter(UParticleSystemComponent* Comp, FP
         Inst.ParticleId = static_cast<float>(i);
         Inst.Size = FVector2D(P->Size.X, P->Size.Y);
         Inst.Rotation = P->Rotation;
-        Inst.SubImageIndex = SubImageOffset;
+        Inst.SubImageIndex = P->RelativeTime * TotalFrames;
         Inst.Color = P->Color;
         Instances.Add(Inst);
     }
@@ -239,21 +256,6 @@ void FParticleRenderPass::RenderSpriteEmitter(UParticleSystemComponent* Comp, FP
 
     // Upload instance buffer
     BufferManager->UpdateDynamicVertexBuffer(TEXT("Global_SpriteInstance"), Instances);
-
-    // Set Object Constant Buffer
-    FObjectConstantBuffer ObjectData;
-    FMatrix WorldMatrix = Comp->GetWorldMatrix();
-    ObjectData.WorldMatrix = WorldMatrix;
-    ObjectData.InverseTransposedWorld = FMatrix::Transpose(FMatrix::Inverse(WorldMatrix));
-    ObjectData.UUIDColor = Comp->EncodeUUID() / 255.0f;
-    ObjectData.bIsSelected = false;
-    BufferManager->UpdateConstantBuffer(TEXT("FObjectConstantBuffer"), ObjectData);
-
-    // SubUV 정보 바인딩
-    FParticleSettingsConstants ParticleSettings;
-    ParticleSettings.SubUVCols = ReplayData.SubImages_Horizontal;
-    ParticleSettings.SubUVRows = ReplayData.SubImages_Vertical;
-    BufferManager->UpdateConstantBuffer("FParticleSettingsConstants", ParticleSettings);
 
     // Draw
     ID3D11Buffer* Buffers[2] = { QuadVertexInfo.VertexBuffer, InstanceInfoSprite.VertexBuffer };
