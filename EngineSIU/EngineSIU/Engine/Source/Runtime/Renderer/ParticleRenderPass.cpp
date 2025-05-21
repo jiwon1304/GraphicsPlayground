@@ -279,8 +279,12 @@ void FParticleRenderPass::RenderSpriteEmitter(UParticleSystemComponent* Comp, FP
         }
     }
 
-    Graphics->DeviceContext->PSSetShaderResources(0, 1, &Texture->TextureSRV);
-    Graphics->DeviceContext->PSSetSamplers(0, 1, &Texture->SamplerState);
+    if (Texture)
+    {
+        Graphics->DeviceContext->PSSetShaderResources(0, 1, &Texture->TextureSRV);
+        Graphics->DeviceContext->PSSetSamplers(0, 1, &Texture->SamplerState);
+    }
+
     Graphics->DeviceContext->IASetVertexBuffers(0, 2, Buffers, Strides, Offsets);
     Graphics->DeviceContext->DrawInstanced(6, Instances.Num(), 0, 0);
 }

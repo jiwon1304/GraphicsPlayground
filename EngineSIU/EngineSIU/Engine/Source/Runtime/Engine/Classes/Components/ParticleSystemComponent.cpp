@@ -224,3 +224,9 @@ void UParticleSystemComponent::SetMaterial(int32 ElementIndex, UMaterial* Materi
         }
     }
 }
+
+void UParticleSystemComponent::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+    //SetTemplate(Template);
+    InitializeSystem();
+}

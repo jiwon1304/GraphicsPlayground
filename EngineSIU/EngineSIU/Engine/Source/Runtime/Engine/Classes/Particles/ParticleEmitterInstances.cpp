@@ -93,12 +93,11 @@ void FParticleEmitterInstance::ResetParticleParameters(float DeltaTime)
     {
         DECLARE_PARTICLE(Particle, ParticleData + ParticleStride * ParticleIndices[ParticleIndex]);
         Particle.Velocity = Particle.BaseVelocity;
-        //Particle.Size = GetParticleBaseSize(Particle);
+        Particle.Size = GetParticleBaseSize(Particle);
         Particle.RotationRate = Particle.BaseRotationRate;
         Particle.Color = Particle.BaseColor;
 
         Particle.RelativeTime += /*bSkipUpdate ? 0.0f : */Particle.OneOverMaxLifetime * DeltaTime;
-
     }
 }
 
@@ -546,10 +545,11 @@ uint8* FParticleEmitterInstance::GetModuleInstanceData(UParticleModule* InModule
 
 UMaterial* FParticleEmitterInstance::GetCurrentMaterial()
 {
-    UMaterial* RenderMaterial = CurrentMaterial;
-
+    UParticleLODLevel* CurrentLODLevel = GetCurrentLODLevelChecked();
+    assert(CurrentLODLevel->RequiredModule);
+    return CurrentLODLevel->RequiredModule->Material;
     // !TODO : CurrentMaterial이 null인 경우 기본 머티리얼 할당해주는 로직 추가
-    return RenderMaterial;
+    //return RenderMaterial;
 }
 
 void FParticleEmitterInstance::KillParticles()
@@ -644,6 +644,21 @@ FDynamicEmitterDataBase* FParticleSpriteEmitterInstance::GetDynamicData()
     return NewEmitterData;
 }
 
+bool FParticleSpriteEmitterInstance::FillReplayData(FDynamicEmitterReplayDataBase& OutData)
+{
+    if (!FParticleEmitterInstance::FillReplayData(OutData))
+    {
+        return false;
+    }
+
+    OutData.eEmitterType = DET_Sprite;
+
+    FDynamicSpriteEmitterReplayData* NewReplayData = static_cast<FDynamicSpriteEmitterReplayData*>(&OutData);
+    NewReplayData->Material = GetCurrentMaterial();
+
+    return true;
+}
+
 void FParticleMeshEmitterInstance::InitParameters(UParticleEmitter* InTemplate, UParticleSystemComponent* InComponent)
 {
     FParticleEmitterInstance::InitParameters(InTemplate, InComponent);
@@ -711,10 +726,10 @@ bool FParticleMeshEmitterInstance::FillReplayData(FDynamicEmitterReplayDataBase&
 
     OutData.eEmitterType = DET_Mesh;
 
-    FDynamicSpriteEmitterReplayData* NewReplayData = static_cast<FDynamicSpriteEmitterReplayData*>(&OutData);
+    FDynamicMeshEmitterReplayData* NewReplayData = static_cast<FDynamicMeshEmitterReplayData*>(&OutData);
 
-    // !TODO : material
-    NewReplayData->Material = GetCurrentMaterial();
+    // !TODO : Mesh
+    //NewReplayData->StaticMesh = GetCurrentMaterial();
 
     return true;
 }
