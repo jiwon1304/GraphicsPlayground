@@ -7,12 +7,11 @@ class UDistributionVector;
 
 enum class EDistributionVectorLockFlags : uint8
 {
-    EDVLF_None,
-    EDVLF_XY,
-    EDVLF_XZ,
-    EDVLF_YZ,
-    EDVLF_XYZ,
-    EDVLF_MAX,
+    None,
+    XY,
+    XZ,
+    YZ,
+    XYZ,
 };
 
 struct FRawDistributionVector : public FRawDistribution
