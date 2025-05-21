@@ -33,7 +33,7 @@ private:
 
 public:
     UPROPERTY_WITH_FLAGS(
-        EditAnywhere,
+        EditAnywhere | EditInline,
         UDistributionVector*, Distribution
     )
 
@@ -114,7 +114,7 @@ public:
     /** Can this variable be baked out to a FRawDistribution? Should be true 99% of the time*/
     UPROPERTY_WITH_FLAGS(
         EditAnywhere,
-        bool, bCanBeBaked
+        bool, bCanBeBaked, = true;
         // uint8 bCanBeBaked : 1;
     )
 
