@@ -20,7 +20,6 @@ UParticleLODLevel* UParticleEmitter::GetCurrentLODLevel(const FParticleEmitterIn
     {
         return LODLevels[0];
     }
-    return nullptr;
     // !NOTE : 지금은 LOD레벨 1개
     return Instance->CurrentLODLevel;
 }

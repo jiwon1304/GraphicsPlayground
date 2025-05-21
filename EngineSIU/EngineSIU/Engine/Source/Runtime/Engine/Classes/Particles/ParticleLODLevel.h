@@ -17,6 +17,7 @@ public:
     UParticleLODLevel() = default;
     virtual ~UParticleLODLevel() override = default;
     void Initialize();
+    virtual void PostInitProperties() override;
     virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 
     UPROPERTY

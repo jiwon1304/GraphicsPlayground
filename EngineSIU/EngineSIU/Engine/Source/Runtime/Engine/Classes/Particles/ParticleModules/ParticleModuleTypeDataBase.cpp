@@ -4,3 +4,8 @@ FParticleEmitterInstance* UParticleModuleTypeDataBase::CreateInstance(UParticleE
 {
     return nullptr;
 }
+
+void UParticleModuleTypeDataBase::PostInitProperties()
+{
+    bEnabled = true;
+}

@@ -112,9 +112,6 @@ public:
     UParticleModule() = default;
     virtual ~UParticleModule() override = default;
 
-    uint8 bSpawnModule : 1;
-    uint8 bEnabled : 1;
-    uint8 bUpdateModule : 1;
 
     virtual EModuleType GetModuleType() const { return EPMT_General; }
     /**
@@ -134,4 +131,7 @@ public:
 
     virtual FName GetModuleName() const;
 
+    uint8 bSpawnModule : 1;
+    uint8 bEnabled : 1;
+    uint8 bUpdateModule : 1;
 };

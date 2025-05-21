@@ -9,6 +9,7 @@ void UParticleModuleRequired::Update(FParticleEmitterInstance* Owner, int32 Offs
 void UParticleModuleRequired::PostInitProperties()
 {
     InitializeDefaults();
+    bEnabled = true;
 }
 
 void UParticleModuleRequired::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)

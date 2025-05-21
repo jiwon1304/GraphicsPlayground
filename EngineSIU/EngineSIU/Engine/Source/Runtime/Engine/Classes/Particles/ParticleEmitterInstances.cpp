@@ -241,6 +241,14 @@ UParticleLODLevel* FParticleEmitterInstance::GetCurrentLODLevelChecked() const
     UParticleLODLevel* LocalCurrentLODLevel = SpriteTemplate->GetCurrentLODLevel(this);
     assert(LocalCurrentLODLevel);
     assert(LocalCurrentLODLevel->RequiredModule);
+    if (!LocalCurrentLODLevel)
+    {
+        OutputDebugString(L"FParticleEmitterInstance::GetCurrentLODLevelChecked : LocalCurrentLODLevel null");
+    }
+    if (!LocalCurrentLODLevel->RequiredModule)
+    {
+        OutputDebugString(L"FParticleEmitterInstance::GetCurrentLODLevelChecked : LocalCurrentLODLevel->RequiredModule null");
+    }
     return LocalCurrentLODLevel;
 }
 

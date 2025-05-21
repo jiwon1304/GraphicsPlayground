@@ -14,6 +14,7 @@ void UParticleModuleSize::PostInitProperties()
     Super::PostInitProperties();
     InitializeDefaults();
     bEnabled = true;
+    bSpawnModule = true;
 }
 
 void UParticleModuleSize::InitializeDefaults()

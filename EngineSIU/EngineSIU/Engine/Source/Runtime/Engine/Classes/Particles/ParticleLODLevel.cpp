@@ -16,6 +16,11 @@ void UParticleLODLevel::Initialize()
     
 }
 
+void UParticleLODLevel::PostInitProperties()
+{
+    bEnabled = true;
+}
+
 void UParticleLODLevel::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 

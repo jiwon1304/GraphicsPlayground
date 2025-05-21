@@ -22,6 +22,8 @@ public:
         return true;
     }
 
+    virtual void PostInitProperties() override;
+
     virtual EModuleType GetModuleType() const override
     {
         return EPMT_Spawn;

@@ -19,6 +19,8 @@ void UParticleModuleColorOverLife::PostInitProperties()
     Super::PostInitProperties();
     InitializeDefaults();
     bEnabled = true;
+    bUpdateModule = true;
+    bSpawnModule = true;
 }
 
 void UParticleModuleColorOverLife::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
