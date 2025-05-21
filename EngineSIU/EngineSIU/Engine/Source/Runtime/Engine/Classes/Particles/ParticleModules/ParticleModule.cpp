@@ -4,15 +4,6 @@
 #include "Particles/ParticleHelper.h"
 #include "Particles/ParticleEmitterInstances.h"
 
-void UParticleModule::PostEditChangeProperty()
-{
-    UParticleSystem* ParticleSystem = Cast<UParticleSystem>(GetOuter());
-    if (ParticleSystem)
-    {
-        ParticleSystem->BuildEmitters();
-    }
-}
-
 uint32 UParticleModule::RequiredBytes(UParticleModuleTypeDataBase* TypeData) const
 {
     return 0;

@@ -153,18 +153,9 @@ struct FDynamicSpriteEmitterReplayDataBase : public FDynamicEmitterReplayDataBas
     {
         eEmitterType = DET_Sprite;
         //테스트용 하드코딩 경로
-        if (!Material)
-        {
-            Material = new UMaterial();
-            FTextureInfo TexInfo;
-            TexInfo.TextureName = TEXT("T_Explosion_SubUV");
-            TexInfo.TexturePath = L"Assets/Texture/T_Explosion_SubUV.png"; // 경로는 Wide
-            SubImages_Horizontal = 6;
-            SubImages_Vertical = 6;
-            SubUVDataOffset = 0;
-            TexInfo.bIsSRGB = true;
-            Material->GetMaterialInfo().TextureInfos.Add(TexInfo);
-        }
+        SubImages_Horizontal = 6;
+        SubImages_Vertical = 6;
+        SubUVDataOffset = 0;
     }
 };
 
@@ -232,6 +223,11 @@ struct FParticleRandomSeedInstancePayload
 {
     FRandomStream	RandomStream;
 };
+
+FORCEINLINE FVector GetParticleBaseSize(const FBaseParticle& Particle, bool bKeepFlipScale = false)
+{
+    return FVector(FMath::Abs(Particle.BaseSize.X), FMath::Abs(Particle.BaseSize.Y), FMath::Abs(Particle.BaseSize.Z));
+}
 
 template <typename T>
 FORCEINLINE constexpr T Align(T Val, uint64 Alignment)
