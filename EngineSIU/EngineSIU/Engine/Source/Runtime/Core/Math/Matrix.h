@@ -28,6 +28,8 @@ public:
 
     FVector ExtractScaling(float Tolerance = SMALL_NUMBER);
     FVector GetOrigin() const;
+    void SetOrigin(const FVector& NewOrigin);
+    FVector4 GetColumn(int32 ColumnIndex) const;
     float Determinant() const;
 
     void SetAxis(int32 i, const FVector& Axis);

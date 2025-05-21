@@ -2,6 +2,7 @@
 #include "UObject/Object.h"
 #include "UObject/ObjectMacros.h"
 #include "Components/PrimitiveComponent.h"
+#include "Particles/ParticleHelper.h"
 
 struct FParticleEmitterInstance;
 class UParticleSystem;
@@ -43,7 +44,8 @@ public:
 
     void SetTemplate(UParticleSystem* InTemplate);
     void ClearDynamicData();
-    void InitTestSpriteParticles();
+    void InitTestParticles(EDynamicEmitterType Type);
+    
     UMaterial* GetMaterial(int32 ElementIndex) const;
     void SetMaterial(int32 ElementIndex, UMaterial* Material);
 

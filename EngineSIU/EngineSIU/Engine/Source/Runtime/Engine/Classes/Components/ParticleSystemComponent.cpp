@@ -1,6 +1,5 @@
 #include "ParticleSystemComponent.h"
 
-#include "Material/Material.h"
 #include "Particles/ParticleHelper.h"
 #include "Particles/ParticleSystem.h"
 #include "Particles/ParticleEmitter.h"
@@ -107,11 +106,25 @@ void UParticleSystemComponent::ClearDynamicData()
 {
 
 }
-void UParticleSystemComponent::InitTestSpriteParticles()
+void UParticleSystemComponent::InitTestParticles(EDynamicEmitterType Type)
 {
-    FParticleSpriteEmitterInstance* Emitter = new FParticleSpriteEmitterInstance();
-    Emitter->Component = this;
+    FParticleEmitterInstance* Emitter = nullptr;
 
+    if (Type == DET_Sprite)
+    {
+        Emitter = new FParticleSpriteEmitterInstance();
+    }
+    else if (Type == DET_Mesh)
+    {
+        //MeshEmitter는 아직 구현안함
+        Emitter = new FParticleMeshEmitterInstance();
+    }
+    else
+    {
+        return;
+    }
+
+    Emitter->Component = this;
     Emitter->ParticleStride = sizeof(FBaseParticle);
     Emitter->MaxActiveParticles = 64;
     Emitter->ActiveParticles = 0;
@@ -133,7 +146,9 @@ void UParticleSystemComponent::InitTestSpriteParticles()
         { 0, -8,  1}, {10, -9,  2}, {20,  6,  0}, {30,  7,  3}, {40,  0,  1},
         { 5,  3,  4}, {15, -2,  2}, {25,  8,  5}, {35, -7,  3}, {45,  1,  6},
     };
-    const FLinearColor Colors[] = { FLinearColor::Red, FLinearColor::Green, FLinearColor::Blue, FLinearColor::Yellow };
+    const FLinearColor Colors[] = {
+        FLinearColor::Red, FLinearColor::Green, FLinearColor::Blue, FLinearColor::Yellow
+    };
 
     for (int32 i = 0; i < 20; ++i)
     {
@@ -142,7 +157,7 @@ void UParticleSystemComponent::InitTestSpriteParticles()
 
         Particle->Location = Positions[i];
         Particle->OldLocation = Positions[i];
-        Particle->Size = FVector(5.0f);
+        Particle->Size = FVector(i%4+1);
         Particle->BaseSize = Particle->Size;
         Particle->Color = Colors[i % 4];
         Particle->BaseColor = Particle->Color;
@@ -152,7 +167,6 @@ void UParticleSystemComponent::InitTestSpriteParticles()
 
     Emitter->ActiveParticles = 20;
 
-    // SpriteTemplate 및 LODLevel 설정 필수
     Emitter->SpriteTemplate = new UParticleEmitter();
     UParticleLODLevel* LOD = new UParticleLODLevel();
     UParticleModuleRequired* RequiredModule = new UParticleModuleRequired();
@@ -162,12 +176,13 @@ void UParticleSystemComponent::InitTestSpriteParticles()
 
     LOD->RequiredModule = RequiredModule;
     LOD->bEnabled = true;
+
     Emitter->SpriteTemplate->LODLevels.Add(LOD);
     Emitter->CurrentLODLevelIndex = 0;
     Emitter->CurrentLODLevel = LOD;
     Emitter->bEnabled = true;
-
 }
+
 
 UMaterial* UParticleSystemComponent::GetMaterial(int32 ElementIndex) const
 {
