@@ -24,27 +24,6 @@ void UParticleModuleColorOverLife::PostInitProperties()
 void UParticleModuleColorOverLife::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
     InitializeDefaults();
-    //Curve Editor에서 필요
-    //FProperty* PropertyThatChanged = PropertyChangedEvent.Property;
-    //if (PropertyThatChanged)
-    //{
-    //    if (PropertyThatChanged->Name == (TEXT("bClampAlpha")))
-    //    {
-    //        UObject* OuterObj = GetOuter();
-    //        assert(OuterObj!=nullptr);
-    //        UParticleLODLevel* LODLevel = Cast<UParticleLODLevel>(OuterObj);
-    //        if (LODLevel)
-    //        {
-    //            OuterObj = LODLevel->GetOuter();
-    //            UParticleEmitter* Emitter = Cast<UParticleEmitter>(OuterObj);
-    //            assert(Emitter!=nullptr);
-    //            OuterObj = Emitter->GetOuter();
-    //        }
-    //        UParticleSystem* PartSys = CastChecked<UParticleSystem>(OuterObj);
-    //        
-    //        //PartSys->UpdateColorModuleClampAlpha(this);
-    //    }
-    //}
     Super::PostEditChangeProperty(PropertyChangedEvent);
 }
 

@@ -11,6 +11,11 @@ public:
     virtual void Spawn(FParticleEmitterInstance* Owner, int32 Offset, float SpawnTime, FBaseParticle* ParticleBase) override;
     virtual void PostInitProperties();
     virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+    virtual FName GetModuleName() const override
+    {
+        return FName(TEXT("Sub UV"));
+    }
+
     UPROPERTY(
         EditAnywhere,
         int32, SubImages_Horizontal, = 1;
