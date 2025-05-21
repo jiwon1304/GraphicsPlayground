@@ -8,10 +8,17 @@
 void UParticleLODLevel::Initialize()
 {
     RequiredModule = FObjectFactory::ConstructObject<UParticleModuleRequired>(GetOuter());
+    Modules.Add(RequiredModule);
     SpawnModule = FObjectFactory::ConstructObject<UParticleModuleSpawn>(GetOuter());
+    Modules.Add(SpawnModule);
     //TypeDataModule은 기본적으로 SpriteEmitter 일 때 Null이다!
     //TypeDataModule = FObjectFactory::ConstructObject<UParticleModuleTypeDataBase>(GetOuter());
     
+}
+
+void UParticleLODLevel::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+
 }
 
 void UParticleLODLevel::UpdateModuleLists()

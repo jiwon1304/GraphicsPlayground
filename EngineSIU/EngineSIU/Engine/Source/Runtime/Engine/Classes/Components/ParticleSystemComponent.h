@@ -49,6 +49,8 @@ public:
     UMaterial* GetMaterial(int32 ElementIndex) const;
     void SetMaterial(int32 ElementIndex, UMaterial* Material);
 
+    virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+
     UPROPERTY(
         EditAnywhere,
         UParticleSystem*, Template, = nullptr;

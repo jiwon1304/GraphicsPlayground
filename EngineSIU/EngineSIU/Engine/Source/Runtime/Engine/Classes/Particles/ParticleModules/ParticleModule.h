@@ -117,7 +117,6 @@ public:
     uint8 bUpdateModule : 1;
 
     virtual EModuleType GetModuleType() const { return EPMT_General; }
-    virtual void PostEditChangeProperty();
     /**
     * 파티클 페이로드 블록의 크기를 반환
     * 

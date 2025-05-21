@@ -144,6 +144,8 @@ struct FParticleEmitterInstance
 struct FParticleSpriteEmitterInstance : public FParticleEmitterInstance
 {
     virtual FDynamicEmitterDataBase* GetDynamicData() override;
+protected:
+    virtual bool FillReplayData(FDynamicEmitterReplayDataBase& OutData);
     // !TODO : FParticleSpriteEmitterInstance에 필요한 데이터들 추가
     // !TODO : FParticleSpriteEmitterInstance에 필요한 함수들 추가
 };
