@@ -14,43 +14,40 @@ cbuffer ParticleSettings : register(b4)
     int SubUVCols;
     int SubUVRows;
 };
-
-// ==================== Texture Bindings ====================
-Texture2D SpriteTexture : register(t0);
-SamplerState SpriteSampler : register(s0);
 // ==================== Vertex Structures ====================
 
 #if defined(PARTICLE_SPRITE)
 struct VS_INPUT
 {
-    float2 UV : TEXCOORD0; // Per-vertex (shared quad)
+    float2 UV : TEXCOORD0;
 
-    // Instance data (per particle)
-    float3 Position : INSTANCE_POS; // World-space center
+    float3 Position : INSTANCE_POS;
     float RelativeTime : INSTANCE_TIME;
     float3 OldPosition : INSTANCE_OLDPOS;
     float ParticleId : INSTANCE_ID;
     float2 Size : INSTANCE_SIZE;
     float Rotation : INSTANCE_ROT;
-    float SubImageIndex : INSTANCE_SUBUV;
+    int SubImageIndex : INSTANCE_SUBUV;
     float4 Color : INSTANCE_COLOR;
 };
 
 
 #endif
-
 #if defined(PARTICLE_MESH)
+cbuffer MaterialConstants : register(b1)
+{
+    FMaterial Material;
+}
+
 struct VS_INPUT
 {
-    float3 LocalPos       : POSITION;
-    float4 Color          : COLOR0;
-    float4 Transform0     : TEXCOORD0;
-    float4 Transform1     : TEXCOORD1;
-    float4 Transform2     : TEXCOORD2;
-    float4 Velocity       : TEXCOORD3;
-    int2   SubUVParams01  : TEXCOORD4;
-    float2 SubUVTime      : TEXCOORD5; // .x = SubUVLerp, .y = RelativeTime
+    float3 LocalPos : POSITION;
+    float2 UV       : TEXCOORD0;
+
+    row_major float4x4 InstanceTransform : INSTANCE_TRANSFORM;
+    float4 Color : INSTANCE_COLOR;
 };
+
 #endif
 
 struct VS_OUTPUT
@@ -101,27 +98,22 @@ VS_OUTPUT mainVS(VS_INPUT input)
 
     // [7] SubUV
     float2 frameSize = float2(1.0f / SubUVCols, 1.0f / SubUVRows);
-    float2 UVOffset = float2(
-        fmod(input.SubImageIndex, SubUVCols),
-        floor(input.SubImageIndex / SubUVCols)
-    ) * frameSize;
+    int SubUVCol = input.SubImageIndex % SubUVCols;
+    int SubUVRow = input.SubImageIndex / SubUVCols;
+    float2 UVOffset = float2(SubUVCol, SubUVRow) * frameSize;
+
     output.UV = UVOffset + (input.UV + 0.5f) * frameSize;
     output.Color = input.Color;
 #endif
 
 #if defined(PARTICLE_MESH)
-    float3 worldPos =
-        input.LocalPos.x * input.Transform0.xyz +
-        input.LocalPos.y * input.Transform1.xyz +
-        input.LocalPos.z * input.Transform2.xyz +
-        float3(input.Transform0.w, input.Transform1.w, input.Transform2.w);
-
-    float4 viewPos = mul(float4(worldPos, 1.0f), ViewMatrix);
+    float4 worldPos = mul(float4(input.LocalPos, 1.0f), input.InstanceTransform);
+    worldPos = mul(worldPos,WorldMatrix);
+    float4 viewPos = mul(worldPos, ViewMatrix);
     output.Position = mul(viewPos, ProjectionMatrix);
-    output.WorldPos = worldPos;
-
+    output.WorldPos = worldPos.xyz;
     output.Color = input.Color;
-    output.UV = float2(0.0f, 0.0f);
+    output.UV = input.UV;
 #endif
 
     return output;
@@ -133,21 +125,19 @@ VS_OUTPUT mainVS(VS_INPUT input)
 
 float4 mainPS(VS_OUTPUT input) : SV_TARGET
 {
-    //return float4(input.UV, 0, 1); // UV가 색상으로 보이는지 확인
-    /*float4 finalColor = input.Color;
-    finalColor.rgb = LinearToSRGB(finalColor.rgb);*/
-
-    // 디버그용 컬러 제거
-    float4 texColor = SpriteTexture.Sample(SpriteSampler, input.UV);
+#if defined(PARTICLE_SPRITE)
+    float4 texColor = MaterialTextures[0].Sample(MaterialSamplers[0], input.UV);
     if (texColor.a < 0.1f || max(max(texColor.r, texColor.g), texColor.b) < 0.05f)
-    {
         discard;
-    }
-    float4 finalColor = /*input.Color * */texColor;
-    //finalColor.rgb = LinearToSRGB(finalColor.rgb);
+
+#elif defined(PARTICLE_MESH)
+    float4 texColor = MaterialTextures[0].Sample(MaterialSamplers[0], input.UV);
+    if (texColor.a < 0.1f)
+        discard;
+#endif
     
-     //finalColor.rgb = float3(1, 1, 0);
-    return finalColor;
+    //return float4(input.UV,0,1);
+    return /*input.Color * */texColor;
 }
 
 #endif // PARTICLE_SHADER

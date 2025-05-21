@@ -1,6 +1,7 @@
 #include "ParticleHelper.h"
 #include "Particles/ParticleModules/ParticleModuleRequired.h"
 #include "ParticleEmitterInstances.h"
+#include "Engine/FObjLoader.h"
 #include "Engine/StaticMesh.h"
 
 FDynamicEmitterDataBase::FDynamicEmitterDataBase(const UParticleModuleRequired* RequiredModule)
@@ -60,7 +61,6 @@ void FDynamicMeshEmitterData::Init(const FParticleMeshEmitterInstance* InEmitter
 {
     EmitterInstance = InEmitterInstance;
     StaticMesh = InStaticMesh;
-
     // !TODO 머티리얼 가져오기
     assert(StaticMesh);
 }
