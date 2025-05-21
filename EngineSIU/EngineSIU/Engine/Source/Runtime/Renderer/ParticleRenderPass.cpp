@@ -29,7 +29,7 @@ struct FSpriteParticleInstance
     float ParticleId;
     FVector2D Size;
     float Rotation;
-    int32 SubImageIndex;
+    float SubImageIndex;
     FLinearColor Color;
 };
 struct FMeshParticleInstance
@@ -91,7 +91,7 @@ void FParticleRenderPass::CreateShader()
         { "INSTANCE_ID",     0, DXGI_FORMAT_R32_FLOAT,           1, 28,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
         { "INSTANCE_SIZE",   0, DXGI_FORMAT_R32G32_FLOAT,        1, 32,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
         { "INSTANCE_ROT",    0, DXGI_FORMAT_R32_FLOAT,           1, 40,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
-        { "INSTANCE_SUBUV",  0, DXGI_FORMAT_R32_SINT,           1, 44,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+        { "INSTANCE_SUBUV",  0, DXGI_FORMAT_R32_FLOAT,           1, 44,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
         { "INSTANCE_COLOR",  0, DXGI_FORMAT_R32G32B32A32_FLOAT,  1, 48,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
     };
     ShaderManager->AddVertexShaderAndInputLayout(L"ParticleShader_Sprite", L"Shaders/ParticleShader.hlsl", "mainVS", InputLayout, ARRAYSIZE(InputLayout), DefinesSprite);
@@ -198,13 +198,18 @@ void FParticleRenderPass::RenderSpriteEmitter(UParticleSystemComponent* Comp, FP
 
     //TODO: 애니메이션 모듈 추가되면 지우기
     static float SubImageIndexTimer = 0.0f;
-    static int SubImageOffset = 0;
+    static float SubImageOffset = 0;
+    SubImageOffset += 0.05f;
+    if (SubImageOffset >= 35.0f)SubImageOffset = 0.0f;
+    
+    /*
     SubImageIndexTimer += 0.05f;
     if (SubImageIndexTimer >= 1.0f)
     {
         SubImageIndexTimer = 0.0f;
-        SubImageOffset++;
-    }
+        SubImageOffset += 1.0f;
+        if (SubImageOffset >= 35.0f)SubImageOffset = 0.0f;
+    }*/
     
 
     TArray<FSpriteParticleInstance> Instances;
@@ -225,7 +230,7 @@ void FParticleRenderPass::RenderSpriteEmitter(UParticleSystemComponent* Comp, FP
         Inst.ParticleId = static_cast<float>(i);
         Inst.Size = FVector2D(P->Size.X, P->Size.Y);
         Inst.Rotation = P->Rotation;
-        Inst.SubImageIndex = (ReplayData.SubUVDataOffset+SubImageOffset)%(ReplayData.SubImages_Horizontal * ReplayData.SubImages_Vertical);
+        Inst.SubImageIndex = SubImageOffset;
         Inst.Color = P->Color;
         Instances.Add(Inst);
     }
