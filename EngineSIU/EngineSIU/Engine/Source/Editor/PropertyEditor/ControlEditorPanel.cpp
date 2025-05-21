@@ -544,10 +544,6 @@ void ControlEditorPanel::CreateModifyButton(const ImVec2 ButtonSize, ImFont* Ico
                     ParticleComponent->SetupAttachment(SpawnedActor->GetRootComponent());
                     UParticleSystem* Template = FObjectFactory::ConstructObject<UParticleSystem>(ParticleComponent);
                     UParticleSpriteEmitter* Emitter1 = FObjectFactory::ConstructObject<UParticleSpriteEmitter>(Template);
-                    UParticleModuleLifetime* LifetimeModule = FObjectFactory::ConstructObject<UParticleModuleLifetime>(Emitter1);
-                    UParticleModuleSize* SizeModule = FObjectFactory::ConstructObject<UParticleModuleSize>(Emitter1);
-                    UParticleModuleVelocity* VelocityModule = FObjectFactory::ConstructObject<UParticleModuleVelocity>(Emitter1);
-                    LifetimeModule->bEnabled = true; // 이거 1로 초기화했는데 왜 0됨????
 
                     Template->Emitters.Add(Emitter1);
 
@@ -555,6 +551,9 @@ void ControlEditorPanel::CreateModifyButton(const ImVec2 ButtonSize, ImFont* Ico
                     UParticleLODLevel* LODLevel = FObjectFactory::ConstructObject<UParticleLODLevel>(Emitter1);
                     LODLevel->Initialize();
                     Emitter1->LODLevels.Add(LODLevel);
+                    UParticleModuleLifetime* LifetimeModule = FObjectFactory::ConstructObject<UParticleModuleLifetime>(LODLevel);
+                    UParticleModuleSize* SizeModule = FObjectFactory::ConstructObject<UParticleModuleSize>(LODLevel);
+                    UParticleModuleVelocity* VelocityModule = FObjectFactory::ConstructObject<UParticleModuleVelocity>(LODLevel);
                     LODLevel->Modules.Add(LifetimeModule);
                     LODLevel->Modules.Add(SizeModule);
                     LODLevel->Modules.Add(VelocityModule);

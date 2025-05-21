@@ -269,7 +269,7 @@ void ParticleViewerPanel::RenderEmitterModulePopup(int EmitterIndex)
     for (UClass* Child : ChildModule) {
         if (ImGui::MenuItem(Child->GetName().ToAnsiString().c_str())) {
             UParticleEmitter* Emitter = ParticleSystem->Emitters[EmitterIndex];
-            UParticleModule* SpawnModule = FObjectFactory::ConstructObject<UParticleModule>(Child, Emitter);
+            UParticleModule* SpawnModule = FObjectFactory::ConstructObject<UParticleModule>(Child, Emitter->LODLevels[0]);
             Emitter->LODLevels[0]->Modules.Add(SpawnModule);
             ParticleSystem->PostEditChangeProperty();
         }
@@ -481,15 +481,15 @@ UParticleEmitter* ParticleViewerPanel::CreateDefaultParticleEmitter()
     //ParticleModuleSpawn->bEnabled = true;
     //NewEmitter->LODLevels[0]->Modules.Add(ParticleModuleSpawn);
 
-    UParticleModuleLifetime* ParticleModuleLifetime = FObjectFactory::ConstructObject<UParticleModuleLifetime>(NewEmitter);
+    UParticleModuleLifetime* ParticleModuleLifetime = FObjectFactory::ConstructObject<UParticleModuleLifetime>(LODLevel);
     ParticleModuleLifetime->bEnabled = true;
     NewEmitter->LODLevels[0]->Modules.Add(ParticleModuleLifetime);
 
-    UParticleModuleSize* ParticleModuleSize = FObjectFactory::ConstructObject<UParticleModuleSize>(NewEmitter);
+    UParticleModuleSize* ParticleModuleSize = FObjectFactory::ConstructObject<UParticleModuleSize>(LODLevel);
     ParticleModuleSize->bEnabled = true;
     NewEmitter->LODLevels[0]->Modules.Add(ParticleModuleSize);
 
-    UParticleModuleVelocity* ParticleModuleVelocity = FObjectFactory::ConstructObject<UParticleModuleVelocity>(NewEmitter);
+    UParticleModuleVelocity* ParticleModuleVelocity = FObjectFactory::ConstructObject<UParticleModuleVelocity>(LODLevel);
     ParticleModuleVelocity->bEnabled = true;
     NewEmitter->LODLevels[0]->Modules.Add(ParticleModuleVelocity);
 

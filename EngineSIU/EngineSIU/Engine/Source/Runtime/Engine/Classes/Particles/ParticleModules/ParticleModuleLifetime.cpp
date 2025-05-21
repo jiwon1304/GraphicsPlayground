@@ -19,7 +19,8 @@ void UParticleModuleLifetime::Spawn(FParticleEmitterInstance* Owner, int32 Offse
     }
     else
     {
-        Particle.OneOverMaxLifetime = MaxLifetime > 0.f ? 1.f / MaxLifetime : 0.f;
+        float time = FMath::Lerp(MinLifetime, MaxLifetime, FMath::FRand());
+        Particle.OneOverMaxLifetime = MaxLifetime > 0.f ? 1.f / time : 0.f;
     }
 
     Particle.RelativeTime = Particle.RelativeTime > 1.0f ? Particle.RelativeTime : SpawnTime * Particle.OneOverMaxLifetime;
