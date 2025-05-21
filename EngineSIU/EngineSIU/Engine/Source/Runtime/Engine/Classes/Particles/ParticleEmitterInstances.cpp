@@ -651,6 +651,23 @@ void FParticleMeshEmitterInstance::InitParameters(UParticleEmitter* InTemplate, 
 
 bool FParticleMeshEmitterInstance::Resize(int32 NewMaxActiveParticles, bool bSetMaxActiveCount)
 {
+    int32 OldMaxActiveParticles = MaxActiveParticles;
+    if (FParticleEmitterInstance::Resize(NewMaxActiveParticles, bSetMaxActiveCount) == true)
+    {
+        // !TODO : Mesh Rotation
+        if (MeshRotationActive)
+        {
+            for (int32 i = OldMaxActiveParticles; i < NewMaxActiveParticles; i++)
+            {
+                DECLARE_PARTICLE(Particle, ParticleData + ParticleStride * ParticleIndices[i]);
+                FMeshRotationPayloadData* PayloadData = (FMeshRotationPayloadData*)((uint8*)&Particle + MeshRotationOffset);
+                PayloadData->RotationRateBase = FVector::ZeroVector;
+            }
+        }
+
+        return true;
+    }
+
     return false;
 }
 
