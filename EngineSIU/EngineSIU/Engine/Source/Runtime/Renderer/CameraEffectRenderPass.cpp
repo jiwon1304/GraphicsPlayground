@@ -135,6 +135,7 @@ void FCameraEffectRenderPass::Render(const std::shared_ptr<FEditorViewportClient
     Graphics->DeviceContext->Draw(6, 0);
 
     Graphics->DeviceContext->OMSetRenderTargets(0, nullptr, nullptr);
+    Graphics->DeviceContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 }
 
 
