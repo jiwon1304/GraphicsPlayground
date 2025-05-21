@@ -85,6 +85,9 @@ struct FParticleEmitterInstance
     /** 시뮬레이션 공간에서 월드 공간으로 변환하는 트랜스폼 행렬. */
     FMatrix SimulationToWorld = FMatrix::Identity;
 
+    /** The offset to the SubUV payload in the particle data.			*/
+    int32 SubUVDataOffset = 0;
+
     /** Stream of random values to use with this component */
     FRandomStream RandomStream;
 

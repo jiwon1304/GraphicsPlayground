@@ -224,6 +224,15 @@ struct FParticleRandomSeedInstancePayload
     FRandomStream	RandomStream;
 };
 
+struct FSubUVPayload
+{
+    //int32 SubUVDataOffset;
+    int32 SubImages_Horizontal;
+    int32 SubImages_Vertical;
+    //int32 CurrentFrame;
+    //float CurrentFrameFraction;
+};
+
 FORCEINLINE FVector GetParticleBaseSize(const FBaseParticle& Particle, bool bKeepFlipScale = false)
 {
     return FVector(FMath::Abs(Particle.BaseSize.X), FMath::Abs(Particle.BaseSize.Y), FMath::Abs(Particle.BaseSize.Z));
