@@ -9,6 +9,7 @@ public:
     virtual ~UParticleModuleSubUV() override = default;
 
     virtual void Spawn(FParticleEmitterInstance* Owner, int32 Offset, float SpawnTime, FBaseParticle* ParticleBase) override;
+    virtual void PostInitProperties();
     virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
     UPROPERTY(
         EditAnywhere,
