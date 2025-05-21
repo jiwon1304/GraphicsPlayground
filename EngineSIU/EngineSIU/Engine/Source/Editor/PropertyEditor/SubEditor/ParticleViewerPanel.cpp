@@ -464,10 +464,19 @@ UParticleEmitter* ParticleViewerPanel::CreateDefaultParticleEmitter()
     UParticleLODLevel* LODLevel = FObjectFactory::ConstructObject<UParticleLODLevel>(NewEmitter);
     LODLevel->Initialize();
     NewEmitter->LODLevels.Add(LODLevel);
-    NewEmitter->LODLevels[0]->Modules.Add(FObjectFactory::ConstructObject<UParticleModuleRequired>(NewEmitter));
-    NewEmitter->LODLevels[0]->Modules.Add(FObjectFactory::ConstructObject<UParticleModuleSpawn>(NewEmitter));
-    NewEmitter->LODLevels[0]->Modules.Add(FObjectFactory::ConstructObject<UParticleModuleLifetime>(NewEmitter));
-    NewEmitter->LODLevels[0]->Modules[2]->bEnabled = true; //TODO 생성자 받아오면 삭제
+
+    UParticleModuleRequired* ParticleModuleRequired = FObjectFactory::ConstructObject<UParticleModuleRequired>(NewEmitter);
+    ParticleModuleRequired->bEnabled = true;
+    NewEmitter->LODLevels[0]->Modules.Add(ParticleModuleRequired);
+
+    UParticleModuleSpawn* ParticleModuleSpawn = FObjectFactory::ConstructObject<UParticleModuleSpawn>(NewEmitter);
+    ParticleModuleSpawn->bEnabled = true;
+    NewEmitter->LODLevels[0]->Modules.Add(ParticleModuleSpawn);
+
+    UParticleModuleLifetime* ParticleModuleLifetime = FObjectFactory::ConstructObject<UParticleModuleLifetime>(NewEmitter);
+    ParticleModuleLifetime->bEnabled = true;
+    NewEmitter->LODLevels[0]->Modules.Add(ParticleModuleLifetime);
+
     LODLevel->UpdateModuleLists();
     return NewEmitter;
 }
