@@ -58,6 +58,18 @@ void USubEngine::Render()
 
 void USubEngine::Release()
 {
+    if (SubRenderer)
+    {
+        SubRenderer->Release();
+        delete SubRenderer;
+        SubRenderer = nullptr;
+    }
+    if (SubUI)
+    {
+        SubUI->Shutdown();
+        delete SubUI;
+        SubUI = nullptr;
+    }
 }
 
 void USubEngine::RequestShowWindow(bool bShow)
