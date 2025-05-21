@@ -161,7 +161,7 @@ float4 mainPS(VS_OUTPUT input) : SV_TARGET
 #endif
     
     //return float4(input.UV,0,1);
-    return texColor * float4(input.Color.rgb, 1.0f);
+    return texColor * float4(input.Color.rgb == 0 ? float3(1,1,1):input.Color.rgb, 1.0f);
 }
 
 #endif // PARTICLE_SHADER

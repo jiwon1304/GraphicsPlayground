@@ -263,6 +263,7 @@ void FParticleRenderPass::RenderSpriteEmitter(UParticleSystemComponent* Comp, FP
     UINT Offsets[2] = { 0, 0 };
 
     //Sprite니까 무조건 0번?
+    if (!ReplayData.Material)return;
     std::shared_ptr<FTexture> Texture = 
         FEngineLoop::ResourceManager.GetTexture(ReplayData.Material->GetMaterialInfo().TextureInfos[0].TexturePath);
 
