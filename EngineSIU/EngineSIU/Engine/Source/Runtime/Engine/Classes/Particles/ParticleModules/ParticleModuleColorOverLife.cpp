@@ -11,18 +11,7 @@
 #include "UObject/ObjectFactory.h"
 void UParticleModuleColorOverLife::InitializeDefaults()
 {
-    if (!ColorOverLife.IsCreated())
-    {
-        ColorOverLife.Distribution = FObjectFactory::ConstructObject<UDistributionVectorUniform>(this, TEXT("DistributionColorOverLife"));
-    }
 
-    if (!AlphaOverLife.IsCreated())
-    {
-        UDistributionFloatUniform* DistributionAlphaOverLife = FObjectFactory::ConstructObject<UDistributionFloatUniform>(this, TEXT("DistributionAlphaOverLife"));
-        DistributionAlphaOverLife->Min = 1.0f;
-        DistributionAlphaOverLife->Max = 1.0f;
-        AlphaOverLife.Distribution = DistributionAlphaOverLife;
-    }
 }
 
 void UParticleModuleColorOverLife::PostInitProperties()
@@ -62,16 +51,13 @@ void UParticleModuleColorOverLife::PostEditChangeProperty(FPropertyChangedEvent&
 void UParticleModuleColorOverLife::Spawn(FParticleEmitterInstance* Owner, int32 Offset, float SpawnTime, FBaseParticle* ParticleBase)
 {
     SPAWN_INIT
-    FVector ColorVec = ColorOverLife.GetValue(Particle.RelativeTime, Owner->Component,0,nullptr);
-    float	fAlpha = AlphaOverLife.GetValue(Particle.RelativeTime, Owner->Component);
-    Particle.Color.R = (ColorVec.X);
-    Particle.BaseColor.R = (ColorVec.X);
-    Particle.Color.G = (ColorVec.Y);
-    Particle.BaseColor.G = (ColorVec.Y);
-    Particle.Color.B = (ColorVec.Z);
-    Particle.BaseColor.B = (ColorVec.Z);
-    Particle.Color.A = fAlpha;
-    Particle.BaseColor.A = fAlpha;
+    float t = Particle.RelativeTime; // 0.0 ~ 1.0
+
+    FLinearColor FinalColor;
+    FinalColor.Lerp(StartColor, EndColor, t);
+
+    Particle.Color = FinalColor;
+    Particle.BaseColor = FinalColor;
 }
 
 void UParticleModuleColorOverLife::Update(FParticleEmitterInstance* Owner, int32 Offset, float DeltaTime)
@@ -81,31 +67,15 @@ void UParticleModuleColorOverLife::Update(FParticleEmitterInstance* Owner, int32
     {
         return;
     }
-    const FRawDistribution* FastColorOverLife = ColorOverLife.GetFastRawDistribution();
-    const FRawDistribution* FastAlphaOverLife = AlphaOverLife.GetFastRawDistribution();
-    if (FastColorOverLife && FastAlphaOverLife)
+
+    BEGIN_UPDATE_LOOP;
     {
-        // fast path
-        BEGIN_UPDATE_LOOP;
-        {
-            FastColorOverLife->GetValue3None(Particle.RelativeTime, &Particle.Color.R);
-            FastAlphaOverLife->GetValue1None(Particle.RelativeTime, &Particle.Color.A);
-        }
-        END_UPDATE_LOOP;
+        float t = Particle.RelativeTime;
+
+        FLinearColor FinalColor;
+        FinalColor.Lerp(StartColor, EndColor, t);
+
+        Particle.Color = FinalColor;
     }
-    else
-    {
-        FVector ColorVec;
-        float	fAlpha;
-        BEGIN_UPDATE_LOOP;
-        {
-            ColorVec = ColorOverLife.GetValue(Particle.RelativeTime, Owner->Component);
-            fAlpha = AlphaOverLife.GetValue(Particle.RelativeTime, Owner->Component);
-            Particle.Color.R = (ColorVec.X);
-            Particle.Color.G = (ColorVec.Y);
-            Particle.Color.B = (ColorVec.Z);
-            Particle.Color.A = fAlpha;
-        }
-        END_UPDATE_LOOP;
-    }
+    END_UPDATE_LOOP;
 }

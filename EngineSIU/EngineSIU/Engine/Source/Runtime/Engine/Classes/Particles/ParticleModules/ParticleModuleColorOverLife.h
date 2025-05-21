@@ -1,7 +1,6 @@
 #pragma once
 #include "ParticleModuleColorBase.h"
-#include "Distributions/DistributionVector.h"
-#include "Distributions/DistributionFloat.h"
+#include "Math/Color.h"
 
 class FPropertyChangedEvent;
 class UParticleModuleColorOverLife :
@@ -14,12 +13,12 @@ public:
     
     UPROPERTY_WITH_FLAGS(
         EditAnywhere,
-        FRawDistributionVector, ColorOverLife
+        FLinearColor, StartColor
     )
 
     UPROPERTY_WITH_FLAGS(
         EditAnywhere,
-        FRawDistributionFloat, AlphaOverLife
+        FLinearColor, EndColor
     )
 
     virtual FName GetModuleName() const override
