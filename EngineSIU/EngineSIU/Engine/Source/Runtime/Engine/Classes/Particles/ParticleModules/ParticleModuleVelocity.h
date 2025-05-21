@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "ParticleModuleVelocityBase.h"
 #include "Distributions/DistributionFloat.h"
 #include "Distributions/DistributionVector.h"
@@ -45,6 +45,8 @@ public:
     //~ Begin UParticleModule Interface
     virtual void Spawn(FParticleEmitterInstance* Owner, int32 Offset, float SpawnTime, FBaseParticle* ParticleBase) override;
     //~ End UParticleModule Interface
+
+    virtual FName GetModuleName() const override;
 
     /**
      *	Extended version of spawn, allows for using a random stream for distribution value retrieval

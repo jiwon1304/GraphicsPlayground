@@ -15,7 +15,7 @@ public:
     void ClearRender();
     void Release();
 private:
-
+    void UpdateViewCamera(const std::shared_ptr<FEditorViewportClient>& Viewport);
     FGraphicsDevice* Graphics;
     USubEngine* Engine = nullptr;
     FDXDBufferManager* BufferManager;

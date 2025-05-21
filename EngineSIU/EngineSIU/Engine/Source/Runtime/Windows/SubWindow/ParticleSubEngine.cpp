@@ -30,6 +30,7 @@ void UParticleSubEngine::Initialize(HWND& hWnd, FGraphicsDevice* InGraphics, FDX
     ParticleSystemComponent = FObjectFactory::ConstructObject<UParticleSystemComponent>(this);
     ParticleViewerPanel* particlePanel = reinterpret_cast<ParticleViewerPanel*>(UnrealEditor->GetParticleSubPanel("ParticleViewerPanel").get());
     particlePanel->SetParticleSystemComponent(ParticleSystemComponent);
+    particlePanel->SetViewportClient(ViewportClient);
 }
 
 void UParticleSubEngine::Tick(float DeltaTime)
@@ -121,13 +122,14 @@ void UParticleSubEngine::Render()
         Graphics->Prepare();
 
         SubRenderer->PrepareRender(ViewportClient);
-
         SubRenderer->Render(ViewportClient);
+        SubRenderer->ClearRender();
         // Sub window rendering
+
         SubUI->BeginFrame();
 
         //UI를 위한 렌더 타겟 설정
-        FGraphicsDevice* Graphics = &FEngineLoop::ParticleViewerGD;
+        //FGraphicsDevice* Graphics = &FEngineLoop::ParticleViewerGD;
         Graphics->DeviceContext->OMSetRenderTargets(
             1,
             &Graphics->BackBufferRTV,
@@ -137,7 +139,6 @@ void UParticleSubEngine::Render()
         UnrealEditor->Render(EWindowType::WT_ParticleSubWindow);
         SubUI->EndFrame();
 
-        SubRenderer->ClearRender();
         // Sub swap
         Graphics->SwapBuffer();
     }

@@ -16,15 +16,16 @@ void FSubRenderer::PrepareRender(const std::shared_ptr<FEditorViewportClient>& V
 {
     //ParticleRenderPass->PrepareRenderArr();
     ParticleRenderPass->AddParticleComponent(((UParticleSubEngine*)Engine)->GetParticleSystemComponent());
-    const EViewModeIndex ViewMode = Viewport->GetViewMode();
+    //const EViewModeIndex ViewMode = Viewport->GetViewMode();
     //TargetViewport = Viewport;
-    //UpdateViewCamera(Viewport);
+    UpdateViewCamera(Viewport);
     FViewportResource* ViewportResource = Viewport->GetViewportResource();
     //FRenderTargetRHI* RenderTargetRHI = ViewportResource->GetRenderTarget(EResourceType::ERT_Scene);
     //FDepthStencilRHI* DepthStencilRHI = ViewportResource->GetDepthStencil(EResourceType::ERT_Scene);
-
-    D3D11_VIEWPORT vp = Viewport->GetD3DViewport();
-    Graphics->DeviceContext->RSSetViewports(1, &vp);
+    ViewportResource->ClearDepthStencils(Graphics->DeviceContext);
+    ViewportResource->ClearRenderTargets(Graphics->DeviceContext);
+    //D3D11_VIEWPORT vp = Viewport->GetD3DViewport();
+    //Graphics->DeviceContext->RSSetViewports(1, &vp);
     
     //Graphics->DeviceContext->ClearRenderTargetView(
     //    RenderTargetRHI->RTV,
@@ -43,20 +44,20 @@ void FSubRenderer::PrepareRender(const std::shared_ptr<FEditorViewportClient>& V
     //    nullptr
     //);
 
-    Graphics->DeviceContext->OMSetRenderTargets(
-        1,
-        &Graphics->BackBufferRTV,
-        Graphics->DeviceDSV
-    );
+    //Graphics->DeviceContext->OMSetRenderTargets(
+    //    1,
+    //    &Graphics->BackBufferRTV,
+    //    Graphics->DeviceDSV
+    //);
 
     //if (Viewport->GetViewMode() == EViewModeIndex::VMI_Wireframe)
     //    Graphics->DeviceContext->RSSetState(Graphics->RasterizerWireframeBack);
     //else
     //    Graphics->DeviceContext->RSSetState(Graphics->RasterizerSolidBack);
 
-    Graphics->DeviceContext->OMSetDepthStencilState(
-        Graphics->DepthStencilState,
-        0);
+    //Graphics->DeviceContext->OMSetDepthStencilState(
+    //    Graphics->DepthStencilState,
+    //    0);
 
 }
 
@@ -77,4 +78,17 @@ void FSubRenderer::Release()
         delete ParticleRenderPass;
         ParticleRenderPass = nullptr;
     }
+}
+
+void FSubRenderer::UpdateViewCamera(const std::shared_ptr<FEditorViewportClient>& Viewport)
+{
+    FCameraConstantBuffer CameraConstantBuffer;
+    CameraConstantBuffer.ViewMatrix = Viewport->GetViewMatrix();
+    CameraConstantBuffer.InvViewMatrix = FMatrix::Inverse(CameraConstantBuffer.ViewMatrix);
+    CameraConstantBuffer.ProjectionMatrix = Viewport->GetProjectionMatrix();
+    CameraConstantBuffer.InvProjectionMatrix = FMatrix::Inverse(CameraConstantBuffer.ProjectionMatrix);
+    CameraConstantBuffer.ViewLocation = Viewport->GetCameraLocation();
+    CameraConstantBuffer.NearClip = Viewport->GetCameraNearClip();
+    CameraConstantBuffer.FarClip = Viewport->GetCameraFarClip();
+    BufferManager->UpdateConstantBuffer("FCameraConstantBuffer", CameraConstantBuffer);
 }

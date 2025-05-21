@@ -104,7 +104,21 @@ void ParticleViewerPanel::RenderFilePanel()
 
 void ParticleViewerPanel::RenderViewportPanel()
 {
-    ImGui::Text("Viewport");
+    FViewport* Viewport = ViewportClient->GetViewport();
+    if (Viewport)
+    {
+        FViewportResource* Resource = Viewport->GetViewportResource();
+        if (Resource)
+        {
+            FRenderTargetRHI* RenderTarget = Resource->GetRenderTarget(EResourceType::ERT_Scene);
+            if (RenderTarget && RenderTarget->SRV)
+            {
+                // ImGui는 SRV를 ImTextureID로 캐스팅해서 사용
+                ImVec2 contentSize = ImGui::GetContentRegionAvail();
+                ImGui::Image((ImTextureID)(RenderTarget->SRV), contentSize);
+            }
+        }
+    }
 }
 
 void ParticleViewerPanel::RenderEmitterPanel()
@@ -266,6 +280,7 @@ void ParticleViewerPanel::RenderEmitterCreatePopup()
     if (ImGui::MenuItem("새 파티클 스프라이트 이미터")) {
         UParticleEmitter* NewEmitter = CreateDefaultParticleEmitter();
         ParticleSystem->Emitters.Add(NewEmitter);
+        ParticleSystem->PostEditChangeProperty();
     }
 }
 
@@ -449,10 +464,19 @@ UParticleEmitter* ParticleViewerPanel::CreateDefaultParticleEmitter()
     UParticleLODLevel* LODLevel = FObjectFactory::ConstructObject<UParticleLODLevel>(NewEmitter);
     LODLevel->Initialize();
     NewEmitter->LODLevels.Add(LODLevel);
-    NewEmitter->LODLevels[0]->Modules.Add(FObjectFactory::ConstructObject<UParticleModuleRequired>(NewEmitter));
-    NewEmitter->LODLevels[0]->Modules.Add(FObjectFactory::ConstructObject<UParticleModuleSpawn>(NewEmitter));
-    NewEmitter->LODLevels[0]->Modules.Add(FObjectFactory::ConstructObject<UParticleModuleLifetime>(NewEmitter));
-    NewEmitter->LODLevels[0]->Modules[2]->bEnabled = true; //TODO 생성자 받아오면 삭제
+
+    UParticleModuleRequired* ParticleModuleRequired = FObjectFactory::ConstructObject<UParticleModuleRequired>(NewEmitter);
+    ParticleModuleRequired->bEnabled = true;
+    NewEmitter->LODLevels[0]->Modules.Add(ParticleModuleRequired);
+
+    UParticleModuleSpawn* ParticleModuleSpawn = FObjectFactory::ConstructObject<UParticleModuleSpawn>(NewEmitter);
+    ParticleModuleSpawn->bEnabled = true;
+    NewEmitter->LODLevels[0]->Modules.Add(ParticleModuleSpawn);
+
+    UParticleModuleLifetime* ParticleModuleLifetime = FObjectFactory::ConstructObject<UParticleModuleLifetime>(NewEmitter);
+    ParticleModuleLifetime->bEnabled = true;
+    NewEmitter->LODLevels[0]->Modules.Add(ParticleModuleLifetime);
+
     LODLevel->UpdateModuleLists();
     return NewEmitter;
 }
@@ -460,6 +484,11 @@ UParticleEmitter* ParticleViewerPanel::CreateDefaultParticleEmitter()
 void ParticleViewerPanel::SetParticleSystemComponent(UParticleSystemComponent* InParticleSystemComponent)
 {
     ParticleSystemComponent = InParticleSystemComponent;
+}
+
+void ParticleViewerPanel::SetViewportClient(std::shared_ptr<FEditorViewportClient> InViewportClient)
+{
+    ViewportClient = InViewportClient;
 }
 
 
