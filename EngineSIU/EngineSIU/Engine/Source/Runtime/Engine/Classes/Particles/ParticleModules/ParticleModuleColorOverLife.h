@@ -13,21 +13,22 @@ public:
     virtual ~UParticleModuleColorOverLife() override = default;
     
     UPROPERTY_WITH_FLAGS(
-        EditAnywhere | EditInline,
+        EditAnywhere,
         FRawDistributionVector, ColorOverLife
     )
 
     UPROPERTY_WITH_FLAGS(
-        EditAnywhere | EditInline,
-        FRawDistributionVector, AlphaOverLife
+        EditAnywhere,
+        FRawDistributionFloat, AlphaOverLife
     )
 
-    UPROPERTY_WITH_FLAGS(
-        EditAnywhere,
-        uint32, ColorOverLifeCount
-    )
+    virtual FName GetModuleName() const override
+    {
+        return FName(TEXT("Color Over Life"));
+    }
 
     void InitializeDefaults();
+    virtual void PostInitProperties() override;
     virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
     virtual void Spawn(FParticleEmitterInstance* Owner, int32 Offset, float SpawnTime, FBaseParticle* ParticleBase) override;
     virtual void Update(FParticleEmitterInstance* Owner, int32 Offset, float DeltaTime) override;

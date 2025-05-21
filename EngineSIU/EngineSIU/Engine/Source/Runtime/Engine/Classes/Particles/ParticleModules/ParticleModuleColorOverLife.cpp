@@ -6,45 +6,56 @@
 #include "UObject/Casts.h"
 #include "Particles/ParticleLODLevel.h"
 #include "Particles/ParticleSystem.h"
+#include "Distributions/DistributionFloatUniform.h"
+#include "Distributions/DistributionVectorUniform.h"
+#include "UObject/ObjectFactory.h"
 void UParticleModuleColorOverLife::InitializeDefaults()
 {
     if (!ColorOverLife.IsCreated())
     {
-        //ColorOverLife.Distribution = NewObject<UDistributionVectorUniform>(this, TEXT("DistributionColorOverLife"));
+        ColorOverLife.Distribution = FObjectFactory::ConstructObject<UDistributionVectorUniform>(this, TEXT("DistributionColorOverLife"));
     }
 
     if (!AlphaOverLife.IsCreated())
     {
-        //UDistributionFloatConstant* DistributionAlphaOverLife = NewObject<UDistributionVectorUniform>(this, TEXT("DistributionAlphaOverLife"));
-        //DistributionAlphaOverLife->Constant = 1.0f;
-        //AlphaOverLife.Distribution = DistributionAlphaOverLife;
+        UDistributionFloatUniform* DistributionAlphaOverLife = FObjectFactory::ConstructObject<UDistributionFloatUniform>(this, TEXT("DistributionAlphaOverLife"));
+        DistributionAlphaOverLife->Min = 1.0f;
+        DistributionAlphaOverLife->Max = 1.0f;
+        AlphaOverLife.Distribution = DistributionAlphaOverLife;
     }
+}
+
+void UParticleModuleColorOverLife::PostInitProperties()
+{
+    Super::PostInitProperties();
+    InitializeDefaults();
+    bEnabled = true;
 }
 
 void UParticleModuleColorOverLife::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
     InitializeDefaults();
-
-    FProperty* PropertyThatChanged = PropertyChangedEvent.Property;
-    if (PropertyThatChanged)
-    {
-        if (PropertyThatChanged->GetFName() == FName(TEXT("bClampAlpha")))
-        {
-            UObject* OuterObj = GetOuter();
-            check(OuterObj);
-            UParticleLODLevel* LODLevel = Cast<UParticleLODLevel>(OuterObj);
-            if (LODLevel)
-            {
-                OuterObj = LODLevel->GetOuter();
-                UParticleEmitter* Emitter = Cast<UParticleEmitter>(OuterObj);
-                check(Emitter);
-                OuterObj = Emitter->GetOuter();
-            }
-            UParticleSystem* PartSys = CastChecked<UParticleSystem>(OuterObj);
-
-            PartSys->UpdateColorModuleClampAlpha(this);
-        }
-    }
+    //Curve Editor에서 필요
+    //FProperty* PropertyThatChanged = PropertyChangedEvent.Property;
+    //if (PropertyThatChanged)
+    //{
+    //    if (PropertyThatChanged->Name == (TEXT("bClampAlpha")))
+    //    {
+    //        UObject* OuterObj = GetOuter();
+    //        assert(OuterObj!=nullptr);
+    //        UParticleLODLevel* LODLevel = Cast<UParticleLODLevel>(OuterObj);
+    //        if (LODLevel)
+    //        {
+    //            OuterObj = LODLevel->GetOuter();
+    //            UParticleEmitter* Emitter = Cast<UParticleEmitter>(OuterObj);
+    //            assert(Emitter!=nullptr);
+    //            OuterObj = Emitter->GetOuter();
+    //        }
+    //        UParticleSystem* PartSys = CastChecked<UParticleSystem>(OuterObj);
+    //        
+    //        //PartSys->UpdateColorModuleClampAlpha(this);
+    //    }
+    //}
     Super::PostEditChangeProperty(PropertyChangedEvent);
 }
 
