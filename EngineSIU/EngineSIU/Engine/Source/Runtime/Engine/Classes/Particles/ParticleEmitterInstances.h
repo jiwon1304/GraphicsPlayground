@@ -109,6 +109,7 @@ struct FParticleEmitterInstance
     virtual void InitParameters(UParticleEmitter* InTemplate, UParticleSystemComponent* InComponent);
     virtual void Init();
 
+
     // Tick관련
     virtual void Tick(float DeltaTime);
     virtual void ResetParticleParameters(float DeltaTime);

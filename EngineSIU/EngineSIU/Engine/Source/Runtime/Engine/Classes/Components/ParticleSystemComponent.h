@@ -40,6 +40,9 @@ public:
     void ResetParticles();
 
     virtual void TickComponent(float DeltaTime) override;
+
+    virtual UObject* Duplicate(UObject* InOuter) override;
+
     void UpdateInstances();
 
     void SetTemplate(UParticleSystem* InTemplate);

@@ -7,6 +7,7 @@
 #include "Particles/ParticleLODLevel.h"
 #include "Material/Material.h"
 #include "Particles/ParticleModules/ParticleModuleRequired.h"
+#include <UObject/Casts.h>
 
 void UParticleSystemComponent::InitializeSystem()
 {
@@ -84,6 +85,15 @@ void UParticleSystemComponent::TickComponent(float DeltaTime)
             }
         }
     }
+}
+
+UObject* UParticleSystemComponent::Duplicate(UObject* InOuter)
+{
+    ThisClass* NewComponent = Cast<ThisClass>(Super::Duplicate(InOuter));
+
+    NewComponent->SetTemplate(Template);
+
+    return NewComponent;
 }
 
 void UParticleSystemComponent::UpdateInstances()
