@@ -1,5 +1,6 @@
 #include "Core/HAL/PlatformType.h"
 #include "EngineLoop.h"
+#include "PhysXIntegration.h"
 
 FEngineLoop GEngineLoop;
 
@@ -10,6 +11,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
     UNREFERENCED_PARAMETER(nShowCmd);
+
+    InitPhysX();
 
     GEngineLoop.Init(hInstance);
     GEngineLoop.Tick();
