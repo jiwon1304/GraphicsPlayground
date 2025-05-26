@@ -32,6 +32,15 @@ public:
     {
         PhysicsAsset = InPhysicsAsset;
     }
+    const FReferenceSkeleton* GetRefSkeleton()
+    {
+        if (Skeleton)
+        {
+            return &Skeleton->GetReferenceSkeleton();
+        }
+        return nullptr;
+    }
+
     
 protected:
     std::unique_ptr<FSkeletalMeshRenderData> RenderData;
