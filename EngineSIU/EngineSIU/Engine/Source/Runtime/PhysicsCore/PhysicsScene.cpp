@@ -7,6 +7,8 @@
 #include "PhysxSolversModule.h"
 #include "Components/StaticMeshComponent.h"
 #include "PhysicsEngine/BodySetup.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Engine/SkeletalMesh.h"
 
 void FPhysScene::Init(FPhysicsSolver* InSceneSolver, physx::PxScene* InScene)
 {
@@ -55,7 +57,34 @@ void FPhysScene::AddActor(AActor* Actor)
         }
     }
 
-    // TODO : SkeletalMeshComponent
+    // SkeletalMeshComponent
+    {
+        TSet<USkeletalMeshComponent*> SkeletalMeshComponents;
+        for (UActorComponent* Component : ActorComponents)
+        {
+            if (USkeletalMeshComponent* SkeletalMeshComponent = Cast<USkeletalMeshComponent>(Component))
+            {
+                SkeletalMeshComponents.Add(SkeletalMeshComponent);
+            }
+        }
+        for (USkeletalMeshComponent* SkeletalMeshComponent : SkeletalMeshComponents)
+        {
+            USkeletalMesh* SkeletalMesh = SkeletalMeshComponent->GetSkeletalMeshAsset();
+            if (!SkeletalMesh)
+            {
+                UE_LOG(ELogLevel::Warning, TEXT("SkeletalMeshComponent '%s' has no SkeletalMesh assigned."), *SkeletalMeshComponent->GetName());
+                continue;
+            }
+            // 래그돌 정보 생성
+            UPhysicsAsset* PhysicsAsset = SkeletalMesh->GetPhysicsAsset();
+            if (!PhysicsAsset)
+            {
+                UE_LOG(ELogLevel::Warning, TEXT("SkeletalMesh '%s' has no PhysicsAsset assigned."), *SkeletalMesh->GetName());
+                continue;
+            }
+
+        }
+    }
 }
 
 void FPhysScene::AdvanceAndDispatch_External(float DeltaTime)
