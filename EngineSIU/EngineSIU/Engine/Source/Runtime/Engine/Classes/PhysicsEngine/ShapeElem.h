@@ -41,6 +41,13 @@ struct FKBoxElem : public FKShapeElem
 
     FKBoxElem() = default;
 
+    void SetTransform( const FTransform& InTransform )
+    {
+        assert(InTransform.IsValid());
+        Rotation = InTransform.Rotator();
+        Center = InTransform.GetTranslation();
+    }
+    
     UPROPERTY(
         EditAnywhere,
         FVector,
@@ -109,6 +116,13 @@ struct FKSphylElem : public FKShapeElem
 
     FKSphylElem() = default;
 
+    void SetTransform( const FTransform& InTransform )
+    {
+        assert(InTransform.IsValid());
+        Rotation = InTransform.Rotator();
+        Center = InTransform.GetTranslation();
+    }
+    
     UPROPERTY(
         EditAnywhere,
         FVector,

@@ -9,6 +9,8 @@
     내부적으로 PIE, Editor World 두 가지 형태로 관리.
 */
 
+class UPhysicsAssetWorld;
+class UPhysicsAsset;
 class AActor;
 class USceneComponent;
 
@@ -26,13 +28,16 @@ public:
     UWorld* PIEWorld = nullptr;
     USkeletalViewerWorld* SkeletalMeshViewerWorld = nullptr;
     UWorld* EditorWorld = nullptr;
+    UPhysicsAssetWorld* PhysicsAssetEditorWorld = nullptr;
     
 
     void StartPIE();
     void StartSkeletalMeshViewer(FName SkeletalMeshName, UAnimationAsset* AnimAsset);
+    void StartPhysicsAssetEditor(UPhysicsAsset* InPhysicsAsset);
     void BindEssentialObjects();
     void EndPIE();
     void EndSkeletalMeshViewer();
+    void EndPhysicsAssetEditor();
 
     // 주석은 UE에서 사용하던 매개변수.
     FWorldContext& GetEditorWorldContext(/*bool bEnsureIsGWorld = false*/);

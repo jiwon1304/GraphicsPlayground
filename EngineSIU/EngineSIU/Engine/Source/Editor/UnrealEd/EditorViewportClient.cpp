@@ -54,7 +54,7 @@ void FEditorViewportClient::Initialize(EViewScreenLocation InViewportIndex, cons
 
 void FEditorViewportClient::Tick(const float DeltaTime)
 {
-    if (GEngine->ActiveWorld->WorldType == EWorldType::Editor or GEngine->ActiveWorld->WorldType == EWorldType::SkeletalViewer)
+    if (GEngine->ActiveWorld->WorldType == EWorldType::Editor or GEngine->ActiveWorld->WorldType == EWorldType::SkeletalViewer || GEngine->ActiveWorld->WorldType == EWorldType::PhysicsAssetEditor)
     {
         UpdateEditorCameraMovement(DeltaTime);
     }
@@ -284,7 +284,7 @@ void FEditorViewportClient::InputKey(const FKeyEvent& InKeyEvent)
         {
         case VK_DELETE:
         {
-            if (GEngine->ActiveWorld->WorldType == EWorldType::SkeletalViewer)
+            if (GEngine->ActiveWorld->WorldType == EWorldType::SkeletalViewer || GEngine->ActiveWorld->WorldType == EWorldType::PhysicsAssetEditor)
                 return;
             UEditorEngine* Engine = Cast<UEditorEngine>(GEngine);
             if (Engine)

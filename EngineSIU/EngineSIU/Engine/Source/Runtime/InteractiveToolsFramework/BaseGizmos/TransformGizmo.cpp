@@ -10,6 +10,7 @@
 #include "World/World.h"
 #include "Engine/FObjLoader.h"
 #include "Engine/SkeletalMesh.h"
+#include "World/PhysicsAssetWorld.h"
 
 ATransformGizmo::ATransformGizmo()
 {
@@ -89,7 +90,7 @@ void ATransformGizmo::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 
     // Editor 모드에서만 Tick. SkeletalMeshViewer모드에서도 tick
-    if (GEngine->ActiveWorld->WorldType != EWorldType::Editor and GEngine->ActiveWorld->WorldType != EWorldType::SkeletalViewer)
+    if (GEngine->ActiveWorld->WorldType != EWorldType::Editor and GEngine->ActiveWorld->WorldType != EWorldType::SkeletalViewer && GEngine->ActiveWorld->WorldType != EWorldType::PhysicsAssetEditor)
     {
         return;
     }
@@ -132,12 +133,20 @@ void ATransformGizmo::Tick(float DeltaTime)
         }
 
         //본 부착용
-        if (GEngine->ActiveWorld->WorldType == EWorldType::SkeletalViewer)
+        if (GEngine->ActiveWorld->WorldType == EWorldType::SkeletalViewer || GEngine->ActiveWorld->WorldType == EWorldType::PhysicsAssetEditor)
         {
+            int BoneIndex;
+            if (GEngine->ActiveWorld->WorldType == EWorldType::SkeletalViewer)
+            {
+                BoneIndex = Engine->SkeletalMeshViewerWorld->SelectBoneIndex;
+            }
+            else if (GEngine->ActiveWorld->WorldType == EWorldType::PhysicsAssetEditor)
+            {
+                BoneIndex = Engine->PhysicsAssetEditorWorld->SelectBoneIndex;
+            }
             USkeletalMeshComponent* SkeletalMeshComp = Cast<USkeletalMeshComponent>(TargetComponent);
             if (SkeletalMeshComp)
             {
-                int BoneIndex = Engine->SkeletalMeshViewerWorld->SelectBoneIndex;
                 TArray<FMatrix> GlobalBoneMatrices;
                 SkeletalMeshComp->GetCurrentGlobalBoneMatrices(GlobalBoneMatrices);
 
@@ -148,7 +157,6 @@ void ATransformGizmo::Tick(float DeltaTime)
                 {
                     AddActorRotation(GlobalBoneTransform.Rotation);
                 }
-            
             }
         }
     }

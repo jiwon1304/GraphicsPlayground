@@ -3,6 +3,7 @@
 #include "UObject/Object.h"
 #include "UObject/ObjectMacros.h"
 
+class UPhysicsAsset;
 class UAnimationAsset;
 class USkeleton;
 class USkeletalMesh;
@@ -78,7 +79,8 @@ public:
 
     const TMap<FName, FAssetInfo>& GetAssetRegistry();
     TMap<FName, FAssetInfo>& GetAssetRegistryRef();
-    TMap<FName, UParticleSystem*>& GetParticleSystemMap() { return ParticleSystemMap; }
+    // TODO - Do not use Directly (Deprecate)
+    const TMap<FName, UParticleSystem*>& GetParticleSystemMap() { return ParticleSystemMap; }
 
     USkeletalMesh* GetSkeletalMesh(const FName& Name);
     UStaticMesh* GetStaticMesh(const FName& Name);
@@ -86,6 +88,7 @@ public:
     UMaterial* GetMaterial(const FName& Name);
     UAnimationAsset* GetAnimation(const FName& Name);
     UParticleSystem* GetParticleSystem(const FName& Name);
+    UPhysicsAsset* GetPhysicsAsset(const FName& Name);
 
     void AddAssetInfo(const FAssetInfo& Info);
     void AddSkeleton(const FName& Key, USkeleton* Skeleton);
@@ -94,6 +97,10 @@ public:
     void AddStaticMesh(const FName& Key, UStaticMesh* StaticMesh);
     void AddAnimation(const FName& Key, UAnimationAsset* Animation);
     void AddParticleSystem(const FName& Key, UParticleSystem* ParticleSystem);
+    void AddPhysicsAsset(const FName& Key, UPhysicsAsset* InPhysicsAsset);
+
+    void RemoveParticleSystem(const FName& Key);
+    
 private:
     double FbxLoadTime = 0.0;
     double BinaryLoadTime = 0.0;
@@ -110,6 +117,7 @@ private:
     inline static TMap<FName, UMaterial*> MaterialMap;
     inline static TMap<FName, UAnimationAsset*> AnimationMap;
     inline static TMap<FName, UParticleSystem*> ParticleSystemMap;
+    inline static TMap<FName, UPhysicsAsset*> PhysicsAssetMap;
 
     bool LoadFbxBinary(const FString& FilePath, FAssetLoadResult& Result, const FString& BaseName, const FString& FolderPath);
 

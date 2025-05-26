@@ -32,11 +32,11 @@ void ParticleViewerPanel::Render()
 
 void ParticleViewerPanel::OnResize(HWND hWnd)
 {
-    RECT clientRect;
-    if (hWnd && GetClientRect(hWnd, &clientRect))
+    RECT ClientRect;
+    if (hWnd && GetClientRect(hWnd, &ClientRect))
     {
-        Width = static_cast<float>(clientRect.right - clientRect.left);
-        Height = static_cast<float>(clientRect.bottom - clientRect.top);
+        Width = static_cast<float>(ClientRect.right - ClientRect.left);
+        Height = static_cast<float>(ClientRect.bottom - ClientRect.top);
     }
 }
 
@@ -337,7 +337,7 @@ void ParticleViewerPanel::CreateNewParticleSystem(const FString& Name)
     UParticleEmitter* NewEmitter = CreateDefaultParticleEmitter();
     ParticleSystem->Emitters.Add(NewEmitter);
     ParticleSystem->PostEditChangeProperty();
-    ParticleSystemMap.Add(FName(*Name), ParticleSystem);
+    UAssetManager::Get().AddParticleSystem(FName(*Name), ParticleSystem);
 
     // ParticleNames 목록을 새로 업데이트
     ParticleNames.Empty();
@@ -396,7 +396,7 @@ void ParticleViewerPanel::RenderParticleSystemList()
     if (ImGui::Button("현재 파티클 삭제")) {
         if (CurrentParticleSystemIndex < ParticleNames.Num()) {
             FName SelectedName = ParticleNames[CurrentParticleSystemIndex];
-            ParticleSystemMap.Remove(SelectedName);
+            UAssetManager::Get().RemoveParticleSystem(SelectedName);
             ParticleSystem = nullptr; // 선택된 파티클 시스템 초기화
             CurrentParticleSystemIndex = -1;  // 인덱스 초기화
             SelectedEmitterIndex = -1; // Emitter 선택 해제

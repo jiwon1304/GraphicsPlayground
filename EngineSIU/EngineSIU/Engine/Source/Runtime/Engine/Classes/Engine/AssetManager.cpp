@@ -111,6 +111,15 @@ UParticleSystem* UAssetManager::GetParticleSystem(const FName& Name)
     return nullptr;
 }
 
+UPhysicsAsset* UAssetManager::GetPhysicsAsset(const FName& Name)
+{
+    if (PhysicsAssetMap.Contains(Name))
+    {
+        return PhysicsAssetMap[Name];
+    }
+    return nullptr;
+}
+
 void UAssetManager::AddAssetInfo(const FAssetInfo& Info)
 {
     AssetRegistry->PathNameToAssetInfo.Add(Info.AssetName, Info);
@@ -144,6 +153,16 @@ void UAssetManager::AddAnimation(const FName& Key, UAnimationAsset* Animation)
 void UAssetManager::AddParticleSystem(const FName& Key, UParticleSystem* ParticleSystem)
 {
     ParticleSystemMap.Add(Key, ParticleSystem);
+}
+
+void UAssetManager::AddPhysicsAsset(const FName& Key, UPhysicsAsset* InPhysicsAsset)
+{
+    PhysicsAssetMap.Add(Key, InPhysicsAsset);
+}
+
+void UAssetManager::RemoveParticleSystem(const FName& Key)
+{
+    ParticleSystemMap.Remove(Key);
 }
 
 void UAssetManager::LoadContentFiles()

@@ -93,7 +93,7 @@ protected:
 public:
     void CreatePhysicsScene();
 private:
-    FPhysScene* PhysicsScene;
+    FPhysScene* PhysicsScene = nullptr;
 
 private:
     AGameMode* GameMode = nullptr;

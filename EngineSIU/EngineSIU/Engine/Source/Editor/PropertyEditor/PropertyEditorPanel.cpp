@@ -45,6 +45,8 @@
 #include "Math/Transform.h"
 #include "Animation/AnimStateMachine.h"
 #include "PhysicsEngine/BodySetup.h"
+#include "Developer/PhysicsUtilities/PhysicsAssetUtils.h"
+#include "PhysicsEngine/PhysicsAsset.h"
 
 PropertyEditorPanel::PropertyEditorPanel()
 {
@@ -712,18 +714,42 @@ void PropertyEditorPanel::RenderForSkeletalMesh(USkeletalMeshComponent* Skeletal
 
         // End Animation
 
-        if (ImGui::Button("Open Viewer"))
+        if (USkeletalMesh* SkeletalMesh = SkeletalMeshComp->GetSkeletalMeshAsset())
         {
-            UEditorEngine* Engine = Cast<UEditorEngine>(GEngine);
-            if (!Engine)
+            UEditorEngine* EditorEngine = Cast<UEditorEngine>(GEngine);
+            if (EditorEngine == nullptr)
             {
                 return;
             }
-            if (SkeletalMeshComp->GetSkeletalMeshAsset())
+            
+            if (ImGui::Button("Open Skeletal Mesh & Animation Viewer"))
             {
-                Engine->StartSkeletalMeshViewer(FName(SkeletalMeshComp->GetSkeletalMeshAsset()->GetRenderData()->ObjectName), SkeletalMeshComp->GetAnimation());
+                EditorEngine->StartSkeletalMeshViewer(FName(SkeletalMesh->GetRenderData()->ObjectName), SkeletalMeshComp->GetAnimation());
             }
+            
+            if (UPhysicsAsset* PhysicsAsset = SkeletalMesh->GetPhysicsAsset())
+            {
+                if (ImGui::Button("Open Physics Asset Editor"))
+                {
+                    EditorEngine->StartPhysicsAssetEditor(PhysicsAsset);
+                }
+            }
+            else
+            {
+                if (ImGui::Button("Create & Bind Physics Asset"))
+                {
+                    // TODO UISOO Implement (Temp임)
+                    // FPhysicsAssetUtils::CreateFromSkeletalMesh(PhysicsAsset, SkeletalMesh);
+
+                    PhysicsAsset = FObjectFactory::ConstructObject<UPhysicsAsset>(nullptr);
+                    PhysicsAsset->PreviewSkeletalMesh = SkeletalMesh;
+                    SkeletalMesh->SetPhysicsAsset(PhysicsAsset);
+                    
+                    UAssetManager::Get().AddPhysicsAsset(PhysicsAsset->GetName(), PhysicsAsset);
+                }
+            }   
         }
+        
         ImGui::TreePop();
     }
     ImGui::PopStyleColor();

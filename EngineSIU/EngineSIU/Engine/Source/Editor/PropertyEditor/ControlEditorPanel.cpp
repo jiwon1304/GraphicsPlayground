@@ -59,7 +59,7 @@
 #include <Particles/ParticleModules/ParticleModuleVelocity.h>
 ControlEditorPanel::ControlEditorPanel()
 {
-    SetSupportedWorldTypes(EWorldTypeBitFlag::Editor | EWorldTypeBitFlag::PIE | EWorldTypeBitFlag::SkeletalViewer);
+    SetSupportedWorldTypes(EWorldTypeBitFlag::Editor | EWorldTypeBitFlag::PIE | EWorldTypeBitFlag::SkeletalViewer | EWorldTypeBitFlag::PhysicsAssetEditor);
 }
 
 void ControlEditorPanel::Render()
@@ -197,7 +197,7 @@ void ControlEditorPanel::Render()
 
 void ControlEditorPanel::CreateMenuButton(const ImVec2 ButtonSize, ImFont* IconFont)
 {
-    if (GEngine->ActiveWorld->WorldType == EWorldType::SkeletalViewer)
+    if (GEngine->ActiveWorld->WorldType == EWorldType::SkeletalViewer || GEngine->ActiveWorld->WorldType == EWorldType::PhysicsAssetEditor)
     {
         return;
     }
@@ -636,7 +636,7 @@ void ControlEditorPanel::CreateFlagButton()
 
 void ControlEditorPanel::CreatePIEButton(const ImVec2 ButtonSize, ImFont* IconFont)
 {
-    if (GEngine->ActiveWorld->WorldType == EWorldType::SkeletalViewer)
+    if (GEngine->ActiveWorld->WorldType == EWorldType::SkeletalViewer || GEngine->ActiveWorld->WorldType == EWorldType::PhysicsAssetEditor)
     {
         return;
     }
@@ -732,7 +732,7 @@ void ControlEditorPanel::OnResize(const HWND hWnd)
 
 void ControlEditorPanel::CreateLightSpawnButton(const ImVec2 InButtonSize, ImFont* IconFont)
 {
-    if (GEngine->ActiveWorld->WorldType == EWorldType::SkeletalViewer)
+    if (GEngine->ActiveWorld->WorldType == EWorldType::SkeletalViewer || GEngine->ActiveWorld->WorldType == EWorldType::PhysicsAssetEditor)
     {
         return;
     }
