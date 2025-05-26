@@ -9,6 +9,10 @@
 #include "PhysicsEngine/BodySetup.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Engine/SkeletalMesh.h"
+#include "PhysicsEngine/PhysicsAsset.h"
+#include "PhysicsEngine/BodySetup.h"
+#include "PhysicsEngine/ConstraintInstance.h"
+#include "PhysicsEngine/PhysicsConstraintTemplate.h"
 
 void FPhysScene::Init(FPhysicsSolver* InSceneSolver, physx::PxScene* InScene)
 {
@@ -48,11 +52,14 @@ void FPhysScene::AddActor(AActor* Actor)
             }
             
             // 복사해서 붙여줌
+            // !TODO : 오버라이드하는 속성들이 있으면 여기서 적용해서 인스턴스 생성
+
             FBodyInstance* BodyInstance = new FBodyInstance(StaticMesh->GetBodySetup()->DefaultInstance);
             
             BodyInstance->OwnerComponent = StaticMeshComponent;
             PxActor* RegisteredActor = SceneSolver->RegisterObject(this, BodyInstance);
 
+            StaticMeshComponent->BodyInstance = BodyInstance;
             //RegisteredInstances.Add(BodyInstance, RegisteredActor);
         }
     }
@@ -83,6 +90,59 @@ void FPhysScene::AddActor(AActor* Actor)
                 continue;
             }
 
+            TMap<FName, PxActor*> RegisteredActors;
+            for (const auto& BodySetup : PhysicsAsset->BodySetups)
+            {
+                // 복사해서 붙여줌
+                FBodyInstance* BodyInstance = new FBodyInstance(BodySetup->DefaultInstance);
+                BodyInstance->OwnerComponent = SkeletalMeshComponent;
+
+                PxActor* RegisteredActor = SceneSolver->RegisterObject(this, BodyInstance);
+                if (RegisteredActor)
+                {
+                    // 본 이름을 키로 해서 캐시 -> Constraint에서 찾아서 사용
+                    RegisteredActors.Add(BodySetup->BoneName, RegisteredActor);
+                    SkeletalMeshComponent->Bodies.Add(BodyInstance);
+                }
+                else
+                {
+                    UE_LOG(ELogLevel::Error, TEXT("Failed to register BodyInstance for SkeletalMeshComponent '%s'."), *SkeletalMeshComponent->GetName());
+                    delete BodyInstance; // 메모리 해제
+                }
+            }
+
+            // constraints
+            for (const auto& ConstraintSetup : PhysicsAsset->ConstraintSetup)
+            {
+                FConstraintInstance* ConstraintInstance = new FConstraintInstance(ConstraintSetup->DefaultInstance);
+                FName Bone1 = ConstraintInstance->ConstraintBone1;
+                PxActor* Actor1 = nullptr;
+                if (RegisteredActors.Find(Bone1))
+                {
+                    Actor1 = RegisteredActors[Bone1];
+                }
+                else
+                {
+                    UE_LOG(ELogLevel::Warning, TEXT("Constraint '%s' has no registered actor for Bone1 '%s'."), *ConstraintSetup->GetName(), *Bone1.ToString());
+                    delete ConstraintInstance; // 메모리 해제
+                    continue;
+                }
+                FName Bone2 = ConstraintInstance->ConstraintBone2;
+                PxActor* Actor2 = nullptr;
+                if (RegisteredActors.Find(Bone2))
+                {
+                    Actor2 = RegisteredActors[Bone2];
+                }
+                else
+                {
+                    UE_LOG(ELogLevel::Warning, TEXT("Constraint '%s' has no registered actor for Bone2 '%s'."), *ConstraintSetup->GetName(), *Bone2.ToString());
+                    delete ConstraintInstance; // 메모리 해제
+                    continue;
+                }
+                PxJoint* NewJoint = SceneSolver->CreateJoint(this, Actor1, Actor2, ConstraintInstance);
+
+                SkeletalMeshComponent->Constraints.Add(ConstraintInstance);
+            }
         }
     }
 }

@@ -110,4 +110,11 @@ struct FConstraintInstance
         FVector,
         SecAxis2,
     )
+
+    //Constraint Data
+    UPROPERTY(
+        EditAnywhere,
+        FConstraintProfileProperties,
+        ProfileInstance,
+    )
 };

@@ -29,7 +29,7 @@ public:
 
     UPROPERTY(
         TArray<class UBodySetup*>,
-        BodySetup
+        BodySetups
     )
 
     UPROPERTY(

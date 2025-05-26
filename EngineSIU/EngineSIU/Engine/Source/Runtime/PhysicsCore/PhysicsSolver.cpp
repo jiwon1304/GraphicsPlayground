@@ -180,6 +180,11 @@ PxActor* FPhysicsSolver::RegisterObject(FPhysScene* InScene, const FBodyInstance
     return NewRigidActor;
 }
 
+PxJoint* FPhysicsSolver::CreateJoint(FPhysScene* InScene, PxActor* Actor1, PxActor* Actor2, const FConstraintInstance* NewInstance)
+{
+    return nullptr;
+}
+
 void FPhysicsSolver::AdvanceOneTimeStep(FPhysScene* InScene, float Dt)
 {
     //PxSceneWriteLock scopedWriteLock(*InScene->PhysxScene);
