@@ -412,6 +412,12 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{E3A8C30B-703E-4852-A481-C2F5945B1CF8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine">
+      <UniqueIdentifier>{b217cd3f-bc7e-4aa1-ab7d-cad9ab423f85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\Vehicle">
+      <UniqueIdentifier>{69030e4f-56b3-4adb-8adc-c33455f1b58e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LightGridGenerator.cpp" />
@@ -1708,6 +1714,16 @@
     <ClCompile Include="Engine\Source\Runtime\PhysicsCore\PhysXIntegration.cpp" />
     <ClCompile Include="Engine\Source\Runtime\PhysicsCore\PhysxSolversModule.cpp" />
     <ClCompile Include="Engine\Source\Runtime\PhysicsCore\PhysicsScene.cpp" />
+    <ClCompile Include="Engine\Source\Developer\PhysicsUtilities\PhysicsAssetUtils.cpp" />
+    <ClCompile Include="Engine\Source\Editor\PropertyEditor\PhysicsAssetEditorPanel.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\PhysicsAsset.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Engine\World\PhysicsAssetWorld.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\Vehicle\VehicleMovementComponent.cpp">
+      <Filter>Engine\Source\Runtime\Engine\Classes\PhysicsEngine\Vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\Vehicle\WheeledVehiclePawn.cpp">
+      <Filter>Engine\Source\Runtime\Engine\Classes\PhysicsEngine\Vehicle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="EngineSIU.natvis" />
@@ -2031,6 +2047,15 @@
     <ClInclude Include="Engine\Source\Runtime\PhysicsCore\PhysXIntegration.h" />
     <ClInclude Include="Engine\Source\Runtime\PhysicsCore\PhysxSolversModule.h" />
     <ClInclude Include="Engine\Source\Runtime\PhysicsCore\ImplicitObject.h" />
+    <ClInclude Include="Engine\Source\Developer\PhysicsUtilities\PhysicsAssetUtils.h" />
+    <ClInclude Include="Engine\Source\Editor\PropertyEditor\PhysicsAssetEditorPanel.h" />
+    <ClInclude Include="Engine\Source\Runtime\Engine\World\PhysicsAssetWorld.h" />
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\Vehicle\VehicleMovementComponent.h">
+      <Filter>Engine\Source\Runtime\Engine\Classes\PhysicsEngine\Vehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\Vehicle\WheeledVehiclePawn.h">
+      <Filter>Engine\Source\Runtime\Engine\Classes\PhysicsEngine\Vehicle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\CompositingShader.hlsl" />
