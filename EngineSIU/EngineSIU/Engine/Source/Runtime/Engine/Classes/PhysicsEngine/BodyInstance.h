@@ -2,7 +2,7 @@
 #include "CoreUObject/UObject/ObjectMacros.h"
 #include "Engine/PhysxUserData.h"
 #include "EngineTypes.h"
-#include "ConstraintInstance.h"
+//#include "ConstraintInstance.h"
 #include "Engine/EngineTypes.h"
 
 struct FShapeData;
@@ -115,7 +115,7 @@ public:
         = 1.f
     )
     // physx에서 사용할 Constraint
-    FConstraintInstance* DOFConstraint;
+    struct FConstraintInstance* DOFConstraint;
 
     // 현재 body가 붙어있는 parent body
     FBodyInstance* WeldParent;

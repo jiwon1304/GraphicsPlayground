@@ -60,6 +60,7 @@ namespace FPhysicsAssetUtils
                 BodySetup->PhysMaterial = PhysMaterial;
 
                 PhysicsAsset->BodySetup.Add(BodySetup);
+                PhysicsAsset->UpdateBodySetupIndexMap();
                 break;
             }
         }
