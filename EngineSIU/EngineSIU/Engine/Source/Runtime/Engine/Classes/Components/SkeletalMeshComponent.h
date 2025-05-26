@@ -152,6 +152,7 @@ public:
     
     void SetAnimInstanceClass(class UClass* NewClass);
 
+public:
     /** Array of FBodyInstance objects, storing per-instance state about about each body. */
     TArray<struct FBodyInstance*> Bodies;
 
