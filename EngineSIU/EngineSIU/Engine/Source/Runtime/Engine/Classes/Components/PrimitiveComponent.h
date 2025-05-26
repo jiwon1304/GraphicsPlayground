@@ -1,4 +1,6 @@
 #pragma once
+
+#include "Engine/Classes/PhysicsEngine/BodyInstance.h"
 #include "Components/SceneComponent.h"
 #include "Engine/OverlapInfo.h"
 
@@ -134,4 +136,6 @@ struct FPredicateOverlapHasDifferentActor
 
 private:
     const AActor* const MyOwnerPtr;
+
+    FBodyInstance BodyInstance;
 };
