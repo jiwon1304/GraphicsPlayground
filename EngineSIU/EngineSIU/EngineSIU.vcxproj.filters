@@ -1249,12 +1249,6 @@
     <ClInclude Include="Engine\Source\Runtime\Launch\LightDefine.h">
       <Filter>Engine\Source\Runtime\Launch</Filter>
     </ClInclude>
-    <ClCompile Include="Engine\Source\Runtime\Physics\CollisionManager.cpp">
-      <Filter>Engine\Source\Runtime\Physics</Filter>
-    </ClCompile>
-    <ClInclude Include="Engine\Source\Runtime\Physics\CollisionManager.h">
-      <Filter>Engine\Source\Runtime\Physics</Filter>
-    </ClInclude>
     <ClCompile Include="Engine\Source\Runtime\Renderer\BillboardRenderPass.cpp">
       <Filter>Engine\Source\Runtime\Renderer</Filter>
     </ClCompile>
@@ -1709,7 +1703,11 @@
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModules\ParticleModuleColorBase.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModules\ParticleModuleColorOverLife.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModules\ParticleModuleSubUV.cpp" />
-    <ClCompile Include="Engine\Source\Runtime\Physics\PhysXIntegration.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\PhysicsCore\CollisionManager.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\PhysicsCore\PhysicsSolver.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\PhysicsCore\PhysXIntegration.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\PhysicsCore\PhysxSolversModule.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\PhysicsCore\PhysicsScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="EngineSIU.natvis" />
@@ -1824,7 +1822,6 @@
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModules\ParticleModuleColorBase.h" />
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModules\ParticleModuleColorOverLife.h" />
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModules\ParticleModuleSubUV.h" />
-    <ClInclude Include="Engine\Source\Runtime\Physics\PhysXIntegration.h" />
     <ClInclude Include="Engine\Source\ThirdParty\physx\include\characterkinematic\PxBoxController.h" />
     <ClInclude Include="Engine\Source\ThirdParty\physx\include\characterkinematic\PxCapsuleController.h" />
     <ClInclude Include="Engine\Source\ThirdParty\physx\include\characterkinematic\PxController.h" />
@@ -2013,6 +2010,27 @@
     <ClInclude Include="Engine\Source\ThirdParty\physx\include\foundation\PxVec2.h" />
     <ClInclude Include="Engine\Source\ThirdParty\physx\include\foundation\PxVec3.h" />
     <ClInclude Include="Engine\Source\ThirdParty\physx\include\foundation\PxVec4.h" />
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\AggregateGeom.h" />
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\BodyInstance.h" />
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\BodySetup.h" />
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\ConstraintInstance.h" />
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\ConstraintTypes.h" />
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\PhysicsAsset.h" />
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\PhysicsConstraintTemplate.h" />
+    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\ShapeElem.h" />
+    <ClInclude Include="Engine\Source\Runtime\Engine\EngineTypes.h" />
+    <ClInclude Include="Engine\Source\Runtime\Engine\PhysxUserData.h" />
+    <ClInclude Include="Engine\Source\Runtime\PhysicalMaterials\Defines.h" />
+    <ClInclude Include="Engine\Source\Runtime\PhysicalMaterials\PhysicalMaterial.h" />
+    <ClInclude Include="Engine\Source\Runtime\PhysicsCore\BodySetupCore.h" />
+    <ClInclude Include="Engine\Source\Runtime\PhysicsCore\CollisionManager.h" />
+    <ClInclude Include="Engine\Source\Runtime\PhysicsCore\CollisionShape.h" />
+    <ClInclude Include="Engine\Source\Runtime\PhysicsCore\PhysicsScene.h" />
+    <ClInclude Include="Engine\Source\Runtime\PhysicsCore\PhysicsSolver.h" />
+    <ClInclude Include="Engine\Source\Runtime\PhysicsCore\PhysXHelper.h" />
+    <ClInclude Include="Engine\Source\Runtime\PhysicsCore\PhysXIntegration.h" />
+    <ClInclude Include="Engine\Source\Runtime\PhysicsCore\PhysxSolversModule.h" />
+    <ClInclude Include="Engine\Source\Runtime\PhysicsCore\ImplicitObject.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\CompositingShader.hlsl" />

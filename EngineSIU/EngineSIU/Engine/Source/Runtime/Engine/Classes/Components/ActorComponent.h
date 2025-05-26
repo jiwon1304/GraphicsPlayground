@@ -1,5 +1,5 @@
 #pragma once
-#include "Engine/EngineTypes.h"
+#include "Engine/Classes/Engine/EngineTypes.h"
 #include "UObject/Object.h"
 #include "UObject/ObjectMacros.h"
 

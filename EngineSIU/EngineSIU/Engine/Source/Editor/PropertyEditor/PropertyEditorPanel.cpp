@@ -44,6 +44,7 @@
 #include "imgui/imgui_curve.h"
 #include "Math/Transform.h"
 #include "Animation/AnimStateMachine.h"
+#include "PhysicsEngine/BodySetup.h"
 
 PropertyEditorPanel::PropertyEditorPanel()
 {
@@ -475,6 +476,20 @@ void PropertyEditorPanel::RenderForStaticMesh(UStaticMeshComponent* StaticMeshCo
             }
             ImGui::EndCombo();
         }
+
+        if (UStaticMesh* StaticMesh = StaticMeshComp->GetStaticMesh())
+        {
+            if (UBodySetup* BodySetup = StaticMesh->GetBodySetup())
+            {
+                const TArray<FProperty*>& Properties = BodySetup->StaticClass()->GetProperties();
+
+                for (const FProperty* Prop : Properties)
+                {
+                    Prop->DisplayInImGui(BodySetup);
+                }
+            }
+        }
+
 
         ImGui::TreePop();
     }

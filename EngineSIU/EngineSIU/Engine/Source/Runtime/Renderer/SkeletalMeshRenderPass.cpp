@@ -10,11 +10,7 @@ void FSkeletalMeshRenderPass::CreateResource()
 {
     FSkeletalMeshRenderPassBase::CreateResource();
 
-    const HRESULT Result = ShaderManager->AddPixelShader(L"SkeletalMeshPixelShader", L"Shaders/StaticMeshPixelShader.hlsl", "mainPS");
-    if (FAILED(Result))
-    {
-        return;
-    }
+    ShaderManager->AddPixelShaderAsync(L"SkeletalMeshPixelShader", L"Shaders/StaticMeshPixelShader.hlsl", "mainPS", nullptr);
 }
 
 void FSkeletalMeshRenderPass::ReleaseResource()

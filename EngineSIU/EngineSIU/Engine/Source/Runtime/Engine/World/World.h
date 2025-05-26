@@ -23,6 +23,7 @@ class USceneComponent;
 class FCollisionManager;
 class AGameMode;
 class UTextComponent;
+class FPhysScene;
 
 class UWorld : public UObject
 {
@@ -86,9 +87,14 @@ public:
     double TimeSeconds;
 
 protected:
-    
     FString WorldName = "DefaultWorld";
     
+// Physics 관련
+public:
+    void CreatePhysicsScene();
+private:
+    FPhysScene* PhysicsScene;
+
 private:
     AGameMode* GameMode = nullptr;
 

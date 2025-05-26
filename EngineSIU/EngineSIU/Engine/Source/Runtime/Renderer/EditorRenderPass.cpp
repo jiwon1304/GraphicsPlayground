@@ -51,14 +51,14 @@ void FEditorRenderPass::CreateShaders()
 
     auto AddShaderSet = [this](const std::wstring& KeyPrefix, const std::string& VsEntry, const std::string& PsEntry, const D3D11_INPUT_ELEMENT_DESC* Layout, uint32_t LayoutSize)
         {
-            ShaderManager->AddVertexShaderAndInputLayout(KeyPrefix + L"VS", L"Shaders/EditorShader.hlsl", VsEntry, Layout, LayoutSize);
-            ShaderManager->AddPixelShader(KeyPrefix + L"PS", L"Shaders/EditorShader.hlsl", PsEntry);
+            ShaderManager->AddVertexShaderAndInputLayoutAsync(KeyPrefix + L"VS", L"Shaders/EditorShader.hlsl", VsEntry, Layout, LayoutSize, nullptr);
+            ShaderManager->AddPixelShaderAsync(KeyPrefix + L"PS", L"Shaders/EditorShader.hlsl", PsEntry, nullptr);
         };
 
     auto AddShaderSetWithoutLayout = [this](const std::wstring& KeyPrefix, const std::string& VsEntry, const std::string& PsEntry)
     {
-        ShaderManager->AddVertexShader(KeyPrefix + L"VS", L"Shaders/EditorShader.hlsl", VsEntry);
-        ShaderManager->AddPixelShader(KeyPrefix + L"PS", L"Shaders/EditorShader.hlsl", PsEntry);
+        ShaderManager->AddVertexShaderAsync(KeyPrefix + L"VS", L"Shaders/EditorShader.hlsl", VsEntry, nullptr);
+        ShaderManager->AddPixelShaderAsync(KeyPrefix + L"PS", L"Shaders/EditorShader.hlsl", PsEntry, nullptr);
     };
     
 

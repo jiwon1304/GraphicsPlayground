@@ -8,6 +8,10 @@
 #include "Container/Array.h"
 #include "Container/Set.h"
 #include <vector>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <variant>
 
 //#define Multi_Shader_Include // 중첩 헤더 파일 지원 플래그 (주석 해제시 재귀적으로 include 검사/갱신)
 struct FVertexShaderData
@@ -25,10 +29,9 @@ struct FShaderReloadInfo {
     std::vector<D3D11_INPUT_ELEMENT_DESC> Layout;
 
     FShaderReloadInfo() = default;
-    FShaderReloadInfo(
-        std::wstring InKey, std::wstring InFilePath,
-        std::string InEntryPoint, bool bIsVS)
-        : Key(std::move(InKey)), FilePath(std::move(InFilePath)), EntryPoint(std::move(InEntryPoint)), IsVertexShader(bIsVS) {
+    FShaderReloadInfo(const std::wstring& InKey, const std::wstring& InFilePath,
+        const std::string& InEntryPoint, bool bIsVS)
+        : Key(InKey), FilePath(InFilePath), EntryPoint(InEntryPoint), IsVertexShader(bIsVS) {
     }
 };
 
@@ -42,7 +45,7 @@ public:
 
     // Hot Reload 관련 함수
     void ReleaseAllShader();
-    void UpdateShaderIfOutdated(const std::wstring Key, const std::wstring FilePath, const std::string EntryPoint, bool IsVertexShader, const D3D_SHADER_MACRO * Defines = nullptr, const D3D11_INPUT_ELEMENT_DESC * Layout = nullptr, uint32 LayoutSize = 0);
+    void UpdateShaderIfOutdated(const std::wstring Key, const std::wstring FilePath, const std::string EntryPoint, bool IsVertexShader, const D3D_SHADER_MACRO* Defines = nullptr, const D3D11_INPUT_ELEMENT_DESC* Layout = nullptr, uint32 LayoutSize = 0);
     void RegisterShaderForReload(std::wstring Key, std::wstring FilePath, std::string EntryPoint, bool IsVertexShader, D3D_SHADER_MACRO* Defines = nullptr, D3D11_INPUT_ELEMENT_DESC* Layout = nullptr, uint32 LayoutSize = 0);
     void ReloadAllShaders();
 
@@ -54,32 +57,79 @@ private:
     ID3D11Device* DXDDevice;
 
 public:
+    // 비동기 함수. 먼저 Add를 하고 필요할때 Get을 호출하세요
+    void AddVertexShaderAsync(const std::wstring& Key, const std::wstring& FileName, const std::string& EntryPoint, const D3D_SHADER_MACRO* defines);
+    void AddVertexShaderAndInputLayoutAsync(const std::wstring& Key, const std::wstring& FileName, const std::string& EntryPoint, const D3D11_INPUT_ELEMENT_DESC* Layout, uint32_t LayoutSize, const D3D_SHADER_MACRO* defines);
+    void AddPixelShaderAsync(const std::wstring& Key, const std::wstring& FileName, const std::string& EntryPoint, const D3D_SHADER_MACRO* defines);
+
+
     HRESULT AddVertexShader(const std::wstring& Key, const std::wstring& FileName);
     HRESULT AddVertexShader(const std::wstring& Key, const std::wstring& FileName, const std::string& EntryPoint);
-    HRESULT AddVertexShader(const std::wstring& Key, const std::wstring& FileName, const std::string& EntryPoint, const D3D_SHADER_MACRO* Defines);
+    HRESULT AddVertexShader(const std::wstring& Key, const std::wstring& FileName, const std::string& EntryPoint, const D3D_SHADER_MACRO* defines);
     HRESULT AddInputLayout(const std::wstring& Key, const D3D11_INPUT_ELEMENT_DESC* Layout, uint32_t LayoutSize);
     HRESULT AddComputeShader(const std::wstring& Key, const std::wstring& FileName, const std::string& EntryPoint);
     HRESULT AddGeometryShader(const std::wstring& Key, const std::wstring& FileName, const std::string& EntryPoint);
-    
+
     HRESULT AddVertexShaderAndInputLayout(const std::wstring& Key, const std::wstring& FileName, const std::string& EntryPoint, const D3D11_INPUT_ELEMENT_DESC* Layout, uint32_t LayoutSize);
     HRESULT AddVertexShaderAndInputLayout(const std::wstring& Key, const std::wstring& FileName, const std::string& EntryPoint, const D3D11_INPUT_ELEMENT_DESC* Layout, uint32_t LayoutSize, const D3D_SHADER_MACRO* defines);
     HRESULT AddPixelShader(const std::wstring& Key, const std::wstring& FileName, const std::string& EntryPoint);
-    HRESULT AddPixelShader(const std::wstring& Key, const std::wstring& FileName, const std::string& EntryPoint, const D3D_SHADER_MACRO* Defines);
-	ID3D11InputLayout* GetInputLayoutByKey(const std::wstring& Key) const;
-	ID3D11VertexShader* GetVertexShaderByKey(const std::wstring& Key) const;
-	ID3D11PixelShader* GetPixelShaderByKey(const std::wstring& Key) const;
+    HRESULT AddPixelShader(const std::wstring& Key, const std::wstring& FileName, const std::string& EntryPoint, const D3D_SHADER_MACRO* defines);
+    ID3D11InputLayout* GetInputLayoutByKey(const std::wstring& Key);
+    ID3D11VertexShader* GetVertexShaderByKey(const std::wstring& Key);
+    ID3D11PixelShader* GetPixelShaderByKey(const std::wstring& Key);
     ID3D11ComputeShader* GetComputeShaderByKey(const std::wstring& Key);
     ID3D11GeometryShader* GetGeometryShaderByKey(const std::wstring& Key);
 
+    void SetVertexShader(const std::wstring& Key, ID3D11DeviceContext* Context);
+    void SetVertexShaderAndInputLayout(const std::wstring& Key, ID3D11DeviceContext* Context);
+    void SetPixelShader(const std::wstring& Key, ID3D11DeviceContext* Context);
+
 private:
-	TMap<std::wstring, ID3D11InputLayout*> InputLayouts;
-	TMap<std::wstring, ID3D11VertexShader*> VertexShaders;
-	TMap<std::wstring, ID3D11PixelShader*> PixelShaders;
+    enum class ShaderType
+    {
+        VertexShader,
+        PixelShader,
+        ComputeShader,
+        GeometryShader
+    };
+    std::wstring GenerateCSOFileName(const std::wstring& FileName, ShaderType Version, const std::string& EntryPoint, const std::vector<D3D_SHADER_MACRO>& Defines);
+    HRESULT ReadShaderFile(const std::wstring& FileName, ID3DBlob** Blob, ShaderType Version, const std::string& EntryPoint, std::shared_ptr<std::vector<D3D_SHADER_MACRO>> Defines);
+    HRESULT SaveShaderFile(const std::wstring& FileName, ID3DBlob* Blob, ShaderType Version, const std::string& EntryPoint, std::shared_ptr<std::vector<D3D_SHADER_MACRO>> Defines);
+
+private:
+    TMap<std::wstring, ID3D11InputLayout*> InputLayouts;
+    TMap<std::wstring, ID3D11VertexShader*> VertexShaders;
+    TMap<std::wstring, ID3D11PixelShader*> PixelShaders;
     TMap<std::wstring, ID3D11ComputeShader*> ComputeShaders;
     TMap<std::wstring, ID3D11GeometryShader*> GeometryShaders;
 
     TMap<std::wstring, std::filesystem::file_time_type> ShaderTimeStamps;
     TMap<std::wstring, TSet<std::wstring>> ShaderDependencyGraph;
     std::vector<FShaderReloadInfo> RegisteredShaders;
+
+    struct ShaderCompileQueue
+    {
+        std::mutex Mutex;
+        std::condition_variable Condition;
+        bool IsReady = false;
+        std::variant<ID3D11InputLayout*, ID3D11VertexShader*, ID3D11PixelShader*> ShaderPtr;
+
+        ShaderCompileQueue() : IsReady(false), ShaderPtr(static_cast<ID3D11InputLayout*>(nullptr)) {}
+
+        // 복사/대입은 삭제
+        ShaderCompileQueue(const ShaderCompileQueue&) = delete;
+        ShaderCompileQueue& operator=(const ShaderCompileQueue&) = delete;
+
+        // 이동 생성자/이동 대입 연산자는 기본 제공 (또는 명시적으로)
+        ShaderCompileQueue(ShaderCompileQueue&&) = default;
+        ShaderCompileQueue& operator=(ShaderCompileQueue&&) = default;
+    };
+
+    std::unordered_map<std::wstring, ShaderCompileQueue> InputLayoutCompileQueue;
+    std::unordered_map<std::wstring, ShaderCompileQueue> VertexShaderCompileQueue;
+    std::unordered_map<std::wstring, ShaderCompileQueue> PixelShaderCompileQueue;
+
+    inline static std::mutex D3DCompileMutex;
+
 };
 

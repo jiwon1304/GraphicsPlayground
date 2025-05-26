@@ -1,7 +1,7 @@
 #pragma once
 
 #include "UObject/ObjectMacros.h"
-#include "Engine/EngineTypes.h"
+#include "Engine/Classes/Engine/EngineTypes.h"
 #include "Components/SceneComponent.h"
 #include "Math/Quat.h"
 #include "Math/Vector.h"

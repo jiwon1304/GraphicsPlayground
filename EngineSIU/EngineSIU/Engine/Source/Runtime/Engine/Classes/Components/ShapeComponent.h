@@ -30,6 +30,11 @@ public:
         bool, bDrawOnlyIfSelected, = true;
     )
 
+    UPROPERTY(
+        EditAnywhere,
+        bool, bIsSimulatingPhysics, = true;
+    )
+
     EShapeType GetShapeType() const { return ShapeType; }
 
 protected:

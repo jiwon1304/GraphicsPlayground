@@ -112,8 +112,8 @@ void FParticleRenderPass::CreateShader()
         { "INSTANCE_SUBUV",  0, DXGI_FORMAT_R32_FLOAT,           1, 44,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
         { "INSTANCE_COLOR",  0, DXGI_FORMAT_R32G32B32A32_FLOAT,  1, 48,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
     };
-    ShaderManager->AddVertexShaderAndInputLayout(L"ParticleShader_Sprite", L"Shaders/ParticleShader.hlsl", "mainVS", InputLayout, ARRAYSIZE(InputLayout), DefinesSprite);
-    ShaderManager->AddPixelShader(L"ParticleShader_Sprite", L"Shaders/ParticleShader.hlsl", "mainPS", DefinesSprite);
+    ShaderManager->AddVertexShaderAndInputLayoutAsync(L"ParticleShader_Sprite", L"Shaders/ParticleShader.hlsl", "mainVS", InputLayout, ARRAYSIZE(InputLayout), DefinesSprite);
+    ShaderManager->AddPixelShaderAsync(L"ParticleShader_Sprite", L"Shaders/ParticleShader.hlsl", "mainPS", DefinesSprite);
 
     // Mesh용
     D3D_SHADER_MACRO DefinesMesh[] = {
@@ -131,8 +131,8 @@ void FParticleRenderPass::CreateShader()
     };
 
 
-    ShaderManager->AddVertexShaderAndInputLayout(L"ParticleShader_Mesh", L"Shaders/ParticleShader.hlsl", "mainVS", InputLayoutMesh, ARRAYSIZE(InputLayoutMesh), DefinesMesh);
-    ShaderManager->AddPixelShader(L"ParticleShader_Mesh", L"Shaders/ParticleShader.hlsl", "mainPS", DefinesMesh);
+    ShaderManager->AddVertexShaderAndInputLayoutAsync(L"ParticleShader_Mesh", L"Shaders/ParticleShader.hlsl", "mainVS", InputLayoutMesh, ARRAYSIZE(InputLayoutMesh), DefinesMesh);
+    ShaderManager->AddPixelShaderAsync(L"ParticleShader_Mesh", L"Shaders/ParticleShader.hlsl", "mainPS", DefinesMesh);
 }
 
 

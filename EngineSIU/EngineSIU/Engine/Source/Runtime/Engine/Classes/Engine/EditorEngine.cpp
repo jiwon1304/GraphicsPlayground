@@ -148,6 +148,7 @@ void UEditorEngine::StartPIE()
 
     PIEWorld = Cast<UWorld>(EditorWorld->Duplicate(this));
     PIEWorld->WorldType = EWorldType::PIE;
+    PIEWorld->CreatePhysicsScene();
 
     PIEWorldContext.SetCurrentWorld(PIEWorld);
     ActiveWorld = PIEWorld;

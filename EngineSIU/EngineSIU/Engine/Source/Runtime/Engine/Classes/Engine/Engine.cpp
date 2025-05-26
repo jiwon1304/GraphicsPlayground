@@ -5,6 +5,7 @@
 #include "UnrealEd/SceneManager.h"
 #include "UObject/Casts.h"
 #include "World/World.h"
+#include "PhysicsCore/PhysxSolversModule.h"
 
 UEngine* GEngine = nullptr;
 
@@ -20,6 +21,9 @@ void UEngine::Init()
 
         UE_LOG(ELogLevel::Display, TEXT("RandInit(%d) SRandInit(%d)."), Seed1, Seed2);
     }
+
+    // PhysX 초기화
+    FPhysxSolversModule::GetModule();
 
     // 컴파일 타임에 확정되지 못한 타입을 런타임에 검사
     UStruct::ResolvePendingProperties();

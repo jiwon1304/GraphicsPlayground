@@ -3,6 +3,9 @@
 #include "UObject/ObjectFactory.h"
 #include "Components/Material/Material.h"
 #include "Engine/StaticMesh.h"
+#include "PhysicsEngine/BodySetup.h"
+#include "PhysicalMaterials/PhysicalMaterial.h"
+#include "PhysicalMaterials/Defines.h"
 
 #include "Asset/StaticMeshAsset.h"
 
@@ -926,6 +929,23 @@ UStaticMesh* FObjManager::CreateStaticMesh(const FString& FilePath)
 
     StaticMesh = FObjectFactory::ConstructObject<UStaticMesh>(nullptr); // TODO: 추후 AssetManager를 생성해서 관리.
     StaticMesh->SetData(StaticMeshRenderData);
+
+    // 임시 BodySetup 붙여주기
+    UBodySetup* BodySetup = FObjectFactory::ConstructObject<UBodySetup>(StaticMesh);
+    BodySetup->CollisionResponse = EBodyCollisionResponse::Type::BodyCollision_Enabled;
+    BodySetup->DefaultInstance.ExternalCollisionProfileBodySetup = BodySetup;
+
+	FPhysicsMaterial* PhysicsMaterial = new FPhysicsMaterial();
+	PhysicsMaterial->Density = 1000.f; // 임시 밀도 값
+
+	UPhysicalMaterial* PhysMaterial = FObjectFactory::ConstructObject<UPhysicalMaterial>(nullptr);
+	PhysMaterial->Material = PhysicsMaterial;
+	FKBoxElem BoxElem;
+
+	BodySetup->AggGeom.BoxElems.Add(BoxElem);
+	BodySetup->PhysMaterial = PhysMaterial;
+
+	StaticMesh->SetBodySetup(BodySetup);
 
     StaticMeshMap.Add(StaticMeshRenderData->ObjectName, StaticMesh); // TODO: 장기적으로 보면 파일 이름 대신 경로를 Key로 사용하는게 좋음.
     return StaticMesh;
