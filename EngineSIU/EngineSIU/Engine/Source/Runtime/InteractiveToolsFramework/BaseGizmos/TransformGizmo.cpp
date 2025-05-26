@@ -144,6 +144,12 @@ void ATransformGizmo::Tick(float DeltaTime)
             {
                 BoneIndex = Engine->PhysicsAssetEditorWorld->SelectBoneIndex;
             }
+
+            if (BoneIndex == -1)
+            {
+                return;
+            }
+            
             USkeletalMeshComponent* SkeletalMeshComp = Cast<USkeletalMeshComponent>(TargetComponent);
             if (SkeletalMeshComp)
             {

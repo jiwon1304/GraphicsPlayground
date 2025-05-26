@@ -64,7 +64,7 @@ void AEditorPlayer::Input()
                 if (USkeletalMeshComponent* SkeletalMeshComp = Cast<USkeletalMeshComponent>(Engine->GetSelectedComponent()))
                 {
                     UGizmoBaseComponent* Gizmo = Cast<UGizmoBaseComponent>(ActiveViewport->GetPickedGizmoComponent());
-                    int BoneIndex;
+                    int BoneIndex = -1;
                     if (SkeletalMeshComp->GetWorld()->WorldType == EWorldType::SkeletalViewer)
                     {
                         BoneIndex = Engine->SkeletalMeshViewerWorld->SelectBoneIndex;
@@ -72,6 +72,10 @@ void AEditorPlayer::Input()
                     else if (SkeletalMeshComp->GetWorld()->WorldType == EWorldType::PhysicsAssetEditor)
                     {
                         BoneIndex = Engine->PhysicsAssetEditorWorld->SelectBoneIndex;
+                    }
+                    if (BoneIndex == -1)
+                    {
+                        return;
                     }
                     TArray<FMatrix> GlobalBoneMatrices;
                     SkeletalMeshComp->GetCurrentGlobalBoneMatrices(GlobalBoneMatrices);
@@ -392,6 +396,10 @@ void AEditorPlayer::PickedBoneControl()
             else if (SkeletalMeshComp->GetWorld()->WorldType == EWorldType::PhysicsAssetEditor)
             {
                 BoneIndex = Engine->PhysicsAssetEditorWorld->SelectBoneIndex;
+            }
+            if (BoneIndex == -1)
+            {
+                return;
             }
             TArray<FMatrix> GlobalBoneMatrices;
             SkeletalMeshComp->GetCurrentGlobalBoneMatrices(GlobalBoneMatrices);

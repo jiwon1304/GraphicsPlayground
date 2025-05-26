@@ -46,4 +46,6 @@ public:
     int32 FindBodyIndex(const FName& BoneName) const;
     // PhysicsAsset의 Bone 이름을 가져옵니다.
     FName FindConstraintBoneName(int32 BoneIndex) const;
+
+    void UpdateBodySetupIndexMap();
 };

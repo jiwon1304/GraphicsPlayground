@@ -8,7 +8,6 @@ UPhysicsAssetWorld* UPhysicsAssetWorld::CreateWorld(UObject* InOuter, const EWor
     NewWorld->WorldName = InWorldName;
     NewWorld->WorldType = InWorldType;
     NewWorld->InitializeNewWorld();
-    NewWorld->SelectBoneIndex = 0;
     
     return NewWorld;
 }
@@ -21,4 +20,11 @@ void UPhysicsAssetWorld::Tick(float DeltaTime)
     //TODO: 임시로 SkeletalMeshComponent을 강제로 셀렉트 함
     Cast<UEditorEngine>(GEngine)->SelectActor(SkeletalMeshComponent->GetOwner());
     Cast<UEditorEngine>(GEngine)->SelectComponent(SkeletalMeshComponent);
+}
+
+void UPhysicsAssetWorld::ClearSelected()
+{
+    SelectBoneIndex = -1;
+    SelectedBodySetupIndex = -1;
+    SelectedPrimitive = FSelectedPrimitive();
 }
