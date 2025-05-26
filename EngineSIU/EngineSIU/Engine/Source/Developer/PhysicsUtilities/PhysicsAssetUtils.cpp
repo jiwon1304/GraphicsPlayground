@@ -26,6 +26,7 @@ namespace FPhysicsAssetUtils
     {
         assert(PhysicsAsset);
         PhysicsAsset->PreviewSkeletalMesh = SkelMesh;
+        SkelMesh->SetPhysicsAsset(PhysicsAsset);
 
         assert(SkelMesh);
         assert(SkelMesh->GetRenderData());

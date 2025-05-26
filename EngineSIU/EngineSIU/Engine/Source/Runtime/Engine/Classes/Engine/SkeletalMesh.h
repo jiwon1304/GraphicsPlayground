@@ -1,5 +1,6 @@
 #pragma once
 #include "SkinnedAsset.h"
+#include "Animation/Skeleton.h"
 #include "Asset/SkeletalMeshAsset.h" 
 class UPhysicsAsset;
 class USkeleton;

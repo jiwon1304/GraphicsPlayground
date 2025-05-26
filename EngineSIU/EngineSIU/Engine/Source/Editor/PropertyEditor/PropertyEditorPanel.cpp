@@ -738,14 +738,10 @@ void PropertyEditorPanel::RenderForSkeletalMesh(USkeletalMeshComponent* Skeletal
             {
                 if (ImGui::Button("Create & Bind Physics Asset"))
                 {
-                    // TODO UISOO Implement (Temp임)
-                    // FPhysicsAssetUtils::CreateFromSkeletalMesh(PhysicsAsset, SkeletalMesh);
-
                     PhysicsAsset = FObjectFactory::ConstructObject<UPhysicsAsset>(nullptr);
-                    PhysicsAsset->PreviewSkeletalMesh = SkeletalMesh;
-                    SkeletalMesh->SetPhysicsAsset(PhysicsAsset);
-                    
+                    FPhysicsAssetUtils::CreateFromSkeletalMesh(PhysicsAsset, SkeletalMesh);
                     UAssetManager::Get().AddPhysicsAsset(PhysicsAsset->GetName(), PhysicsAsset);
+                    
                 }
             }   
         }
