@@ -23,10 +23,10 @@ private:
     // 각 Bone에 대해 순회
     void RenderTreeRecursive(USkeletalMesh* InSkeletalMesh, UPhysicsAsset* InPhysicsAsset, int32 InBoneIndex, uint8 bShowBones, uint8 bShowBoneIndices, uint8 bShowBodies, uint8 bShowConstraints, uint8 bShowPrimitives);
     
-    void DrawPopupBodySetup(UPhysicsAsset* PhysicsAsset, UBodySetup* BodySetup, int32 InBoneIndex);
     void DrawPopupBone(UPhysicsAsset* PhysicsAsset, UBodySetup* BodySetup, int32 InBoneIndex) const;
-    void DrawPopupPrimitive(UBodySetup* InBodySetup, EAggCollisionShape::Type PrimitiveType, uint32 PrimitiveIndex);
-    void DrawPopupConstraint();
+    void DrawPopupBodySetup(UPhysicsAsset* PhysicsAsset, UBodySetup* BodySetup, int32 InBoneIndex, bool& bIsDelete);
+    void DrawPopupPrimitive(UPhysicsAsset* InPhysicsAsset, UBodySetup* InBodySetup, EAggCollisionShape::Type PrimitiveType, uint32 PrimitiveIndex, bool& bIsDelete);
+    void DrawPopupConstraint(UPhysicsAsset* PhysicsAsset, int32 TargetConstraintIndex, bool& bIsDelete) const;
     
     FString GetCleanBoneName(const FMeshBoneInfo& BoneInfo, int32 BoneIndex = -1, uint8 bShowBoneIndices = false) const;
     FString GetCleanBoneName(const FString& InFullName) const;
