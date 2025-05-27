@@ -53,6 +53,9 @@ void FResourceManager::Initialize(FRenderer* Renderer, FGraphicsDevice* Device)
     LoadTextureFromFile(Device->Device, L"Assets/Viewer/Sphere_16px.png");
     LoadTextureFromFile(Device->Device, L"Assets/Viewer/Sphyl_16x.png");
     LoadTextureFromFile(Device->Device, L"Assets/Viewer/Constraint_16x.png");
+    LoadTextureFromFile(Device->Device, L"Assets/Viewer/icon_PhAT_Sphere_40x.png");
+    LoadTextureFromFile(Device->Device, L"Assets/Viewer/icon_PhAT_Box_40x.png");
+    LoadTextureFromFile(Device->Device, L"Assets/Viewer/icon_PhAT_Sphyl_40x.png");
 }
 
 void FResourceManager::Release(FRenderer* Renderer)

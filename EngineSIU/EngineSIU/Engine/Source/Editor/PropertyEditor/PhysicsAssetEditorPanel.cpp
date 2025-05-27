@@ -31,7 +31,8 @@ void FPhysicsAssetEditorPanel::Render()
         return;
     }
 
-    if (BoneIconSRV == nullptr || NonWeightBoneIconSRV == nullptr || BodySetupIconSRV == nullptr || BoxIconSRV == nullptr || SphereIconSRV == nullptr || SphylIconSRV == nullptr || ConstraintIconSRV == nullptr)
+    if (BoneIconSRV == nullptr || NonWeightBoneIconSRV == nullptr || BodySetupIconSRV == nullptr || BoxIconSRV == nullptr || SphereIconSRV == nullptr || SphylIconSRV == nullptr || ConstraintIconSRV == nullptr
+        || BoxPhATIconSRV == nullptr || SpherePhATIconSRV == nullptr || SphylPhATIconSRV == nullptr)
     {
         LoadBoneIcon();
     }
@@ -63,19 +64,6 @@ void FPhysicsAssetEditorPanel::Render()
 
     ImGui::Spacing();
     ImGui::Separator();
-
-    // TODO UISOO
-
-    // Right Click -> Add or ReCreate BodySetup
-    //             -> Add Constraint
-    //             -> Add Primitive
-    
-    // Delete Key -> Delete
-    // Internal -> Add/Remove - BobySetup
-    //          -> Add/Remove - Shape
-    //          -> Add/Remove - Constraint
-    //          -> Select - Bone, BodySetup(Shape), Constraint
-    //          -> Delete Key
 
     ImGui::BeginChild("Skeletal Tree Id");
     RenderSkeletonBoneTree();    // Render Bone, Body, Constraint ...
@@ -178,6 +166,19 @@ void FPhysicsAssetEditorPanel::RenderAddPrimitiveButton()
         ImGui::PopStyleColor();
         for (const auto& Shape : Shapes)
         {
+            if (Shape.ShapeType == EAggCollisionShape::Box)
+            {
+                ImGui::Image((ImTextureID)BoxPhATIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
+            }
+            else if (Shape.ShapeType == EAggCollisionShape::Sphere)
+            {
+                ImGui::Image((ImTextureID)SpherePhATIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
+            }
+            else if (Shape.ShapeType == EAggCollisionShape::Sphyl)
+            {
+                ImGui::Image((ImTextureID)SphylPhATIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
+            }
+            ImGui::SameLine();
             if (ImGui::Selectable(Shape.Label))
             {
                 UEditorEngine* EditorEngine = Cast<UEditorEngine>(GEngine);
@@ -360,10 +361,7 @@ void FPhysicsAssetEditorPanel::RenderSkeletonBoneTree()
     UPhysicsAsset* SelectedPhysicsAsset = SelectedSkeletalMesh->GetPhysicsAsset();
 
     int32 BoneIndex = 0;
-    if (EditorEngine->PhysicsAssetEditorWorld->bShowBones)
-    {
-        RenderTreeRecursive(SelectedSkeletalMesh, SelectedPhysicsAsset, BoneIndex, EditorEngine->PhysicsAssetEditorWorld->bShowBones, EditorEngine->PhysicsAssetEditorWorld->bShowBoneIndices, EditorEngine->PhysicsAssetEditorWorld->bShowBodies, EditorEngine->PhysicsAssetEditorWorld->bShowConstraints, EditorEngine->PhysicsAssetEditorWorld->bShowPrimitives);
-    }
+    RenderTreeRecursive(SelectedSkeletalMesh, SelectedPhysicsAsset, BoneIndex, EditorEngine->PhysicsAssetEditorWorld->bShowBones, EditorEngine->PhysicsAssetEditorWorld->bShowBoneIndices, EditorEngine->PhysicsAssetEditorWorld->bShowBodies, EditorEngine->PhysicsAssetEditorWorld->bShowConstraints, EditorEngine->PhysicsAssetEditorWorld->bShowPrimitives);
 }
 
 void FPhysicsAssetEditorPanel::RenderDetailPanel()
@@ -571,12 +569,16 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
             EditorEngine->PhysicsAssetEditorWorld->SelectBoneIndex = (InBoneIndex);
         }
     }
+
     
-    if (bBoneNodeOpen) // 노드가 열려있다면
+    // TODO 코드가 복잡하다. 
+    if ((bShowBones && bBoneNodeOpen) || !bShowBones) // 노드가 열려있다면
     {
         ImGui::PushID("Body");
         bool bDrawChildren = true;
         bool bBodySetupNodeOpen = false;
+
+        // Push & Draw BodySetup
         if (bShowBodies)
         {
             bDrawChildren = false;
@@ -615,12 +617,16 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
                 }
 
                 bBodySetupNodeOpen = ImGui::TreeNodeEx(GetData(GetCleanBoneName(TargetBodySetup->BoneName.ToString())), NodeFlags);
+                bool bIsDelete = false;
                 if (bBodySetupNodeOpen)
                 {
-                    DrawPopupBodySetup(InPhysicsAsset, TargetBodySetup, InBoneIndex);
-                    bDrawChildren = true;
+                    DrawPopupBodySetup(InPhysicsAsset, TargetBodySetup, InBoneIndex, bIsDelete);
+                    if (!bIsDelete)
+                    {
+                        bDrawChildren = true;
+                    }
                 }
-                if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) // 왼쪽 마우스 버튼 클릭 시
+                if (!bIsDelete && ImGui::IsItemClicked(ImGuiMouseButton_Left)) // 왼쪽 마우스 버튼 클릭 시
                 {
                     EditorEngine->PhysicsAssetEditorWorld->ClearSelected();
                     EditorEngine->PhysicsAssetEditorWorld->SelectedBodySetupIndex = (TargetBodyIndex);
@@ -628,6 +634,7 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
             }
         }
 
+        // Draw Child
         if (bDrawChildren)
         {
             if (bShowPrimitives)
@@ -648,9 +655,10 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
 
                         if (ImGui::TreeNodeEx(GetData(GetCleanBoneName(ShapeElem.Name.ToString())), NodeFlags))
                         {
-                            DrawPopupPrimitive(TargetBodySetup, PrimitiveType, PrimitiveIndex);
+                            bool bIsDelete = false; 
+                            DrawPopupPrimitive(InPhysicsAsset, TargetBodySetup, PrimitiveType, PrimitiveIndex, bIsDelete);
 
-                            if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) // 왼쪽 마우스 버튼 클릭 시
+                            if (!bIsDelete && ImGui::IsItemClicked(ImGuiMouseButton_Left)) // 왼쪽 마우스 버튼 클릭 시
                             {
                                 EditorEngine->PhysicsAssetEditorWorld->ClearSelected();
                                 EditorEngine->PhysicsAssetEditorWorld->SelectedPrimitive.PrimitiveType = PrimitiveType;
@@ -673,9 +681,10 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
 
                         if (ImGui::TreeNodeEx(GetData(GetCleanBoneName(ShapeElem.Name.ToString())), NodeFlags))
                         {
-                            DrawPopupPrimitive(TargetBodySetup, PrimitiveType, PrimitiveIndex);
+                            bool bIsDelete = false;
+                            DrawPopupPrimitive(InPhysicsAsset, TargetBodySetup, PrimitiveType, PrimitiveIndex, bIsDelete);
                             
-                            if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) // 왼쪽 마우스 버튼 클릭 시
+                            if (!bIsDelete && ImGui::IsItemClicked(ImGuiMouseButton_Left)) // 왼쪽 마우스 버튼 클릭 시
                             {
                                 EditorEngine->PhysicsAssetEditorWorld->ClearSelected();
                                 EditorEngine->PhysicsAssetEditorWorld->SelectedPrimitive.PrimitiveType = PrimitiveType;
@@ -698,9 +707,10 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
 
                         if (ImGui::TreeNodeEx(GetData(GetCleanBoneName(ShapeElem.Name.ToString())), NodeFlags))
                         {
-                            DrawPopupPrimitive(TargetBodySetup, PrimitiveType, PrimitiveIndex);
+                            bool bIsDelete;
+                            DrawPopupPrimitive(InPhysicsAsset, TargetBodySetup, PrimitiveType, PrimitiveIndex, bIsDelete);
                             
-                            if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) // 왼쪽 마우스 버튼 클릭 시
+                            if (!bIsDelete && ImGui::IsItemClicked(ImGuiMouseButton_Left)) // 왼쪽 마우스 버튼 클릭 시
                             {
                                 EditorEngine->PhysicsAssetEditorWorld->ClearSelected();
                                 EditorEngine->PhysicsAssetEditorWorld->SelectedPrimitive.PrimitiveType = PrimitiveType;
@@ -717,50 +727,70 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
             if (bShowConstraints)
             {
                 int32 TargetBodyIndex = InPhysicsAsset->FindBodyIndex(BoneInfo.Name);
-                // 동일한 이름의 Constraint가 들어올 수 있음. 유의
-                TArray<int32> ConstraintIndices;
-                InPhysicsAsset->BodyFindConstraints(TargetBodyIndex, ConstraintIndices);
-                for (int32 ConstraintIndex : ConstraintIndices)
+                if (TargetBodyIndex != -1 && InPhysicsAsset->BodySetup.Num() > TargetBodyIndex)
                 {
-                    ImGuiTreeNodeFlags NodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Leaf;
-                    UPhysicsConstraintTemplate* ConstraintTemplate = InPhysicsAsset->ConstraintSetup[ConstraintIndex];
-                    ImGui::PushID(ConstraintIndex);
-                    ImGui::Image((ImTextureID)ConstraintIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
-                    ImGui::SameLine();
-
-                    if (ImGui::TreeNodeEx(GetData(FString::Printf("[%s->%s] Constraint", GetData(GetCleanBoneName(ConstraintTemplate->DefaultInstance.ConstraintBone1.ToString())), GetData(GetCleanBoneName(ConstraintTemplate->DefaultInstance.ConstraintBone2.ToString())))), NodeFlags))
+                    // 동일한 이름의 Constraint가 들어올 수 있음. 유의
+                    TArray<int32> ConstraintIndices;
+                    InPhysicsAsset->BodyFindConstraints(TargetBodyIndex, ConstraintIndices);
+                    for (int32 ConstraintIndex : ConstraintIndices)
                     {
-                        DrawPopupConstraint();
-                            
-                        if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) // 왼쪽 마우스 버튼 클릭 시
+                        ImGuiTreeNodeFlags NodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Leaf;
+                        UPhysicsConstraintTemplate* ConstraintTemplate = InPhysicsAsset->ConstraintSetup[ConstraintIndex];
+                        ImGui::PushID(ConstraintIndex);
+                        ImGui::Image((ImTextureID)ConstraintIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
+                        ImGui::SameLine();
+
+                        if (ImGui::TreeNodeEx(GetData(FString::Printf("[%s->%s] Constraint", GetData(GetCleanBoneName(ConstraintTemplate->DefaultInstance.ConstraintBone1.ToString())), GetData(GetCleanBoneName(ConstraintTemplate->DefaultInstance.ConstraintBone2.ToString())))), NodeFlags))
                         {
-                            EditorEngine->PhysicsAssetEditorWorld->ClearSelected();
-                            EditorEngine->PhysicsAssetEditorWorld->SelectedConstraintIndex = ConstraintIndex;
+                            bool bIsDelete = false;
+                            DrawPopupConstraint(InPhysicsAsset, ConstraintIndex, bIsDelete);
+                            
+                            if (!bIsDelete && ImGui::IsItemClicked(ImGuiMouseButton_Left)) // 왼쪽 마우스 버튼 클릭 시
+                            {
+                                EditorEngine->PhysicsAssetEditorWorld->ClearSelected();
+                                EditorEngine->PhysicsAssetEditorWorld->SelectedConstraintIndex = ConstraintIndex;
+                            }
+                            ImGui::TreePop();
                         }
-                        ImGui::TreePop();
+                        ImGui::PopID();
                     }
-                    ImGui::PopID();
                 }
             }
         }
 
-        if (bBodySetupNodeOpen)
+        // Pop BodySetup
+        if (bShowBones)
         {
-            ImGui::TreePop(); // 트리 노드 닫기
-        }
-        
-        ImGui::PopID();
-        
-        // 자식 본들 재귀적으로 처리
-        for (int32 i = 0; i < ReferenceSkeleton->RawRefBoneInfo.Num(); ++i)
-        {
-            if (ReferenceSkeleton->RawRefBoneInfo[i].ParentIndex == InBoneIndex)
+            if (bBodySetupNodeOpen)
             {
-                RenderTreeRecursive(InSkeletalMesh, InPhysicsAsset, i, bShowBones, bShowBoneIndices, bShowBodies, bShowConstraints, bShowPrimitives);
+                ImGui::TreePop(); // 트리 노드 닫기
+            }
+            ImGui::PopID();
+        }
+
+        if (bBoneNodeOpen || (!bShowBones && bBodySetupNodeOpen))
+        {
+            // 자식 본들 재귀적으로 처리
+            for (int32 i = 0; i < ReferenceSkeleton->RawRefBoneInfo.Num(); ++i)
+            {
+                if (ReferenceSkeleton->RawRefBoneInfo[i].ParentIndex == InBoneIndex)
+                {
+                    RenderTreeRecursive(InSkeletalMesh, InPhysicsAsset, i, bShowBones, bShowBoneIndices, bShowBodies, bShowConstraints, bShowPrimitives);
+                }
             }
         }
-    }
 
+        // Pop BodySetup
+        if (!bShowBones)
+        {
+            if (bBodySetupNodeOpen)
+            {
+                ImGui::TreePop(); // 트리 노드 닫기
+            }
+            ImGui::PopID();
+        }
+    }
+    
     if (bBoneNodeOpen)
     {
         ImGui::TreePop();
@@ -769,15 +799,15 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
     ImGui::PopID(); // ID 스택 복원
 }
 
-void FPhysicsAssetEditorPanel::DrawPopupBodySetup(UPhysicsAsset* PhysicsAsset, UBodySetup* BodySetup, int32 InBoneIndex)
+void FPhysicsAssetEditorPanel::DrawPopupBodySetup(UPhysicsAsset* PhysicsAsset, UBodySetup* BodySetup, int32 InBoneIndex, bool& bIsDelete)
 {
+    bIsDelete = false;
     UEditorEngine* EditorEngine = Cast<UEditorEngine>(GEngine);
     if (!EditorEngine)
     {
         return;
     }
     
-    // UISOO TODO
     if (ImGui::BeginPopupContextItem("TreeNodeRightClick"))
     {
         ImGui::PushStyleColor(ImGuiCol_Text, InActiveTextColor);
@@ -793,14 +823,22 @@ void FPhysicsAssetEditorPanel::DrawPopupBodySetup(UPhysicsAsset* PhysicsAsset, U
             ImGui::SeparatorText("Shape Type");
             ImGui::Text("(Create Body Setup Automatically)");
             ImGui::PopStyleColor();
+
+            
+            ImGui::Image((ImTextureID)BoxPhATIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
+            ImGui::SameLine();
             if (ImGui::MenuItem("Add Box"))
             {
                 AddShape(PhysicsAsset, BodySetup, InBoneIndex, EAggCollisionShape::Box);
             }
+            ImGui::Image((ImTextureID)SpherePhATIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
+            ImGui::SameLine();
             if (ImGui::MenuItem("Add Sphere"))
             {
                 AddShape(PhysicsAsset, BodySetup, InBoneIndex, EAggCollisionShape::Sphere);
             }
+            ImGui::Image((ImTextureID)SphylPhATIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
+            ImGui::SameLine();
             if (ImGui::MenuItem("Add Capsule"))
             {
                 AddShape(PhysicsAsset, BodySetup, InBoneIndex, EAggCollisionShape::Sphyl);
@@ -809,6 +847,8 @@ void FPhysicsAssetEditorPanel::DrawPopupBodySetup(UPhysicsAsset* PhysicsAsset, U
         }
         if (ImGui::BeginMenu("Constraint"))
         {
+            ImGui::SetNextWindowSize(ImVec2(200, 500), ImGuiCond_Always);
+
             ImGui::PushStyleColor(ImGuiCol_Text, InActiveTextColor);
             ImGui::SeparatorText("Create New Constraint");
             ImGui::PopStyleColor();
@@ -820,7 +860,9 @@ void FPhysicsAssetEditorPanel::DrawPopupBodySetup(UPhysicsAsset* PhysicsAsset, U
                     {
                         continue;
                     }
-                    
+
+                    ImGui::Image((ImTextureID)ConstraintIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
+                    ImGui::SameLine();
                     if (ImGui::MenuItem(GetData(GetCleanBoneName(TempBodySetup->BoneName.ToString()))))
                     {
                         const FMeshBoneInfo& MeshBoneInfo = PhysicsAsset->PreviewSkeletalMesh->GetRefSkeleton()->GetRawRefBoneInfo()[InBoneIndex];
@@ -848,11 +890,34 @@ void FPhysicsAssetEditorPanel::DrawPopupBodySetup(UPhysicsAsset* PhysicsAsset, U
                             EditorEngine->PhysicsAssetEditorWorld->ClearSelected();
                             EditorEngine->PhysicsAssetEditorWorld->SelectedConstraintIndex = NewConstraintIndex;
                         }
+                        ImGui::CloseCurrentPopup();
+                        break;
                     }
                 }
                 ImGui::EndChild();
             }
             ImGui::EndMenu();
+        }
+
+        if (ImGui::MenuItem("Delete"))
+        {
+            bIsDelete = true;
+
+            BodySetup->AggGeom.BoxElems.Empty();
+            BodySetup->AggGeom.SphereElems.Empty();
+            BodySetup->AggGeom.SphylElems.Empty();
+
+            for (UPhysicsConstraintTemplate* ConstraintSetup : PhysicsAsset->ConstraintSetup)
+            {
+                GUObjectArray.MarkRemoveObject(ConstraintSetup);
+            }
+
+            PhysicsAsset->ConstraintSetup.Empty();
+            
+            PhysicsAsset->BodySetup.Remove(BodySetup);
+            PhysicsAsset->UpdateBodySetupIndexMap();
+            EditorEngine->PhysicsAssetEditorWorld->ClearSelected();
+            GUObjectArray.MarkRemoveObject(BodySetup);
         }
         ImGui::EndPopup();
     }
@@ -860,7 +925,6 @@ void FPhysicsAssetEditorPanel::DrawPopupBodySetup(UPhysicsAsset* PhysicsAsset, U
 
 void FPhysicsAssetEditorPanel::DrawPopupBone(UPhysicsAsset* PhysicsAsset, UBodySetup* BodySetup, int32 InBoneIndex) const
 {
-    // TODO UISOO
     if (ImGui::BeginPopupContextItem("TreeNodeRightClick"))
     {
         ImGui::PushStyleColor(ImGuiCol_Text, InActiveTextColor);
@@ -876,14 +940,20 @@ void FPhysicsAssetEditorPanel::DrawPopupBone(UPhysicsAsset* PhysicsAsset, UBodyS
             ImGui::SeparatorText("Shape Type");
             ImGui::Text("Create BodySetup Automatically");
             ImGui::PopStyleColor();
+            ImGui::Image((ImTextureID)BoxPhATIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
+            ImGui::SameLine();
             if (ImGui::MenuItem("Add Box"))
             {
                 AddShape(PhysicsAsset, BodySetup, InBoneIndex, EAggCollisionShape::Box);
             }
+            ImGui::Image((ImTextureID)SpherePhATIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
+            ImGui::SameLine();
             if (ImGui::MenuItem("Add Sphere"))
             {
                 AddShape(PhysicsAsset, BodySetup, InBoneIndex, EAggCollisionShape::Sphere);
             }
+            ImGui::Image((ImTextureID)SphylPhATIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
+            ImGui::SameLine();
             if (ImGui::MenuItem("Add Capsule"))
             {
                 AddShape(PhysicsAsset, BodySetup, InBoneIndex, EAggCollisionShape::Sphyl);
@@ -894,27 +964,92 @@ void FPhysicsAssetEditorPanel::DrawPopupBone(UPhysicsAsset* PhysicsAsset, UBodyS
     }
 }
 
-void FPhysicsAssetEditorPanel::DrawPopupPrimitive(UBodySetup* InBodySetup, EAggCollisionShape::Type PrimitiveType, uint32 PrimitiveIndex)
+void FPhysicsAssetEditorPanel::DrawPopupPrimitive(UPhysicsAsset* InPhysicsAsset, UBodySetup* InBodySetup, EAggCollisionShape::Type PrimitiveType, uint32 PrimitiveIndex, bool& bIsDelete)
 {
-    // UISOO TODO
-    // 우클릭 팝업 트리거
+    bIsDelete = false;
+    UEditorEngine* EditorEngine = Cast<UEditorEngine>(GEngine);
+    if (!EditorEngine)
+    {
+        return;
+    }
+    
     if (ImGui::BeginPopupContextItem("TreeNodeRightClick"))
     {
-        if (ImGui::MenuItem("Action 1"))
+        if (ImGui::MenuItem("Delete"))
         {
-            // Action 1 처리
-        }
-        if (ImGui::MenuItem("Action 2"))
-        {
-            // Action 2 처리
+            bIsDelete = true;
+            switch (PrimitiveType)
+            {
+            case EAggCollisionShape::Sphere:
+            {
+                InBodySetup->AggGeom.SphereElems.RemoveAt(PrimitiveIndex);
+                break;
+            }
+            case EAggCollisionShape::Box:
+            {
+                InBodySetup->AggGeom.BoxElems.RemoveAt(PrimitiveIndex);
+                break;
+            }
+            case EAggCollisionShape::Sphyl:
+            {
+                InBodySetup->AggGeom.SphylElems.RemoveAt(PrimitiveIndex);
+                break;
+            }
+            case EAggCollisionShape::Convex:
+            case EAggCollisionShape::TaperedCapsule:
+            case EAggCollisionShape::LevelSet:
+            case EAggCollisionShape::SkinnedLevelSet:
+            case EAggCollisionShape::Unknown:
+            default:
+                break;
+            }
+
+            if (InBodySetup->AggGeom.BoxElems.Num() == 0 && InBodySetup->AggGeom.SphereElems.Num() == 0 && InBodySetup->AggGeom.SphylElems.Num() == 0)
+            {
+                for (UPhysicsConstraintTemplate* ConstraintSetup : InPhysicsAsset->ConstraintSetup)
+                {
+                    GUObjectArray.MarkRemoveObject(ConstraintSetup);
+                }
+
+                InPhysicsAsset->ConstraintSetup.Empty();
+                
+                InPhysicsAsset->BodySetup.Remove(InBodySetup);
+                InPhysicsAsset->UpdateBodySetupIndexMap();
+                EditorEngine->PhysicsAssetEditorWorld->ClearSelected();
+                GUObjectArray.MarkRemoveObject(InBodySetup);
+            }
         }
         ImGui::EndPopup();
     }
 }
 
-void FPhysicsAssetEditorPanel::DrawPopupConstraint()
+void FPhysicsAssetEditorPanel::DrawPopupConstraint(UPhysicsAsset* PhysicsAsset, int32 TargetConstraintIndex, bool& bIsDelete) const
 {
-    // TODO UISOO
+    bIsDelete = false;
+    UEditorEngine* EditorEngine = Cast<UEditorEngine>(GEngine);
+    if (!EditorEngine)
+    {
+        return;
+    }
+    
+    if (ImGui::BeginPopupContextItem("TreeNodeRightClick"))
+    {
+        if (ImGui::MenuItem("Delete"))
+        {
+            bIsDelete = true;
+            UPhysicsConstraintTemplate*  TargetPhysicsConstraintTemplate = PhysicsAsset->ConstraintSetup[TargetConstraintIndex];
+            PhysicsAsset->ConstraintSetup.RemoveAt(TargetConstraintIndex);
+            GUObjectArray.MarkRemoveObject(TargetPhysicsConstraintTemplate);
+            EditorEngine->PhysicsAssetEditorWorld->ClearSelected();
+            
+            for (int32 ConstraintIndex = 0; ConstraintIndex < PhysicsAsset->ConstraintSetup.Num(); ConstraintIndex++)
+            {
+                UPhysicsConstraintTemplate* Constraint = PhysicsAsset->ConstraintSetup[ConstraintIndex];
+                Constraint->DefaultInstance.ConstraintIndex = ConstraintIndex;
+            }
+        }
+        ImGui::EndPopup();
+    }
 }
 
 FString FPhysicsAssetEditorPanel::GetCleanBoneName(const FMeshBoneInfo& BoneInfo, int32 BoneIndex, uint8 bShowBoneIndices) const
@@ -962,6 +1097,10 @@ void FPhysicsAssetEditorPanel::LoadBoneIcon()
     SphereIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/Sphere_16px.png")->TextureSRV;
     SphylIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/Sphyl_16x.png")->TextureSRV;
     ConstraintIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/Constraint_16x.png")->TextureSRV;
+
+    SpherePhATIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/icon_PhAT_Sphere_40x.png")->TextureSRV;
+    BoxPhATIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/icon_PhAT_Box_40x.png")->TextureSRV;
+    SphylPhATIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/icon_PhAT_Sphyl_40x.png")->TextureSRV;
 }
 
 void FPhysicsAssetEditorPanel::AddShape(UPhysicsAsset* InPhysicsAsset, UBodySetup* TargetBodySetup, int32 BoneIndex, EAggCollisionShape::Type InShapeType) const
