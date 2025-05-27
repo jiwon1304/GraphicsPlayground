@@ -27,6 +27,19 @@ void FPhysScene::Init(FPhysicsSolver* InSceneSolver, physx::PxScene* InScene)
     PhysxScene = InScene;
 }
 
+void FPhysScene::Release()
+{
+    if (PhysxScene)
+    {
+        PhysxScene->release();
+    }
+
+    if (SceneSolver)
+    {
+        delete SceneSolver;
+    }
+}
+
 void FPhysScene::AddActor(AActor* Actor)
 {
     TSet<UActorComponent*> ActorComponents = Actor->GetComponents();
@@ -57,9 +70,9 @@ void FPhysScene::AddActor(AActor* Actor)
             FBodyInstance* BodyInstance = new FBodyInstance(StaticMesh->GetBodySetup()->DefaultInstance);
             
             BodyInstance->OwnerComponent = StaticMeshComponent;
-            PxActor* RegisteredActor = SceneSolver->RegisterObject(this, BodyInstance);
+            PxActor* RegisteredActor = SceneSolver->RegisterObject(this, BodyInstance, StaticMeshComponent->GetWorldMatrix().GetMatrixWithoutScale());
 
-            StaticMeshComponent->BodyInstance = BodyInstance;
+            //StaticMeshComponent->BodyInstance = BodyInstance;
             //RegisteredInstances.Add(BodyInstance, RegisteredActor);
         }
     }
@@ -91,13 +104,25 @@ void FPhysScene::AddActor(AActor* Actor)
             }
 
             TMap<FName, PxActor*> RegisteredActors;
-            for (const auto& BodySetup : PhysicsAsset->BodySetups)
+            for (const auto& BodySetup : PhysicsAsset->BodySetup)
             {
                 // 복사해서 붙여줌
                 FBodyInstance* BodyInstance = new FBodyInstance(BodySetup->DefaultInstance);
                 BodyInstance->OwnerComponent = SkeletalMeshComponent;
+                // !TODO : geometry들에 대해서 Bone 기준 좌표계로 넘긴다
+                FName BoneName = BodySetup->BoneName;
+                int32 BoneIndex = SkeletalMesh->GetSkeleton()->GetReferenceSkeleton().FindRawBoneIndex(BoneName);
+                if (BoneIndex == INDEX_NONE)
+                {
+                    UE_LOG(ELogLevel::Warning, TEXT("BodySetup '%s' has no valid BoneName '%s' in SkeletalMesh '%s'."), *BodySetup->GetName(), *BoneName.ToString(), *SkeletalMesh->GetName());
+                    delete BodyInstance; // 메모리 해제
+                    continue;
+                }
 
-                PxActor* RegisteredActor = SceneSolver->RegisterObject(this, BodyInstance);
+                FMatrix InitialMatrix = /**/ SkeletalMeshComponent->GetBoneComponentSpaceTransform(BoneIndex).ToMatrixNoScale() * SkeletalMeshComponent->GetWorldMatrix();
+
+                PxActor* RegisteredActor = SceneSolver->RegisterObject(this, BodyInstance, InitialMatrix);
+
                 if (RegisteredActor)
                 {
                     // 본 이름을 키로 해서 캐시 -> Constraint에서 찾아서 사용
@@ -155,6 +180,10 @@ void FPhysScene::AdvanceAndDispatch_External(float DeltaTime)
 void FPhysScene::SyncBodies()
 {
     SceneSolver->FetchData(this);
+}
+
+void FPhysScene::SetGeometryToWorld(UBodySetup* BodySetup)
+{
 }
 
 void FPhysScene::SetGravity(FVector InGravity)

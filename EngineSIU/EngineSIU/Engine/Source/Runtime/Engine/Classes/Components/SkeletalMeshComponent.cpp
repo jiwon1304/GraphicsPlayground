@@ -378,6 +378,7 @@ FTransform USkeletalMeshComponent::GetBoneComponentSpaceTransform(int32 BoneInde
     while (CurrentParentIndex != INDEX_NONE)
     {
         AccumulatedTransform = BonePoseContext.Pose[CurrentParentIndex] * AccumulatedTransform;
+        //AccumulatedTransform = AccumulatedTransform * BonePoseContext.Pose[CurrentParentIndex];
 
         CurrentParentIndex = RefSkeleton.GetRawRefBoneInfo()[CurrentParentIndex].ParentIndex;
     }
