@@ -26,5 +26,6 @@ void UPhysicsAssetWorld::ClearSelected()
 {
     SelectBoneIndex = -1;
     SelectedBodySetupIndex = -1;
+    SelectedConstraintIndex = -1;
     SelectedPrimitive = FSelectedPrimitive();
 }
