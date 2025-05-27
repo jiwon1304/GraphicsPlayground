@@ -37,32 +37,35 @@ namespace FPhysicsAssetUtils
 
         // 일단 루트에다가만 한 개 만들기
         const FReferenceSkeleton* ReferenceSkeleton = SkelMesh->GetRefSkeleton();
-        for (const auto& Bone : ReferenceSkeleton->GetRawRefBoneInfo())
+        const TArray<FMeshBoneInfo>& RawBoneInfo = ReferenceSkeleton->GetRawRefBoneInfo();
+        for (int i = 0; i < RawBoneInfo.Num(); i++)
         {
-            if (Bone.ParentIndex == -1)
-            {
-                UBodySetup* BodySetup = FObjectFactory::ConstructObject<UBodySetup>(PhysicsAsset, FName(*FString::Printf(TEXT("BodySetup_%s"), *Bone.Name.ToString())));
-                BodySetup->BoneName = Bone.Name;
+            const FMeshBoneInfo& Bone = RawBoneInfo[i];
+            // 일단 모든 본에 다 만들어보기
+            UBodySetup* BodySetup = FObjectFactory::ConstructObject<UBodySetup>(PhysicsAsset, FName(*FString::Printf(TEXT("BodySetup_%s"), *Bone.Name.ToString())));
+            BodySetup->BoneName = Bone.Name;
 
-                BodySetup->CollisionResponse = EBodyCollisionResponse::Type::BodyCollision_Enabled;
-                BodySetup->DefaultInstance.ExternalCollisionProfileBodySetup = BodySetup;
+            BodySetup->CollisionResponse = EBodyCollisionResponse::Type::BodyCollision_Enabled;
+            BodySetup->DefaultInstance.ExternalCollisionProfileBodySetup = BodySetup;
+            BodySetup->DefaultInstance.InstanceBoneIndex = i;
+            BodySetup->DefaultInstance.InstanceBodyIndex = i;
+            BodySetup->DefaultInstance.ObjectType = ECollisionChannel::ECC_WorldDynamic;
 
-                FPhysicsMaterial* PhysicsMaterial = new FPhysicsMaterial();
-                PhysicsMaterial->Density = 1000.f; // 임시 밀도 값
+            FPhysicsMaterial* PhysicsMaterial = new FPhysicsMaterial();
+            PhysicsMaterial->Density = 1000.f; // 임시 밀도 값
 
-                // !TODO : 디폴트 머티리얼을 하나 만들어두고 그걸 사용하도록 해야 함
-                UPhysicalMaterial* PhysMaterial = FObjectFactory::ConstructObject<UPhysicalMaterial>(nullptr);
-                PhysMaterial->Material = PhysicsMaterial;
+            // !TODO : 디폴트 머티리얼을 하나 만들어두고 그걸 사용하도록 해야 함
+            UPhysicalMaterial* PhysMaterial = FObjectFactory::ConstructObject<UPhysicalMaterial>(nullptr);
+            PhysMaterial->Material = PhysicsMaterial;
 
-                FKSphylElem SphylElem;
+            FKSphylElem SphylElem;
+            SphylElem.Name = Bone.Name.ToString() + "_capsule";
 
-                BodySetup->AggGeom.SphylElems.Add(SphylElem);
-                BodySetup->PhysMaterial = PhysMaterial;
+            BodySetup->AggGeom.SphylElems.Add(SphylElem);
+            BodySetup->PhysMaterial = PhysMaterial;
 
-                PhysicsAsset->BodySetup.Add(BodySetup);
-                PhysicsAsset->UpdateBodySetupIndexMap();
-                break;
-            }
+            PhysicsAsset->BodySetup.Add(BodySetup);
+            PhysicsAsset->UpdateBodySetupIndexMap();
         }
 
 

@@ -1,4 +1,4 @@
-﻿#include "PhysicsAssetEditorPanel.h"
+#include "PhysicsAssetEditorPanel.h"
 
 #include "Engine/EditorEngine.h"
 #include "Engine/SkeletalMesh.h"
@@ -6,6 +6,8 @@
 #include "PhysicsEngine/PhysicsAsset.h"
 #include "PhysicsEngine/PhysicsConstraintTemplate.h"
 #include "World/PhysicsAssetWorld.h"
+#include <PhysicalMaterials/PhysicalMaterial.h>
+#include "PhysicalMaterials/Defines.h"
 
 const float	DefaultPrimSize = 15.0f;
 const float	DuplicateXOffset = 10.0f;
@@ -245,7 +247,22 @@ void FPhysicsAssetEditorPanel::RenderAddPrimitiveButton()
                     if (BodyIndex == -1)
                     {
                         TargetBodySetup = FObjectFactory::ConstructObject<UBodySetup>(PhysicsAsset);
+
                         TargetBodySetup->BoneName = BoneName;
+
+                        TargetBodySetup->CollisionResponse = EBodyCollisionResponse::Type::BodyCollision_Enabled;
+                        TargetBodySetup->DefaultInstance.ExternalCollisionProfileBodySetup = TargetBodySetup;
+                        TargetBodySetup->DefaultInstance.InstanceBodyIndex = BodyIndex;
+                        TargetBodySetup->DefaultInstance.InstanceBoneIndex = SelectedBoneIndex;
+
+                        FPhysicsMaterial* PhysicsMaterial = new FPhysicsMaterial();
+                        PhysicsMaterial->Density = 1000.f; // 임시 밀도 값
+
+                        // !TODO : 디폴트 머티리얼을 하나 만들어두고 그걸 사용하도록 해야 함
+                        UPhysicalMaterial* PhysMaterial = FObjectFactory::ConstructObject<UPhysicalMaterial>(nullptr);
+                        PhysMaterial->Material = PhysicsMaterial;
+
+                        TargetBodySetup->PhysMaterial = PhysMaterial;
                         PhysicsAsset->BodySetup.Add(TargetBodySetup);
                         PhysicsAsset->UpdateBodySetupIndexMap();
                     }

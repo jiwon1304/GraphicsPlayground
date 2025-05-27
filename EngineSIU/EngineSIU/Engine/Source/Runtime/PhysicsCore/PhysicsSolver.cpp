@@ -6,7 +6,11 @@
 #include "Components/PrimitiveComponent.h"
 #include "PhysicsEngine/BodyInstance.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
-
+#include "Components/StaticMeshComponent.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Engine/SkeletalMesh.h"
+#include "UObject/Casts.h"
+#include "PhysicsEngine/ConstraintInstance.h"
 void FPhysicsSolver::Init()
 {
 
@@ -37,7 +41,7 @@ void FPhysicsSolver::InitScene(FPhysScene* InScene) const
 
 // TODO : 일단 FBodyInstance를 사용해서 함
 // 이후에 Register를 UstaticMesh, USkeletalMesh, 또는 Actor단위로 받아서 할 것.
-PxActor* FPhysicsSolver::RegisterObject(FPhysScene* InScene, const FBodyInstance* NewInstance)
+physx::PxActor* FPhysicsSolver::RegisterObject(FPhysScene* InScene, const FBodyInstance* NewInstance, const FMatrix& InitialMatrix)
 {
     if (!NewInstance)
     {
@@ -52,7 +56,6 @@ PxActor* FPhysicsSolver::RegisterObject(FPhysScene* InScene, const FBodyInstance
         return nullptr;
     }
 
-    FMatrix InitialMatrix = NewInstance->OwnerComponent->GetWorldMatrix().GetMatrixWithoutScale();
     FVector InitialPosition = InitialMatrix.GetTranslationVector();
     FQuat InitialRotation = InitialMatrix.ToQuat();
     
@@ -176,6 +179,36 @@ PxActor* FPhysicsSolver::RegisterObject(FPhysScene* InScene, const FBodyInstance
     return NewRigidActor;
 }
 
+physx::PxJoint* FPhysicsSolver::CreateJoint(FPhysScene* InScene, PxActor* Parent, PxActor* Child, const FConstraintInstance* NewInstance)
+{
+    PxRigidDynamic* ParentDynamic = Parent->is<PxRigidDynamic>();
+    PxRigidDynamic* ChildDynamic = Child->is<PxRigidDynamic>();
+    if (!ParentDynamic || !ChildDynamic)
+    {
+        UE_LOG(ELogLevel::Error, TEXT("Parent or Child is not a dynamic actor!"));
+        return nullptr;
+    }
+    PxVec3 ParentPosition = ParentDynamic->getGlobalPose().p;
+    PxQuat ParentRotation = ParentDynamic->getGlobalPose().q;
+
+    PxTransform LocalFrameParent = PxTransform(ParentPosition, ParentRotation);
+
+    PxVec3 ChildPosition = ChildDynamic->getGlobalPose().p;
+    PxQuat ChildRotation = ChildDynamic->getGlobalPose().q;
+
+    PxTransform LocalFrameChild = PxTransform(ChildPosition, ChildRotation);
+
+    PxD6Joint* Joint = PxD6JointCreate(*FPhysxSolversModule::GetModule()->Physics, ParentDynamic, LocalFrameParent, ChildDynamic, LocalFrameChild);
+
+    Joint->setMotion(PxD6Axis::eTWIST, PxD6Motion::eLIMITED);
+    Joint->setMotion(PxD6Axis::eSWING1, PxD6Motion::eLIMITED);
+    Joint->setMotion(PxD6Axis::eSWING2, PxD6Motion::eLIMITED);
+    Joint->setTwistLimit(PxJointAngularLimitPair(-PxPi / 4, PxPi / 4));
+    Joint->setSwingLimit(PxJointLimitCone(PxPi / 6, PxPi / 6));
+
+    return nullptr;
+}
+
 void FPhysicsSolver::AdvanceOneTimeStep(FPhysScene* InScene, float Dt)
 {
     //PxSceneWriteLock scopedWriteLock(*InScene->PhysxScene);
@@ -204,13 +237,47 @@ void FPhysicsSolver::FetchData(FPhysScene* InScene)
         PxTransform Transform = DynamicActor->getGlobalPose();
 
         FBodyInstance* BodyInstance = static_cast<FBodyInstance*>(DynamicActor->userData);
-        BodyInstance->OwnerComponent->SetWorldTransform(
-            FTransform(
-                FQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w),
-                FVector(Transform.p.x, Transform.p.y, Transform.p.z),
-                FVector(BodyInstance->Scale3D.X, BodyInstance->Scale3D.Y, BodyInstance->Scale3D.Z)
-            )
-        );
+
+        if (BodyInstance->OwnerComponent)
+        {
+            if (UStaticMeshComponent* StaticMeshComp = Cast<UStaticMeshComponent>(BodyInstance->OwnerComponent))
+            {
+                BodyInstance->OwnerComponent->SetWorldTransform(
+                    FTransform(
+                        FQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w),
+                        FVector(Transform.p.x, Transform.p.y, Transform.p.z),
+                        FVector(BodyInstance->Scale3D.X, BodyInstance->Scale3D.Y, BodyInstance->Scale3D.Z)
+                    )
+                );
+            }
+            else if (USkeletalMeshComponent* SkeletalMeshComp = Cast<USkeletalMeshComponent>(BodyInstance->OwnerComponent))
+            {
+                // !TODO : Bone을 찾아서 해당 Bone의 위치 변경. 또는 Bonematrix 변경
+                USkeletalMesh* SkeletalMesh = SkeletalMeshComp->GetSkeletalMeshAsset();
+                if (!SkeletalMesh)
+                {
+                    UE_LOG(ELogLevel::Warning, TEXT("SkeletalMeshComponent '%s' has no SkeletalMesh assigned."), *SkeletalMeshComp->GetName());
+                    continue;
+                }
+                int16 BoneIndex = BodyInstance->InstanceBoneIndex;
+                int16 ParentIndex = SkeletalMesh->GetSkeleton()->GetReferenceSkeleton().GetRawRefBoneInfo()[BoneIndex].ParentIndex;
+                FTransform ParentComponentSpaceTransform = ParentIndex != INDEX_NONE ? SkeletalMeshComp->GetBoneComponentSpaceTransform(ParentIndex) : FTransform::Identity;
+
+                FTransform ComponentSpaceTransform = SkeletalMeshComp->GetComponentTransform();
+
+                FTransform SimulatedWorldTransform = FTransform(
+                    FQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w),
+                    FVector(Transform.p.x, Transform.p.y, Transform.p.z),
+                    FVector(BodyInstance->Scale3D.X, BodyInstance->Scale3D.Y, BodyInstance->Scale3D.Z)
+                );
+
+                FTransform NewBoneTransform = (ParentComponentSpaceTransform.Inverse() * ComponentSpaceTransform.Inverse())
+                    * SimulatedWorldTransform; // 컴포넌트 공간 트랜스폼을 적용하여 본의 위치를 계산
+
+                SkeletalMeshComp->GetBonePoseContext().Pose[BoneIndex] = NewBoneTransform; // 본 위치 갱신
+            }
+            
+        }
     }
 }
 

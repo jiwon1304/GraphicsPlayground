@@ -334,6 +334,7 @@ void UEditorEngine::EndPIE()
     {
         this->ClearActorSelection(); // PIE World 기준 Select Actor 해제 
         WorldList.Remove(GetWorldContextFromWorld(PIEWorld));
+        PIEWorld->ReleasePhysicsScene();
         PIEWorld->Release();
         GUObjectArray.MarkRemoveObject(PIEWorld);
         PIEWorld = nullptr;

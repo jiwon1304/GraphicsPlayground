@@ -195,9 +195,9 @@ void UWorld::BeginPlay()
             }
             });
 
-        CreatePhysicsScene();
-
-        PhysicsScene->SetGravity(FVector(0, 0, -98));
+        //CreatePhysicsScene();
+        if(PhysicsScene)
+            PhysicsScene->SetGravity(FVector(0, 0, -98));
 
         GameMode->InitGame();
     }
@@ -358,5 +358,13 @@ void UWorld::CreatePhysicsScene()
     PhysicsScene = new FPhysScene();
 
     PhysicsScene->Init(FPhysxSolversModule::GetModule()->CreateSolver(), FPhysxSolversModule::GetModule()->CreateScene());
+}
+
+void UWorld::ReleasePhysicsScene()
+{
+    if (PhysicsScene)
+    {
+        PhysicsScene->Release();
+    }
 }
 
