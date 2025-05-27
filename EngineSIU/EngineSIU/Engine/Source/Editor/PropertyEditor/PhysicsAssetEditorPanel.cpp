@@ -4,10 +4,12 @@
 #include "Engine/SkeletalMesh.h"
 #include "PhysicsEngine/BodySetup.h"
 #include "PhysicsEngine/PhysicsAsset.h"
+#include "PhysicsEngine/PhysicsConstraintTemplate.h"
 #include "World/PhysicsAssetWorld.h"
 
 const float	DefaultPrimSize = 15.0f;
 const float	DuplicateXOffset = 10.0f;
+const ImVec4 InActiveTextColor = ImVec4(0.3f, 0.3f, 0.3f, 1.0f);
 
 FPhysicsAssetEditorPanel::FPhysicsAssetEditorPanel()
 {
@@ -27,7 +29,7 @@ void FPhysicsAssetEditorPanel::Render()
         return;
     }
 
-    if (BoneIconSRV == nullptr || NonWeightBoneIconSRV == nullptr || BodySetupIconSRV == nullptr || BoxIconSRV == nullptr || SphereIconSRV == nullptr || SphylIconSRV == nullptr)
+    if (BoneIconSRV == nullptr || NonWeightBoneIconSRV == nullptr || BodySetupIconSRV == nullptr || BoxIconSRV == nullptr || SphereIconSRV == nullptr || SphylIconSRV == nullptr || ConstraintIconSRV == nullptr)
     {
         LoadBoneIcon();
     }
@@ -168,11 +170,10 @@ void FPhysicsAssetEditorPanel::RenderAddPrimitiveButton()
             {.Label = "Sphere",    .ShapeType = EAggCollisionShape::Sphere },
             {.Label = "Capsule", .ShapeType = EAggCollisionShape::Sphyl },
         };
-
-        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.5f, 0.5f, 1.0f));
-        ImGui::Text("Primitive");
+        
+        ImGui::PushStyleColor(ImGuiCol_Text, InActiveTextColor);
+        ImGui::SeparatorText("Shape Type");
         ImGui::PopStyleColor();
-        ImGui::Separator();
         for (const auto& Shape : Shapes)
         {
             if (ImGui::Selectable(Shape.Label))
@@ -261,64 +262,9 @@ void FPhysicsAssetEditorPanel::RenderAddPrimitiveButton()
                 {
                     TargetBodySetup = ParentBodySetup;
                 }
-                // TODO UISOO 조금 늦게
-                //else if (SelectedConstraint)
-                
-                int32 NewPrimitiveIndex = -1;
-                switch (Shape.ShapeType)
+                if (TargetBodySetup != nullptr || SelectedBoneIndex != -1)
                 {
-                case EAggCollisionShape::Sphere:
-                {
-                    FKSphereElem SphereElem = FKSphereElem();
-                    SphereElem.Name = TargetBodySetup->BoneName.ToString() + "_sphere";
-                    TargetBodySetup->AggGeom.SphereElems.Add(SphereElem);
-                    SphereElem.Center = FVector::ZeroVector;
-                    SphereElem.Radius = DefaultPrimSize;
-                    NewPrimitiveIndex = TargetBodySetup->AggGeom.SphereElems.Num() - 1;
-                    break;
-                }
-                case EAggCollisionShape::Box:
-                {
-                    FKBoxElem BoxElem = FKBoxElem();
-                    BoxElem.Name = TargetBodySetup->BoneName.ToString() + "_box";
-                    TargetBodySetup->AggGeom.BoxElems.Add(BoxElem);
-                    BoxElem.SetTransform( FTransform::Identity );
-        
-                    BoxElem.X = 0.5f * DefaultPrimSize;
-                    BoxElem.Y = 0.5f * DefaultPrimSize;
-                    BoxElem.Z = 0.5f * DefaultPrimSize;
-                    NewPrimitiveIndex = TargetBodySetup->AggGeom.SphereElems.Num() - 1;
-                    break;
-                }
-                case EAggCollisionShape::Sphyl:
-                {
-                    FKSphylElem SphylElem = FKSphylElem();
-                    SphylElem.Name = TargetBodySetup->BoneName.ToString() + "_capsule";
-                    TargetBodySetup->AggGeom.SphylElems.Add(SphylElem);
-        
-                    SphylElem.SetTransform( FTransform::Identity );
-        
-                    SphylElem.Length = DefaultPrimSize;
-                    SphylElem.Radius = DefaultPrimSize;
-                    NewPrimitiveIndex = TargetBodySetup->AggGeom.SphereElems.Num() - 1;
-                    
-                    break;
-                }
-                case EAggCollisionShape::Convex:
-                case EAggCollisionShape::TaperedCapsule:
-                case EAggCollisionShape::LevelSet:
-                case EAggCollisionShape::SkinnedLevelSet:
-                case EAggCollisionShape::Unknown:
-                default:
-                    break;
-                }
-
-                if (NewPrimitiveIndex != -1)
-                {
-                    EditorEngine->PhysicsAssetEditorWorld->ClearSelected();
-                    EditorEngine->PhysicsAssetEditorWorld->SelectedPrimitive.PrimitiveType = Shape.ShapeType;
-                    EditorEngine->PhysicsAssetEditorWorld->SelectedPrimitive.SelectedPrimitiveIndex = NewPrimitiveIndex;
-                    EditorEngine->PhysicsAssetEditorWorld->SelectedPrimitive.ParentBodySetupIndex = PhysicsAsset->FindBodyIndex(TargetBodySetup->BoneName);
+                    AddShape(PhysicsAsset, TargetBodySetup, SelectedBoneIndex, Shape.ShapeType);
                 }
             }
         }
@@ -347,6 +293,9 @@ void FPhysicsAssetEditorPanel::RenderPhysicsAssetFilter()
     
     if (ImGui::BeginPopup("Physics Asset Filter"))
     {
+        ImGui::PushStyleColor(ImGuiCol_Text, InActiveTextColor);
+        ImGui::SeparatorText("Bone Option");
+        ImGui::PopStyleColor();
         bool ShowBones = EditorEngine->PhysicsAssetEditorWorld->bShowBones;
         if (ImGui::Checkbox("Show Bone", &ShowBones))
         {
@@ -358,7 +307,9 @@ void FPhysicsAssetEditorPanel::RenderPhysicsAssetFilter()
         {
             EditorEngine->PhysicsAssetEditorWorld->bShowBoneIndices = ShowBoneIndices;
         }
-        ImGui::Separator();
+        ImGui::PushStyleColor(ImGuiCol_Text, InActiveTextColor);
+        ImGui::SeparatorText("Physics Asset Filter");
+        ImGui::PopStyleColor();
         bool ShowBodies = EditorEngine->PhysicsAssetEditorWorld->bShowBodies;
         if (ImGui::Checkbox("Show Body", &ShowBodies))
         {
@@ -408,12 +359,13 @@ void FPhysicsAssetEditorPanel::RenderDetailPanel()
 
     int32 SelectedBoneIndex = EditorEngine->PhysicsAssetEditorWorld->SelectBoneIndex;
     int32 SelectedBodySetupIndex = EditorEngine->PhysicsAssetEditorWorld->SelectedBodySetupIndex;
+    int32 SelectedConstraintIndex = EditorEngine->PhysicsAssetEditorWorld->SelectedConstraintIndex;
 
     int32 ParentBodySetupIndex = EditorEngine->PhysicsAssetEditorWorld->SelectedPrimitive.ParentBodySetupIndex;
     int32 SelectedPrimitiveIndex = EditorEngine->PhysicsAssetEditorWorld->SelectedPrimitive.SelectedPrimitiveIndex;
     EAggCollisionShape::Type PrimitiveType = EditorEngine->PhysicsAssetEditorWorld->SelectedPrimitive.PrimitiveType;
 
-    if (SelectedBoneIndex == -1 && SelectedBodySetupIndex == -1 && (SelectedPrimitiveIndex == -1 || ParentBodySetupIndex == -1))
+    if (SelectedBoneIndex == -1 && SelectedBodySetupIndex == -1 && (SelectedPrimitiveIndex == -1 || ParentBodySetupIndex == -1) && SelectedConstraintIndex == -1)
     {
         return;
     }
@@ -425,6 +377,8 @@ void FPhysicsAssetEditorPanel::RenderDetailPanel()
     bool isBoneValid = SelectedBoneIndex == -1 ? false : SkeletalMesh->GetSkeleton()->GetReferenceSkeleton().IsValidRawIndex(SelectedBoneIndex);
 
     UBodySetup* ParentBodySetup = ParentBodySetupIndex == -1 ? nullptr : PhysicsAsset->BodySetup[ParentBodySetupIndex];
+    UPhysicsConstraintTemplate* PhysicsConstraintTemplate = SelectedConstraintIndex == -1 ? nullptr : PhysicsAsset->ConstraintSetup[SelectedConstraintIndex];
+    
     bool isPrimitiveExist = false;
     
     if (PrimitiveType == EAggCollisionShape::Box)
@@ -455,7 +409,7 @@ void FPhysicsAssetEditorPanel::RenderDetailPanel()
     }
     
     
-    if (isBoneValid == false && SelectedBodySetup == nullptr && ParentBodySetup == nullptr)
+    if (isBoneValid == false && SelectedBodySetup == nullptr && ParentBodySetup == nullptr && PhysicsConstraintTemplate == nullptr)
     {
         return;
     }
@@ -498,8 +452,25 @@ void FPhysicsAssetEditorPanel::RenderDetailPanel()
             }
         }        
     }
-    // TODO UISOO 조금 늦게
-    //else if (SelectedConstraint)
+    else if (PhysicsConstraintTemplate)
+    {
+        ImGui::Separator();
+        const UClass* Class = PhysicsConstraintTemplate->GetClass();
+
+        for (; Class; Class = Class->GetSuperClass())
+        {
+            const TArray<FProperty*>& Properties = Class->GetProperties();
+            if (!Properties.IsEmpty())
+            {
+                ImGui::SeparatorText(*Class->GetName());
+            }
+
+            for (const FProperty* Prop : Properties)
+            {
+                Prop->DisplayInImGui(PhysicsConstraintTemplate);
+            }
+        }   
+    }
 }
 
 void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh, UPhysicsAsset* InPhysicsAsset, int32 InBoneIndex, uint8 bShowBones, uint8 bShowBoneIndices, uint8 bShowBodies,
@@ -565,6 +536,17 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
 
         bBoneNodeOpen = ImGui::TreeNodeEx(*ShortBoneName, NodeFlags);
 
+        if (bBoneNodeOpen)
+        {
+            UBodySetup* BodySetup = nullptr;
+            if (BodyIndex >= 0 && InPhysicsAsset->BodySetup.Num() > BodyIndex)
+            {
+                BodySetup = InPhysicsAsset->BodySetup[BodyIndex];
+            }
+            
+            DrawPopupBone(InPhysicsAsset, BodySetup, InBoneIndex);
+        }
+
         if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) // 왼쪽 마우스 버튼 클릭 시
         {
             // 엔진에 선택된 본 인덱스 설정 (가상의 함수 호출)
@@ -600,12 +582,13 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
                     bBodySetupHasChildren = true;
                 }
 
-                // TODO UISOO 조금만 늦게
-                // Constraint가 있는 경우
-                // if (InPhysicsAsset->FindConstraintIndex())
-                // {
-                //     bBodySetupHasChildren = true;
-                // }
+                TArray<int32> Constraints;
+                InPhysicsAsset->BodyFindConstraints(TargetBodyIndex, Constraints);
+                // Constraint가 있는 경우 
+                if (Constraints.Num() > 0)
+                {
+                    bBodySetupHasChildren = true;
+                }
             
                 ImGuiTreeNodeFlags NodeFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen;
                 if (!bBodySetupHasChildren)
@@ -614,9 +597,10 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
                     NodeFlags &= ~ImGuiTreeNodeFlags_OpenOnArrow; // 리프 노드는 화살표로 열 필요 없음
                 }
 
-                bBodySetupNodeOpen = ImGui::TreeNodeEx(GetData(TargetBodySetup->BoneName.ToString()), NodeFlags);
+                bBodySetupNodeOpen = ImGui::TreeNodeEx(GetData(GetCleanBoneName(TargetBodySetup->BoneName.ToString())), NodeFlags);
                 if (bBodySetupNodeOpen)
                 {
+                    DrawPopupBodySetup(InPhysicsAsset, TargetBodySetup, InBoneIndex);
                     bDrawChildren = true;
                 }
                 if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) // 왼쪽 마우스 버튼 클릭 시
@@ -645,8 +629,10 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
         
                         ImGuiTreeNodeFlags NodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Leaf;
 
-                        if (ImGui::TreeNodeEx(GetData(ShapeElem.Name.ToString()), NodeFlags))
+                        if (ImGui::TreeNodeEx(GetData(GetCleanBoneName(ShapeElem.Name.ToString())), NodeFlags))
                         {
+                            DrawPopupPrimitive(TargetBodySetup, PrimitiveType, PrimitiveIndex);
+
                             if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) // 왼쪽 마우스 버튼 클릭 시
                             {
                                 EditorEngine->PhysicsAssetEditorWorld->ClearSelected();
@@ -668,8 +654,10 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
         
                         ImGuiTreeNodeFlags NodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Leaf;
 
-                        if (ImGui::TreeNodeEx(GetData(ShapeElem.Name.ToString()), NodeFlags))
+                        if (ImGui::TreeNodeEx(GetData(GetCleanBoneName(ShapeElem.Name.ToString())), NodeFlags))
                         {
+                            DrawPopupPrimitive(TargetBodySetup, PrimitiveType, PrimitiveIndex);
+                            
                             if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) // 왼쪽 마우스 버튼 클릭 시
                             {
                                 EditorEngine->PhysicsAssetEditorWorld->ClearSelected();
@@ -691,8 +679,10 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
         
                         ImGuiTreeNodeFlags NodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Leaf;
 
-                        if (ImGui::TreeNodeEx(GetData(ShapeElem.Name.ToString()), NodeFlags))
+                        if (ImGui::TreeNodeEx(GetData(GetCleanBoneName(ShapeElem.Name.ToString())), NodeFlags))
                         {
+                            DrawPopupPrimitive(TargetBodySetup, PrimitiveType, PrimitiveIndex);
+                            
                             if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) // 왼쪽 마우스 버튼 클릭 시
                             {
                                 EditorEngine->PhysicsAssetEditorWorld->ClearSelected();
@@ -709,10 +699,31 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
 
             if (bShowConstraints)
             {
+                int32 TargetBodyIndex = InPhysicsAsset->FindBodyIndex(BoneInfo.Name);
                 // 동일한 이름의 Constraint가 들어올 수 있음. 유의
-                // ImGui::PushID();
-                // TODO UISOO 조금만 늦게
-                // ImGui::PopID();
+                TArray<int32> ConstraintIndices;
+                InPhysicsAsset->BodyFindConstraints(TargetBodyIndex, ConstraintIndices);
+                for (int32 ConstraintIndex : ConstraintIndices)
+                {
+                    ImGuiTreeNodeFlags NodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Leaf;
+                    UPhysicsConstraintTemplate* ConstraintTemplate = InPhysicsAsset->ConstraintSetup[ConstraintIndex];
+                    ImGui::PushID(ConstraintIndex);
+                    ImGui::Image((ImTextureID)ConstraintIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
+                    ImGui::SameLine();
+
+                    if (ImGui::TreeNodeEx(GetData(FString::Printf("[%s->%s] Constraint", GetData(GetCleanBoneName(ConstraintTemplate->DefaultInstance.ConstraintBone1.ToString())), GetData(GetCleanBoneName(ConstraintTemplate->DefaultInstance.ConstraintBone2.ToString())))), NodeFlags))
+                    {
+                        DrawPopupConstraint();
+                            
+                        if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) // 왼쪽 마우스 버튼 클릭 시
+                        {
+                            EditorEngine->PhysicsAssetEditorWorld->ClearSelected();
+                            EditorEngine->PhysicsAssetEditorWorld->SelectedConstraintIndex = ConstraintIndex;
+                        }
+                        ImGui::TreePop();
+                    }
+                    ImGui::PopID();
+                }
             }
         }
 
@@ -720,6 +731,7 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
         {
             ImGui::TreePop(); // 트리 노드 닫기
         }
+        
         ImGui::PopID();
         
         // 자식 본들 재귀적으로 처리
@@ -740,9 +752,170 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
     ImGui::PopID(); // ID 스택 복원
 }
 
+void FPhysicsAssetEditorPanel::DrawPopupBodySetup(UPhysicsAsset* PhysicsAsset, UBodySetup* BodySetup, int32 InBoneIndex)
+{
+    UEditorEngine* EditorEngine = Cast<UEditorEngine>(GEngine);
+    if (!EditorEngine)
+    {
+        return;
+    }
+    
+    // UISOO TODO
+    if (ImGui::BeginPopupContextItem("TreeNodeRightClick"))
+    {
+        ImGui::PushStyleColor(ImGuiCol_Text, InActiveTextColor);
+        ImGui::SeparatorText("Body");
+        ImGui::PopStyleColor();
+        if (ImGui::MenuItem("Body Add/Replace (Not Implemented)"))
+        {
+            // TODO
+        }
+        if (ImGui::BeginMenu("Add Shape"))
+        {
+            ImGui::PushStyleColor(ImGuiCol_Text, InActiveTextColor);
+            ImGui::SeparatorText("Shape Type");
+            ImGui::Text("(Create Body Setup Automatically)");
+            ImGui::PopStyleColor();
+            if (ImGui::MenuItem("Add Box"))
+            {
+                AddShape(PhysicsAsset, BodySetup, InBoneIndex, EAggCollisionShape::Box);
+            }
+            if (ImGui::MenuItem("Add Sphere"))
+            {
+                AddShape(PhysicsAsset, BodySetup, InBoneIndex, EAggCollisionShape::Sphere);
+            }
+            if (ImGui::MenuItem("Add Capsule"))
+            {
+                AddShape(PhysicsAsset, BodySetup, InBoneIndex, EAggCollisionShape::Sphyl);
+            }
+            ImGui::EndMenu();
+        }
+        if (ImGui::BeginMenu("Constraint"))
+        {
+            ImGui::PushStyleColor(ImGuiCol_Text, InActiveTextColor);
+            ImGui::SeparatorText("Create New Constraint");
+            ImGui::PopStyleColor();
+            if (ImGui::BeginChild("Create New Constraint"))
+            {
+                for (UBodySetup* TempBodySetup : PhysicsAsset->BodySetup)
+                {
+                    if (TempBodySetup == BodySetup)
+                    {
+                        continue;
+                    }
+                    
+                    if (ImGui::MenuItem(GetData(GetCleanBoneName(TempBodySetup->BoneName.ToString()))))
+                    {
+                        const FMeshBoneInfo& MeshBoneInfo = PhysicsAsset->PreviewSkeletalMesh->GetRefSkeleton()->GetRawRefBoneInfo()[InBoneIndex];
+                        int32 OtherBoneIndex = PhysicsAsset->PreviewSkeletalMesh->GetRefSkeleton()->FindBoneIndex(TempBodySetup->BoneName);
+                        const FMeshBoneInfo& OtherMeshBoneInfo = PhysicsAsset->PreviewSkeletalMesh->GetRefSkeleton()->GetRawRefBoneInfo()[OtherBoneIndex];
+                        UPhysicsConstraintTemplate* NewPhysicsConstraintTemplate = FObjectFactory::ConstructObject<UPhysicsConstraintTemplate>(PhysicsAsset);
+
+                        PhysicsAsset->ConstraintSetup.Add(NewPhysicsConstraintTemplate);
+                        int32 NewConstraintIndex = PhysicsAsset->ConstraintSetup.Num() - 1;
+                        
+                        NewPhysicsConstraintTemplate->DefaultInstance.JointName = MeshBoneInfo.Name;
+                        // TODO Check
+                        // NewPhysicsConstraintTemplate->DefaultInstance.SetAngularSwing1Motion(Params.AngularConstraintMode);
+                        // NewPhysicsConstraintTemplate->DefaultInstance.SetAngularSwing2Motion(Params.AngularConstraintMode);
+                        // NewPhysicsConstraintTemplate->DefaultInstance.SetAngularTwistMotion(Params.AngularConstraintMode);
+                        NewPhysicsConstraintTemplate->DefaultInstance.ConstraintBone1 = MeshBoneInfo.Name;
+                        NewPhysicsConstraintTemplate->DefaultInstance.ConstraintBone2 = OtherMeshBoneInfo.Name;
+                        // NewPhysicsConstraintTemplate->DefaultInstance.SnapTransformsToDefault(EConstraintTransformComponentFlags::All, PhysicsAsset);
+                        // NewPhysicsConstraintTemplate->SetDefaultProfile(NewPhysicsConstraintTemplate->DefaultInstance);
+                        NewPhysicsConstraintTemplate->DefaultInstance.ConstraintIndex = NewConstraintIndex;
+                        
+
+                        if (NewConstraintIndex != -1)
+                        {
+                            EditorEngine->PhysicsAssetEditorWorld->ClearSelected();
+                            EditorEngine->PhysicsAssetEditorWorld->SelectedConstraintIndex = NewConstraintIndex;
+                        }
+                    }
+                }
+                ImGui::EndChild();
+            }
+            ImGui::EndMenu();
+        }
+        ImGui::EndPopup();
+    }
+}
+
+void FPhysicsAssetEditorPanel::DrawPopupBone(UPhysicsAsset* PhysicsAsset, UBodySetup* BodySetup, int32 InBoneIndex) const
+{
+    // TODO UISOO
+    if (ImGui::BeginPopupContextItem("TreeNodeRightClick"))
+    {
+        ImGui::PushStyleColor(ImGuiCol_Text, InActiveTextColor);
+        ImGui::SeparatorText("Body");
+        ImGui::PopStyleColor();
+        if (ImGui::MenuItem("Body Add/Replace (Not Implemented)"))
+        {
+            // TODO
+        }
+        if (ImGui::BeginMenu("Add Shape"))
+        {
+            ImGui::PushStyleColor(ImGuiCol_Text, InActiveTextColor);
+            ImGui::SeparatorText("Shape Type");
+            ImGui::Text("Create BodySetup Automatically");
+            ImGui::PopStyleColor();
+            if (ImGui::MenuItem("Add Box"))
+            {
+                AddShape(PhysicsAsset, BodySetup, InBoneIndex, EAggCollisionShape::Box);
+            }
+            if (ImGui::MenuItem("Add Sphere"))
+            {
+                AddShape(PhysicsAsset, BodySetup, InBoneIndex, EAggCollisionShape::Sphere);
+            }
+            if (ImGui::MenuItem("Add Capsule"))
+            {
+                AddShape(PhysicsAsset, BodySetup, InBoneIndex, EAggCollisionShape::Sphyl);
+            }
+            ImGui::EndMenu();
+        }
+        ImGui::EndPopup();
+    }
+}
+
+void FPhysicsAssetEditorPanel::DrawPopupPrimitive(UBodySetup* InBodySetup, EAggCollisionShape::Type PrimitiveType, uint32 PrimitiveIndex)
+{
+    // UISOO TODO
+    // 우클릭 팝업 트리거
+    if (ImGui::BeginPopupContextItem("TreeNodeRightClick"))
+    {
+        if (ImGui::MenuItem("Action 1"))
+        {
+            // Action 1 처리
+        }
+        if (ImGui::MenuItem("Action 2"))
+        {
+            // Action 2 처리
+        }
+        ImGui::EndPopup();
+    }
+}
+
+void FPhysicsAssetEditorPanel::DrawPopupConstraint()
+{
+    // TODO UISOO
+}
+
 FString FPhysicsAssetEditorPanel::GetCleanBoneName(const FMeshBoneInfo& BoneInfo, int32 BoneIndex, uint8 bShowBoneIndices) const
 {
     FString InFullName = BoneInfo.Name.ToString();
+
+    FString name = GetCleanBoneName(InFullName);
+
+    if (bShowBoneIndices)
+    {
+        name += FString::Printf(" <%d>", BoneIndex);
+    }
+    
+    return name;
+}
+
+FString FPhysicsAssetEditorPanel::GetCleanBoneName(const FString& InFullName) const
+{
     // 1) 계층 구분자 '|' 뒤 이름만 취하기
     int32 barIdx = InFullName.FindChar(TEXT('|'),
         /*case*/ ESearchCase::CaseSensitive,
@@ -759,21 +932,96 @@ FString FPhysicsAssetEditorPanel::GetCleanBoneName(const FMeshBoneInfo& BoneInfo
     {
         name = name.RightChop(colonIdx + 1);
     }
-
-    if (bShowBoneIndices)
-    {
-        name += FString::Printf(" <%d>", BoneIndex);
-    }
     
     return name;
 }
 
 void FPhysicsAssetEditorPanel::LoadBoneIcon()
 {
-    BoneIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/Bone_16x.PNG")->TextureSRV;
-    NonWeightBoneIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/BoneNonWeighted_16x.PNG")->TextureSRV;
-    BodySetupIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/Body_16x.PNG")->TextureSRV;
-    BoxIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/box_16px.PNG")->TextureSRV;
-    SphereIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/Sphere_16px.PNG")->TextureSRV;
-    SphylIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/Sphyl_16x.PNG")->TextureSRV;
+    BoneIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/Bone_16x.png")->TextureSRV;
+    NonWeightBoneIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/BoneNonWeighted_16x.png")->TextureSRV;
+    BodySetupIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/Body_16x.png")->TextureSRV;
+    BoxIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/box_16px.png")->TextureSRV;
+    SphereIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/Sphere_16px.png")->TextureSRV;
+    SphylIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/Sphyl_16x.png")->TextureSRV;
+    ConstraintIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/Constraint_16x.png")->TextureSRV;
+}
+
+void FPhysicsAssetEditorPanel::AddShape(UPhysicsAsset* InPhysicsAsset, UBodySetup* TargetBodySetup, int32 BoneIndex, EAggCollisionShape::Type InShapeType) const
+{
+    if (TargetBodySetup == nullptr && BoneIndex == -1)
+    {
+        return;
+    }
+    UEditorEngine* EditorEngine = Cast<UEditorEngine>(GEngine);
+    if (!EditorEngine)
+    {
+        return;
+    }
+
+    if (TargetBodySetup == nullptr)
+    {
+        FName BoneName = InPhysicsAsset->PreviewSkeletalMesh->GetSkeleton()->GetReferenceSkeleton().GetBoneName(BoneIndex);
+        TargetBodySetup = FObjectFactory::ConstructObject<UBodySetup>(InPhysicsAsset);
+        TargetBodySetup->BoneName = BoneName;
+        InPhysicsAsset->BodySetup.Add(TargetBodySetup);
+        InPhysicsAsset->UpdateBodySetupIndexMap();
+    }
+
+    int32 NewPrimitiveIndex = -1;
+    switch (InShapeType)
+    {
+    case EAggCollisionShape::Sphere:
+    {
+        FKSphereElem SphereElem = FKSphereElem();
+        SphereElem.Name = TargetBodySetup->BoneName.ToString() + "_sphere";
+        TargetBodySetup->AggGeom.SphereElems.Add(SphereElem);
+        SphereElem.Center = FVector::ZeroVector;
+        SphereElem.Radius = DefaultPrimSize;
+        NewPrimitiveIndex = TargetBodySetup->AggGeom.SphereElems.Num() - 1;
+        break;
+    }
+    case EAggCollisionShape::Box:
+    {
+        FKBoxElem BoxElem = FKBoxElem();
+        BoxElem.Name = TargetBodySetup->BoneName.ToString() + "_box";
+        TargetBodySetup->AggGeom.BoxElems.Add(BoxElem);
+        BoxElem.SetTransform( FTransform::Identity );
+
+        BoxElem.X = 0.5f * DefaultPrimSize;
+        BoxElem.Y = 0.5f * DefaultPrimSize;
+        BoxElem.Z = 0.5f * DefaultPrimSize;
+        NewPrimitiveIndex = TargetBodySetup->AggGeom.SphereElems.Num() - 1;
+        break;
+    }
+    case EAggCollisionShape::Sphyl:
+    {
+        FKSphylElem SphylElem = FKSphylElem();
+        SphylElem.Name = TargetBodySetup->BoneName.ToString() + "_capsule";
+        TargetBodySetup->AggGeom.SphylElems.Add(SphylElem);
+
+        SphylElem.SetTransform( FTransform::Identity );
+
+        SphylElem.Length = DefaultPrimSize;
+        SphylElem.Radius = DefaultPrimSize;
+        NewPrimitiveIndex = TargetBodySetup->AggGeom.SphereElems.Num() - 1;
+        
+        break;
+    }
+    case EAggCollisionShape::Convex:
+    case EAggCollisionShape::TaperedCapsule:
+    case EAggCollisionShape::LevelSet:
+    case EAggCollisionShape::SkinnedLevelSet:
+    case EAggCollisionShape::Unknown:
+    default:
+        break;
+    }
+
+    if (NewPrimitiveIndex != -1)
+    {
+        EditorEngine->PhysicsAssetEditorWorld->ClearSelected();
+        EditorEngine->PhysicsAssetEditorWorld->SelectedPrimitive.PrimitiveType = InShapeType;
+        EditorEngine->PhysicsAssetEditorWorld->SelectedPrimitive.SelectedPrimitiveIndex = NewPrimitiveIndex;
+        EditorEngine->PhysicsAssetEditorWorld->SelectedPrimitive.ParentBodySetupIndex = InPhysicsAsset->FindBodyIndex(TargetBodySetup->BoneName);
+    }
 }

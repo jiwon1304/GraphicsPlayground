@@ -38,10 +38,8 @@ public:
     // Multiple Select를 구현하거나 하지 않음.
     int32 SelectBoneIndex = -1;
     int32 SelectedBodySetupIndex = -1;
+    int32 SelectedConstraintIndex = -1;
     FSelectedPrimitive SelectedPrimitive;
-
-    // TODO UISOO 조금만 늦게
-    // int32 SelectedConstraint = -1;
 
 
     uint8 bShowBoneIndices : 1 = true;
