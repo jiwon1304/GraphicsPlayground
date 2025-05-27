@@ -45,4 +45,8 @@ private:
     ID3D11ShaderResourceView* SphereIconSRV = nullptr;
     ID3D11ShaderResourceView* SphylIconSRV = nullptr;
 
+    ID3D11ShaderResourceView* BoxPhATIconSRV = nullptr;
+    ID3D11ShaderResourceView* SpherePhATIconSRV = nullptr;
+    ID3D11ShaderResourceView* SphylPhATIconSRV = nullptr;
+
 };
