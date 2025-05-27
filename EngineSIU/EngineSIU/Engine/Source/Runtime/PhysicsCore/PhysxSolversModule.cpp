@@ -33,6 +33,7 @@ void FPhysxSolversModule::Initialize()
     Physics = PxCreatePhysics(PX_PHYSICS_VERSION, *Foundation, PxTolerancesScale());
 #endif
 
+    PxInitExtensions(*Physics, Pvd);
     DefaultMaterial = Physics->createMaterial(0.5f, 0.5f, 0.6f);
 }
 

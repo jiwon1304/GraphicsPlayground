@@ -123,3 +123,21 @@ struct FConeConstraint : public FConstraintBaseParams
         Swing2Motion,
         )
 };
+
+
+struct FTwistConstraint : public FConstraintBaseParams
+{
+    DECLARE_STRUCT(FTwistConstraint, FConstraintBaseParams)
+    // Twist 축에 대한 제한
+    UPROPERTY(
+        EditAnywhere,
+        float,
+        TwistLimitDegrees,
+        )
+    // Twist 축에 대한 제한
+    UPROPERTY(
+        EditAnywhere,
+        EAngularConstraintMotion,
+        TwistMotion,
+        )
+};

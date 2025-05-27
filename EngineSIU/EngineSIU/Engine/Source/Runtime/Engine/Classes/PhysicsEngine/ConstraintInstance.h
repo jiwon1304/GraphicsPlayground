@@ -22,6 +22,12 @@ struct FConstraintProfileProperties
         FConeConstraint,
         ConeLimit,
         )
+
+    UPROPERTY(
+        EditAnywhere,
+        FTwistConstraint,
+        TwistLimit, 
+    )
     
     // 이 constraint애 연결된 body와의 충돌 활성화 여부
     UPROPERTY(
