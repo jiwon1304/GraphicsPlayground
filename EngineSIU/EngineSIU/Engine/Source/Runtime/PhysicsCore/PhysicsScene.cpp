@@ -140,31 +140,31 @@ void FPhysScene::AddActor(AActor* Actor)
             for (const auto& ConstraintSetup : PhysicsAsset->ConstraintSetup)
             {
                 FConstraintInstance* ConstraintInstance = new FConstraintInstance(ConstraintSetup->DefaultInstance);
-                FName Bone1 = ConstraintInstance->ConstraintBone1;
-                PxActor* Actor1 = nullptr;
-                if (RegisteredActors.Find(Bone1))
+                FName ChildBone = ConstraintInstance->ConstraintBone1;
+                PxActor* ChildActor = nullptr;
+                if (RegisteredActors.Find(ChildBone))
                 {
-                    Actor1 = RegisteredActors[Bone1];
+                    ChildActor = RegisteredActors[ChildBone];
                 }
                 else
                 {
-                    UE_LOG(ELogLevel::Warning, TEXT("Constraint '%s' has no registered actor for Bone1 '%s'."), *ConstraintSetup->GetName(), *Bone1.ToString());
+                    UE_LOG(ELogLevel::Warning, TEXT("Constraint '%s' has no registered actor for Bone1 '%s'."), *ConstraintSetup->GetName(), *ChildBone.ToString());
                     delete ConstraintInstance; // 메모리 해제
                     continue;
                 }
-                FName Bone2 = ConstraintInstance->ConstraintBone2;
-                PxActor* Actor2 = nullptr;
-                if (RegisteredActors.Find(Bone2))
+                FName ParentBone = ConstraintInstance->ConstraintBone2;
+                PxActor* ParentActor = nullptr;
+                if (RegisteredActors.Find(ParentBone))
                 {
-                    Actor2 = RegisteredActors[Bone2];
+                    ParentActor = RegisteredActors[ParentBone];
                 }
                 else
                 {
-                    UE_LOG(ELogLevel::Warning, TEXT("Constraint '%s' has no registered actor for Bone2 '%s'."), *ConstraintSetup->GetName(), *Bone2.ToString());
+                    UE_LOG(ELogLevel::Warning, TEXT("Constraint '%s' has no registered actor for Bone2 '%s'."), *ConstraintSetup->GetName(), *ParentBone.ToString());
                     delete ConstraintInstance; // 메모리 해제
                     continue;
                 }
-                PxJoint* NewJoint = SceneSolver->CreateJoint(this, Actor1, Actor2, ConstraintInstance);
+                PxJoint* NewJoint = SceneSolver->CreateJoint(this, ChildActor, ParentActor, ConstraintInstance);
 
                 SkeletalMeshComponent->Constraints.Add(ConstraintInstance);
             }

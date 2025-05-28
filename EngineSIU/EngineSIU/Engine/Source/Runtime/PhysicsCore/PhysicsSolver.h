@@ -34,7 +34,7 @@ public:
 
     PxActor* RegisterObject(FPhysScene* InScene, const FBodyInstance* NewInstance, const FMatrix& InitialMatrix);
     // 시뮬레이션 이전 최신값을 반영
-    PxJoint* CreateJoint(FPhysScene* InScene, PxActor* Parent, PxActor* Child, const FConstraintInstance* NewInstance);
+    PxJoint* CreateJoint(FPhysScene* InScene, PxActor* Child, PxActor* Parent, const FConstraintInstance* NewInstance);
 
     // 물리 시뮬레이션을 특정 시간에 대해서 진행
     void AdvanceOneTimeStep(FPhysScene* InScene, float Dt);

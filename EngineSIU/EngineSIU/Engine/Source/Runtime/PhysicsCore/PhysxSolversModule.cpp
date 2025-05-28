@@ -34,7 +34,7 @@ void FPhysxSolversModule::Initialize()
 #endif
 
     PxInitExtensions(*Physics, Pvd);
-    DefaultMaterial = Physics->createMaterial(0.5f, 0.5f, 0.6f);
+    DefaultMaterial = Physics->createMaterial(0.5f, 0.5f, 0.02f);
 }
 
 void FPhysxSolversModule::Shutdown()
