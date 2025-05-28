@@ -250,7 +250,7 @@ struct FKSphylElem : public FKShapeElem
         Capsule.Radius = Radius;
         return Capsule;
     }
-
+    
     inline friend FArchive& operator<<(FArchive& Ar, FKSphylElem& SphylElem)
     {
         Ar << SphylElem.Name << SphylElem.ShapeType;

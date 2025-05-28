@@ -25,6 +25,7 @@ private:
     void CreateSphereBuffer(int NumSegments, int NumRings);
     void CreateCapsuleBuffer(int NumSegments, int NumRings);
     void CreateBoxBuffer();
+    void CreateConeBuffer(int NumSegments);
 
     void CreateConstants();
 
@@ -56,6 +57,7 @@ protected:
     TArray< TPair<Shape::FCapsule, FLinearColor> > Capsules;
     TArray< TPair<Shape::FPlane, FLinearColor> > Planes;
     TArray< TPair<Shape::FCone, FLinearColor> > Cones;
+    TArray< TPair<Shape::FEllipticalCone, FLinearColor> > EllipticalCones;
 
     constexpr static int32 ConstantBufferSize = 512;
 

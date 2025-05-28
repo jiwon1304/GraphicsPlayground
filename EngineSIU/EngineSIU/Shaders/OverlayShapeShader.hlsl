@@ -1,5 +1,6 @@
 #include "ShaderRegisters.hlsl"
 
+#define NUM_CONSTANTS 512
 struct VS_INPUT_POS_ONLY
 {
     float3 position : POSITION0;
@@ -11,16 +12,21 @@ struct PS_INPUT
     float4 color : COLOR;
 };
 
-struct FSphere
+struct Sphere
 {
     float3 Center;
     float Radius;
     float4 Color;
 };
 
+float4 DefaultPS(PS_INPUT input) : SV_Target
+{
+    return input.color;
+}
+
 cbuffer SphereConstants : register(b11)
 {
-    FSphere Spheres[512];
+    Sphere Spheres[NUM_CONSTANTS];
 }
 
 PS_INPUT SphereVS(VS_INPUT_POS_ONLY input, uint instanceID : SV_InstanceID)
@@ -41,12 +47,7 @@ PS_INPUT SphereVS(VS_INPUT_POS_ONLY input, uint instanceID : SV_InstanceID)
     return output;
 }
 
-float4 SpherePS(PS_INPUT input) : SV_Target
-{
-    return input.color;
-}
-
-struct FCapsule
+struct Capsule
 {
     float3 A; // 캡슐의 한쪽 끝
     float Radius;
@@ -57,7 +58,7 @@ struct FCapsule
 
 cbuffer SphereConstants : register(b11)
 {
-    FCapsule Capsules[512];
+    Capsule Capsules[NUM_CONSTANTS];
 }
 
 PS_INPUT CapsuleVS(VS_INPUT_POS_ONLY input, uint VertexID : SV_VertexID, uint instanceID : SV_InstanceID)
@@ -151,12 +152,9 @@ PS_INPUT CapsuleVS(VS_INPUT_POS_ONLY input, uint VertexID : SV_VertexID, uint in
 
     return output;
 }
-float4 CapsulePS(PS_INPUT input) : SV_Target
-{
-    return input.color;
-}
 
-struct FOrientedBox
+
+struct OrientedBox
 {
     float3 AxisX;
     float ExtentX;
@@ -171,7 +169,7 @@ struct FOrientedBox
 
 cbuffer OrientedBoxConstants : register(b11)
 {
-    FOrientedBox OrientedBoxes[512];
+    OrientedBox OrientedBoxes[NUM_CONSTANTS];
 }
 
 //// 8개 박스 버텍스의 로컬 좌표를 하드코딩 (vertexID 기반)
@@ -203,7 +201,7 @@ cbuffer OrientedBoxConstants : register(b11)
 //}
 
 
-float3 GetOrientedBoxVertex(uint vertexID, FOrientedBox box)
+float3 GetOrientedBoxVertex(uint vertexID, OrientedBox box)
 {
     // vertexID: 0~7
     float signX = ((vertexID >> 0) & 1) ? 1.0f : -1.0f;
@@ -220,7 +218,7 @@ PS_INPUT OrientedBoxVS(VS_INPUT_POS_ONLY input, uint vertexID : SV_VertexID, uin
 {
     PS_INPUT output;
 
-    FOrientedBox box = OrientedBoxes[instanceID];
+    OrientedBox box = OrientedBoxes[instanceID];
     box.AxisX = float3(1, 0, 0);
     box.AxisY = float3(0, 1, 0);
     box.AxisZ = float3(0, 0, 1);
@@ -235,7 +233,88 @@ PS_INPUT OrientedBoxVS(VS_INPUT_POS_ONLY input, uint vertexID : SV_VertexID, uin
     return output;
 }
 
-float4 OrientedBoxPS(PS_INPUT input) : SV_Target
+struct Cone
 {
-    return input.color;
+    float3 Origin;
+    float Pad0;
+    float3 Direction;
+    float Pad1;
+    float Length;
+    float AngleWidth;
+    float AngleHeight;
+    float Pad2;
+    float4 Color;
+};
+
+cbuffer ConeConstants : register(b11)
+{
+    Cone Cones[NUM_CONSTANTS];
+}
+
+PS_INPUT ConeVS(VS_INPUT_POS_ONLY input, uint VertexID : SV_VertexID, uint InstanceID : SV_InstanceID)
+{
+    PS_INPUT output;
+    Cone cone = Cones[InstanceID];
+
+    const uint NumSides = 32;
+    uint vID = VertexID;
+
+    float3 worldPos;
+
+    if (vID == 0)
+    {
+        // 0번 버텍스: 원뿔의 꼭짓점 (Origin)
+        worldPos = cone.Origin;
+    }
+    else
+    {
+        // 1~NumSides: 원주 버텍스
+        uint i = vID - 1;
+        float Angle1 = clamp(cone.AngleHeight, 1e-5, 3.141592f - 1e-5);
+        float Angle2 = clamp(cone.AngleWidth, 1e-5, 3.141592f - 1e-5);
+
+        float SinX_2 = sin(0.5f * Angle1);
+        float SinY_2 = sin(0.5f * Angle2);
+
+        float SinSqX_2 = SinX_2 * SinX_2;
+        float SinSqY_2 = SinY_2 * SinY_2;
+
+        float Fraction = (float) i / NumSides;
+        float Thi = 2.0f * 3.141592f * Fraction;
+        float Phi = atan2(sin(Thi) * SinY_2, cos(Thi) * SinX_2);
+        float SinPhi = sin(Phi);
+        float CosPhi = cos(Phi);
+        float SinSqPhi = SinPhi * SinPhi;
+        float CosSqPhi = CosPhi * CosPhi;
+
+        float RSq = SinSqX_2 * SinSqY_2 / (SinSqX_2 * SinSqPhi + SinSqY_2 * CosSqPhi);
+        float R = sqrt(RSq);
+        float Sqr = sqrt(1.0f - RSq);
+        float Alpha = R * CosPhi;
+        float Beta = R * SinPhi;
+
+        float3 coneVert;
+        coneVert.x = (1.0f - 2.0f * RSq);
+        coneVert.y = 2.0f * Sqr * Alpha;
+        coneVert.z = 2.0f * Sqr * Beta;
+
+        float3 Dir = normalize(cone.Direction);
+        float3 YAxis, ZAxis;
+        float3 Up = abs(Dir.z) < 0.999f ? float3(0, 0, 1) : float3(1, 0, 0);
+        YAxis = normalize(cross(Up, Dir));
+        ZAxis = cross(Dir, YAxis);
+
+        worldPos = cone.Origin +
+                    coneVert.x * Dir * cone.Length +
+                    coneVert.y * YAxis * cone.Length +
+                    coneVert.z * ZAxis * cone.Length;
+    }
+
+    float4 clipPos = mul(float4(worldPos, 1.0f), ViewMatrix);
+    clipPos = mul(clipPos, ProjectionMatrix);
+
+    output.position = clipPos;
+    output.color = cone.Color;
+    
+    return output;
 }
