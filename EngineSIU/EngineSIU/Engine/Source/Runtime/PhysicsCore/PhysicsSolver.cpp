@@ -182,8 +182,8 @@ physx::PxActor* FPhysicsSolver::RegisterObject(FPhysScene* InScene, const FBodyI
 
 physx::PxJoint* FPhysicsSolver::CreateJoint(FPhysScene* InScene, PxActor* Actor1, PxActor* Actor2, const FConstraintInstance* InInstance)
 {
-    PxRigidDynamic* Actor1Dynamic = Actor1->is<PxRigidDynamic>();
-    PxRigidDynamic* Actor2Dynamic = Actor2->is<PxRigidDynamic>();
+    PxRigidDynamic* Actor2Dynamic = Actor1->is<PxRigidDynamic>();
+    PxRigidDynamic* Actor1Dynamic = Actor2->is<PxRigidDynamic>();
     if (!Actor1Dynamic || !Actor2Dynamic)
     {
         UE_LOG(ELogLevel::Error, TEXT("Parent or Child is not a dynamic actor!"));
