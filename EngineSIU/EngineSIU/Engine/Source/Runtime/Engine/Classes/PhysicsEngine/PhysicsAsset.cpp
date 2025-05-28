@@ -2,6 +2,9 @@
 
 #include "BodySetup.h"
 #include "PhysicsConstraintTemplate.h"
+#include "Engine/AssetManager.h"
+#include "Engine/SkeletalMesh.h"
+#include "UObject/ObjectFactory.h"
 
 int32 UPhysicsAsset::FindBodyIndex(const FName& BoneName) const
 {
@@ -46,4 +49,31 @@ void UPhysicsAsset::BodyFindConstraints(int32 BodyIndex, TArray<int32>& Constrai
             Constraints.Add(ConIdx);
         }
     }
+}
+
+void UPhysicsAsset::SerializeAsset(FArchive& Ar)
+{
+    Super::SerializeAsset(Ar);
+    
+    Ar << ConstraintSetup;
+    Ar << BodySetup;
+    Ar << CurrentConstraintProfileName;
+    Ar << ConstraintProfiles;
+
+    FName MeshName = NAME_None;
+    TArray<FName> WeldParents;
+    if (Ar.IsSaving())
+    {
+        MeshName = FName(PreviewSkeletalMesh->GetRenderData()->ObjectName);
+    }
+    
+    Ar << MeshName;
+    
+    if (Ar.IsLoading())
+    {
+        PreviewSkeletalMesh = UAssetManager::Get().GetSkeletalMesh(MeshName);
+    }
+
+
+    PreviewSkeletalMesh->SetPhysicsAsset(this);
 }

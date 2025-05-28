@@ -59,10 +59,16 @@ namespace Constants
 
     struct alignas(16) Cone
     {
-        FVector ApexPosition; // 원뿔의 꼭지점 위치
-        float Radius;         // 원뿔의 밑면 반지름
-        FVector Direction;    // 원뿔의 방향 벡터
-        float Angle;          // 원뿔의 각도 (라디안 단위)
+        FVector Origin;
+        float Pad0;
+        FVector Direction;
+        float Pad1;
+        
+        float Length;
+        float AngleWidth;
+        float AngleHeight;
+        float Pad2;
+
         FLinearColor Color;
     };
 }
@@ -106,7 +112,6 @@ void FOverlayShapeRenderPass::PrepareRenderArr()
     //    Shape::FOrientedBox(FVector(1, 1, 0), FVector(-1, 1, 0), FVector(0, 0, 1), FVector(3,3,3), 11,22,33),
     //    FLinearColor(0, 0, 1, 0.2)
     //));
-
 }
 
 void FOverlayShapeRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& Viewport)
@@ -128,7 +133,7 @@ void FOverlayShapeRenderPass::Render(const std::shared_ptr<FEditorViewportClient
         RenderShapeArray(
             SphereConstants,
             L"OverlayShapeVertexShaderSphere",
-            L"OverlayShapePixelShaderSphere",
+            L"OverlayShapePixelShader",
             L"OverlaySphereVertexBuffer",
             L"OverlaySphereIndexBuffer",
             "SphereConstantBuffer",
@@ -154,7 +159,7 @@ void FOverlayShapeRenderPass::Render(const std::shared_ptr<FEditorViewportClient
         RenderShapeArray(
             CapsuleConstants,
             L"OverlayShapeVertexShaderCapsule",
-            L"OverlayShapePixelShaderCapsule",
+            L"OverlayShapePixelShader",
             L"OverlayCapsuleVertexBuffer",
             L"OverlayCapsuleIndexBuffer",
             "CapsuleConstantBuffer",
@@ -183,7 +188,7 @@ void FOverlayShapeRenderPass::Render(const std::shared_ptr<FEditorViewportClient
         RenderShapeArray(
             OrientedBoxConstants,
             L"OverlayShapeVertexShaderOrientedBox",
-            L"OverlayShapePixelShaderOrientedBox",
+            L"OverlayShapePixelShader",
             L"OverlayBoxVertexBuffer", // Box랑 공유
             L"OverlayBoxIndexBuffer",
             "OrientedBoxConstantBuffer",
@@ -192,6 +197,69 @@ void FOverlayShapeRenderPass::Render(const std::shared_ptr<FEditorViewportClient
         );
     }
 
+    {
+        TArray<Constants::Cone> ConeConstants;
+        ConeConstants.SetNum(Cones.Num() + EllipticalCones.Num());
+        for (int Index = 0; Index < Cones.Num(); ++Index)
+        {
+            const Shape::FCone Cone = Cones[Index].Key;
+            const FLinearColor Color = Cones[Index].Value;
+            ConeConstants[Index].Origin = Cone.ApexPosition;
+            ConeConstants[Index].Direction = Cone.Direction;
+            ConeConstants[Index].Length = Cone.Radius;
+            ConeConstants[Index].AngleWidth = Cone.Angle; // 각도는 라디안 단위로 저장
+            ConeConstants[Index].AngleHeight = Cone.Angle; // 각도는 라디안 단위로 저장
+            ConeConstants[Index].Color = Color;
+        }
+        for (int Index = 0; Index < EllipticalCones.Num(); ++Index)
+        {
+            const Shape::FEllipticalCone EllipticalCone = EllipticalCones[Index].Key;
+            const FLinearColor Color = EllipticalCones[Index].Value;
+            ConeConstants[Cones.Num() + Index].Origin = EllipticalCone.ApexPosition;
+            ConeConstants[Cones.Num() + Index].Direction = EllipticalCone.Direction;
+            ConeConstants[Cones.Num() + Index].Length = EllipticalCone.Radius;
+            ConeConstants[Cones.Num() + Index].AngleWidth = EllipticalCone.AngleWidth; // 각도는 라디안 단위로 저장
+            ConeConstants[Cones.Num() + Index].AngleHeight = EllipticalCone.AngleHeight; // 각도는 라디안 단위로 저장
+            ConeConstants[Cones.Num() + Index].Color = Color;
+        }
+        
+        RenderShapeArray(
+            ConeConstants,
+            L"OverlayShapeVertexShaderCone",
+            L"OverlayShapePixelShader",
+            L"OverlayConeVertexBuffer",
+            L"OverlayConeIndexBuffer",
+            "ConeConstantBuffer",
+            11,
+            ConstantBufferSize
+        );
+    }
+
+    //{
+    //    TArray<Constants::Plane> PlaneConstants;
+    //    PlaneConstants.SetNum(Planes.Num());
+    //    for (int Index = 0; Index < Planes.Num(); ++Index)
+    //    {
+    //        const Shape::FPlane Plane = Planes[Index].Key;
+    //        const FLinearColor Color = Planes[Index].Value;
+    //        PlaneConstants[Index].X = Plane.X;
+    //        PlaneConstants[Index].Y = Plane.Y;
+    //        PlaneConstants[Index].Z = Plane.Z;
+    //        PlaneConstants[Index].W = Plane.W;
+    //        PlaneConstants[Index].Color = Color;
+    //    }
+    //    // ... PlaneConstants 채우기 ...
+    //    RenderShapeArray(
+    //        PlaneConstants,
+    //        L"OverlayShapeVertexShaderPlane",
+    //        L"OverlayShapePixelShaderPlane",
+    //        L"OverlayPlaneVertexBuffer", // Box랑 공유
+    //        L"OverlayPlaneIndexBuffer",
+    //        "PlaneConstantBuffer",
+    //        11,
+    //        ConstantBufferSize
+    //    );
+    //}
     // 박스, 플레인 등도 동일하게 사용 가능
 
     EndRender(Viewport);
@@ -206,6 +274,7 @@ void FOverlayShapeRenderPass::ClearRenderArr()
     Capsules.Empty();
     Planes.Empty();
     Cones.Empty();
+    EllipticalCones.Empty();
 }
 
 void FOverlayShapeRenderPass::CreateShaders()
@@ -214,14 +283,19 @@ void FOverlayShapeRenderPass::CreateShaders()
         {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
     };
 
+    ShaderManager->AddPixelShaderAsync(L"OverlayShapePixelShader", L"Shaders/OverlayShapeShader.hlsl", "DefaultPS", nullptr);
+
     ShaderManager->AddVertexShaderAndInputLayoutAsync(L"OverlayShapeVertexShaderSphere", L"Shaders/OverlayShapeShader.hlsl", "SphereVS", PositionOnly, 1, nullptr);
-    ShaderManager->AddPixelShaderAsync(L"OverlayShapePixelShaderSphere", L"Shaders/OverlayShapeShader.hlsl", "SpherePS", nullptr);
+    //ShaderManager->AddPixelShaderAsync(L"OverlayShapePixelShaderSphere", L"Shaders/OverlayShapeShader.hlsl", "SpherePS", nullptr);
 
     ShaderManager->AddVertexShaderAndInputLayoutAsync(L"OverlayShapeVertexShaderCapsule", L"Shaders/OverlayShapeShader.hlsl", "CapsuleVS", PositionOnly, 1, nullptr);
-    ShaderManager->AddPixelShaderAsync(L"OverlayShapePixelShaderCapsule", L"Shaders/OverlayShapeShader.hlsl", "CapsulePS", nullptr);
+    //ShaderManager->AddPixelShaderAsync(L"OverlayShapePixelShaderCapsule", L"Shaders/OverlayShapeShader.hlsl", "CapsulePS", nullptr);
 
     ShaderManager->AddVertexShaderAndInputLayoutAsync(L"OverlayShapeVertexShaderOrientedBox", L"Shaders/OverlayShapeShader.hlsl", "OrientedBoxVS", PositionOnly, 1, nullptr);
-    ShaderManager->AddPixelShaderAsync(L"OverlayShapePixelShaderOrientedBox", L"Shaders/OverlayShapeShader.hlsl", "OrientedBoxPS", nullptr);
+    //ShaderManager->AddPixelShaderAsync(L"OverlayShapePixelShaderOrientedBox", L"Shaders/OverlayShapeShader.hlsl", "OrientedBoxPS", nullptr);
+
+    ShaderManager->AddVertexShaderAndInputLayoutAsync(L"OverlayShapeVertexShaderCone", L"Shaders/OverlayShapeShader.hlsl", "ConeVS", PositionOnly, 1, nullptr);
+    //ShaderManager->AddPixelShaderAsync(L"OverlayShapePixelShaderCone", L"Shaders/OverlayShapeShader.hlsl", "ConePS", nullptr);
 }
 
 void FOverlayShapeRenderPass::CreateBlendState()
@@ -252,6 +326,7 @@ void FOverlayShapeRenderPass::CreateBuffers()
     CreateSphereBuffer(32, 32);
     CreateCapsuleBuffer(32, 32);
     CreateBoxBuffer();
+    CreateConeBuffer(32);
 }
 
 void FOverlayShapeRenderPass::CreateSphereBuffer(int NumSegments, int NumRings)
@@ -464,6 +539,34 @@ void FOverlayShapeRenderPass::CreateBoxBuffer()
     //BufferManager->CreateVertexBuffer<FVector>("OverlayBoxVertexBuffer", Vertices, VertexInfo, D3D11_USAGE_IMMUTABLE);
     FIndexInfo IndexInfo;
     BufferManager->CreateIndexBuffer<uint32>("OverlayBoxIndexBuffer", Indices, IndexInfo);
+}
+
+// 바닥이 없는 cone
+void FOverlayShapeRenderPass::CreateConeBuffer(int NumSegments)
+{
+    // 버텍스는 내부에서 처리
+    TArray<uint32> Indices;
+
+    // 인덱스 생성
+    for (int i = 1; i <= NumSegments; ++i)
+    {
+        int nextIndex = (i % NumSegments) + 1; // 다음 점 인덱스
+        Indices.Add(0); // Apex
+        Indices.Add(i); // 현재 점
+        Indices.Add(nextIndex); // 다음 점
+    }
+    // 반대 방향으로도 index 추가 (바닥이 없기 때문에 안쪽도 보여야함)
+    for (int i = 1; i <= NumSegments; ++i)
+    {
+        int nextIndex = (i % NumSegments) + 1; // 다음 점 인덱스
+        Indices.Add(i); // 현재 점
+        Indices.Add(0); // Apex
+        Indices.Add(nextIndex); // 다음 점
+    }
+    //FVertexInfo VertexInfo;
+    //BufferManager->CreateVertexBuffer<FVector>("OverlayConeVertexBuffer", Vertices, VertexInfo, D3D11_USAGE_IMMUTABLE, 0);
+    FIndexInfo IndexInfo;
+    BufferManager->CreateIndexBuffer<uint32>("OverlayConeIndexBuffer", Indices, IndexInfo, D3D11_USAGE_IMMUTABLE, 0);
 }
 
 void FOverlayShapeRenderPass::CreateConstants()

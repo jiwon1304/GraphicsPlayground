@@ -13,6 +13,8 @@ enum class ECollisionChannel : uint8
     ECC_MAX,
 };
 
+FArchive& operator<<(FArchive& Ar, ECollisionChannel& Value);
+
 namespace ECollisionEnabled
 {
     enum class Type : uint8

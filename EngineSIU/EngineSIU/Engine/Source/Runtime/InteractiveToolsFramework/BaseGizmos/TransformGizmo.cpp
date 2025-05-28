@@ -10,6 +10,10 @@
 #include "World/World.h"
 #include "Engine/FObjLoader.h"
 #include "Engine/SkeletalMesh.h"
+#include "PhysicsEngine/AggregateGeom.h"
+#include "PhysicsEngine/BodySetup.h"
+#include "PhysicsEngine/PhysicsAsset.h"
+#include "PhysicsEngine/PhysicsConstraintTemplate.h"
 #include "World/PhysicsAssetWorld.h"
 
 ATransformGizmo::ATransformGizmo()
@@ -135,33 +139,158 @@ void ATransformGizmo::Tick(float DeltaTime)
         //본 부착용
         if (GEngine->ActiveWorld->WorldType == EWorldType::SkeletalViewer || GEngine->ActiveWorld->WorldType == EWorldType::PhysicsAssetEditor)
         {
-            int BoneIndex;
+            int32 BoneIndex = -1;
             if (GEngine->ActiveWorld->WorldType == EWorldType::SkeletalViewer)
             {
                 BoneIndex = Engine->SkeletalMeshViewerWorld->SelectBoneIndex;
             }
             else if (GEngine->ActiveWorld->WorldType == EWorldType::PhysicsAssetEditor)
             {
-                BoneIndex = Engine->PhysicsAssetEditorWorld->SelectBoneIndex;
+                int32 SelectedBoneIndex = Engine->PhysicsAssetEditorWorld->SelectBoneIndex;
+                int32 SelectedBodySetupIndex = Engine->PhysicsAssetEditorWorld->SelectedBodySetupIndex;
+                int32 SelectedConstraintIndex = Engine->PhysicsAssetEditorWorld->SelectedConstraintIndex;
+                
+                int32 ParentBodySetupIndex = Engine->PhysicsAssetEditorWorld->SelectedPrimitive.ParentBodySetupIndex;
+                int32 SelectedPrimitiveIndex = Engine->PhysicsAssetEditorWorld->SelectedPrimitive.SelectedPrimitiveIndex;
+                EAggCollisionShape::Type PrimitiveType = Engine->PhysicsAssetEditorWorld->SelectedPrimitive.PrimitiveType;
+
+                if (SelectedBoneIndex != -1)
+                {
+                    BoneIndex = SelectedBoneIndex;
+                }
+                else if (SelectedBodySetupIndex != -1)
+                {
+                    USkeletalMesh* SkeletalMesh = Engine->PhysicsAssetEditorWorld->GetSkeletalMeshComponent()->GetSkeletalMeshAsset();
+                    UPhysicsAsset* PhysicsAsset = SkeletalMesh->GetPhysicsAsset();
+                    UBodySetup* BodySetup = PhysicsAsset->BodySetup[SelectedBodySetupIndex];
+                    BoneIndex = SkeletalMesh->GetRefSkeleton()->FindBoneIndex(BodySetup->BoneName);
+                }
+                else if (SelectedConstraintIndex != -1)
+                {
+                    USkeletalMesh* SkeletalMesh = Engine->PhysicsAssetEditorWorld->GetSkeletalMeshComponent()->GetSkeletalMeshAsset();
+                    UPhysicsAsset* PhysicsAsset = SkeletalMesh->GetPhysicsAsset();
+                    BoneIndex = SkeletalMesh->GetRefSkeleton()->FindBoneIndex(PhysicsAsset->ConstraintSetup[SelectedConstraintIndex]->DefaultInstance.ConstraintBone1);
+                }
+                else if (ParentBodySetupIndex != -1 && SelectedPrimitiveIndex != -1 && PrimitiveType != EAggCollisionShape::Unknown)
+                {
+                    USkeletalMesh* SkeletalMesh = Engine->PhysicsAssetEditorWorld->GetSkeletalMeshComponent()->GetSkeletalMeshAsset();
+                    UPhysicsAsset* PhysicsAsset = SkeletalMesh->GetPhysicsAsset();
+                    UBodySetup* BodySetup = PhysicsAsset->BodySetup[ParentBodySetupIndex];
+                    BoneIndex = SkeletalMesh->GetRefSkeleton()->FindBoneIndex(BodySetup->BoneName);
+                }
             }
 
-            if (BoneIndex == -1)
+            if (BoneIndex != -1)
+            {
+                USkeletalMeshComponent* SkeletalMeshComp = Cast<USkeletalMeshComponent>(TargetComponent);
+                if (SkeletalMeshComp)
+                {
+                    TArray<FMatrix> GlobalBoneMatrices;
+                    SkeletalMeshComp->GetCurrentGlobalBoneMatrices(GlobalBoneMatrices);
+
+                    FTransform GlobalBoneTransform = FTransform(GlobalBoneMatrices[BoneIndex]);
+
+                    AddActorLocation(GlobalBoneTransform.Translation);
+                    if (EditorPlayer->GetCoordMode() == ECoordMode::CDM_LOCAL || EditorPlayer->GetControlMode() == EControlMode::CM_SCALE)
+                    {
+                        AddActorRotation(GlobalBoneTransform.Rotation);
+                    }
+                }
+            }
+        }
+
+
+        if (GEngine->ActiveWorld->WorldType == EWorldType::PhysicsAssetEditor)
+        {
+            int BodySetupIndex = Engine->PhysicsAssetEditorWorld->SelectedBodySetupIndex;
+            int PrimitiveIndex = Engine->PhysicsAssetEditorWorld->SelectedPrimitive.SelectedPrimitiveIndex;
+            int ParentBodySetupIndex = Engine->PhysicsAssetEditorWorld->SelectedPrimitive.ParentBodySetupIndex;
+            EAggCollisionShape::Type PrimitiveType = Engine->PhysicsAssetEditorWorld->SelectedPrimitive.PrimitiveType;
+
+            if (BodySetupIndex == -1 && (PrimitiveIndex == -1 || ParentBodySetupIndex == -1 || PrimitiveType == EAggCollisionShape::Unknown))
             {
                 return;
             }
-            
-            USkeletalMeshComponent* SkeletalMeshComp = Cast<USkeletalMeshComponent>(TargetComponent);
-            if (SkeletalMeshComp)
+
+            USkeletalMesh* SkeletalMesh = Engine->PhysicsAssetEditorWorld->GetSkeletalMeshComponent()->GetSkeletalMeshAsset();
+            UPhysicsAsset* PhysicsAsset = SkeletalMesh->GetPhysicsAsset();
+
+            UBodySetup* TargetBodySetup;
+            if (BodySetupIndex != -1)
             {
-                TArray<FMatrix> GlobalBoneMatrices;
-                SkeletalMeshComp->GetCurrentGlobalBoneMatrices(GlobalBoneMatrices);
+                TargetBodySetup = PhysicsAsset->BodySetup[BodySetupIndex];
+            }
+            else
+            {
+                TargetBodySetup = PhysicsAsset->BodySetup[ParentBodySetupIndex];
+            }
 
-                FTransform GlobalBoneTransform = FTransform(GlobalBoneMatrices[BoneIndex]);
+            if (TargetBodySetup == nullptr || (TargetBodySetup->AggGeom.BoxElems.Num() == 0 && TargetBodySetup->AggGeom.SphereElems.Num() == 0 && TargetBodySetup->AggGeom.SphylElems.Num() == 0))
+            {
+                return;
+            }
 
-                AddActorLocation(GlobalBoneTransform.Translation);
-                if (EditorPlayer->GetCoordMode() == ECoordMode::CDM_LOCAL || EditorPlayer->GetControlMode() == EControlMode::CM_SCALE)
+            FKShapeElem* TargetAggregateGeom = nullptr;
+            EAggCollisionShape::Type TargetPrimitiveType = EAggCollisionShape::Unknown;
+            if (PrimitiveType != EAggCollisionShape::Unknown && PrimitiveIndex != -1)
+            {
+                TargetPrimitiveType = PrimitiveType;
+                if (PrimitiveType == EAggCollisionShape::Sphere)
                 {
-                    AddActorRotation(GlobalBoneTransform.Rotation);
+                    TargetAggregateGeom = &(TargetBodySetup->AggGeom.SphereElems[PrimitiveIndex]);
+                }
+                else if (PrimitiveType == EAggCollisionShape::Box)
+                {
+                    TargetAggregateGeom = &(TargetBodySetup->AggGeom.BoxElems[PrimitiveIndex]);
+                }
+                else if (PrimitiveType == EAggCollisionShape::Sphyl)
+                {
+                    TargetAggregateGeom = &(TargetBodySetup->AggGeom.SphylElems[PrimitiveIndex]);
+                }
+            }
+            else
+            {
+                if (TargetBodySetup->AggGeom.SphereElems.Num() > 0)
+                {
+                    TargetPrimitiveType = EAggCollisionShape::Sphere;
+                    TargetAggregateGeom = &(TargetBodySetup->AggGeom.SphereElems[0]);
+                }
+                else if (TargetBodySetup->AggGeom.BoxElems.Num() > 0)
+                {
+                    TargetPrimitiveType = EAggCollisionShape::Box;
+                    TargetAggregateGeom = &(TargetBodySetup->AggGeom.BoxElems[0]);
+                }
+                else if (TargetBodySetup->AggGeom.SphylElems.Num() > 0)
+                {
+                    TargetPrimitiveType = EAggCollisionShape::Sphyl;
+                    TargetAggregateGeom = &(TargetBodySetup->AggGeom.SphylElems[0]);
+                }
+            }
+            
+            if (TargetAggregateGeom != nullptr && TargetPrimitiveType != EAggCollisionShape::Unknown)
+            {
+                if (TargetPrimitiveType == EAggCollisionShape::Sphere)
+                {
+                    FKSphereElem SphereElem = *static_cast<FKSphereElem*>(TargetAggregateGeom);
+                    AddActorLocation(SphereElem.Center);
+                }
+                else if (TargetPrimitiveType == EAggCollisionShape::Box)
+                {
+                    FKBoxElem BoxElem = *static_cast<FKBoxElem*>(TargetAggregateGeom);
+                    AddActorLocation(BoxElem.Center);
+                    if (EditorPlayer->GetCoordMode() == ECoordMode::CDM_LOCAL || EditorPlayer->GetControlMode() == EControlMode::CM_SCALE)
+                    {
+                        AddActorRotation(BoxElem.Rotation);
+                    }
+                }
+                else if (TargetPrimitiveType == EAggCollisionShape::Sphyl)
+                {
+                    FKSphylElem SphylElem = *static_cast<FKSphylElem*>(TargetAggregateGeom);
+                    AddActorLocation(SphylElem.Center);
+                    if (EditorPlayer->GetCoordMode() == ECoordMode::CDM_LOCAL || EditorPlayer->GetControlMode() == EControlMode::CM_SCALE)
+                    {
+                        AddActorRotation(SphylElem.Rotation);
+                    }
                 }
             }
         }

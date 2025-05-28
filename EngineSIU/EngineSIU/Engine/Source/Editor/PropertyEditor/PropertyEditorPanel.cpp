@@ -196,6 +196,29 @@ void PropertyEditorPanel::Render()
                 Prop->DisplayInImGui(SelectedActor);
             }
         }
+
+        for (UActorComponent* Component : SelectedActor->GetComponents())
+        {
+            if (!Component->IsA<USceneComponent>())
+            {
+                ImGui::Separator();
+                const UClass* TempClass = Component->GetClass();
+
+                for (; TempClass; TempClass = TempClass->GetSuperClass())
+                {
+                    const TArray<FProperty*>& Properties = TempClass->GetProperties();
+                    if (!Properties.IsEmpty())
+                    {
+                        ImGui::SeparatorText(*TempClass->GetName());
+                    }
+
+                    for (const FProperty* Prop : Properties)
+                    {
+                        Prop->DisplayInImGui(Component);
+                    }
+                }
+            }
+        } 
     }
 
     if (SelectedComponent)
@@ -740,8 +763,11 @@ void PropertyEditorPanel::RenderForSkeletalMesh(USkeletalMeshComponent* Skeletal
                 {
                     PhysicsAsset = FObjectFactory::ConstructObject<UPhysicsAsset>(nullptr);
                     FPhysicsAssetUtils::CreateFromSkeletalMesh(PhysicsAsset, SkeletalMesh);
-                    UAssetManager::Get().AddPhysicsAsset(PhysicsAsset->GetName(), PhysicsAsset);
                     
+                    UAssetManager::Get().AddPhysicsAsset(PhysicsAsset->GetName(), PhysicsAsset);
+                    UAssetManager::Get().AddAssetInfo(PhysicsAsset);
+                    
+                    UAssetManager::Get().SavePhysicsAssetBinary(PhysicsAsset);
                 }
             }   
         }

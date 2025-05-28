@@ -49,5 +49,6 @@ public:
 
     void UpdateBodySetupIndexMap();
     void BodyFindConstraints(int32 BodyIndex, TArray<int32>& Constraints);
-
+    
+    virtual void SerializeAsset(FArchive& Ar) override;
 };

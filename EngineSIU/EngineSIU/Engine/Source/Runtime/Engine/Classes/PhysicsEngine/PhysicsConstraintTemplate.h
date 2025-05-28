@@ -17,7 +17,11 @@ struct FPhysicsConstraintProfileHandle
         FName,
         ProfileName,
     )
-
+    
+    friend FArchive& operator<<(FArchive& Ar, FPhysicsConstraintProfileHandle& PhysicsConstraintProfileHandle)
+    {
+        return Ar << PhysicsConstraintProfileHandle.ProfileProperties << PhysicsConstraintProfileHandle.ProfileName;
+    }
 };
 
 class UPhysicsConstraintTemplate : public UObject
@@ -39,4 +43,6 @@ public:
         TArray<FPhysicsConstraintProfileHandle>,
         ProfileHandles
     )
+
+    friend FArchive& operator<<(FArchive& Ar, UPhysicsConstraintTemplate*& PhysicsConstraintTemplate);
 };

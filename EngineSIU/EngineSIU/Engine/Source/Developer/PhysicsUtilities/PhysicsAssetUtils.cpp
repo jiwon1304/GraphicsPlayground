@@ -80,7 +80,8 @@ namespace FPhysicsAssetUtils
                 {
                     //SphylElem.Length = FMath::Max(0.0f, DistanceToChild - 2.0f * SphylElem.Radius);
                     SphylElem.Length = 1.f;
-                    SphylElem.Center = ChildLocalOffset * 0.5f;
+                    //SphylElem.Center = ChildLocalOffset * 0.5f;
+                    SphylElem.Center = FVector::ZeroVector; // 캡슐의 중심은 부모 본의 위치로 설정
                     FVector BoneDirection = ChildLocalOffset.GetSafeNormal();
                     SphylElem.Rotation = FQuat::FindBetween(FVector::XAxisVector, BoneDirection).Rotator();
                 }
@@ -127,8 +128,8 @@ namespace FPhysicsAssetUtils
                     FConstraintInstance& JointInstance = ConstraintSetup->DefaultInstance;
 
                     JointInstance.JointName = ParentBoneName;
-                    JointInstance.ConstraintBone1 = ParentBoneName;
-                    JointInstance.ConstraintBone2 = ChildBoneName;
+                    JointInstance.ConstraintBone1 = ChildBoneName;
+                    JointInstance.ConstraintBone2 = ParentBoneName;
 
                     int32 NewConstraintIndex = PhysicsAsset->ConstraintSetup.Num() - 1;
                     JointInstance.ConstraintIndex = NewConstraintIndex;

@@ -1,7 +1,6 @@
 #pragma once
 #include "CoreUObject/UObject/ObjectMacros.h"
 #include "Math/Vector.h"
-#include "Math/Rotator.h"
 #include "PhysicsCore/PhysicsScene.h"
 #include "ConstraintTypes.h"
 
@@ -35,6 +34,11 @@ struct FConstraintProfileProperties
         uint8,
         bDisableCollision,
         )
+
+    friend FArchive& operator<<(FArchive& Ar, FConstraintProfileProperties& ConstraintProfileProperties)
+    {
+        return Ar << ConstraintProfileProperties.LinearLimit << ConstraintProfileProperties.ConeLimit << ConstraintProfileProperties.TwistLimit << ConstraintProfileProperties.bDisableCollision;
+    }
 };
 
 
@@ -123,4 +127,19 @@ struct FConstraintInstance
         FConstraintProfileProperties,
         ProfileInstance,
     )
+
+    friend FArchive& operator<<(FArchive& Ar, FConstraintInstance& ConstraintInstance)
+    {
+        return Ar << ConstraintInstance.ConstraintIndex
+                    << ConstraintInstance.JointName
+                    << ConstraintInstance.ConstraintBone1
+                    << ConstraintInstance.ConstraintBone2
+                    << ConstraintInstance.Pos1
+                    << ConstraintInstance.Pos2
+                    << ConstraintInstance.PriAxis1
+                    << ConstraintInstance.PriAxis2
+                    << ConstraintInstance.SecAxis1
+                    << ConstraintInstance.SecAxis2
+                    << ConstraintInstance.ProfileInstance;
+    }
 };

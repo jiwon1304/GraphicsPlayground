@@ -16,6 +16,7 @@ enum class EAssetType : uint8
     Animation,
     Texture2D,
     Material,
+    PhysicsAsset,
 };
 
 struct FAssetInfo
@@ -56,6 +57,11 @@ struct FAssetLoadResult
     TArray<UAnimationAsset*> Animations;
 };
 
+struct FSIUAssetLoadResult
+{
+    TArray<UPhysicsAsset*> PhysicsAssets;
+};
+
 class UAssetManager : public UObject
 {
     DECLARE_CLASS(UAssetManager, UObject)
@@ -76,7 +82,7 @@ public:
     static UAssetManager* GetIfInitialized();
     
     void InitAssetManager();
-
+    
     const TMap<FName, FAssetInfo>& GetAssetRegistry();
     TMap<FName, FAssetInfo>& GetAssetRegistryRef();
     // TODO - Do not use Directly (Deprecate)
@@ -91,6 +97,8 @@ public:
     UPhysicsAsset* GetPhysicsAsset(const FName& Name);
 
     void AddAssetInfo(const FAssetInfo& Info);
+    void AddAssetInfo(UPhysicsAsset* PhysicsAsset) const;
+    
     void AddSkeleton(const FName& Key, USkeleton* Skeleton);
     void AddSkeletalMesh(const FName& Key, USkeletalMesh* SkeletalMesh);
     void AddMaterial(const FName& Key, UMaterial* Material);
@@ -100,14 +108,23 @@ public:
     void AddPhysicsAsset(const FName& Key, UPhysicsAsset* InPhysicsAsset);
 
     void RemoveParticleSystem(const FName& Key);
+    void RemovePhysicsAsset(const FName& Key);
+
+    
+    bool SavePhysicsAssetBinary(UPhysicsAsset* PhysicsAsset);
     
 private:
     double FbxLoadTime = 0.0;
     double BinaryLoadTime = 0.0;
+    double SiuLoadTime = 0.0;
     
     void LoadContentFiles();
+    void LoadLazyContentFiles();
 
     void HandleFBX(const FAssetInfo& AssetInfo);
+    void HandleSIU(const FAssetInfo& AssetInfo);
+    
+    bool LoadPhysicsAssetBinary(const FAssetInfo& AssetInfo);
 
     void AddToAssetMap(const FAssetLoadResult& Result, const FString& FileName, const FAssetInfo& BaseAssetInfo);
 
@@ -128,4 +145,5 @@ private:
     bool SerializeVersion(FArchive& Ar);
 
     bool SerializeAssetLoadResult(FArchive& Ar, FAssetLoadResult& Result, const FString& BaseName, const FString& FolderPath);
+    bool SerializeSIUAssetLoadResult(FArchive& Ar, FSIUAssetLoadResult& Result, const FString& BaseName, const FString& FolderPath);
 };

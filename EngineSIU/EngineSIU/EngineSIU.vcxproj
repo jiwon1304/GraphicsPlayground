@@ -365,7 +365,9 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModules\ParticleModuleVelocity.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModules\ParticleModuleVelocityBase.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleSpriteEmitter.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\BodySetup.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\PhysicsAsset.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\PhysicsConstraintTemplate.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\Vehicle\VehicleMovementComponent.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\Vehicle\WheeledVehiclePawn.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\ReferenceSkeleton.cpp" />
@@ -393,9 +395,7 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     <ClCompile Include="Engine\Source\Runtime\PhysicsVehicle\SnippetVehicleFilterShader.cpp" />
     <ClCompile Include="Engine\Source\Runtime\PhysicsVehicle\SnippetVehicleSceneQuery.cpp" />
     <ClCompile Include="Engine\Source\Runtime\PhysicsVehicle\SnippetVehicleTireFriction.cpp" />
-    <ClCompile Include="Engine\Source\Runtime\PhysicsVehicle\Vehicle4W.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\PhysicsVehicle\Vehicle4W.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Renderer\BillboardRenderPass.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Renderer\BlurRenderPass.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Renderer\CameraEffectRenderPass.cpp" />
@@ -805,6 +805,7 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     <ClInclude Include="Engine\Source\Runtime\Launch\ImGuiManager.h" />
     <ClInclude Include="Engine\Source\Runtime\Launch\LightDefine.h" />
     <ClInclude Include="Engine\Source\Runtime\PhysicalMaterials\Defines.h" />
+    <ClInclude Include="Engine\Source\Runtime\PhysicalMaterials\PhysicalMaterial.cpp" />
     <ClInclude Include="Engine\Source\Runtime\PhysicalMaterials\PhysicalMaterial.h" />
     <ClInclude Include="Engine\Source\Runtime\PhysicsCore\BodySetupCore.h" />
     <ClInclude Include="Engine\Source\Runtime\PhysicsCore\CollisionManager.h" />
@@ -819,9 +820,7 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     <ClInclude Include="Engine\Source\Runtime\PhysicsVehicle\SnippetVehicleFilterShader.h" />
     <ClInclude Include="Engine\Source\Runtime\PhysicsVehicle\SnippetVehicleSceneQuery.h" />
     <ClInclude Include="Engine\Source\Runtime\PhysicsVehicle\SnippetVehicleTireFriction.h" />
-    <ClInclude Include="Engine\Source\Runtime\PhysicsVehicle\Vehicle4W.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\PhysicsVehicle\Vehicle4W.h" />
     <ClInclude Include="Engine\Source\Runtime\Renderer\BillboardRenderPass.h" />
     <ClInclude Include="Engine\Source\Runtime\Renderer\BlurRenderPass.h" />
     <ClInclude Include="Engine\Source\Runtime\Renderer\CameraEffectRenderPass.h" />

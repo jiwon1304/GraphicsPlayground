@@ -14,6 +14,7 @@ public:
 
     void Initialize();
     void Shutdown();
+    void ConnectToPVD();
 
     FPhysicsSolver* CreateSolver();
     PxScene* CreateScene();

@@ -23,13 +23,13 @@ namespace Shape
 
     struct FOrientedBox
     {
-        FVector AxisX;
-        FVector AxisY;
-        FVector AxisZ;
-        FVector Center;
-        float ExtentX;
-        float ExtentY;
-        float ExtentZ;
+        FVector AxisX = FVector(1, 0, 0);
+        FVector AxisY = FVector(0, 1, 0);
+        FVector AxisZ = FVector(0, 0, 1);
+        FVector Center = FVector(0, 0, 0);
+        float ExtentX = 1.0f;
+        float ExtentY = 1.0f;
+        float ExtentZ = 1.0f;
     };
 
     struct FCapsule
@@ -51,5 +51,14 @@ namespace Shape
         float Radius;         // 원뿔의 밑면 반지름
         FVector Direction;    // 원뿔의 방향 벡터
         float Angle;          // 원뿔의 각도 (라디안 단위)
+    };
+
+    struct FEllipticalCone
+    {
+        FVector ApexPosition; // 원뿔의 꼭지점 위치
+        FVector Direction;    // 원뿔의 방향 벡터
+        float AngleWidth;
+        float AngleHeight;
+        float Radius;
     };
 };

@@ -16,6 +16,7 @@
 #include "Editor/UnrealEd/EditorViewportClient.h"
 #include "PhysicsEngine/PhysicsAsset.h"
 #include "World/PhysicsAssetWorld.h"
+#include "PhysicsCore/PhysxSolversModule.h"
 
 extern FEngineLoop GEngineLoop;
 
@@ -151,7 +152,7 @@ void UEditorEngine::StartPIE()
     PIEWorld = Cast<UWorld>(EditorWorld->Duplicate(this));
     PIEWorld->WorldType = EWorldType::PIE;
     PIEWorld->CreatePhysicsScene();
-
+    FPhysxSolversModule::GetModule()->ConnectToPVD();
     PIEWorldContext.SetCurrentWorld(PIEWorld);
     ActiveWorld = PIEWorld;
     
