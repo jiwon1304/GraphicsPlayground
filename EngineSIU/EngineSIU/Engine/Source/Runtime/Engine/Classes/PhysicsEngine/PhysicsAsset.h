@@ -48,4 +48,6 @@ public:
     FName FindConstraintBoneName(int32 BoneIndex) const;
 
     void UpdateBodySetupIndexMap();
+    void BodyFindConstraints(int32 BodyIndex, TArray<int32>& Constraints);
+
 };

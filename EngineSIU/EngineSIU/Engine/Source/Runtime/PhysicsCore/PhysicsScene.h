@@ -27,6 +27,7 @@ public:
     ~FPhysScene() = default;
 
     void Init(FPhysicsSolver* InSceneSolver, physx::PxScene* InScene);
+    void Release();
 
 	void AddActor(AActor* Actor);
 
@@ -35,6 +36,7 @@ public:
     void AdvanceAndDispatch_External(float DeltaTime);
     void SyncBodies();
 
+    void SetGeometryToWorld(UBodySetup* BodySetup);
     void AddRigidBody(const FBodyInstance* Instance);
     void RemoveRigidBody(FBodyInstance* Component);
 

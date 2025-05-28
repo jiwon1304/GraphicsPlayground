@@ -367,7 +367,8 @@ void USceneComponent::SetRelativeTransform(const FTransform& InTransform)
     RelativeRotation = InTransform.GetRotation().GetNormalized().Rotator();
     RelativeScale3D = InTransform.GetScale3D();
 
-    UpdateOverlaps();
+    // TODO  충돌체크 PhysX쪽으로 돌릴건지 확인
+    //UpdateOverlaps();
 }
 
 void USceneComponent::SetWorldTransform(const FTransform& InTransform)
@@ -392,7 +393,9 @@ void USceneComponent::SetWorldTransform(const FTransform& InTransform)
     }
     
     // 오버랩 업데이트 (충돌 관련 컴포넌트인 경우)
-    UpdateOverlaps();
+    
+    // TODO  충돌체크 바깥쪽으로 돌릴건지 확인
+    //UpdateOverlaps();
 }
 
 void USceneComponent::UpdateOverlaps(const TArray<FOverlapInfo>* PendingOverlaps, bool bDoNotifies, const TArray<const FOverlapInfo>* OverlapsAtEndLocation)

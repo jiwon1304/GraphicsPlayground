@@ -116,6 +116,10 @@ public:
     EAnimationMode GetAnimationMode() const { return AnimationMode; }
 
     virtual void InitAnim();
+
+    FPoseContext& GetBonePoseContext() { return BonePoseContext; }
+
+    FTransform GetBoneComponentSpaceTransform(int32 BoneIndex) const;
     
 protected:
     bool NeedToSpawnAnimScriptInstance() const;

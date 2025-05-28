@@ -6,6 +6,12 @@
 #include "Components/PrimitiveComponent.h"
 #include "PhysicsEngine/BodyInstance.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
+#include "Components/StaticMeshComponent.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Engine/SkeletalMesh.h"
+#include "UObject/Casts.h"
+#include "PhysicsEngine/ConstraintInstance.h"
+#include "Developer/PhysicsUtilities/PhysicsAssetUtils.h"
 #include "Engine/Classes/PhysicsEngine/Vehicle/VehicleMovementComponent.h"
 #include "Engine/Source/Runtime/PhysicsVehicle/Vehicle4W.h"
 
@@ -39,7 +45,7 @@ void FPhysicsSolver::InitScene(FPhysScene* InScene) const
 
 // TODO : 일단 FBodyInstance를 사용해서 함
 // 이후에 Register를 UstaticMesh, USkeletalMesh, 또는 Actor단위로 받아서 할 것.
-PxActor* FPhysicsSolver::RegisterObject(FPhysScene* InScene, const FBodyInstance* NewInstance)
+physx::PxActor* FPhysicsSolver::RegisterObject(FPhysScene* InScene, const FBodyInstance* NewInstance, const FMatrix& InitialMatrix)
 {
     if (!NewInstance)
     {
@@ -54,7 +60,6 @@ PxActor* FPhysicsSolver::RegisterObject(FPhysScene* InScene, const FBodyInstance
         return nullptr;
     }
 
-    FMatrix InitialMatrix = NewInstance->OwnerComponent->GetWorldMatrix().GetMatrixWithoutScale();
     FVector InitialPosition = InitialMatrix.GetTranslationVector();
     FQuat InitialRotation = InitialMatrix.ToQuat();
     
@@ -185,8 +190,163 @@ PxActor* FPhysicsSolver::RegisterObject(FPhysScene* InScene, const FBodyInstance
 
     FPhysxSolversModule* PhysxSolverModule = FPhysxSolversModule::GetModule();
 
-     return Vehicle->InitVehicle(InVehicleMovementComponent, NewInstance, PhysxSolverModule->Physics, PhysxSolverModule->Foundation
+    return Vehicle->InitVehicle(InVehicleMovementComponent, NewInstance, PhysxSolverModule->Physics, PhysxSolverModule->Foundation
         , InScene->PhysxScene, &PhysxSolverModule->Allocator, PhysxSolverModule->DefaultMaterial);
+}
+
+physx::PxJoint* FPhysicsSolver::CreateJoint(FPhysScene* InScene, PxActor* Actor1, PxActor* Actor2, const FConstraintInstance* InInstance)
+{
+    PxRigidDynamic* Actor1Dynamic = Actor1->is<PxRigidDynamic>();
+    PxRigidDynamic* Actor2Dynamic = Actor2->is<PxRigidDynamic>();
+    if (!Actor1Dynamic || !Actor2Dynamic)
+    {
+        UE_LOG(ELogLevel::Error, TEXT("Parent or Child is not a dynamic actor!"));
+        return nullptr;
+    }
+    PxTransform localChildTransform = Actor2Dynamic->getGlobalPose();
+    PxTransform localFrameParent = PxTransform(Actor1Dynamic->getGlobalPose().getInverse() * localChildTransform);
+    PxTransform localFrameChild = PxTransform(PxVec3(0));
+        
+
+
+    PxD6Joint* Joint = PxD6JointCreate(*FPhysxSolversModule::GetModule()->Physics, Actor1Dynamic, localFrameParent, Actor2Dynamic, localFrameChild);
+
+    // 3. 프로파일 속성 적용
+    const FConstraintProfileProperties& Profile = InInstance->ProfileInstance;
+    const FLinearConstraint& LinearLimitProps = Profile.LinearLimit;
+    const FConeConstraint& ConeLimitProps = Profile.ConeLimit;
+    const FTwistConstraint& TwistLimitProps = Profile.TwistLimit;
+
+    Joint->setMotion(physx::PxD6Axis::eX, FPhysicsAssetUtils::MapLinearMotionToPx(LinearLimitProps.XMotion));
+    Joint->setMotion(physx::PxD6Axis::eY, FPhysicsAssetUtils::MapLinearMotionToPx(LinearLimitProps.YMotion));
+    Joint->setMotion(physx::PxD6Axis::eZ, FPhysicsAssetUtils::MapLinearMotionToPx(LinearLimitProps.ZMotion));
+
+    // 선형 제한
+    if (LinearLimitProps.XMotion != ELinearConstraintMotion::LCM_Free ||
+        LinearLimitProps.YMotion != ELinearConstraintMotion::LCM_Free ||
+        LinearLimitProps.ZMotion != ELinearConstraintMotion::LCM_Free)
+    {
+        physx::PxReal extentVal;
+        // 모든 선형 축이 Locked 상태인지 확인
+        bool bAllLinearLocked = LinearLimitProps.XMotion == ELinearConstraintMotion::LCM_Locked &&
+            LinearLimitProps.YMotion == ELinearConstraintMotion::LCM_Locked &&
+            LinearLimitProps.ZMotion == ELinearConstraintMotion::LCM_Locked;
+
+        if (bAllLinearLocked) 
+        {
+            extentVal = 0.0f; // 모든 축이 잠겼으면 제한 범위 0
+        }
+        else 
+        {
+            // 하나라도 Limited이고 나머지가 Locked/Free인 경우, LinearLimitProps.Limit 사용
+            // setMotion이 각 축의 Locked/Free 상태를 이미 처리함
+            extentVal = LinearLimitProps.Limit;
+            if (extentVal < 0) extentVal = FMath::Abs(extentVal);
+        }
+
+        physx::PxReal stiffness = 0.0f;
+        physx::PxReal damping = 0.0f;
+
+        if (LinearLimitProps.bSoftConstraint) 
+        {
+            stiffness = LinearLimitProps.Stiffness;
+            damping = LinearLimitProps.Damping;
+        }
+
+        physx::PxSpring spring(stiffness, damping);
+        physx::PxJointLinearLimit limitParams(extentVal, spring);
+        Joint->setLinearLimit(limitParams);
+    }
+
+    // 각도 제한
+    Joint->setMotion(physx::PxD6Axis::eSWING1, FPhysicsAssetUtils::MapAngularMotionToPx(ConeLimitProps.Swing1Motion));
+    Joint->setMotion(physx::PxD6Axis::eSWING2, FPhysicsAssetUtils::MapAngularMotionToPx(ConeLimitProps.Swing2Motion));
+
+    if (ConeLimitProps.Swing1Motion != EAngularConstraintMotion::ACM_Free ||
+        ConeLimitProps.Swing2Motion != EAngularConstraintMotion::ACM_Free)
+    {
+        physx::PxReal coneStiffness = 0.0f;
+        physx::PxReal coneDamping = 0.0f;
+
+        if (ConeLimitProps.bSoftConstraint) 
+        {
+            coneStiffness = ConeLimitProps.Stiffness;
+            coneDamping = ConeLimitProps.Damping;
+        }
+        physx::PxSpring spring(coneStiffness, coneDamping);
+
+        // PxJointLimitCone 생성자는 (Swing2관련 각도, Swing1관련 각도, PxSpring) 순서로 가정
+        physx::PxReal swing2Angle, swing1Angle;
+
+        if (ConeLimitProps.Swing2Motion == EAngularConstraintMotion::ACM_Locked) 
+        {
+            swing2Angle = 0.0f;
+        }
+        else 
+        { // ACM_Limited 또는 ACM_Free (이 경우 LimitDegrees 값 사용)
+            swing2Angle = FMath::DegreesToRadians(ConeLimitProps.Swing2LimitDegrees);
+        }
+
+        if (ConeLimitProps.Swing1Motion == EAngularConstraintMotion::ACM_Locked) 
+        {
+            swing1Angle = 0.0f;
+        }
+        else 
+        { // ACM_Limited 또는 ACM_Free
+            swing1Angle = FMath::DegreesToRadians(ConeLimitProps.Swing1LimitDegrees);
+        }
+
+        // PxJointLimitCone은 양의 각도를 기대하므로 절대값 처리
+        swing1Angle = FMath::Abs(swing1Angle);
+        swing2Angle = FMath::Abs(swing2Angle);
+
+        physx::PxJointLimitCone coneLimitParams
+        (
+            swing2Angle,
+            swing1Angle,
+            spring
+        );
+        Joint->setSwingLimit(coneLimitParams);
+    }
+
+    // 트위스트 제한
+    Joint->setMotion(physx::PxD6Axis::eTWIST, FPhysicsAssetUtils::MapAngularMotionToPx(TwistLimitProps.TwistMotion));
+
+    if (TwistLimitProps.TwistMotion != EAngularConstraintMotion::ACM_Free)
+    {
+        physx::PxReal twistStiffness = 0.0f;
+        physx::PxReal twistDamping = 0.0f;
+        if (TwistLimitProps.bSoftConstraint)
+        {
+            twistStiffness = TwistLimitProps.Stiffness;
+            twistDamping = TwistLimitProps.Damping;
+        }
+        physx::PxSpring spring(twistStiffness, twistDamping);
+
+        physx::PxReal halfAngleRad;
+        if (TwistLimitProps.TwistMotion == EAngularConstraintMotion::ACM_Locked) 
+        {
+            halfAngleRad = 0.0f;
+        }
+        else 
+        { // ACM_Limited
+            halfAngleRad = FMath::DegreesToRadians(TwistLimitProps.TwistLimitDegrees);
+            halfAngleRad = FMath::Abs(halfAngleRad); // 대칭 제한을 위해 양수 값으로
+        }
+
+        physx::PxJointAngularLimitPair twistLimitParams
+        (
+            -halfAngleRad, // 최소 각도
+            halfAngleRad,  // 최대 각도
+            spring          // 스프링 설정
+        );
+
+        Joint->setTwistLimit(twistLimitParams);
+    }
+
+    // !TODO : Bodysetup단에서 bCollisionEnabled를 가져와서 세팅
+    Joint->setConstraintFlag(physx::PxConstraintFlag::eCOLLISION_ENABLED, !Profile.bDisableCollision);
+    return Joint;
 }
 
 void FPhysicsSolver::AdvanceOneTimeStep(FPhysScene* InScene, float Dt)
@@ -223,16 +383,49 @@ void FPhysicsSolver::FetchData(FPhysScene* InScene)
         PxTransform Transform = DynamicActor->getGlobalPose();
 
         FBodyInstance* BodyInstance = static_cast<FBodyInstance*>(DynamicActor->userData);
-        // TODO Delete
-        BodyInstance->OwnerComponent->AttachParent = nullptr;
 
-        BodyInstance->OwnerComponent->SetWorldTransform(
-            FTransform(
-                FQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w),
-                FVector(Transform.p.x, Transform.p.y, Transform.p.z),
-                FVector(BodyInstance->Scale3D.X, BodyInstance->Scale3D.Y, BodyInstance->Scale3D.Z)
-            )
-        );
+        if (BodyInstance->OwnerComponent)
+        {
+            if (UStaticMeshComponent* StaticMeshComp = Cast<UStaticMeshComponent>(BodyInstance->OwnerComponent))
+            {
+                BodyInstance->OwnerComponent->SetWorldTransform(
+                    FTransform(
+                        FQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w),
+                        FVector(Transform.p.x, Transform.p.y, Transform.p.z),
+                        FVector(BodyInstance->Scale3D.X, BodyInstance->Scale3D.Y, BodyInstance->Scale3D.Z)
+                    )
+                );
+            }
+            else if (USkeletalMeshComponent* SkeletalMeshComp = Cast<USkeletalMeshComponent>(BodyInstance->OwnerComponent))
+            {
+                // !TODO : Bone을 찾아서 해당 Bone의 위치 변경. 또는 Bonematrix 변경
+                USkeletalMesh* SkeletalMesh = SkeletalMeshComp->GetSkeletalMeshAsset();
+                if (!SkeletalMesh)
+                {
+                    UE_LOG(ELogLevel::Warning, TEXT("SkeletalMeshComponent '%s' has no SkeletalMesh assigned."), *SkeletalMeshComp->GetName());
+                    continue;
+                }
+                int16 BoneIndex = BodyInstance->InstanceBoneIndex;
+                int16 ParentIndex = SkeletalMesh->GetSkeleton()->GetReferenceSkeleton().GetRawRefBoneInfo()[BoneIndex].ParentIndex;
+                FTransform ParentComponentSpaceTransform = ParentIndex != INDEX_NONE ? SkeletalMeshComp->GetBoneComponentSpaceTransform(ParentIndex) : FTransform::Identity;
+
+                FTransform ComponentSpaceTransform = SkeletalMeshComp->GetComponentTransform();
+
+                FTransform CachedBoneWorldTransform = SkeletalMeshComp->GetComponentTransform() * SkeletalMeshComp->GetBoneComponentSpaceTransform(BoneIndex);
+                FVector OriginScale = CachedBoneWorldTransform.Scale3D;
+                FTransform SimulatedWorldTransform = FTransform(
+                    FQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w),
+                    FVector(Transform.p.x, Transform.p.y, Transform.p.z),
+                    OriginScale
+                );
+
+                FTransform NewBoneTransform = (ParentComponentSpaceTransform.Inverse() * ComponentSpaceTransform.Inverse())
+                    * SimulatedWorldTransform; // 컴포넌트 공간 트랜스폼을 적용하여 본의 위치를 계산
+
+                SkeletalMeshComp->GetBonePoseContext().Pose[BoneIndex] = NewBoneTransform; // 본 위치 갱신
+            }
+            
+        }
     }
 }
 

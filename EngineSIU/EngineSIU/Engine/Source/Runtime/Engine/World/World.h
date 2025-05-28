@@ -92,6 +92,7 @@ protected:
 // Physics 관련
 public:
     void CreatePhysicsScene();
+    void ReleasePhysicsScene();
 private:
     FPhysScene* PhysicsScene = nullptr;
 

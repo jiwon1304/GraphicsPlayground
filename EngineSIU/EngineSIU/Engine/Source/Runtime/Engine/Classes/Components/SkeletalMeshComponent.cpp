@@ -355,6 +355,37 @@ void USkeletalMeshComponent::InitAnim()
     }
 }
 
+FTransform USkeletalMeshComponent::GetBoneComponentSpaceTransform(int32 BoneIndex) const
+{
+    if(!SkeletalMeshAsset || !SkeletalMeshAsset->GetRefSkeleton())
+        return FTransform();
+
+    const FReferenceSkeleton& RefSkeleton = *SkeletalMeshAsset->GetRefSkeleton();
+    const int32 BoneNum = RefSkeleton.GetRawRefBoneInfo().Num();
+
+
+    // TargetBoneIndex 유효성 검사
+    if (BoneIndex < 0 || BoneIndex >= BoneNum || BonePoseContext.Pose.GetNumBones() != BoneNum)
+    {
+        UE_LOG(ELogLevel::Error, TEXT("Invalid BoneIndex %d for SkeletalMeshComponent with %d bones."), BoneIndex, BoneNum);
+        return FTransform();
+    }
+
+    FTransform AccumulatedTransform = BonePoseContext.Pose[BoneIndex];
+
+    int32 CurrentParentIndex = RefSkeleton.GetRawRefBoneInfo()[BoneIndex].ParentIndex;
+
+    while (CurrentParentIndex != INDEX_NONE)
+    {
+        AccumulatedTransform = BonePoseContext.Pose[CurrentParentIndex] * AccumulatedTransform;
+        //AccumulatedTransform = AccumulatedTransform * BonePoseContext.Pose[CurrentParentIndex];
+
+        CurrentParentIndex = RefSkeleton.GetRawRefBoneInfo()[CurrentParentIndex].ParentIndex;
+    }
+
+    return AccumulatedTransform; // 컴포넌트 공간 트랜스폼 
+}
+
 bool USkeletalMeshComponent::NeedToSpawnAnimScriptInstance() const
 {
     USkeletalMesh* MeshAsset = GetSkeletalMeshAsset();

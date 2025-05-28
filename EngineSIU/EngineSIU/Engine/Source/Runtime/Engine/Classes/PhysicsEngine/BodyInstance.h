@@ -108,8 +108,7 @@ public:
         = 0.0f
     )
 
-    UPROPERTY(
-        EditAnywhere,
+    UPROPERTY(        EditAnywhere,
         float,
         MassScale,
         = 1.f

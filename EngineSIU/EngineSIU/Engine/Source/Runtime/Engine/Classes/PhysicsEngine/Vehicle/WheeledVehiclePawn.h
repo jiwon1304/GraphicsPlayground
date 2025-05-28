@@ -13,8 +13,6 @@ public:
     AWheeledVehiclePawn();
 
 private:
-    USkeletalMeshComponent* MeshComponent;
-    UVehicleMovementComponent* VehicleMovementComponent;
 
     // TODO 아래 UPROPERTY 가능하도록 작업하기
     /*UPROPERTY_WITH_FLAGS(
@@ -28,16 +26,7 @@ private:
     )*/
 
 public:
-    void SetMesh(USkeletalMeshComponent* InSkeletalMeshComponent) 
-    { 
-        MeshComponent = InSkeletalMeshComponent;
-    }
 
-    USkeletalMeshComponent* GetMesh() const { return MeshComponent; }
-
-    void SetVehicleMovementComponent(UVehicleMovementComponent* InVehicleMovementComponent) 
-    { 
-        VehicleMovementComponent = InVehicleMovementComponent;
-    }
-    UVehicleMovementComponent* GetVehicleMovementComponent() const { return VehicleMovementComponent; }
+    USkeletalMeshComponent* GetMesh() const;
+    UVehicleMovementComponent* GetVehicleMovementComponent() const;
 };
