@@ -85,6 +85,14 @@ struct FBodyInstance
         = FQuat::Identity
     )
 
+    // Car이면 아래 값 true
+    UPROPERTY(
+        EditAnywhere,
+        bool,
+        bCar,
+        = false
+    )
+
     // SkeletalMeshComponent / PhysicsAsset에서의 index
     int32 InstanceBodyIndex;
 

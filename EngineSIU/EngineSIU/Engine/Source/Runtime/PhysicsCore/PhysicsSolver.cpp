@@ -384,6 +384,21 @@ void FPhysicsSolver::FetchData(FPhysScene* InScene)
 
         if (BodyInstance->OwnerComponent)
         {
+            if (BodyInstance->bCar) 
+            {
+                FQuat PhysicQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w);
+
+                BodyInstance->OwnerComponent->SetWorldTransform(
+                    FTransform(
+                        PhysicQuat * BodyInstance->InvPhysXQuat,
+                        FVector(Transform.p.x, Transform.p.y, Transform.p.z),
+                        FVector(BodyInstance->Scale3D.X, BodyInstance->Scale3D.Y, BodyInstance->Scale3D.Z)
+                    )
+                );
+
+                return;
+            }
+
             if (UStaticMeshComponent* StaticMeshComp = Cast<UStaticMeshComponent>(BodyInstance->OwnerComponent))
             {
                 FQuat PhysicQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w);

@@ -14,7 +14,7 @@ void AWheeledVehiclePawn::PostSpawnInitialize()
     // SkeltalMesh 쓸거면 아래껄로
     USkeletalMeshComponent* MeshComponent = AddComponent<USkeletalMeshComponent>();
     SetRootComponent(MeshComponent);
-    MeshComponent->SetSkeletalMeshAsset(UAssetManager::Get().GetSkeletalMesh("Contents/Asset/SportsVehicle"));
+    MeshComponent->SetSkeletalMeshAsset(UAssetManager::Get().GetSkeletalMesh("Contents/Asset/RealCar"));
 
     // StaticMesh 쓸거면 아래껄로
     /*UStaticMeshComponent* MeshComponent = AddComponent<UStaticMeshComponent>();

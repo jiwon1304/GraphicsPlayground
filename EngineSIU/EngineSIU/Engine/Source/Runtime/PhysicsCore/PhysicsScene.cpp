@@ -191,15 +191,19 @@ void FPhysScene::AddVehicle(AWheeledVehiclePawn* Vehicle)
     FBodyInstance* VehicleMainBodyInstance = new FBodyInstance();
     FMatrix InitialMatrix;
 
+    VehicleMainBodyInstance->bCar = true;
+
     if (SkeletalMeshComponent != nullptr) 
     {
         VehicleMainBodyInstance->OwnerComponent = SkeletalMeshComponent;
         InitialMatrix = SkeletalMeshComponent->GetWorldMatrix();
+        VehicleMainBodyInstance->Scale3D = SkeletalMeshComponent->GetRelativeScale3D();
     }
     else if (StaticMeshComponent != nullptr) 
     {
         VehicleMainBodyInstance->OwnerComponent = StaticMeshComponent;
         InitialMatrix = StaticMeshComponent->GetWorldMatrix();
+        VehicleMainBodyInstance->Scale3D = StaticMeshComponent->GetRelativeScale3D();
     }
 
     SceneSolver->RegisterObject(this, VehicleMainBodyInstance, Vehicle->GetVehicleMovementComponent(), InitialMatrix);
