@@ -32,6 +32,21 @@ public:
 
     UPROPERTY_WITH_FLAGS(
         EditAnywhere,
+        float, PeakTorque
+    )
+
+    UPROPERTY_WITH_FLAGS(
+        EditAnywhere,
+        float, MaxOmega
+    )
+
+    UPROPERTY_WITH_FLAGS(
+        EditAnywhere,
+        float, ClutchStrength
+    )
+
+    UPROPERTY_WITH_FLAGS(
+        EditAnywhere,
         float, WheelMass // 바퀴 질량 (kg)
     )
 

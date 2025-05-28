@@ -205,7 +205,8 @@ void setupWheelsSimulationData
 } //namespace fourwheel
 
 PxVehicleDrive4W* createVehicle4W(const VehicleDesc& vehicle4WDesc, PxPhysics* physics, PxCooking* cooking
-                                  , const PxVec3& FrontLeftOffset, const PxVec3& FrontRightOffset, const PxVec3& RearLeftOffset, const PxVec3& RearRightOffset)
+                                  , const PxVec3& FrontLeftOffset, const PxVec3& FrontRightOffset, const PxVec3& RearLeftOffset, const PxVec3& RearRightOffset
+                                   , const float PeakTorque, const float MaxOmega, const float ClutchStrength)
 {
 	const PxVec3 chassisDims = vehicle4WDesc.chassisDims;
 	const PxF32 wheelWidth = vehicle4WDesc.wheelWidth;
@@ -288,8 +289,8 @@ PxVehicleDrive4W* createVehicle4W(const VehicleDesc& vehicle4WDesc, PxPhysics* p
 
 		//Engine
 		PxVehicleEngineData engine;
-		engine.mPeakTorque=500.0f;
-		engine.mMaxOmega=600.0f;//approx 6000 rpm
+        engine.mPeakTorque = PeakTorque;
+		engine.mMaxOmega= MaxOmega;//approx 6000 rpm
 		driveSimData.setEngineData(engine);
 
 		//Gears
@@ -299,7 +300,7 @@ PxVehicleDrive4W* createVehicle4W(const VehicleDesc& vehicle4WDesc, PxPhysics* p
 
 		//Clutch
 		PxVehicleClutchData clutch;
-		clutch.mStrength=10.0f;
+		clutch.mStrength= ClutchStrength;
 		driveSimData.setClutchData(clutch);
 
 		//Ackermann steer accuracy

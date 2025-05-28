@@ -168,10 +168,11 @@ void FVehicle4W::ReleaseAllControls()
     }
 }
 
-PxActor* FVehicle4W::InitVehicle(UVehicleMovementComponent* InVehicleMovementComponent, const FBodyInstance* BodyInstance, const FMatrix& InitialMatrix,
+PxActor* FVehicle4W::InitVehicle(UVehicleMovementComponent* InVehicleMovementComponent, FBodyInstance* BodyInstance, const FMatrix& InitialMatrix,
     PxPhysics* gPhysics, PxFoundation* gFoundation, PxScene* gScene, 
     PxDefaultAllocator* gAllocator, PxMaterial* gMaterial)
 {
+
     PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
     if (pvdClient) 
     {
@@ -211,27 +212,31 @@ PxActor* FVehicle4W::InitVehicle(UVehicleMovementComponent* InVehicleMovementCom
     FVectorToPxVec3(RLOffset, InVehicleMovementComponent->RearLeftWheelOffset)
     PxVec3 RROffset;
     FVectorToPxVec3(RROffset, InVehicleMovementComponent->RearRightWheelOffset)
-
-    gVehicle4W = createVehicle4W(vehicleDesc, gPhysics, gCooking, FLOffset, FROffset, RLOffset, RROffset);
+    
+    gVehicle4W = createVehicle4W(vehicleDesc, gPhysics, gCooking, FLOffset, FROffset, RLOffset, RROffset, 
+        InVehicleMovementComponent->PeakTorque, InVehicleMovementComponent->MaxOmega, InVehicleMovementComponent->ClutchStrength);
 
     PxRigidDynamic* RigidDynamic = gVehicle4W->getRigidDynamicActor();
     RigidDynamic->userData = (void*)BodyInstance;
 
     // --- 초기 자세 설정 시작 ---
 
-    FVector Translation = InitialMatrix.GetTranslationVector();
-
-    PxVec3 initialPosition(Translation.X, Translation.Y, Translation.Z); // 예시: 지면에서 약간 위 (Z가 위인 경우)
+    FVector InitialPosition = InitialMatrix.GetTranslationVector();
 
     // 차량을 눕히기 위한 회전 값 설정
-    PxReal angle = PxPi / 2.0f; // 90도 (라디안)
-    PxVec3 axis(1.0f, 0.0f, 0.0f);   // 로컬 X축 기준 회전
-    PxQuat initialRotation(angle, axis);
+    float angle =  PxPi / 2.0f;
+    FVector axis(1.0f, 0.0f, 0.0f);
+    FQuat CarRotation(axis, angle);
 
-    PxTransform startTransform(initialPosition, initialRotation);
+    BodyInstance->InvPhysXQuat = CarRotation.Inverse();
+
+    PxVec3 Position(InitialPosition.X, InitialPosition.Y, InitialPosition.Z);
+    PxQuat Rotation(CarRotation.X, CarRotation.Y, CarRotation.Z, CarRotation.W);
+
+    PxTransform InitialTransform(Position, Rotation);
     // --- 초기 자세 설정 끝 ---
 
-    RigidDynamic->setGlobalPose(startTransform);
+    RigidDynamic->setGlobalPose(InitialTransform);
 
     gScene->addActor(*RigidDynamic);
 

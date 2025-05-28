@@ -136,7 +136,7 @@ public:
     void StartHandbrakeTurnRightMode();
     void ReleaseAllControls();
 
-    PxActor* InitVehicle(UVehicleMovementComponent* InVehicleMovementComponent, const FBodyInstance* BodyInstance, const FMatrix& InitialMatrix,
+    PxActor* InitVehicle(UVehicleMovementComponent* InVehicleMovementComponent, FBodyInstance* BodyInstance, const FMatrix& InitialMatrix,
         PxPhysics* gPhysics, PxFoundation* gFoundation, PxScene* gScene, 
         PxDefaultAllocator* gAllocator, PxMaterial* gMaterial);
 

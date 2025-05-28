@@ -183,7 +183,7 @@ physx::PxActor* FPhysicsSolver::RegisterObject(FPhysScene* InScene, const FBodyI
     return NewRigidActor;
 }
 
-PxActor* FPhysicsSolver::RegisterObject(FPhysScene* InScene, const FBodyInstance* NewInstance, UVehicleMovementComponent* InVehicleMovementComponent, const FMatrix& InitialMatrix)
+PxActor* FPhysicsSolver::RegisterObject(FPhysScene* InScene, FBodyInstance* NewInstance, UVehicleMovementComponent* InVehicleMovementComponent, const FMatrix& InitialMatrix)
 {
     FVehicle4W* Vehicle = new FVehicle4W();
     Vehicles.Add(Vehicle);
@@ -386,9 +386,11 @@ void FPhysicsSolver::FetchData(FPhysScene* InScene)
         {
             if (UStaticMeshComponent* StaticMeshComp = Cast<UStaticMeshComponent>(BodyInstance->OwnerComponent))
             {
+                FQuat PhysicQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w);
+
                 BodyInstance->OwnerComponent->SetWorldTransform(
                     FTransform(
-                        FQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w),
+                        PhysicQuat * BodyInstance->InvPhysXQuat,
                         FVector(Transform.p.x, Transform.p.y, Transform.p.z),
                         FVector(BodyInstance->Scale3D.X, BodyInstance->Scale3D.Y, BodyInstance->Scale3D.Z)
                     )
@@ -411,8 +413,11 @@ void FPhysicsSolver::FetchData(FPhysScene* InScene)
 
                 FTransform CachedBoneWorldTransform = SkeletalMeshComp->GetComponentTransform() * SkeletalMeshComp->GetBoneComponentSpaceTransform(BoneIndex);
                 FVector OriginScale = CachedBoneWorldTransform.Scale3D;
+
+                FQuat PhysicQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w);
+
                 FTransform SimulatedWorldTransform = FTransform(
-                    FQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w),
+                    PhysicQuat * BodyInstance->InvPhysXQuat,
                     FVector(Transform.p.x, Transform.p.y, Transform.p.z),
                     OriginScale
                 );

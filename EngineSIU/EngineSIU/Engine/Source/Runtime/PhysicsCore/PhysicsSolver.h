@@ -36,7 +36,7 @@ public:
 
     PxActor* RegisterObject(FPhysScene* InScene, const FBodyInstance* NewInstance, const FMatrix& InitialMatrix);
     // 자동차 생성하는 코드
-    PxActor* RegisterObject(FPhysScene* InScene, const FBodyInstance* NewInstance, UVehicleMovementComponent* InVehicleMovementComponent, const FMatrix& InitialMatrix);
+    PxActor* RegisterObject(FPhysScene* InScene, FBodyInstance* NewInstance, UVehicleMovementComponent* InVehicleMovementComponent, const FMatrix& InitialMatrix);
     
     // 시뮬레이션 이전 최신값을 반영
     PxJoint* CreateJoint(FPhysScene* InScene, PxActor* Parent, PxActor* Child, const FConstraintInstance* NewInstance);

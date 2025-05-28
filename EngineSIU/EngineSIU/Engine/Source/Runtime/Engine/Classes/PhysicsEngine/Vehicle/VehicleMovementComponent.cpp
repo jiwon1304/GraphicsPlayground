@@ -9,6 +9,9 @@ UVehicleMovementComponent::UVehicleMovementComponent()
     , FrontRightWheelOffset(FVector(1.049995f, -1.5f, 1.5f))
     , RearLeftWheelOffset(FVector(-1.049995f, -1.5f, -1.5f))
     , RearRightWheelOffset(FVector(1.049995f, -1.5f, -1.5f))
+    , PeakTorque(10000.0f)
+    , MaxOmega(60000.0f)
+    , ClutchStrength(100.0f)
 {
     // 기본적으로 Car의 SkeletalMesh를 활용해서 값 바꾸기 적용해줌
 
@@ -29,6 +32,9 @@ UObject* UVehicleMovementComponent::Duplicate(UObject* InOuter)
     NewComponent->FrontRightWheelOffset = FrontRightWheelOffset;
     NewComponent->RearLeftWheelOffset = RearLeftWheelOffset;
     NewComponent->RearRightWheelOffset = RearRightWheelOffset;
+    NewComponent->PeakTorque = PeakTorque;
+    NewComponent->MaxOmega = MaxOmega;
+    NewComponent->ClutchStrength = ClutchStrength;
 
     NewComponent->ChassisCMOffset = ChassisCMOffset;
 
