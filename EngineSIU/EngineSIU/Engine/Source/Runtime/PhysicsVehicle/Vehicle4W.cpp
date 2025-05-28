@@ -228,6 +228,12 @@ PxActor* FVehicle4W::InitVehicle(UVehicleMovementComponent* InVehicleMovementCom
     FVector axis(1.0f, 0.0f, 0.0f);
     FQuat CarRotation(axis, angle);
 
+    // x축이 차량의 전면인 경우 회전 다시 작업
+    /*FVector Xaxis(0.0f, 0.0f, 1.0f);
+    FQuat XRotation(Xaxis, angle);
+
+    CarRotation = XRotation * CarRotation;*/
+
     BodyInstance->InvPhysXQuat = CarRotation.Inverse();
 
     PxVec3 Position(InitialPosition.X, InitialPosition.Y, InitialPosition.Z);
