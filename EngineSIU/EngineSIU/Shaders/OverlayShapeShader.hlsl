@@ -209,10 +209,7 @@ PS_INPUT OrientedBoxVS(VS_INPUT_POS_ONLY input, uint vertexID : SV_VertexID, uin
     PS_INPUT output;
 
     OrientedBox box = OrientedBoxes[instanceID];
-    box.AxisX = float3(1, 0, 0);
-    box.AxisY = float3(0, 1, 0);
-    box.AxisZ = float3(0, 0, 1);
-    // CalcVertices와 동일하게 vertexID로 꼭짓점 위치 계산
+
     float3 worldPos = GetOrientedBoxVertex(vertexID % 8, box);
 
     float4 clipPos = mul(float4(worldPos, 1.0f), ViewMatrix);
