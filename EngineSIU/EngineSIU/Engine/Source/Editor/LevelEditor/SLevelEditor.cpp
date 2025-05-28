@@ -493,6 +493,10 @@ void SLevelEditor::RegisterEditorInputDelegates()
                     // Gizmo control
                     if (const UEditorEngine* EdEngine = Cast<UEditorEngine>(GEngine))
                     {
+                        if (EdEngine->ActiveWorld->WorldType == EWorldType::PhysicsAssetEditor)
+                        {
+                            return;
+                        }
                         const UGizmoBaseComponent* Gizmo = Cast<UGizmoBaseComponent>(ActiveViewportClient->GetPickedGizmoComponent());
                         if (!Gizmo)
                         {

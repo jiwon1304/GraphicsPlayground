@@ -191,7 +191,7 @@ void ATransformGizmo::Tick(float DeltaTime)
                     FTransform GlobalBoneTransform = FTransform(GlobalBoneMatrices[BoneIndex]);
 
                     AddActorLocation(GlobalBoneTransform.Translation);
-                    if (EditorPlayer->GetCoordMode() == ECoordMode::CDM_LOCAL || EditorPlayer->GetControlMode() == EControlMode::CM_SCALE)
+                    if (EditorPlayer->GetCoordMode() == ECoordMode::CDM_LOCAL || EditorPlayer->GetControlMode() == EControlMode::CM_SCALE || GEngine->ActiveWorld->WorldType == EWorldType::PhysicsAssetEditor)
                     {
                         AddActorRotation(GlobalBoneTransform.Rotation);
                     }
@@ -269,6 +269,11 @@ void ATransformGizmo::Tick(float DeltaTime)
             
             if (TargetAggregateGeom != nullptr && TargetPrimitiveType != EAggCollisionShape::Unknown)
             {
+                TArray<FMatrix> GlobalBoneMatrices;
+                Engine->PhysicsAssetEditorWorld->GetSkeletalMeshComponent()->GetCurrentGlobalBoneMatrices(GlobalBoneMatrices);
+                int32 BoneIndex = SkeletalMesh->GetRefSkeleton()->FindBoneIndex(TargetBodySetup->BoneName);
+                FTransform GlobalBoneTransform = FTransform(GlobalBoneMatrices[BoneIndex]);
+                
                 if (TargetPrimitiveType == EAggCollisionShape::Sphere)
                 {
                     FKSphereElem SphereElem = *static_cast<FKSphereElem*>(TargetAggregateGeom);

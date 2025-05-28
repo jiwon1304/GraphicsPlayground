@@ -39,10 +39,17 @@ private:
     void ControlPickedPhysicsAsset(FVector2D DeltaPoint);
     
     void ControlRotation(USceneComponent* Component, UGizmoBaseComponent* Gizmo, float DeltaX, float DeltaY);
-    
     void ControlScale(USceneComponent* Component, UGizmoBaseComponent* Gizmo, float DeltaX, float DeltaY);
-    FQuat ControlBoneRotation(UGizmoBaseComponent* Gizmo, float DeltaX, float DeltaY);
-    FVector ControlBoneScale(FTransform& Component, UGizmoBaseComponent* Gizmo, float DeltaX, float DeltaY);
+    
+    FQuat ControlBoneRotation(FTransform& BoneTransform, UGizmoBaseComponent* Gizmo, float DeltaX, float DeltaY);
+    FVector ControlBoneScale(FTransform& BoneTransform, UGizmoBaseComponent* Gizmo, float DeltaX, float DeltaY);
+
+    void ControlTranslation(FTransform& Transform, UGizmoBaseComponent* Gizmo, float DeltaX, float DeltaY);
+
+    void ControlRotation(FTransform& Transform, UGizmoBaseComponent* Gizmo, float DeltaX, float DeltaY);
+    void ControlRotation(FRotator& Rotator, UGizmoBaseComponent* Gizmo, float DeltaX, float DeltaY);
+
+    void ControlScale(FTransform& Transform, UGizmoBaseComponent* Gizmo, float DeltaX, float DeltaY);
 
 
     bool GetAggregateGeom(UBodySetup*& TargetBodySetup, FKShapeElem*& TargetAggregateGeom, EAggCollisionShape::Type& TargetPrimitiveType);
