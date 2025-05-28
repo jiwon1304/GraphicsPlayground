@@ -40,4 +40,13 @@ struct FPhysicsMaterial
         Restitution,
         = 0.5f
     )
+
+    friend FArchive& operator<<(FArchive& Ar, FPhysicsMaterial& PhysicsMaterial)
+    {
+        Ar << PhysicsMaterial.Density
+            << PhysicsMaterial.Friction
+            << PhysicsMaterial.StaticFriction
+            << PhysicsMaterial.Restitution;
+        return Ar;
+    }
 };

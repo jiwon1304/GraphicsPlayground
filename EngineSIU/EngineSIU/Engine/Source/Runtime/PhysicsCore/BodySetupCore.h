@@ -11,6 +11,19 @@ namespace EBodyCollisionResponse
     };
 };
 
+inline FArchive& operator<<(FArchive& Ar, EBodyCollisionResponse::Type& Value)
+{
+    int8 Temp = static_cast<int8>(Value);
+
+    Ar << Temp;
+
+    if (Ar.IsLoading())
+    {
+        Value = static_cast<EBodyCollisionResponse::Type>(Temp);
+    }
+
+    return Ar;
+}
 
 class UBodySetupCore : public UObject
 {
@@ -31,4 +44,9 @@ public:
         CollisionResponse,
         = EBodyCollisionResponse::Type::BodyCollision_Enabled
         )
+
+    inline friend FArchive& operator<<(FArchive& Ar, UBodySetupCore& BodySetupCore)
+    {
+        return Ar << BodySetupCore.BoneName << BodySetupCore.CollisionResponse;
+    }
 };

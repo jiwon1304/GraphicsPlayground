@@ -40,4 +40,6 @@ public:
         BuildScale3D,
         = FVector::OneVector
     )
+
+    friend FArchive& operator<<(FArchive& Ar, UBodySetup*& BodySetup);
 };

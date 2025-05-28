@@ -20,6 +20,20 @@ namespace EAggCollisionShape
 }
 
 
+inline FArchive& operator<<(FArchive& Ar, EAggCollisionShape::Type& Value)
+{
+    int Temp = static_cast<int>(Value);
+
+    Ar << Temp;
+
+    if (Ar.IsLoading())
+    {
+        Value = static_cast<EAggCollisionShape::Type>(Temp);
+    }
+
+    return Ar;
+}
+
 struct FKShapeElem
 {
     DECLARE_STRUCT(FKShapeElem)
@@ -103,6 +117,24 @@ struct FKBoxElem : public FKShapeElem
         OrientedBox.ExtentZ = Z;
         return OrientedBox;
     }
+
+    inline friend FArchive& operator<<(FArchive& Ar, FKBoxElem& BoxElem)
+    {
+        Ar << BoxElem.Name << BoxElem.ShapeType;
+
+        uint8 Temp = static_cast<uint8>(BoxElem.CollisionEnabled);
+
+        Ar << Temp;
+
+        if (Ar.IsLoading())
+        {
+            BoxElem.CollisionEnabled = static_cast<ECollisionEnabled::Type>(Temp);
+        }
+        
+        Ar << BoxElem.Center << BoxElem.Rotation << BoxElem.X << BoxElem.Y << BoxElem.Z;
+
+        return Ar;
+    }
 };
 
 struct FKSphereElem : public FKShapeElem
@@ -134,6 +166,24 @@ struct FKSphereElem : public FKShapeElem
         Sphere.Center = Center;
         Sphere.Radius = Radius;
         return Sphere;
+    }
+
+    inline friend FArchive& operator<<(FArchive& Ar, FKSphereElem& SphereElem)
+    {
+        Ar << SphereElem.Name << SphereElem.ShapeType;
+
+        uint8 Temp = static_cast<uint8>(SphereElem.CollisionEnabled);
+
+        Ar << Temp;
+
+        if (Ar.IsLoading())
+        {
+            SphereElem.CollisionEnabled = static_cast<ECollisionEnabled::Type>(Temp);
+        }
+        
+        Ar << SphereElem.Center << SphereElem.Radius;
+
+        return Ar;
     }
 };
 
@@ -199,5 +249,23 @@ struct FKSphylElem : public FKShapeElem
         Capsule.B = Center + HalfSegment;
         Capsule.Radius = Radius;
         return Capsule;
+    }
+
+    inline friend FArchive& operator<<(FArchive& Ar, FKSphylElem& SphylElem)
+    {
+        Ar << SphylElem.Name << SphylElem.ShapeType;
+
+        uint8 Temp = static_cast<uint8>(SphylElem.CollisionEnabled);
+
+        Ar << Temp;
+
+        if (Ar.IsLoading())
+        {
+            SphylElem.CollisionEnabled = static_cast<ECollisionEnabled::Type>(Temp);
+        }
+        
+        Ar << SphylElem.Center << SphylElem.Rotation << SphylElem.Radius << SphylElem.Length;
+
+        return Ar;
     }
 };

@@ -26,6 +26,34 @@ enum class EAngularConstraintMotion : uint8
     ACM_MAX
 };
 
+inline FArchive& operator<<(FArchive& Ar, ELinearConstraintMotion& LinearConstraintMotion)
+{
+    uint8 Temp = static_cast<uint8>(LinearConstraintMotion);
+
+    Ar << Temp;
+
+    if (Ar.IsLoading())
+    {
+        LinearConstraintMotion = static_cast<ELinearConstraintMotion>(Temp);
+    }
+
+    return Ar;
+}
+
+inline FArchive& operator<<(FArchive& Ar, EAngularConstraintMotion& LinearConstraintMotion)
+{
+    uint8 Temp = static_cast<uint8>(LinearConstraintMotion);
+
+    Ar << Temp;
+
+    if (Ar.IsLoading())
+    {
+        LinearConstraintMotion = static_cast<EAngularConstraintMotion>(Temp);
+    }
+
+    return Ar;
+}
+
 struct FConstraintBaseParams
 {
     DECLARE_STRUCT(FConstraintBaseParams)
@@ -61,7 +89,11 @@ struct FConstraintBaseParams
         float,
         Stiffness,
         )
-
+    
+    friend FArchive& operator<<(FArchive& Ar, FConstraintBaseParams& ConstraintBaseParams)
+    {
+        return Ar << ConstraintBaseParams.bSoftConstraint << ConstraintBaseParams.ContactDistance << ConstraintBaseParams.Damping << ConstraintBaseParams.Restitution << ConstraintBaseParams.Stiffness;
+    }
 };
 
 struct FLinearConstraint : public FConstraintBaseParams
@@ -92,6 +124,13 @@ struct FLinearConstraint : public FConstraintBaseParams
         ELinearConstraintMotion,
         ZMotion,
     )
+    
+    friend FArchive& operator<<(FArchive& Ar, FLinearConstraint& LinearConstraint)
+    {
+        Ar << static_cast<FConstraintBaseParams&>(LinearConstraint);
+
+        return Ar << LinearConstraint.Limit << LinearConstraint.XMotion << LinearConstraint.YMotion << LinearConstraint.ZMotion;
+    }
 };
 
 // https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/PhysicsEngine/FConeConstraint
@@ -122,6 +161,13 @@ struct FConeConstraint : public FConstraintBaseParams
         EAngularConstraintMotion,
         Swing2Motion,
         )
+        
+    friend FArchive& operator<<(FArchive& Ar, FConeConstraint& ConeConstraint)
+    {
+        Ar << static_cast<FConstraintBaseParams&>(ConeConstraint);
+
+        return Ar << ConeConstraint.Swing1LimitDegrees << ConeConstraint.Swing1Motion << ConeConstraint.Swing2LimitDegrees << ConeConstraint.Swing2Motion;
+    }
 };
 
 
@@ -140,4 +186,11 @@ struct FTwistConstraint : public FConstraintBaseParams
         EAngularConstraintMotion,
         TwistMotion,
         )
+
+    friend FArchive& operator<<(FArchive& Ar, FTwistConstraint& TwistConstraint)
+    {
+        Ar << static_cast<FConstraintBaseParams&>(TwistConstraint);
+
+        return Ar << TwistConstraint.TwistLimitDegrees << TwistConstraint.TwistMotion;
+    }
 };
