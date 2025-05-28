@@ -115,6 +115,8 @@ public:
     VehicleSceneQueryData* gVehicleSceneQueryData = nullptr;
     PxBatchQuery* gBatchQuery = nullptr;
     PxVehicleDrivableSurfaceToTireFrictionPairs* gFrictionPairs = nullptr;
+    PxShape* WheelShapes[4];
+
 
     bool gIsVehicleInAir = true;
 

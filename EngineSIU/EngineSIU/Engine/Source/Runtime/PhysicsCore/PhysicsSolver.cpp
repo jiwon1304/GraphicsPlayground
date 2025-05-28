@@ -14,6 +14,7 @@
 #include "Developer/PhysicsUtilities/PhysicsAssetUtils.h"
 #include "Engine/Classes/PhysicsEngine/Vehicle/VehicleMovementComponent.h"
 #include "Engine/Source/Runtime/PhysicsVehicle/Vehicle4W.h"
+#include "Engine/Classes/PhysicsEngine/Vehicle/WheeledVehiclePawn.h"
 
 void FPhysicsSolver::Init()
 {
@@ -395,6 +396,47 @@ void FPhysicsSolver::FetchData(FPhysScene* InScene)
                         FVector(BodyInstance->Scale3D.X, BodyInstance->Scale3D.Y, BodyInstance->Scale3D.Z)
                     )
                 );
+                
+                // TODO 아래는 Vehicle이 1개일 때만 작동! 무 조 건 고쳐야함
+                FVehicle4W* Vehicle4W = Vehicles[0];
+
+                AWheeledVehiclePawn* WheelPawn = Cast<AWheeledVehiclePawn>(BodyInstance->OwnerComponent->GetOwner());
+
+                TArray<UStaticMeshComponent*> StaticMeshComps;
+
+                for (auto iter : WheelPawn->GetComponents()) 
+                {
+                    if (UStaticMeshComponent* StaticMeshComp = Cast<UStaticMeshComponent>(iter)) 
+                    {
+                        StaticMeshComps.Add(StaticMeshComp);
+                    }
+                }
+                PxTransform Transform;
+                for (auto StaticMesh : StaticMeshComps) 
+                {
+                    if (StaticMesh == BodyInstance->OwnerComponent) continue;
+
+                    if (StaticMesh->GetRelativeLocation() == WheelPawn->ForwardLeftTireLocation)
+                    {
+                        Transform = Vehicle4W->WheelShapes[0]->getLocalPose();
+                    }
+                    else if (StaticMesh->GetRelativeLocation() == WheelPawn->ForwardRightTireLocation)
+                    {
+                        Transform = Vehicle4W->WheelShapes[1]->getLocalPose();
+                    }
+                    else if (StaticMesh->GetRelativeLocation() == WheelPawn->RearLeftTireLocation)
+                    {
+                        Transform = Vehicle4W->WheelShapes[2]->getLocalPose();
+                    }
+                    else if (StaticMesh->GetRelativeLocation() == WheelPawn->RearRightTireLocation)
+                    {
+                        Transform = Vehicle4W->WheelShapes[3]->getLocalPose();
+                    }
+
+                    Transform.q = Transform.q * PxQuat(BodyInstance->InvPhysXQuat.X, BodyInstance->InvPhysXQuat.Y, BodyInstance->InvPhysXQuat.Z, BodyInstance->InvPhysXQuat.W);
+
+                    StaticMesh->SetRelativeRotation(FQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w));
+                }
 
                 return;
             }

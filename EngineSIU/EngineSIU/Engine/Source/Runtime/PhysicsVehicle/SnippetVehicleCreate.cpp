@@ -119,7 +119,7 @@ PxRigidDynamic* createVehicleActor
 (const PxVehicleChassisData& chassisData,
  PxMaterial** wheelMaterials, PxConvexMesh** wheelConvexMeshes, const PxU32 numWheels, const PxFilterData& wheelSimFilterData,
  PxMaterial** chassisMaterials, PxConvexMesh** chassisConvexMeshes, const PxU32 numChassisMeshes, const PxFilterData& chassisSimFilterData,
- PxPhysics& physics)
+ PxPhysics& physics, PxShape** WheelShapes)
 {
 	//We need a rigid body actor for the vehicle.
 	//Don't forget to add the actor to the scene after setting up the associated vehicle.
@@ -136,10 +136,10 @@ PxRigidDynamic* createVehicleActor
 	for(PxU32 i = 0; i < numWheels; i++)
 	{
 		PxConvexMeshGeometry geom(wheelConvexMeshes[i]);
-		PxShape* wheelShape=PxRigidActorExt::createExclusiveShape(*vehActor, geom, *wheelMaterials[i]);
-		wheelShape->setQueryFilterData(wheelQryFilterData);
-		wheelShape->setSimulationFilterData(wheelSimFilterData);
-		wheelShape->setLocalPose(PxTransform(PxIdentity));
+        WheelShapes[i] = PxRigidActorExt::createExclusiveShape(*vehActor, geom, *wheelMaterials[i]);
+        WheelShapes[i]->setQueryFilterData(wheelQryFilterData);
+        WheelShapes[i]->setSimulationFilterData(wheelSimFilterData);
+        WheelShapes[i]->setLocalPose(PxTransform(PxIdentity));
 	}
 
 	//Add the chassis shapes to the actor.

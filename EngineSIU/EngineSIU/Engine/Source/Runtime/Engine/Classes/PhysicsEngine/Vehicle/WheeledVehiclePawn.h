@@ -14,6 +14,8 @@ public:
     AWheeledVehiclePawn();
     
     virtual void PostSpawnInitialize() override;
+    virtual UObject* Duplicate(UObject* InOuter) override;
+    void BeginPlay() override;
 private:
 
     // TODO 아래 UPROPERTY 가능하도록 작업하기
@@ -28,6 +30,11 @@ private:
     )*/
 
 public:
+
+    FVector ForwardLeftTireLocation = FVector(16.05f, -8.44f, 2.29f);
+    FVector ForwardRightTireLocation = FVector(16.05f, 8.44f, 2.29f);
+    FVector RearLeftTireLocation = FVector(-15.80f, -8.69f, 2.81f);
+    FVector RearRightTireLocation = FVector(-15.80f, 8.69f, 2.81f);
 
     USkeletalMeshComponent* GetSkeltalMesh() const;
     UStaticMeshComponent* GetStaticMesh() const;

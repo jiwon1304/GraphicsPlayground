@@ -214,7 +214,7 @@ PxActor* FVehicle4W::InitVehicle(UVehicleMovementComponent* InVehicleMovementCom
     FVectorToPxVec3(RROffset, InVehicleMovementComponent->RearRightWheelOffset)
     
     gVehicle4W = createVehicle4W(vehicleDesc, gPhysics, gCooking, FLOffset, FROffset, RLOffset, RROffset, 
-        InVehicleMovementComponent->PeakTorque, InVehicleMovementComponent->MaxOmega, InVehicleMovementComponent->ClutchStrength);
+        InVehicleMovementComponent->PeakTorque, InVehicleMovementComponent->MaxOmega, InVehicleMovementComponent->ClutchStrength, WheelShapes);
 
     PxRigidDynamic* RigidDynamic = gVehicle4W->getRigidDynamicActor();
     RigidDynamic->userData = (void*)BodyInstance;
@@ -229,10 +229,10 @@ PxActor* FVehicle4W::InitVehicle(UVehicleMovementComponent* InVehicleMovementCom
     FQuat CarRotation(axis, angle);
 
     // x축이 차량의 전면인 경우 회전 다시 작업
-    /*FVector Xaxis(0.0f, 0.0f, 1.0f);
+    FVector Xaxis(0.0f, 0.0f, 1.0f);
     FQuat XRotation(Xaxis, angle);
 
-    CarRotation = XRotation * CarRotation;*/
+    CarRotation = XRotation * CarRotation;
 
     BodyInstance->InvPhysXQuat = CarRotation.Inverse();
 

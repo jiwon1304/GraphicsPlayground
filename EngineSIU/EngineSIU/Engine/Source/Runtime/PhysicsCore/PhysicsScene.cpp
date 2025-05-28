@@ -182,8 +182,10 @@ void FPhysScene::AddActor(AActor* Actor)
 
 void FPhysScene::AddVehicle(AWheeledVehiclePawn* Vehicle)
 {
-    USkeletalMeshComponent* SkeletalMeshComponent = Vehicle->GetSkeltalMesh();
-    UStaticMeshComponent* StaticMeshComponent = Vehicle->GetStaticMesh();
+    USceneComponent* MeshComponent = Vehicle->GetRootComponent();
+
+    USkeletalMeshComponent* SkeletalMeshComponent = Cast<USkeletalMeshComponent>(MeshComponent);
+    UStaticMeshComponent* StaticMeshComponent = Cast<UStaticMeshComponent>(MeshComponent);
 
 
     // 현재는 FBodyInstance는 OwnerComponent 연결 부분으로만 사용하는데

@@ -109,7 +109,7 @@ struct VehicleDesc
 	ShapeUserData* shapeUserDatas;
 };
 
-PxVehicleDrive4W* createVehicle4W(const VehicleDesc& vehDesc, PxPhysics* physics, PxCooking* cooking, const PxVec3& FrontLeftOffset, const PxVec3& FrontRightOffset, const PxVec3& RearLeftOffset, const PxVec3& RearRightOffset, const float PeakTorque, const float MaxOmega, const float ClutchStrength);
+PxVehicleDrive4W* createVehicle4W(const VehicleDesc& vehDesc, PxPhysics* physics, PxCooking* cooking, const PxVec3& FrontLeftOffset, const PxVec3& FrontRightOffset, const PxVec3& RearLeftOffset, const PxVec3& RearRightOffset, const float PeakTorque, const float MaxOmega, const float ClutchStrength, PxShape** WheelShapes);
 
 PxVehicleDriveTank* createVehicleTank(const VehicleDesc& vehDesc, PxPhysics* physics, PxCooking* cooking);
 
@@ -133,7 +133,7 @@ PxRigidDynamic* createVehicleActor
 (const PxVehicleChassisData& chassisData,
  PxMaterial** wheelMaterials, PxConvexMesh** wheelConvexMeshes, const PxU32 numWheels, const PxFilterData& wheelSimFilterData,
  PxMaterial** chassisMaterials, PxConvexMesh** chassisConvexMeshes, const PxU32 numChassisMeshes, const PxFilterData& chassisSimFilterData,
- PxPhysics& physics);
+ PxPhysics& physics, PxShape** WheelShapes);
 
 void configureUserData(PxVehicleWheels* vehicle, ActorUserData* actorUserData, ShapeUserData* shapeUserDatas);
 

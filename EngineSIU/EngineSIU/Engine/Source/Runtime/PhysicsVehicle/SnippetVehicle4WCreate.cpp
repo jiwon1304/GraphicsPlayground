@@ -206,7 +206,7 @@ void setupWheelsSimulationData
 
 PxVehicleDrive4W* createVehicle4W(const VehicleDesc& vehicle4WDesc, PxPhysics* physics, PxCooking* cooking
                                   , const PxVec3& FrontLeftOffset, const PxVec3& FrontRightOffset, const PxVec3& RearLeftOffset, const PxVec3& RearRightOffset
-                                   , const float PeakTorque, const float MaxOmega, const float ClutchStrength)
+                                   , const float PeakTorque, const float MaxOmega, const float ClutchStrength, PxShape** WheelShapes)
 {
 	const PxVec3 chassisDims = vehicle4WDesc.chassisDims;
 	const PxF32 wheelWidth = vehicle4WDesc.wheelWidth;
@@ -254,7 +254,7 @@ PxVehicleDrive4W* createVehicle4W(const VehicleDesc& vehicle4WDesc, PxPhysics* p
 			(rigidBodyData,
 			wheelMaterials, wheelConvexMeshes, numWheels, wheelSimFilterData,
 			chassisMaterials, chassisConvexMeshes, 1, chassisSimFilterData,
-			*physics);
+			*physics, WheelShapes);
 	}
 
 	//Set up the sim data for the wheels.
