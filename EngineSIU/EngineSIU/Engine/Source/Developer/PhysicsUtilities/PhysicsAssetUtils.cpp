@@ -183,20 +183,20 @@ namespace FPhysicsAssetUtils
                     // Cone Limits (Swing - 기본적으로 45도 제한된 움직임)
                     Profile.ConeLimit.Swing1Motion = EAngularConstraintMotion::ACM_Limited;
                     Profile.ConeLimit.Swing2Motion = EAngularConstraintMotion::ACM_Limited;
-                    Profile.ConeLimit.Swing1LimitDegrees = 10.0f;
-                    Profile.ConeLimit.Swing2LimitDegrees = 10.0f;
+                    Profile.ConeLimit.Swing1LimitDegrees = 30.0f;
+                    Profile.ConeLimit.Swing2LimitDegrees = 30.0f;
                     Profile.ConeLimit.bSoftConstraint = true;
-                    Profile.ConeLimit.Stiffness = 30.f;
-                    Profile.ConeLimit.Damping = 3.f;
+                    Profile.ConeLimit.Stiffness = 60000000;
+                    Profile.ConeLimit.Damping = 600000;
                     Profile.ConeLimit.Restitution = 0.0f; // PhysX 조인트 생성자에 따라 실제 적용 여부 다름
                     Profile.ConeLimit.ContactDistance = 0.0f;
 
                     // Twist Limits (기본적으로 45도 제한된 움직임)
                     Profile.TwistLimit.TwistMotion = EAngularConstraintMotion::ACM_Limited;
-                    Profile.TwistLimit.TwistLimitDegrees = 10.0f; // -45도에서 +45도 사이
+                    Profile.TwistLimit.TwistLimitDegrees = 30.0f; // -45도에서 +45도 사이
                     Profile.TwistLimit.bSoftConstraint = true;
-                    Profile.TwistLimit.Stiffness = 30.f;
-                    Profile.TwistLimit.Damping = 3.f;
+                    Profile.TwistLimit.Stiffness = 60000000;
+                    Profile.TwistLimit.Damping = 600000;
                     Profile.TwistLimit.Restitution = 0.0f; // PhysX 조인트 생성자에 따라 실제 적용 여부 다름
                     Profile.TwistLimit.ContactDistance = 0.0f;
 
