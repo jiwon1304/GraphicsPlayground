@@ -46,7 +46,17 @@ public:
 protected:
     std::unique_ptr<FSkeletalMeshRenderData> RenderData;
 
-    USkeleton* Skeleton;
+    UPROPERTY(
+        VisibleAnywhere | EditInline,
+        USkeleton*,
+        Skeleton,
+        = nullptr
+    )
 
-    UPhysicsAsset* PhysicsAsset = nullptr;
+    UPROPERTY(
+        VisibleAnywhere | EditInline,
+        UPhysicsAsset*,
+        PhysicsAsset,
+        = nullptr
+    )
 };

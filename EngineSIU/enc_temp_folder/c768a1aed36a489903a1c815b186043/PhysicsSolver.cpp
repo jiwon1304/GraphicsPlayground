@@ -189,24 +189,16 @@ physx::PxJoint* FPhysicsSolver::CreateJoint(FPhysScene* InScene, PxActor* Child,
         UE_LOG(ELogLevel::Error, TEXT("Parent or Child is not a dynamic actor!"));
         return nullptr;
     }
+    //PxTransform localChildTransform = Actor2Dynamic->getGlobalPose();
+    //PxTransform localFrameParent = PxTransform(Actor1Dynamic->getGlobalPose().getInverse() * localChildTransform);
+    //PxTransform localFrameChild = PxTransform(PxVec3(0));
 
-   // PhysX 액터의 글로벌 포즈를 가져옵니다 (이미 PhysX 좌표계 기준).
     PxTransform parentWorld = ParentDynamic->getGlobalPose();
     PxTransform childWorld = ChildDynamic->getGlobalPose();
 
-    PxQuat q_AxisCorrection = PxQuat(PxMat33(
-        PxVec3(0.0f, 0.0f, 1.0f),
-        PxVec3(1.0f, 0.0f, 0.0f), 
-        PxVec3(0.0f, 1.0f, 0.0f)  
-    ));
-    q_AxisCorrection.normalize(); // 정규화
-
-    // 자식 액터에 대한 조인트의 로컬 프레임입니다.
-    // 위치는 자식 액터의 원점, 방향은 위에서 정의한 축 보정 회전을 적용합니다.
-    PxTransform localFrameChild(PxVec3(0.0f), q_AxisCorrection);
-
-    PxTransform childJointFrameInWorld = childWorld * localFrameChild;
-    PxTransform localFrameParent = parentWorld.getInverse() * childJointFrameInWorld;
+    // 두 객체의 상대 위치 + 회전 차이 모두 포함
+    PxTransform localFrameParent = parentWorld.getInverse() * childWorld;
+    PxTransform localFrameChild(PxIdentity); // 또는 상대적으로 회전을 명시적으로 설정
 
     PxD6Joint* Joint = PxD6JointCreate(*FPhysxSolversModule::GetModule()->Physics, ParentDynamic, localFrameParent, ChildDynamic, localFrameChild);
 
@@ -302,8 +294,8 @@ physx::PxJoint* FPhysicsSolver::CreateJoint(FPhysScene* InScene, PxActor* Child,
         physx::PxJointLimitCone coneLimitParams
         (
             swing2Angle,
-            swing1Angle,
-            spring
+            swing1Angle
+            //spring
         );
         Joint->setSwingLimit(coneLimitParams);
     }
@@ -336,8 +328,8 @@ physx::PxJoint* FPhysicsSolver::CreateJoint(FPhysScene* InScene, PxActor* Child,
         physx::PxJointAngularLimitPair twistLimitParams
         (
             -halfAngleRad, // 최소 각도
-            halfAngleRad,  // 최대 각도
-            spring          // 스프링 설정
+            halfAngleRad  // 최대 각도
+            //spring          // 스프링 설정
         );
 
         Joint->setTwistLimit(twistLimitParams);

@@ -98,6 +98,9 @@ PxScene* FPhysxSolversModule::CreateScene()
 #endif // _DEBUG
 
     PxScene* Scene = Physics->createScene(sceneDesc);
+
+
+
     Scene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f); // PVD용
     Scene->setVisualizationParameter(PxVisualizationParameter::eACTOR_AXES, 1.0f); // PVD용
     Scene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_SHAPES, 1.0f); // PVD용
