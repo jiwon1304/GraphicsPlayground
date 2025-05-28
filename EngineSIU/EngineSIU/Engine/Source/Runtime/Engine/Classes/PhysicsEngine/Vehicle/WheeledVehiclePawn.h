@@ -10,16 +10,16 @@ class AWheeledVehiclePawn : public APawn
     DECLARE_CLASS(AWheeledVehiclePawn, APawn)
 
 public:
-    AWheeledVehiclePawn() = default;
+    AWheeledVehiclePawn();
 
 private:
-    USkeletalMeshComponent* Mesh;
+    USkeletalMeshComponent* MeshComponent;
     UVehicleMovementComponent* VehicleMovementComponent;
 
     // TODO 아래 UPROPERTY 가능하도록 작업하기
     /*UPROPERTY_WITH_FLAGS(
         EditAnywhere,
-        USkeletalMeshComponent, Mesh
+        USkeletalMeshComponent, MeshComponent
     )
     
     UPROPERTY_WITH_FLAGS(
@@ -30,10 +30,10 @@ private:
 public:
     void SetMesh(USkeletalMeshComponent* InSkeletalMeshComponent) 
     { 
-        Mesh = InSkeletalMeshComponent;
+        MeshComponent = InSkeletalMeshComponent;
     }
 
-    USkeletalMeshComponent* GetMesh() const { return Mesh; }
+    USkeletalMeshComponent* GetMesh() const { return MeshComponent; }
 
     void SetVehicleMovementComponent(UVehicleMovementComponent* InVehicleMovementComponent) 
     { 

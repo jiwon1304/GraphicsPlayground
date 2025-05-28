@@ -418,6 +418,9 @@
     <Filter Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\Vehicle">
       <UniqueIdentifier>{69030e4f-56b3-4adb-8adc-c33455f1b58e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Source\Runtime\PhysicsVehicle">
+      <UniqueIdentifier>{0ebf0d73-3274-41f7-b914-48c2f2cac20d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LightGridGenerator.cpp" />
@@ -1724,6 +1727,22 @@
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\Vehicle\WheeledVehiclePawn.cpp">
       <Filter>Engine\Source\Runtime\Engine\Classes\PhysicsEngine\Vehicle</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\PhysicsVehicle\Vehicle4W.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\PhysicsVehicle\SnippetVehicleCreate.cpp">
+      <Filter>Engine\Source\Runtime\PhysicsVehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\PhysicsVehicle\SnippetVehicleFilterShader.cpp">
+      <Filter>Engine\Source\Runtime\PhysicsVehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\PhysicsVehicle\SnippetVehicleSceneQuery.cpp">
+      <Filter>Engine\Source\Runtime\PhysicsVehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\PhysicsVehicle\SnippetVehicleTireFriction.cpp">
+      <Filter>Engine\Source\Runtime\PhysicsVehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\PhysicsVehicle\SnippetVehicle4WCreate.cpp">
+      <Filter>Engine\Source\Runtime\PhysicsVehicle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="EngineSIU.natvis" />
@@ -2055,6 +2074,19 @@
     </ClInclude>
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\Vehicle\WheeledVehiclePawn.h">
       <Filter>Engine\Source\Runtime\Engine\Classes\PhysicsEngine\Vehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\PhysicsVehicle\Vehicle4W.h" />
+    <ClInclude Include="Engine\Source\Runtime\PhysicsVehicle\SnippetVehicleCreate.h">
+      <Filter>Engine\Source\Runtime\PhysicsVehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\PhysicsVehicle\SnippetVehicleFilterShader.h">
+      <Filter>Engine\Source\Runtime\PhysicsVehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\PhysicsVehicle\SnippetVehicleSceneQuery.h">
+      <Filter>Engine\Source\Runtime\PhysicsVehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\PhysicsVehicle\SnippetVehicleTireFriction.h">
+      <Filter>Engine\Source\Runtime\PhysicsVehicle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

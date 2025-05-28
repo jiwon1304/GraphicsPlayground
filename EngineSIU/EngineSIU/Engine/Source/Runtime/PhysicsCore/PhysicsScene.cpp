@@ -7,6 +7,10 @@
 #include "PhysxSolversModule.h"
 #include "Components/StaticMeshComponent.h"
 #include "PhysicsEngine/BodySetup.h"
+#include "Engine/Classes/PhysicsEngine/Vehicle/WheeledVehiclePawn.h"
+#include "Engine/Classes/PhysicsEngine/PhysicsAsset.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Engine/Classes/Engine/SkeletalMesh.h"
 
 void FPhysScene::Init(FPhysicsSolver* InSceneSolver, physx::PxScene* InScene)
 {
@@ -23,6 +27,13 @@ void FPhysScene::Init(FPhysicsSolver* InSceneSolver, physx::PxScene* InScene)
 
 void FPhysScene::AddActor(AActor* Actor)
 {
+    // AWheeledVehiclePawn인 경우에 처리를 다르게 해줘야 하므로 함수 분리
+    if (AWheeledVehiclePawn* WheeledVehiclePawn = Cast<AWheeledVehiclePawn>(Actor)) 
+    {
+        AddVehicle(WheeledVehiclePawn);
+        return;
+    }
+
     TSet<UActorComponent*> ActorComponents = Actor->GetComponents();
 
     // StaticMeshComponent
@@ -56,6 +67,25 @@ void FPhysScene::AddActor(AActor* Actor)
     }
 
     // TODO : SkeletalMeshComponent
+}
+
+void FPhysScene::AddVehicle(AWheeledVehiclePawn* Vehicle)
+{
+    USkeletalMeshComponent* SkeletalMeshComponent = Vehicle->GetMesh();
+    if (!SkeletalMeshComponent) 
+    {
+        UE_LOG(ELogLevel::Warning, TEXT("AWheeledVehiclePawn '%s' has no SkeletalMeshComponent assigned."), *Vehicle->GetName());
+        return;
+    }
+
+    USkeletalMesh* SkeletalMesh = SkeletalMeshComponent->GetSkeletalMeshAsset();
+
+    // 현재는 FBodyInstance는 OwnerComponent 연결 부분으로만 사용하는데
+    // 이후 수정 필요할듯
+    FBodyInstance* VehicleMainBodyInstance = new FBodyInstance();
+    VehicleMainBodyInstance->OwnerComponent = SkeletalMeshComponent;
+
+    SceneSolver->RegisterObject(this, VehicleMainBodyInstance, Vehicle->GetVehicleMovementComponent());
 }
 
 void FPhysScene::AdvanceAndDispatch_External(float DeltaTime)

@@ -8,6 +8,7 @@
 
 class UShapeComponent;
 struct FPhysicsSolver;
+class AWheeledVehiclePawn;
 
 namespace physx
 {
@@ -28,6 +29,8 @@ public:
     void Init(FPhysicsSolver* InSceneSolver, physx::PxScene* InScene);
 
 	void AddActor(AActor* Actor);
+
+    void AddVehicle(AWheeledVehiclePawn* Vehicle);
 
     void AdvanceAndDispatch_External(float DeltaTime);
     void SyncBodies();

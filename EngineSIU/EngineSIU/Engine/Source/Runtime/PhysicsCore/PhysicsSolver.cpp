@@ -6,6 +6,8 @@
 #include "Components/PrimitiveComponent.h"
 #include "PhysicsEngine/BodyInstance.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
+#include "Engine/Classes/PhysicsEngine/Vehicle/VehicleMovementComponent.h"
+#include "Engine/Source/Runtime/PhysicsVehicle/Vehicle4W.h"
 
 void FPhysicsSolver::Init()
 {
@@ -176,9 +178,26 @@ PxActor* FPhysicsSolver::RegisterObject(FPhysScene* InScene, const FBodyInstance
     return NewRigidActor;
 }
 
+PxActor* FPhysicsSolver::RegisterObject(FPhysScene* InScene, const FBodyInstance* NewInstance, UVehicleMovementComponent* InVehicleMovementComponent)
+{
+    FVehicle4W* Vehicle = new FVehicle4W();
+    Vehicles.Add(Vehicle);
+
+    FPhysxSolversModule* PhysxSolverModule = FPhysxSolversModule::GetModule();
+
+     return Vehicle->InitVehicle(InVehicleMovementComponent, NewInstance, PhysxSolverModule->Physics, PhysxSolverModule->Foundation
+        , InScene->PhysxScene, &PhysxSolverModule->Allocator, PhysxSolverModule->DefaultMaterial);
+}
+
 void FPhysicsSolver::AdvanceOneTimeStep(FPhysScene* InScene, float Dt)
 {
     //PxSceneWriteLock scopedWriteLock(*InScene->PhysxScene);
+    
+    for (int VehicleNum = 0; VehicleNum < Vehicles.Num(); VehicleNum++) 
+    {
+        Vehicles[VehicleNum]->StepPhysics(Dt, InScene->PhysxScene);
+    }
+    
     InScene->PhysxScene->simulate(Dt);
 }
 
@@ -204,6 +223,9 @@ void FPhysicsSolver::FetchData(FPhysScene* InScene)
         PxTransform Transform = DynamicActor->getGlobalPose();
 
         FBodyInstance* BodyInstance = static_cast<FBodyInstance*>(DynamicActor->userData);
+        // TODO Delete
+        BodyInstance->OwnerComponent->AttachParent = nullptr;
+
         BodyInstance->OwnerComponent->SetWorldTransform(
             FTransform(
                 FQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w),
