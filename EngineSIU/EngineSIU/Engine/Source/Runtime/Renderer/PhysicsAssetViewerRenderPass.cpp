@@ -251,9 +251,9 @@ void FPhysicsAssetViewerRenderPass::RenderSkelComp(USkeletalMeshComponent* SkelC
         Shape::FEllipticalCone TwistShape;
         TwistShape.ApexPosition = InitialPosition;
         TwistShape.Direction = InitialRotation.RotateVector(FVector(0, 1, 0));
-        TwistShape.AngleWidth = Twist.TwistLimitDegrees;
-        TwistShape.AngleHeight = 0; // 높이는 0으로 설정
-        TwistShape.AngleWidth = FMath::DegreesToRadians(TwistShape.AngleWidth);
+        TwistShape.AngleHeight = Twist.TwistLimitDegrees;
+        TwistShape.AngleWidth = 0; // 높이는 0으로 설정
+        TwistShape.AngleHeight = FMath::DegreesToRadians(TwistShape.AngleHeight);
         TwistShape.Radius = Radius;
         EllipticalCones.Add(TPair<Shape::FEllipticalCone, FLinearColor>(TwistShape, FLinearColor(0, 1, 0, 0.2)));
     }

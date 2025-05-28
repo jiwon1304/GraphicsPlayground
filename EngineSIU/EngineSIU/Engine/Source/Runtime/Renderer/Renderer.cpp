@@ -384,6 +384,7 @@ void FRenderer::RenderWorldScene(const std::shared_ptr<FEditorViewportClient>& V
         }
     }
 
+    if (ShowFlag & EEngineShowFlags::SF_PhysicsPreview)
     {
         PhysicsAssetViewerRenderPass->Render(Viewport);
     }
