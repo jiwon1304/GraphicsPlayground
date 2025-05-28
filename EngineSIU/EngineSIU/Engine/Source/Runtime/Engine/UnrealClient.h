@@ -20,7 +20,9 @@ enum class EResourceType : uint8
     ERT_Compositing,
     ERT_Scene,
     ERT_PP_Fog,
+    ERT_PP_ShapeOverlay,
     ERT_PP_CameraEffect,
+    ERT_PP_Blur, // blur는 여러개 쓸수있으니까...
     ERT_Debug,
     ERT_Editor,
     ERT_Gizmo,

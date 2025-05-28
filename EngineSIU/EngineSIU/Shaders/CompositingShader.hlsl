@@ -77,7 +77,7 @@ float4 mainPS(PS_Input Input) : SV_TARGET
     }
     else
     {
-        FinalColor = lerp(Scene, PostProcess, PostProcess.a);
+        FinalColor = float4(lerp(Scene.rgb, PostProcess.rgb, PostProcess.a), 1.0f);
         FinalColor = lerp(FinalColor, Editor, Editor.a);
         FinalColor = lerp(FinalColor, CameraEffect, CameraEffect.a);
         // FinalColor = CameraEffect;

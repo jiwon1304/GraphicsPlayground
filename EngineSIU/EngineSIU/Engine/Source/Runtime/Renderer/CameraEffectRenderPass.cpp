@@ -29,6 +29,7 @@ void FCameraEffectRenderPass::CreateShader()
     BufferManager->CreateBufferGeneric<FConstantBufferCameraFade>("CameraFadeConstantBuffer", nullptr, sizeof(FConstantBufferCameraFade), D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
     BufferManager->CreateBufferGeneric<FConstantBufferCameraVignette>("CameraVignetteConstantBuffer", nullptr, sizeof(FConstantBufferCameraVignette), D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
     BufferManager->CreateBufferGeneric<FConstantBufferLetterBox>("LetterBoxConstantBuffer", nullptr, sizeof(FConstantBufferLetterBox), D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
+
 }
 
 void FCameraEffectRenderPass::UpdateShader()

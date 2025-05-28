@@ -397,6 +397,7 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Engine\Source\Runtime\Renderer\BillboardRenderPass.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Renderer\BlurRenderPass.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Renderer\CameraEffectRenderPass.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Renderer\CompositingPass.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Renderer\DepthPrePass.cpp" />
@@ -406,7 +407,9 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     <ClCompile Include="Engine\Source\Runtime\Renderer\GizmoRenderPass.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Renderer\LightHeatMapRenderPass.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Renderer\LineRenderPass.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Renderer\OverlayShapeRenderPass.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Renderer\ParticleRenderPass.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Renderer\PhysicsAssetViewerRenderPass.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Renderer\PostProcessCompositingPass.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Renderer\Renderer.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Renderer\ShadowManager.cpp" />
@@ -561,6 +564,7 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     <ClInclude Include="Engine\Source\Runtime\CoreUObject\UObject\PropertyEvent.h" />
     <ClInclude Include="Engine\Source\Runtime\Core\Math\CurveEdInterface.h" />
     <ClInclude Include="Engine\Source\Runtime\Core\Math\RandomStream.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Math\Shapes.h" />
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Components\ParticleSystemComponent.h" />
     <ClInclude Include="Engine\Source\Contents\Objects\DamageCameraShake.h" />
     <ClInclude Include="Engine\Source\Developer\AnimDataController\AnimDataController.h" />
@@ -819,6 +823,7 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Engine\Source\Runtime\Renderer\BillboardRenderPass.h" />
+    <ClInclude Include="Engine\Source\Runtime\Renderer\BlurRenderPass.h" />
     <ClInclude Include="Engine\Source\Runtime\Renderer\CameraEffectRenderPass.h" />
     <ClInclude Include="Engine\Source\Runtime\Renderer\CompositingPass.h" />
     <ClInclude Include="Engine\Source\Runtime\Renderer\DepthPrePass.h" />
@@ -829,7 +834,9 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     <ClInclude Include="Engine\Source\Runtime\Renderer\IRenderPass.h" />
     <ClInclude Include="Engine\Source\Runtime\Renderer\LightHeatMapRenderPass.h" />
     <ClInclude Include="Engine\Source\Runtime\Renderer\LineRenderPass.h" />
+    <ClInclude Include="Engine\Source\Runtime\Renderer\OverlayShapeRenderPass.h" />
     <ClInclude Include="Engine\Source\Runtime\Renderer\ParticleRenderPass.h" />
+    <ClInclude Include="Engine\Source\Runtime\Renderer\PhysicsAssetViewerRenderPass.h" />
     <ClInclude Include="Engine\Source\Runtime\Renderer\PostProcessCompositingPass.h" />
     <ClInclude Include="Engine\Source\Runtime\Renderer\Renderer.h" />
     <ClInclude Include="Engine\Source\Runtime\Renderer\RendererHelpers.h" />
@@ -1168,6 +1175,7 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </None>
     <None Include="Shaders\SkeletalMeshVertexShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
@@ -1175,6 +1183,7 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </None>
     <None Include="Shaders\CameraEffectShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -1184,6 +1193,9 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
+    <FxCompile Include="Shaders\BlurEffectShader.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="Shaders\CascadedShadowMap.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
@@ -1216,6 +1228,9 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
+    <FxCompile Include="Shaders\OverlayShapeShader.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="Shaders\PointLightCubemapGS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
@@ -1230,6 +1245,7 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     </FxCompile>
     <None Include="Shaders\StaticMeshPixelShaderWorldTangent.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </None>
   </ItemGroup>
   <ItemGroup>

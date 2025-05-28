@@ -412,15 +412,6 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{E3A8C30B-703E-4852-A481-C2F5945B1CF8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine">
-      <UniqueIdentifier>{b217cd3f-bc7e-4aa1-ab7d-cad9ab423f85}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\Vehicle">
-      <UniqueIdentifier>{69030e4f-56b3-4adb-8adc-c33455f1b58e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Source\Runtime\PhysicsVehicle">
-      <UniqueIdentifier>{0ebf0d73-3274-41f7-b914-48c2f2cac20d}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LightGridGenerator.cpp" />
@@ -1721,28 +1712,9 @@
     <ClCompile Include="Engine\Source\Editor\PropertyEditor\PhysicsAssetEditorPanel.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\PhysicsAsset.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\World\PhysicsAssetWorld.cpp" />
-    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\Vehicle\VehicleMovementComponent.cpp">
-      <Filter>Engine\Source\Runtime\Engine\Classes\PhysicsEngine\Vehicle</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\Vehicle\WheeledVehiclePawn.cpp">
-      <Filter>Engine\Source\Runtime\Engine\Classes\PhysicsEngine\Vehicle</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Source\Runtime\PhysicsVehicle\Vehicle4W.cpp" />
-    <ClCompile Include="Engine\Source\Runtime\PhysicsVehicle\SnippetVehicleCreate.cpp">
-      <Filter>Engine\Source\Runtime\PhysicsVehicle</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Source\Runtime\PhysicsVehicle\SnippetVehicleFilterShader.cpp">
-      <Filter>Engine\Source\Runtime\PhysicsVehicle</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Source\Runtime\PhysicsVehicle\SnippetVehicleSceneQuery.cpp">
-      <Filter>Engine\Source\Runtime\PhysicsVehicle</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Source\Runtime\PhysicsVehicle\SnippetVehicleTireFriction.cpp">
-      <Filter>Engine\Source\Runtime\PhysicsVehicle</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Source\Runtime\PhysicsVehicle\SnippetVehicle4WCreate.cpp">
-      <Filter>Engine\Source\Runtime\PhysicsVehicle</Filter>
-    </ClCompile>
+    <ClCompile Include="Engine\Source\Runtime\Renderer\BlurRenderPass.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Renderer\OverlayShapeRenderPass.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Renderer\PhysicsAssetViewerRenderPass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="EngineSIU.natvis" />
@@ -1754,6 +1726,8 @@
     <FxCompile Include="Shaders\DepthOnlyVS.hlsl" />
     <FxCompile Include="Shaders\LightPBR.hlsl" />
     <FxCompile Include="Shaders\PointLightCubemapGS.hlsl" />
+    <FxCompile Include="Shaders\BlurEffectShader.hlsl" />
+    <FxCompile Include="Shaders\OverlayShapeShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Components\SkeletalMeshComponent.h" />
@@ -2068,26 +2042,11 @@
     <ClInclude Include="Engine\Source\Runtime\PhysicsCore\ImplicitObject.h" />
     <ClInclude Include="Engine\Source\Developer\PhysicsUtilities\PhysicsAssetUtils.h" />
     <ClInclude Include="Engine\Source\Editor\PropertyEditor\PhysicsAssetEditorPanel.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Math\Shapes.h" />
     <ClInclude Include="Engine\Source\Runtime\Engine\World\PhysicsAssetWorld.h" />
-    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\Vehicle\VehicleMovementComponent.h">
-      <Filter>Engine\Source\Runtime\Engine\Classes\PhysicsEngine\Vehicle</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\Vehicle\WheeledVehiclePawn.h">
-      <Filter>Engine\Source\Runtime\Engine\Classes\PhysicsEngine\Vehicle</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Source\Runtime\PhysicsVehicle\Vehicle4W.h" />
-    <ClInclude Include="Engine\Source\Runtime\PhysicsVehicle\SnippetVehicleCreate.h">
-      <Filter>Engine\Source\Runtime\PhysicsVehicle</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Source\Runtime\PhysicsVehicle\SnippetVehicleFilterShader.h">
-      <Filter>Engine\Source\Runtime\PhysicsVehicle</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Source\Runtime\PhysicsVehicle\SnippetVehicleSceneQuery.h">
-      <Filter>Engine\Source\Runtime\PhysicsVehicle</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Source\Runtime\PhysicsVehicle\SnippetVehicleTireFriction.h">
-      <Filter>Engine\Source\Runtime\PhysicsVehicle</Filter>
-    </ClInclude>
+    <ClInclude Include="Engine\Source\Runtime\Renderer\BlurRenderPass.h" />
+    <ClInclude Include="Engine\Source\Runtime\Renderer\OverlayShapeRenderPass.h" />
+    <ClInclude Include="Engine\Source\Runtime\Renderer\PhysicsAssetViewerRenderPass.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\CompositingShader.hlsl" />
