@@ -68,6 +68,11 @@ void FPhysxSolversModule::Shutdown()
     }
 }
 
+void FPhysxSolversModule::ConnectToPVD()
+{
+    Pvd->connect(*PvdTransport, PxPvdInstrumentationFlag::eALL);
+}
+
 FPhysicsSolver* FPhysxSolversModule::CreateSolver()
 {
     FPhysicsSolver* NewSolver = new FPhysicsSolver();
