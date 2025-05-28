@@ -9,6 +9,8 @@ class UVehicleMovementComponent : public UActorComponent
 public:
     UVehicleMovementComponent();
 
+    virtual UObject* Duplicate(UObject* InOuter) override;
+
     // UVehicleMovement는 데이터만 Hold
     // RegisterObject와 Fetch 부분은 Vehicle4W 부분에서 처리
 
