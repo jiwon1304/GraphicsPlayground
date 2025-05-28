@@ -196,7 +196,9 @@ void FPhysScene::AddVehicle(AWheeledVehiclePawn* Vehicle)
     FBodyInstance* VehicleMainBodyInstance = new FBodyInstance();
     VehicleMainBodyInstance->OwnerComponent = SkeletalMeshComponent;
 
-    SceneSolver->RegisterObject(this, VehicleMainBodyInstance, Vehicle->GetVehicleMovementComponent());
+    FMatrix InitialMatrix = SkeletalMeshComponent->GetWorldMatrix();
+
+    SceneSolver->RegisterObject(this, VehicleMainBodyInstance, Vehicle->GetVehicleMovementComponent(), InitialMatrix);
 }
 
 void FPhysScene::AdvanceAndDispatch_External(float DeltaTime)

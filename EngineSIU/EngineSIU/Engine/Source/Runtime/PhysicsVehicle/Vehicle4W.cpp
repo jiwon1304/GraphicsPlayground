@@ -50,7 +50,7 @@ VehicleDesc FVehicle4W::InitVehicleDesc(UVehicleMovementComponent* InVehicleMove
     vehicleDesc.wheelMOI = wheelMOI;
     vehicleDesc.numWheels = nbWheels;
     vehicleDesc.wheelMaterial = gMaterial;
-    vehicleDesc.chassisSimFilterData = PxFilterData(COLLISION_FLAG_WHEEL, COLLISION_FLAG_WHEEL_AGAINST, 0, 0);
+    vehicleDesc.wheelSimFilterData = PxFilterData(COLLISION_FLAG_WHEEL, COLLISION_FLAG_WHEEL_AGAINST, 0, 0);
 
     return vehicleDesc;
 }
@@ -168,7 +168,7 @@ void FVehicle4W::ReleaseAllControls()
     }
 }
 
-PxActor* FVehicle4W::InitVehicle(UVehicleMovementComponent* InVehicleMovementComponent, const FBodyInstance* BodyInstance,
+PxActor* FVehicle4W::InitVehicle(UVehicleMovementComponent* InVehicleMovementComponent, const FBodyInstance* BodyInstance, const FMatrix& InitialMatrix,
     PxPhysics* gPhysics, PxFoundation* gFoundation, PxScene* gScene, 
     PxDefaultAllocator* gAllocator, PxMaterial* gMaterial)
 {
@@ -186,7 +186,7 @@ PxActor* FVehicle4W::InitVehicle(UVehicleMovementComponent* InVehicleMovementCom
     VehicleMovementComponent = InVehicleMovementComponent;
 
     PxInitVehicleSDK(*gPhysics);
-    //PxVehicleSetBasisVectors(PxVec3(0, 0, 1), PxVec3(0, 1, 0));
+    PxVehicleSetBasisVectors(PxVec3(0, 1, 0), PxVec3(0, 0, 1));
     PxVehicleSetUpdateMode(PxVehicleUpdateMode::eVELOCITY_CHANGE);
 
     //Create the batched scene queries for the suspension raycasts.
@@ -204,10 +204,24 @@ PxActor* FVehicle4W::InitVehicle(UVehicleMovementComponent* InVehicleMovementCom
     //Create a vehicle that will drive on the plane.
     VehicleDesc vehicleDesc = InitVehicleDesc(InVehicleMovementComponent, gMaterial);
     gVehicle4W = createVehicle4W(vehicleDesc, gPhysics, gCooking);
-    PxTransform startTransform(PxVec3(0, (vehicleDesc.chassisDims.y * 0.5f + vehicleDesc.wheelRadius + 1.0f), 0), PxQuat(PxIdentity));
-    gVehicle4W->getRigidDynamicActor()->setGlobalPose(startTransform);
     PxRigidDynamic* RigidDynamic = gVehicle4W->getRigidDynamicActor();
     RigidDynamic->userData = (void*)BodyInstance;
+
+    // --- 초기 자세 설정 시작 ---
+
+    FVector Translation = InitialMatrix.GetTranslationVector();
+
+    PxVec3 initialPosition(Translation.X, Translation.Y, Translation.Z); // 예시: 지면에서 약간 위 (Z가 위인 경우)
+
+    // 차량을 눕히기 위한 회전 값 설정
+    PxReal angle = PxPi / 2.0f; // 90도 (라디안)
+    PxVec3 axis(1.0f, 0.0f, 0.0f);   // 로컬 X축 기준 회전
+    PxQuat initialRotation(angle, axis);
+
+    PxTransform startTransform(initialPosition, initialRotation);
+    // --- 초기 자세 설정 끝 ---
+
+    RigidDynamic->setGlobalPose(startTransform);
 
     gScene->addActor(*RigidDynamic);
 

@@ -183,14 +183,14 @@ physx::PxActor* FPhysicsSolver::RegisterObject(FPhysScene* InScene, const FBodyI
     return NewRigidActor;
 }
 
-PxActor* FPhysicsSolver::RegisterObject(FPhysScene* InScene, const FBodyInstance* NewInstance, UVehicleMovementComponent* InVehicleMovementComponent)
+PxActor* FPhysicsSolver::RegisterObject(FPhysScene* InScene, const FBodyInstance* NewInstance, UVehicleMovementComponent* InVehicleMovementComponent, const FMatrix& InitialMatrix)
 {
     FVehicle4W* Vehicle = new FVehicle4W();
     Vehicles.Add(Vehicle);
 
     FPhysxSolversModule* PhysxSolverModule = FPhysxSolversModule::GetModule();
 
-    return Vehicle->InitVehicle(InVehicleMovementComponent, NewInstance, PhysxSolverModule->Physics, PhysxSolverModule->Foundation
+    return Vehicle->InitVehicle(InVehicleMovementComponent, NewInstance, InitialMatrix, PhysxSolverModule->Physics, PhysxSolverModule->Foundation
         , InScene->PhysxScene, &PhysxSolverModule->Allocator, PhysxSolverModule->DefaultMaterial);
 }
 

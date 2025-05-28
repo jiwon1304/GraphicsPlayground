@@ -120,7 +120,7 @@ public:
     PxF32 VehicleModeTimer = 0.0f;
     PxU32 VehicleOrderProgress = 0;
     bool VehicleOrderComplete = false;
-    bool MimicKeyInputs = false;
+    bool MimicKeyInputs = true;
 
     VehicleDesc InitVehicleDesc(UVehicleMovementComponent* InVehicleMovementComponent, PxMaterial* gMaterial);
 
@@ -133,7 +133,7 @@ public:
     void StartHandbrakeTurnRightMode();
     void ReleaseAllControls();
 
-    PxActor* InitVehicle(UVehicleMovementComponent* InVehicleMovementComponent, const FBodyInstance* BodyInstance,
+    PxActor* InitVehicle(UVehicleMovementComponent* InVehicleMovementComponent, const FBodyInstance* BodyInstance, const FMatrix& InitialMatrix,
         PxPhysics* gPhysics, PxFoundation* gFoundation, PxScene* gScene, 
         PxDefaultAllocator* gAllocator, PxMaterial* gMaterial);
 
