@@ -117,6 +117,9 @@ void FPhysicsAssetEditorPanel::Render()
     ImGui::Begin("Exit Physics Asset Editor", nullptr, ExitPanelFlags);
     if (ImGui::Button("Exit", ImVec2(ExitPanelWidth, ExitPanelHeight)))
     {
+        USkeletalMesh* SkeletalMesh = EditorEngine->PhysicsAssetEditorWorld->GetSkeletalMeshComponent()->GetSkeletalMeshAsset();
+        UPhysicsAsset* PhysicsAsset = SkeletalMesh->GetPhysicsAsset();
+        UAssetManager::Get().SavePhysicsAssetBinary(PhysicsAsset);
         EditorEngine->EndPhysicsAssetEditor();
     }
     ImGui::End();

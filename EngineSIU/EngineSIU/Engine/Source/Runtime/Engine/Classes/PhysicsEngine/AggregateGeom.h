@@ -23,4 +23,9 @@ struct FKAggregateGeom
         TArray<FKSphylElem>,
         SphylElems,
         )
+
+    friend FArchive& operator<<(FArchive& Ar, FKAggregateGeom& AggregateGeom)
+    {
+        return Ar << AggregateGeom.SphereElems << AggregateGeom.BoxElems << AggregateGeom.SphylElems;
+    }
 };

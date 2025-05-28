@@ -1,6 +1,8 @@
 #pragma once
 
+#include "Defines.h"
 #include "CoreUObject/UObject/ObjectMacros.h"
+#include "UObject/ObjectFactory.h"
 
 class UPhysicalMaterial : public UObject
 {
@@ -46,7 +48,7 @@ public:
     )
     
     // 물리 엔진에서 사용
-    struct FPhysicsMaterial* Material;
+    struct FPhysicsMaterial* Material = nullptr;
 
     // 튕기는 정도. 0일경우 튕기지 않음. 1일 경우 충돌 시 동일한 속도로 튕김
     UPROPERTY(
@@ -55,4 +57,28 @@ public:
         Restitution,
         = 0.5f
     )
+
+    friend FArchive& operator<<(FArchive& Ar, UPhysicalMaterial*& PhysicalMaterial)
+    {
+        if (Ar.IsLoading())
+        {
+            if (PhysicalMaterial == nullptr)
+            {
+                PhysicalMaterial = FObjectFactory::ConstructObject<UPhysicalMaterial>(nullptr);
+            }
+            if (PhysicalMaterial->Material == nullptr)
+            {
+                PhysicalMaterial->Material = new FPhysicsMaterial();
+            }
+        }
+        
+        Ar << PhysicalMaterial->Density
+            << PhysicalMaterial->Friction
+            << PhysicalMaterial->StaticFriction
+            << PhysicalMaterial->BaseFrictionImpulse
+            << *PhysicalMaterial->Material
+            << PhysicalMaterial->Restitution;
+        return Ar;
+    }
+
 };

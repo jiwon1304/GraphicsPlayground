@@ -28,6 +28,34 @@ namespace EDOFMode
     };
 }
 
+inline FArchive& operator<<(FArchive& Ar, EDOFMode::Type& Value)
+{
+    int8 Temp = static_cast<int8>(Value);
+
+    Ar << Temp;
+
+    if (Ar.IsLoading())
+    {
+        Value = static_cast<EDOFMode::Type>(Temp);
+    }
+
+    return Ar;
+}
+
+inline FArchive& operator<<(FArchive& Ar, ECollisionChannel& Value)
+{
+    uint8 Temp = static_cast<uint8>(Value);
+
+    Ar << Temp;
+
+    if (Ar.IsLoading())
+    {
+        Value = static_cast<ECollisionChannel>(Temp);
+    }
+
+    return Ar;
+}
+
 // 물체의 물리적 특성을 정의하는 구조체
 struct FBodyInstance
 {
@@ -178,4 +206,30 @@ public:
     // default body instance와 collision profile을 가진 셋업
     // 물체의 모양이 여기 들어있음
     class UBodySetup* ExternalCollisionProfileBodySetup = nullptr;
+
+    friend FArchive& operator<<(FArchive& Ar, FBodyInstance& BodyInstance)
+    {        
+        Ar << BodyInstance.bSimulatePhysics
+            << BodyInstance.bEnableGravity
+            << BodyInstance.InstanceBodyIndex
+            << BodyInstance.InstanceBoneIndex
+            << BodyInstance.ObjectType;
+
+        uint8 Temp = static_cast<uint8>(BodyInstance.CollisionEnabled);
+
+        Ar << Temp;
+
+        if (Ar.IsLoading())
+        {
+            BodyInstance.CollisionEnabled = static_cast<ECollisionEnabled::Type>(Temp);
+        }
+
+        Ar << BodyInstance.DOFMode << BodyInstance.bUseCCD << BodyInstance.Scale3D << BodyInstance.LinearDamping
+                << BodyInstance.AngularDamping << BodyInstance.MassScale << BodyInstance.bLockXTranslation
+                << BodyInstance.bLockYTranslation << BodyInstance.bLockZTranslation << BodyInstance.bLockRotation << BodyInstance.bLockXRotation << BodyInstance.bLockYRotation
+                << BodyInstance.bLockZRotation << BodyInstance.bNotifyRigidBodyCollision;
+        
+        return Ar;
+        
+    }
 };

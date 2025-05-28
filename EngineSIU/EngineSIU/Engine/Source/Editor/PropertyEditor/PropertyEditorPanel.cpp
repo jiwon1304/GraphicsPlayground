@@ -740,8 +740,11 @@ void PropertyEditorPanel::RenderForSkeletalMesh(USkeletalMeshComponent* Skeletal
                 {
                     PhysicsAsset = FObjectFactory::ConstructObject<UPhysicsAsset>(nullptr);
                     FPhysicsAssetUtils::CreateFromSkeletalMesh(PhysicsAsset, SkeletalMesh);
-                    UAssetManager::Get().AddPhysicsAsset(PhysicsAsset->GetName(), PhysicsAsset);
                     
+                    UAssetManager::Get().AddPhysicsAsset(PhysicsAsset->GetName(), PhysicsAsset);
+                    UAssetManager::Get().AddAssetInfo(PhysicsAsset);
+                    
+                    UAssetManager::Get().SavePhysicsAssetBinary(PhysicsAsset);
                 }
             }   
         }
