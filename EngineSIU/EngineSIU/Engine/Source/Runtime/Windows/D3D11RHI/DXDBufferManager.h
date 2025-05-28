@@ -66,12 +66,17 @@ public:
 
     template<typename T>
     HRESULT CreateBufferGeneric(const FString& KeyName, T* Data, UINT ByteWidth, UINT BindFlags, D3D11_USAGE Usage, UINT CpuAccessFlags);
+    
+    HRESULT CreateStructuredBuffer(const FString& KeyName, UINT ByteWidth, UINT Stride, UINT BindFlags, D3D11_USAGE Usage, UINT CpuAccessFlags);
 
     template<typename T>
     void UpdateConstantBuffer(const FString& Key, const T& Data) const;
 
     template<typename T>
     void UpdateConstantBuffer(const FString& Key, const TArray<T>& Data) const;
+
+    template<typename T>
+    void UpdateStructuredBuffer(const FString& Key, const TArray<T>& Data) const;
 
     template<typename T>
     void UpdateDynamicVertexBuffer(const FString& KeyName, const TArray<T>& Vertices) const;
@@ -88,6 +93,8 @@ public:
     FVertexInfo GetTextVertexBuffer(const FWString& InName) const;
     FIndexInfo GetTextIndexBuffer(const FWString& InName) const;
     ID3D11Buffer* GetConstantBuffer(const FString& InName) const;
+    ID3D11Buffer* GetStructuredBuffer(const FString& InName) const;
+    ID3D11ShaderResourceView* GetStructuredBufferSRV(const FString& InName) const;
 
     void GetQuadBuffer(FVertexInfo& OutVertexInfo, FIndexInfo& OutIndexInfo);
     void GetTextBuffer(const FWString& Text, FVertexInfo& OutVertexInfo, FIndexInfo& OutIndexInfo);
@@ -103,6 +110,7 @@ private:
     TMap<FString, FVertexInfo> VertexBufferPool;
     TMap<FString, FIndexInfo> IndexBufferPool;
     TMap<FString, ID3D11Buffer*> ConstantBufferPool;
+    TMap<FString, TPair<ID3D11Buffer*, ID3D11ShaderResourceView*>> StructuredBufferPool;
 
     TMap<FWString, FBufferInfo> TextAtlasBufferPool;
     TMap<FWString, FVertexInfo> TextAtlasVertexBufferPool;
@@ -324,6 +332,27 @@ void FDXDBufferManager::UpdateConstantBuffer(const FString& Key, const TArray<T>
     if (!Buffer)
     {
         UE_LOG(ELogLevel::Error, TEXT("UpdateConstantBuffer 호출: 키 %s에 해당하는 buffer가 없습니다."), *Key);
+        return;
+    }
+
+    D3D11_MAPPED_SUBRESOURCE MappedResource;
+    const HRESULT Result = DXDeviceContext->Map(Buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource);
+    if (FAILED(Result))
+    {
+        UE_LOG(ELogLevel::Error, TEXT("Buffer Map 실패, HRESULT: 0x%X"), Result);
+        return;
+    }
+    memcpy(MappedResource.pData, Data.GetData(), sizeof(T) * Data.Num());
+    DXDeviceContext->Unmap(Buffer, 0);
+}
+
+template<typename T>
+inline void FDXDBufferManager::UpdateStructuredBuffer(const FString& Key, const TArray<T>& Data) const
+{
+    ID3D11Buffer* Buffer = GetStructuredBuffer(Key);
+    if (!Buffer)
+    {
+        UE_LOG(ELogLevel::Error, TEXT("UpdateStructuredBuffer 호출: 키 %s에 해당하는 buffer가 없습니다."), *Key);
         return;
     }
 

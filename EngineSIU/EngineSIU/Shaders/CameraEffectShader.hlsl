@@ -26,6 +26,14 @@ cbuffer LetterBoxConstants : register(b2)
     float2 Padding3;
 }
 
+cbuffer DOFConstants : register(b3)
+{
+    float FocalDistance;
+    float FocalRegion;
+    float BlurAmount;
+    float BlurRadius;
+}
+
 struct PS_Input
 {
     float4 Position : SV_POSITION;

@@ -12,6 +12,8 @@ UObject* UCameraComponent::Duplicate(UObject* InOuter)
     NewComponent->NearClip = NearClip;
     NewComponent->FarClip = FarClip;
     
+    NewComponent->PostProcessSettings = PostProcessSettings;
+
     return NewComponent;
 }
 

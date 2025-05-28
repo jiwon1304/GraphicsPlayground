@@ -1,6 +1,7 @@
 #pragma once
 #include "CoreUObject/UObject/ObjectMacros.h"
 #include "Engine/EngineTypes.h"
+#include "Math/Shapes.h"
 
 namespace EAggCollisionShape
 {
@@ -39,7 +40,10 @@ struct FKBoxElem : public FKShapeElem
 {
     DECLARE_STRUCT(FKBoxElem, FKShapeElem)
 
-    FKBoxElem() = default;
+    FKBoxElem()
+    {
+        ShapeType = EAggCollisionShape::Type::Box;
+    }
 
     void SetTransform( const FTransform& InTransform )
     {
@@ -86,13 +90,29 @@ struct FKBoxElem : public FKShapeElem
         Z,
         = 1.f
         )
+
+    Shape::FOrientedBox ToFOrientedBox() const
+    {
+        Shape::FOrientedBox OrientedBox;
+        OrientedBox.Center = Center;
+        OrientedBox.AxisX = Rotation.RotateVector(FVector(1, 0, 0));
+        OrientedBox.AxisY = Rotation.RotateVector(FVector(0, 1, 0));
+        OrientedBox.AxisZ = Rotation.RotateVector(FVector(0, 0, 1));
+        OrientedBox.ExtentX = X;
+        OrientedBox.ExtentY = Y;
+        OrientedBox.ExtentZ = Z;
+        return OrientedBox;
+    }
 };
 
 struct FKSphereElem : public FKShapeElem
 {
     DECLARE_STRUCT(FKSphereElem, FKShapeElem)
 
-    FKSphereElem() = default;
+    FKSphereElem()
+    {
+        ShapeType = EAggCollisionShape::Type::Sphere;
+    }
 
     UPROPERTY(
         EditAnywhere,
@@ -107,6 +127,14 @@ struct FKSphereElem : public FKShapeElem
         Radius,
         = 1.f
         )
+
+    Shape::FSphere ToFSphere() const
+    {
+        Shape::FSphere Sphere;
+        Sphere.Center = Center;
+        Sphere.Radius = Radius;
+        return Sphere;
+    }
 };
 
 // 길이 = 2 * Radius + Length
@@ -114,7 +142,10 @@ struct FKSphylElem : public FKShapeElem
 {
     DECLARE_STRUCT(FKSphylElem, FKShapeElem)
 
-    FKSphylElem() = default;
+    FKSphylElem()
+    {
+        ShapeType = EAggCollisionShape::Type::Sphyl;
+    }
 
     void SetTransform( const FTransform& InTransform )
     {
@@ -152,4 +183,21 @@ struct FKSphylElem : public FKShapeElem
         Length,
         = 1.f
         )
+
+    Shape::FCapsule ToFCapsule() const
+    {
+        // 캡슐의 축 방향 (로컬 Y축 기준, Unreal은 Y축이 up이 아님에 유의!)
+        // Unreal의 FKSphylElem은 로컬 Z축이 캡슐의 길이 방향임 (참고: 소스 주석)
+        // [참고: UE 소스](https://github.com/EpicGames/UnrealEngine/blob/main/Engine/Source/Runtime/Engine/Classes/PhysicsEngine/KSphylElem.h)
+        FVector LocalAxis = FVector(0, 0, 1); // Z축 기준
+        FVector WorldAxis = Rotation.RotateVector(LocalAxis);
+
+        FVector HalfSegment = WorldAxis * (Length * 0.5f);
+
+        Shape::FCapsule Capsule;
+        Capsule.A = Center - HalfSegment;
+        Capsule.B = Center + HalfSegment;
+        Capsule.Radius = Radius;
+        return Capsule;
+    }
 };

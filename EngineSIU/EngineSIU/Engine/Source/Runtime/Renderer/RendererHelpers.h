@@ -13,6 +13,8 @@ enum class EShaderSRVSlot : int8
     SRV_Fog = 103,
     SRV_Debug = 104,
     SRV_CameraEffect = 105,
+    SRV_Blur = 106,
+    SRV_ShapeOverlay = 107,
     SRV_Viewport = 120,
 
     SRV_MAX = 127,

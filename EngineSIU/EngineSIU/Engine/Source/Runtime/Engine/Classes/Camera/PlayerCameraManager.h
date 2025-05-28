@@ -208,5 +208,7 @@ public:
     uint32 bEnableFading : 1;
     uint32 bAnimateVignette : 1;
     uint32 bHoldFadeWhenFinished : 1; /* true일 경우 페이드 종료 상태 유지 */
+
+    FPostProcessSettings PostProcessSettings;
 };
 

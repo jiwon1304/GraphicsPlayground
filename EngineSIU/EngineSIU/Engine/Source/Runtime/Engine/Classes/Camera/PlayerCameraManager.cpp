@@ -335,6 +335,7 @@ void APlayerCameraManager::UpdateViewTarget(FTViewTarget& OutVT, float DeltaTime
 	{
 		// Viewing through a camera actor.
 		CamComp->GetCameraView(DeltaTime, OutVT.POV);
+        PostProcessSettings = CamComp->PostProcessSettings;
 	}
     
 	ApplyCameraModifiers(DeltaTime, OutVT.POV);

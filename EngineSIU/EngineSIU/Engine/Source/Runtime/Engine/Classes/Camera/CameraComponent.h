@@ -37,6 +37,12 @@ public:
     void ResetFollowToPlayer();
     void GetCameraView(float DeltaTime, FMinimalViewInfo& DesiredView);
 
+    UPROPERTY(
+        EditAnywhere,
+        FPostProcessSettings,
+        PostProcessSettings,
+    )
+
 private:
     void ProceedFInterp(float DeltaTime);
     
