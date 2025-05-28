@@ -203,7 +203,17 @@ PxActor* FVehicle4W::InitVehicle(UVehicleMovementComponent* InVehicleMovementCom
 
     //Create a vehicle that will drive on the plane.
     VehicleDesc vehicleDesc = InitVehicleDesc(InVehicleMovementComponent, gMaterial);
-    gVehicle4W = createVehicle4W(vehicleDesc, gPhysics, gCooking);
+    PxVec3 FLOffset;
+    FVectorToPxVec3(FLOffset, InVehicleMovementComponent->FrontLeftWheelOffset)
+    PxVec3 FROffset;
+    FVectorToPxVec3(FROffset, InVehicleMovementComponent->FrontRightWheelOffset)
+    PxVec3 RLOffset;
+    FVectorToPxVec3(RLOffset, InVehicleMovementComponent->RearLeftWheelOffset)
+    PxVec3 RROffset;
+    FVectorToPxVec3(RROffset, InVehicleMovementComponent->RearRightWheelOffset)
+
+    gVehicle4W = createVehicle4W(vehicleDesc, gPhysics, gCooking, FLOffset, FROffset, RLOffset, RROffset);
+
     PxRigidDynamic* RigidDynamic = gVehicle4W->getRigidDynamicActor();
     RigidDynamic->userData = (void*)BodyInstance;
 

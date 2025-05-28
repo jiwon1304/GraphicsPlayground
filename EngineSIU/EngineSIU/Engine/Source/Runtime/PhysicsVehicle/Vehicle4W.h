@@ -18,6 +18,9 @@ using namespace snippetvehicle;
 class UVehicleMovementComponent;
 //class FBodyInstance;
 
+#define FVectorToPxVec3(PxV, FV) \
+    PxV.x = FV.X; PxV.y = FV.Y; PxV.z = FV.Z;
+
 enum DriveMode
 {
     eDRIVE_MODE_ACCEL_FORWARDS = 0,

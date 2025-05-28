@@ -47,4 +47,24 @@ public:
         EditAnywhere,
         UINT32, NBWheels // 바퀴 갯수 (m)
     )
+
+    UPROPERTY_WITH_FLAGS(
+        EditAnywhere,
+        FVector, FrontLeftWheelOffset
+    )
+
+    UPROPERTY_WITH_FLAGS(
+        EditAnywhere,
+        FVector, FrontRightWheelOffset
+    )
+
+    UPROPERTY_WITH_FLAGS(
+        EditAnywhere,
+        FVector, RearLeftWheelOffset
+    )
+
+    UPROPERTY_WITH_FLAGS(
+        EditAnywhere,
+        FVector, RearRightWheelOffset
+    )
 };

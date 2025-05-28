@@ -63,6 +63,14 @@ void computeWheelCenterActorOffsets4W(const PxF32 wheelFrontZ, const PxF32 wheel
 	}
 }
 
+void computeWheelCenterActorOffsets4W_Custom(PxVec3* wheelCentreOffsets, const PxVec3& FrontLeftOffset, const PxVec3& FrontRightOffset, const PxVec3& RearLeftOffset, const PxVec3& RearRightOffset)
+{
+    wheelCentreOffsets[PxVehicleDrive4WWheelOrder::eFRONT_LEFT] = FrontLeftOffset;
+    wheelCentreOffsets[PxVehicleDrive4WWheelOrder::eFRONT_RIGHT] = FrontRightOffset;
+    wheelCentreOffsets[PxVehicleDrive4WWheelOrder::eREAR_LEFT] = RearLeftOffset;
+    wheelCentreOffsets[PxVehicleDrive4WWheelOrder::eREAR_RIGHT] = RearRightOffset;
+}
+
 void setupWheelsSimulationData
 (const PxF32 wheelMass, const PxF32 wheelMOI, const PxF32 wheelRadius, const PxF32 wheelWidth, 
  const PxU32 numWheels, const PxVec3* wheelCenterActorOffsets,
@@ -196,7 +204,8 @@ void setupWheelsSimulationData
 
 } //namespace fourwheel
 
-PxVehicleDrive4W* createVehicle4W(const VehicleDesc& vehicle4WDesc, PxPhysics* physics, PxCooking* cooking)
+PxVehicleDrive4W* createVehicle4W(const VehicleDesc& vehicle4WDesc, PxPhysics* physics, PxCooking* cooking
+                                  , const PxVec3& FrontLeftOffset, const PxVec3& FrontRightOffset, const PxVec3& RearLeftOffset, const PxVec3& RearRightOffset)
 {
 	const PxVec3 chassisDims = vehicle4WDesc.chassisDims;
 	const PxF32 wheelWidth = vehicle4WDesc.wheelWidth;
@@ -252,9 +261,14 @@ PxVehicleDrive4W* createVehicle4W(const VehicleDesc& vehicle4WDesc, PxPhysics* p
 	{
 		//Compute the wheel center offsets from the origin.
 		PxVec3 wheelCenterActorOffsets[PX_MAX_NB_WHEELS];
-		const PxF32 frontZ = chassisDims.z*0.3f;
-		const PxF32 rearZ = -chassisDims.z*0.3f;
-		fourwheel::computeWheelCenterActorOffsets4W(frontZ, rearZ, chassisDims, wheelWidth, wheelRadius, numWheels, wheelCenterActorOffsets);
+		/*const PxF32 frontZ = -chassisDims.y*0.3f;
+		const PxF32 rearZ = chassisDims.y*0.3f;*/
+
+        const PxF32 frontZ = chassisDims.z * 0.3f;
+        const PxF32 rearZ = -chassisDims.z * 0.3f;
+
+        //fourwheel::computeWheelCenterActorOffsets4W(frontZ, rearZ, chassisDims, wheelWidth, wheelRadius, numWheels, wheelCenterActorOffsets);
+		fourwheel::computeWheelCenterActorOffsets4W_Custom(wheelCenterActorOffsets, FrontLeftOffset, FrontRightOffset, RearLeftOffset, RearRightOffset);
 
 		//Set up the simulation data for all wheels.
 		fourwheel::setupWheelsSimulationData
