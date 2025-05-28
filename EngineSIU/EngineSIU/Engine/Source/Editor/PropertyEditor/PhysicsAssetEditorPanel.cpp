@@ -1120,6 +1120,22 @@ void FPhysicsAssetEditorPanel::AddShape(UPhysicsAsset* InPhysicsAsset, UBodySetu
         FName BoneName = InPhysicsAsset->PreviewSkeletalMesh->GetSkeleton()->GetReferenceSkeleton().GetBoneName(BoneIndex);
         TargetBodySetup = FObjectFactory::ConstructObject<UBodySetup>(InPhysicsAsset);
         TargetBodySetup->BoneName = BoneName;
+
+        int32 BodyIndex = InPhysicsAsset->FindBodyIndex(BoneName);
+
+        TargetBodySetup->CollisionResponse = EBodyCollisionResponse::Type::BodyCollision_Enabled;
+        TargetBodySetup->DefaultInstance.ExternalCollisionProfileBodySetup = TargetBodySetup;
+        TargetBodySetup->DefaultInstance.InstanceBodyIndex = BodyIndex;
+        TargetBodySetup->DefaultInstance.InstanceBoneIndex = BoneIndex;
+
+        FPhysicsMaterial* PhysicsMaterial = new FPhysicsMaterial();
+        PhysicsMaterial->Density = 1000.f; // 임시 밀도 값
+
+        // !TODO : 디폴트 머티리얼을 하나 만들어두고 그걸 사용하도록 해야 함
+        UPhysicalMaterial* PhysMaterial = FObjectFactory::ConstructObject<UPhysicalMaterial>(nullptr);
+        PhysMaterial->Material = PhysicsMaterial;
+
+        TargetBodySetup->PhysMaterial = PhysMaterial;
         InPhysicsAsset->BodySetup.Add(TargetBodySetup);
         InPhysicsAsset->UpdateBodySetupIndexMap();
     }
