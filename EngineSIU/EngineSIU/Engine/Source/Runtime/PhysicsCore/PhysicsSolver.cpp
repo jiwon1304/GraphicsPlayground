@@ -192,8 +192,6 @@ physx::PxJoint* FPhysicsSolver::CreateJoint(FPhysScene* InScene, PxActor* Actor1
     PxTransform localChildTransform = Actor2Dynamic->getGlobalPose();
     PxTransform localFrameParent = PxTransform(Actor1Dynamic->getGlobalPose().getInverse() * localChildTransform);
     PxTransform localFrameChild = PxTransform(PxVec3(0));
-        
-
 
     PxD6Joint* Joint = PxD6JointCreate(*FPhysxSolversModule::GetModule()->Physics, Actor1Dynamic, localFrameParent, Actor2Dynamic, localFrameChild);
 
