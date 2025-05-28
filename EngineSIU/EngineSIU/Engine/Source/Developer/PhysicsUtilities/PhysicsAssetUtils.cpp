@@ -78,11 +78,15 @@ namespace FPhysicsAssetUtils
 
                 if (DistanceToChild > KINDA_SMALL_NUMBER)
                 {
-                    //SphylElem.Length = FMath::Max(0.0f, DistanceToChild - 2.0f * SphylElem.Radius);
-                    SphylElem.Length = 1.f;
-                    //SphylElem.Center = ChildLocalOffset * 0.5f;
-                    SphylElem.Center = FVector::ZeroVector; // 캡슐의 중심은 부모 본의 위치로 설정
+                    //!TODO : 부모 - 자식을 기준으로 Bone의 길이와 Center 설정
+                    //SphylElem.Length = 1.f;
+                    //SphylElem.Center = FVector::ZeroVector; // 캡슐의 중심은 부모 본의 위치로 설정
+                    //FVector BoneDirection = ChildLocalOffset.GetSafeNormal();
+                    //SphylElem.Rotation = FQuat::FindBetween(FVector::XAxisVector, BoneDirection).Rotator();
+
                     FVector BoneDirection = ChildLocalOffset.GetSafeNormal();
+                    SphylElem.Length = FMath::Max(0.1f, ChildLocalOffset.Size() * 0.9f); // 캡슐 길이는 전체 거리의 90%
+                    SphylElem.Center = ChildLocalOffset * 0.5f; // 부모에서 자식 방향의 중간 지점
                     SphylElem.Rotation = FQuat::FindBetween(FVector::XAxisVector, BoneDirection).Rotator();
                 }
                 else
@@ -135,24 +139,34 @@ namespace FPhysicsAssetUtils
                     JointInstance.ConstraintIndex = NewConstraintIndex;
 
                     // !TODO : 적절한 기본 수치 지정
-                    JointInstance.Pos2 = FVector::ZeroVector;
-                    JointInstance.PriAxis2 = FVector(1.0f, 0.0f, 0.0f); // 자식 본의 X축
-                    JointInstance.SecAxis2 = FVector(0.0f, 1.0f, 0.0f); // 자식 본의 Y축
-
                     // RefBonePoses는 컴포넌트 공간(CS) 트랜스폼입니다.
                     const FTransform& ParentBoneTransformCS = RefBonePoses[ParentBoneIdx];
                     const FTransform& ChildBoneTransformCS = RefBonePoses[ChildBoneIdx];
 
+                    FVector ChildToParentDir_CS = (ParentBoneTransformCS.GetTranslation() - ChildBoneTransformCS.GetTranslation()).GetSafeNormal();
+                    if (ChildToParentDir_CS.IsNearlyZero())
+                    {
+                        ChildToParentDir_CS = FVector(1.0f, 0.0f, 0.0f); // fallback
+                    }
+
+                    // 자식 본 기준 프라이머리/세컨더리 축 설정
+                    JointInstance.PriAxis2 = ChildToParentDir_CS;
+                    JointInstance.SecAxis2 = FVector::UpVector; // 자식 로컬에서 Y축 대용 (Z-up이므로)
+
+                    if (FMath::Abs(FVector::DotProduct(JointInstance.PriAxis2, JointInstance.SecAxis2)) > 0.99f)
+                    {
+                        JointInstance.SecAxis2 = FVector::RightVector; // PriAxis2와 너무 평행하면 다른 축 사용
+                    }
+
                     // 조인트의 월드 트랜스폼 (자식 본의 트랜스폼과 동일, Pos2/Axis2가 자식 로컬에서 Identity이므로)
-                    FTransform JointFrameWorldCS = ChildBoneTransformCS;
+                    FTransform JointWorldCS = ChildBoneTransformCS;
 
                     // 부모 본 로컬 공간에서의 조인트 트랜스폼
-                    FTransform JointFrameInParentLocalCS = JointFrameWorldCS.GetRelativeTransform(ParentBoneTransformCS);
-
-                    JointInstance.Pos1 = JointFrameInParentLocalCS.GetTranslation();
-                    FQuat JointRotInParentLocalCS = JointFrameInParentLocalCS.GetRotation();
-                    JointInstance.PriAxis1 = JointRotInParentLocalCS.RotateVector(FVector(1.0f, 0.0f, 0.0f));
-                    JointInstance.SecAxis1 = JointRotInParentLocalCS.RotateVector(FVector(0.0f, 1.0f, 0.0f));
+                    FTransform JointInParentLocalCS = JointWorldCS.GetRelativeTransform(ParentBoneTransformCS);
+                    // 부모 본 기준 프라이머리/세컨더리 축 설정
+                    FQuat JointRotationInParentCS = JointInParentLocalCS.GetRotation();
+                    JointInstance.PriAxis1 = JointRotationInParentCS.RotateVector(JointInstance.PriAxis2);
+                    JointInstance.SecAxis1 = JointRotationInParentCS.RotateVector(JointInstance.SecAxis2);
 
                     FConstraintProfileProperties& Profile = JointInstance.ProfileInstance; // 참조로 가져옴
 
@@ -160,29 +174,29 @@ namespace FPhysicsAssetUtils
                     Profile.LinearLimit.YMotion = ELinearConstraintMotion::LCM_Locked;
                     Profile.LinearLimit.ZMotion = ELinearConstraintMotion::LCM_Locked;
                     Profile.LinearLimit.Limit = 0.0f; // Locked 상태에서는 Limit 값의 의미가 적지만, 기본값 설정
-                    Profile.LinearLimit.bSoftConstraint = false;
-                    Profile.LinearLimit.Stiffness = 0.0f;
-                    Profile.LinearLimit.Damping = 0.0f;
+                    Profile.LinearLimit.bSoftConstraint = true;
+                    Profile.LinearLimit.Stiffness = 50.f;
+                    Profile.LinearLimit.Damping = 5.f;
                     Profile.LinearLimit.Restitution = 0.0f; // PhysX 조인트 생성자에 따라 실제 적용 여부 다름
                     Profile.LinearLimit.ContactDistance = 0.0f; // 보통 PxD6Joint에서 직접 사용 안 함
 
                     // Cone Limits (Swing - 기본적으로 45도 제한된 움직임)
                     Profile.ConeLimit.Swing1Motion = EAngularConstraintMotion::ACM_Limited;
                     Profile.ConeLimit.Swing2Motion = EAngularConstraintMotion::ACM_Limited;
-                    Profile.ConeLimit.Swing1LimitDegrees = 45.0f;
-                    Profile.ConeLimit.Swing2LimitDegrees = 45.0f;
-                    Profile.ConeLimit.bSoftConstraint = false;
-                    Profile.ConeLimit.Stiffness = 0.0f;
-                    Profile.ConeLimit.Damping = 0.0f;
+                    Profile.ConeLimit.Swing1LimitDegrees = 10.0f;
+                    Profile.ConeLimit.Swing2LimitDegrees = 10.0f;
+                    Profile.ConeLimit.bSoftConstraint = true;
+                    Profile.ConeLimit.Stiffness = 30.f;
+                    Profile.ConeLimit.Damping = 3.f;
                     Profile.ConeLimit.Restitution = 0.0f; // PhysX 조인트 생성자에 따라 실제 적용 여부 다름
                     Profile.ConeLimit.ContactDistance = 0.0f;
 
                     // Twist Limits (기본적으로 45도 제한된 움직임)
                     Profile.TwistLimit.TwistMotion = EAngularConstraintMotion::ACM_Limited;
-                    Profile.TwistLimit.TwistLimitDegrees = 45.0f; // -45도에서 +45도 사이
-                    Profile.TwistLimit.bSoftConstraint = false;
-                    Profile.TwistLimit.Stiffness = 0.0f;
-                    Profile.TwistLimit.Damping = 0.0f;
+                    Profile.TwistLimit.TwistLimitDegrees = 10.0f; // -45도에서 +45도 사이
+                    Profile.TwistLimit.bSoftConstraint = true;
+                    Profile.TwistLimit.Stiffness = 30.f;
+                    Profile.TwistLimit.Damping = 3.f;
                     Profile.TwistLimit.Restitution = 0.0f; // PhysX 조인트 생성자에 따라 실제 적용 여부 다름
                     Profile.TwistLimit.ContactDistance = 0.0f;
 

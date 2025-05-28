@@ -294,8 +294,8 @@ physx::PxJoint* FPhysicsSolver::CreateJoint(FPhysScene* InScene, PxActor* Child,
         physx::PxJointLimitCone coneLimitParams
         (
             swing2Angle,
-            swing1Angle,
-            spring
+            swing1Angle
+            //spring
         );
         Joint->setSwingLimit(coneLimitParams);
     }
@@ -328,8 +328,8 @@ physx::PxJoint* FPhysicsSolver::CreateJoint(FPhysScene* InScene, PxActor* Child,
         physx::PxJointAngularLimitPair twistLimitParams
         (
             -halfAngleRad, // 최소 각도
-            halfAngleRad,  // 최대 각도
-            spring          // 스프링 설정
+            halfAngleRad  // 최대 각도
+            //spring          // 스프링 설정
         );
 
         Joint->setTwistLimit(twistLimitParams);
