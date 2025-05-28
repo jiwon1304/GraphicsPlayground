@@ -13,6 +13,7 @@
 #include "PhysicsEngine/BodySetup.h"
 #include "PhysicsEngine/ConstraintInstance.h"
 #include "PhysicsEngine/PhysicsConstraintTemplate.h"
+#include "Engine/Classes/PhysicsEngine/Vehicle/WheeledVehiclePawn.h"
 
 void FPhysScene::Init(FPhysicsSolver* InSceneSolver, physx::PxScene* InScene)
 {
@@ -42,6 +43,13 @@ void FPhysScene::Release()
 
 void FPhysScene::AddActor(AActor* Actor)
 {
+    // AWheeledVehiclePawn인 경우에 처리를 다르게 해줘야 하므로 함수 분리
+    if (AWheeledVehiclePawn* WheeledVehiclePawn = Cast<AWheeledVehiclePawn>(Actor)) 
+    {
+        AddVehicle(WheeledVehiclePawn);
+        return;
+    }
+
     TSet<UActorComponent*> ActorComponents = Actor->GetComponents();
 
     // StaticMeshComponent
@@ -170,6 +178,37 @@ void FPhysScene::AddActor(AActor* Actor)
             }
         }
     }
+}
+
+void FPhysScene::AddVehicle(AWheeledVehiclePawn* Vehicle)
+{
+    USceneComponent* MeshComponent = Vehicle->GetRootComponent();
+
+    USkeletalMeshComponent* SkeletalMeshComponent = Cast<USkeletalMeshComponent>(MeshComponent);
+    UStaticMeshComponent* StaticMeshComponent = Cast<UStaticMeshComponent>(MeshComponent);
+
+
+    // 현재는 FBodyInstance는 OwnerComponent 연결 부분으로만 사용하는데
+    // 이후 수정 필요할듯
+    FBodyInstance* VehicleMainBodyInstance = new FBodyInstance();
+    FMatrix InitialMatrix;
+
+    VehicleMainBodyInstance->bCar = true;
+
+    if (SkeletalMeshComponent != nullptr) 
+    {
+        VehicleMainBodyInstance->OwnerComponent = SkeletalMeshComponent;
+        InitialMatrix = SkeletalMeshComponent->GetWorldMatrix();
+        VehicleMainBodyInstance->Scale3D = SkeletalMeshComponent->GetRelativeScale3D();
+    }
+    else if (StaticMeshComponent != nullptr) 
+    {
+        VehicleMainBodyInstance->OwnerComponent = StaticMeshComponent;
+        InitialMatrix = StaticMeshComponent->GetWorldMatrix();
+        VehicleMainBodyInstance->Scale3D = StaticMeshComponent->GetRelativeScale3D();
+    }
+
+    SceneSolver->RegisterObject(this, VehicleMainBodyInstance, Vehicle->GetVehicleMovementComponent(), InitialMatrix);
 }
 
 void FPhysScene::AdvanceAndDispatch_External(float DeltaTime)

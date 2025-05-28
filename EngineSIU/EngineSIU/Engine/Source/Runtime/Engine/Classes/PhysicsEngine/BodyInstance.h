@@ -77,6 +77,22 @@ struct FBodyInstance
         = true
     )
 
+    // PhysX 에서 나온 값이 고정적인 회전이 필요한 경우 아래 매트릭스 활용
+    UPROPERTY(
+        EditAnywhere,
+        FQuat,
+        InvPhysXQuat,
+        = FQuat::Identity
+    )
+
+    // Car이면 아래 값 true
+    UPROPERTY(
+        EditAnywhere,
+        bool,
+        bCar,
+        = false
+    )
+
     // SkeletalMeshComponent / PhysicsAsset에서의 index
     int32 InstanceBodyIndex;
 

@@ -13,6 +13,8 @@ struct FHitResult;
 struct FPhysicsBody;
 class FPhysScene;
 class FKShapeElem;
+class UVehicleMovementComponent;
+class FVehicle4W;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnOverlapDelegate, const FPhysicsBody&)
 
@@ -33,6 +35,9 @@ public:
     FPhysicsSolver& operator=(const FPhysicsSolver&) = delete;
 
     PxActor* RegisterObject(FPhysScene* InScene, const FBodyInstance* NewInstance, const FMatrix& InitialMatrix);
+    // 자동차 생성하는 코드
+    PxActor* RegisterObject(FPhysScene* InScene, FBodyInstance* NewInstance, UVehicleMovementComponent* InVehicleMovementComponent, const FMatrix& InitialMatrix);
+    
     // 시뮬레이션 이전 최신값을 반영
     PxJoint* CreateJoint(FPhysScene* InScene, PxActor* Child, PxActor* Parent, const FConstraintInstance* NewInstance);
 
@@ -49,4 +54,6 @@ protected:
     void Release();
 
     TArray<FBodyInstance*> RegisteredBodies; // 등록된 물리 객체들
+    
+    TArray<FVehicle4W*> Vehicles; // Vehicle 부분 작업
 };

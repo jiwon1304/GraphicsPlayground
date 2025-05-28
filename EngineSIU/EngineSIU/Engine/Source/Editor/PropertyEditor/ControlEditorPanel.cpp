@@ -57,6 +57,8 @@
 #include "SubWindow/ParticleSubEngine.h"
 #include <Particles/ParticleModules/ParticleModuleSize.h>
 #include <Particles/ParticleModules/ParticleModuleVelocity.h>
+
+#include "Engine/Classes/PhysicsEngine/Vehicle/WheeledVehiclePawn.h"
 ControlEditorPanel::ControlEditorPanel()
 {
     SetSupportedWorldTypes(EWorldTypeBitFlag::Editor | EWorldTypeBitFlag::PIE | EWorldTypeBitFlag::SkeletalViewer | EWorldTypeBitFlag::PhysicsAssetEditor);
@@ -392,6 +394,7 @@ void ControlEditorPanel::CreateModifyButton(const ImVec2 ButtonSize, ImFont* Ico
             {.Label = "SkeletalMeshActor", .OBJ = OBJ_SKELETALMESH},
             {.Label = "SequencerPlayer", .OBJ = OBJ_SEQUENCERPLAYER},
             {.Label = "ParticleSystem", .OBJ = OBJ_PARTICLESYSTEM},
+            {.Label = "Vehicle4W", .OBJ = OBJ_VEHICLE4W},
 
         };
 
@@ -564,6 +567,12 @@ void ControlEditorPanel::CreateModifyButton(const ImVec2 ButtonSize, ImFont* Ico
                     Template->PostEditChangeProperty();
                     ParticleComponent->SetTemplate(Template);
 
+                    break;
+                }
+                case OBJ_VEHICLE4W:
+                {
+                    SpawnedActor = World->SpawnActor<AWheeledVehiclePawn>();
+                    SpawnedActor->SetActorLabel("WHEELED_VEHICLE");
                     break;
                 }
                 case OBJ_CAMERA:

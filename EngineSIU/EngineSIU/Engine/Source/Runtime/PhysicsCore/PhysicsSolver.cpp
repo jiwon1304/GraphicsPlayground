@@ -12,6 +12,10 @@
 #include "UObject/Casts.h"
 #include "PhysicsEngine/ConstraintInstance.h"
 #include "Developer/PhysicsUtilities/PhysicsAssetUtils.h"
+#include "Engine/Classes/PhysicsEngine/Vehicle/VehicleMovementComponent.h"
+#include "Engine/Source/Runtime/PhysicsVehicle/Vehicle4W.h"
+#include "Engine/Classes/PhysicsEngine/Vehicle/WheeledVehiclePawn.h"
+
 void FPhysicsSolver::Init()
 {
 
@@ -178,6 +182,17 @@ physx::PxActor* FPhysicsSolver::RegisterObject(FPhysScene* InScene, const FBodyI
     Scene->addActor(*NewRigidActor);
 
     return NewRigidActor;
+}
+
+PxActor* FPhysicsSolver::RegisterObject(FPhysScene* InScene, FBodyInstance* NewInstance, UVehicleMovementComponent* InVehicleMovementComponent, const FMatrix& InitialMatrix)
+{
+    FVehicle4W* Vehicle = new FVehicle4W();
+    Vehicles.Add(Vehicle);
+
+    FPhysxSolversModule* PhysxSolverModule = FPhysxSolversModule::GetModule();
+
+    return Vehicle->InitVehicle(InVehicleMovementComponent, NewInstance, InitialMatrix, PhysxSolverModule->Physics, PhysxSolverModule->Foundation
+        , InScene->PhysxScene, &PhysxSolverModule->Allocator, PhysxSolverModule->DefaultMaterial);
 }
 
 physx::PxJoint* FPhysicsSolver::CreateJoint(FPhysScene* InScene, PxActor* Child, PxActor* Parent, const FConstraintInstance* NewInstance)
@@ -355,6 +370,12 @@ physx::PxJoint* FPhysicsSolver::CreateJoint(FPhysScene* InScene, PxActor* Child,
 void FPhysicsSolver::AdvanceOneTimeStep(FPhysScene* InScene, float Dt)
 {
     //PxSceneWriteLock scopedWriteLock(*InScene->PhysxScene);
+    
+    for (int VehicleNum = 0; VehicleNum < Vehicles.Num(); VehicleNum++) 
+    {
+        Vehicles[VehicleNum]->StepPhysics(Dt, InScene->PhysxScene);
+    }
+    
     InScene->PhysxScene->simulate(Dt);
 }
 
@@ -383,11 +404,69 @@ void FPhysicsSolver::FetchData(FPhysScene* InScene)
 
         if (BodyInstance->OwnerComponent)
         {
-            if (UStaticMeshComponent* StaticMeshComp = Cast<UStaticMeshComponent>(BodyInstance->OwnerComponent))
+            if (BodyInstance->bCar) 
             {
+                FQuat PhysicQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w);
+
                 BodyInstance->OwnerComponent->SetWorldTransform(
                     FTransform(
-                        FQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w),
+                        PhysicQuat * BodyInstance->InvPhysXQuat,
+                        FVector(Transform.p.x, Transform.p.y, Transform.p.z),
+                        FVector(BodyInstance->Scale3D.X, BodyInstance->Scale3D.Y, BodyInstance->Scale3D.Z)
+                    )
+                );
+                
+                // TODO 아래는 Vehicle이 1개일 때만 작동! 무 조 건 고쳐야함
+                FVehicle4W* Vehicle4W = Vehicles[0];
+
+                AWheeledVehiclePawn* WheelPawn = Cast<AWheeledVehiclePawn>(BodyInstance->OwnerComponent->GetOwner());
+
+                TArray<UStaticMeshComponent*> StaticMeshComps;
+
+                for (auto iter : WheelPawn->GetComponents()) 
+                {
+                    if (UStaticMeshComponent* StaticMeshComp = Cast<UStaticMeshComponent>(iter)) 
+                    {
+                        StaticMeshComps.Add(StaticMeshComp);
+                    }
+                }
+                PxTransform Transform;
+                for (auto StaticMesh : StaticMeshComps) 
+                {
+                    if (StaticMesh == BodyInstance->OwnerComponent) continue;
+
+                    if (StaticMesh->GetRelativeLocation() == WheelPawn->ForwardLeftTireLocation)
+                    {
+                        Transform = Vehicle4W->WheelShapes[0]->getLocalPose();
+                    }
+                    else if (StaticMesh->GetRelativeLocation() == WheelPawn->ForwardRightTireLocation)
+                    {
+                        Transform = Vehicle4W->WheelShapes[1]->getLocalPose();
+                    }
+                    else if (StaticMesh->GetRelativeLocation() == WheelPawn->RearLeftTireLocation)
+                    {
+                        Transform = Vehicle4W->WheelShapes[2]->getLocalPose();
+                    }
+                    else if (StaticMesh->GetRelativeLocation() == WheelPawn->RearRightTireLocation)
+                    {
+                        Transform = Vehicle4W->WheelShapes[3]->getLocalPose();
+                    }
+
+                    /*Transform.q = Transform.q * PxQuat(BodyInstance->InvPhysXQuat.X, BodyInstance->InvPhysXQuat.Y, BodyInstance->InvPhysXQuat.Z, BodyInstance->InvPhysXQuat.W);
+
+                    StaticMesh->SetRelativeRotation(FQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w));*/
+                }
+
+                continue;
+            }
+
+            if (UStaticMeshComponent* StaticMeshComp = Cast<UStaticMeshComponent>(BodyInstance->OwnerComponent))
+            {
+                FQuat PhysicQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w);
+
+                BodyInstance->OwnerComponent->SetWorldTransform(
+                    FTransform(
+                        PhysicQuat * BodyInstance->InvPhysXQuat,
                         FVector(Transform.p.x, Transform.p.y, Transform.p.z),
                         BodyInstance->OwnerComponent->GetComponentScale3D()
                     )
@@ -410,8 +489,11 @@ void FPhysicsSolver::FetchData(FPhysScene* InScene)
 
                 FTransform CachedBoneWorldTransform = SkeletalMeshComp->GetComponentTransform() * SkeletalMeshComp->GetBoneComponentSpaceTransform(BoneIndex);
                 FVector OriginScale = CachedBoneWorldTransform.Scale3D;
+
+                FQuat PhysicQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w);
+
                 FTransform SimulatedWorldTransform = FTransform(
-                    FQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w),
+                    PhysicQuat * BodyInstance->InvPhysXQuat,
                     FVector(Transform.p.x, Transform.p.y, Transform.p.z),
                     OriginScale
                 );

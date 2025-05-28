@@ -75,7 +75,7 @@ public:
     bool MoveComponent(const FVector& Delta, const FQuat& NewRotation, bool bSweep, FHitResult* OutHit = nullptr);
     bool MoveComponent(const FVector& Delta, const FRotator& NewRotation, bool bSweep, FHitResult* OutHit = nullptr);
 
-protected:
+public:
     /** 부모 컴포넌트로부터 상대적인 위치 */
     UPROPERTY_WITH_FLAGS(
         EditAnywhere | LuaReadOnly,
