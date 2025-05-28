@@ -944,8 +944,8 @@ void FPhysicsAssetEditorPanel::DrawPopupBodySetup(UPhysicsAsset* InPhysicsAsset,
                         // NewPhysicsConstraintTemplate->DefaultInstance.SetAngularSwing1Motion(Params.AngularConstraintMode);
                         // NewPhysicsConstraintTemplate->DefaultInstance.SetAngularSwing2Motion(Params.AngularConstraintMode);
                         // NewPhysicsConstraintTemplate->DefaultInstance.SetAngularTwistMotion(Params.AngularConstraintMode);
-                        NewPhysicsConstraintTemplate->DefaultInstance.ConstraintBone1 = MeshBoneInfo.Name;
-                        NewPhysicsConstraintTemplate->DefaultInstance.ConstraintBone2 = OtherMeshBoneInfo.Name;
+                        NewPhysicsConstraintTemplate->DefaultInstance.ConstraintBone1 = OtherMeshBoneInfo.Name;
+                        NewPhysicsConstraintTemplate->DefaultInstance.ConstraintBone2 = MeshBoneInfo.Name;
                         // NewPhysicsConstraintTemplate->DefaultInstance.SnapTransformsToDefault(EConstraintTransformComponentFlags::All, PhysicsAsset);
                         // NewPhysicsConstraintTemplate->SetDefaultProfile(NewPhysicsConstraintTemplate->DefaultInstance);
                         NewPhysicsConstraintTemplate->DefaultInstance.ConstraintIndex = NewConstraintIndex;
