@@ -196,6 +196,29 @@ void PropertyEditorPanel::Render()
                 Prop->DisplayInImGui(SelectedActor);
             }
         }
+
+        for (UActorComponent* Component : SelectedActor->GetComponents())
+        {
+            if (!Component->IsA<USceneComponent>())
+            {
+                ImGui::Separator();
+                const UClass* TempClass = Component->GetClass();
+
+                for (; TempClass; TempClass = TempClass->GetSuperClass())
+                {
+                    const TArray<FProperty*>& Properties = TempClass->GetProperties();
+                    if (!Properties.IsEmpty())
+                    {
+                        ImGui::SeparatorText(*TempClass->GetName());
+                    }
+
+                    for (const FProperty* Prop : Properties)
+                    {
+                        Prop->DisplayInImGui(Component);
+                    }
+                }
+            }
+        } 
     }
 
     if (SelectedComponent)
