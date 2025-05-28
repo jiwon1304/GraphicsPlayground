@@ -12,29 +12,9 @@ FQuat::FQuat(const FVector& Axis, float AngleRad)
 
 FQuat::FQuat(const FRotator& R)
 {
-    // FRotator의 Pitch, Yaw, Roll (도 단위)을 사용
-    // 언리얼의 FRotator::Quaternion() 메서드 로직 참고 (Z-Y-X 순서로 회전 적용)
-    // 오일러 각도에서 쿼터니언으로 변환하는 일반적인 공식 사용
-    // constexpr float DegreeToRadian = PI / 180.f;
-    // const float PitchRad = R.Pitch * DegreeToRadian * 0.5f;
-    // const float YawRad   = R.Yaw   * DegreeToRadian * 0.5f;
-    // const float RollRad  = R.Roll  * DegreeToRadian * 0.5f;
-    //
-    // const float SP = FMath::Sin(PitchRad);
-    // const float CP = FMath::Cos(PitchRad);
-    // const float SY = FMath::Sin(YawRad);
-    // const float CY = FMath::Cos(YawRad);
-    // const float SR = FMath::Sin(RollRad);
-    // const float CR = FMath::Cos(RollRad);
-
-    // ZYX 순서 적용 (Yaw -> Pitch -> Roll)
-    // W = CR*CP*CY + SR*SP*SY;
-    // X = SR*CP*CY - CR*SP*SY;
-    // Y = CR*SP*CY + SR*CP*SY;
-    // Z = CR*CP*SY - SR*SP*CY;
-    // 위는 일반적인 공식. 언리얼은 FQuat(Pitch,0,0) * FQuat(0,Yaw,0) * FQuat(0,0,Roll) 과 유사하게 계산
-    // MakeFromEuler 참조
-    *this = MakeFromEuler(FVector(R.Roll, R.Pitch, R.Yaw));
+    *this = R.Quaternion();
+    //assert(0); // 이거 Rotator::Quaternion()이랑 값이 다름. 이게 틀린거같음.
+    //*this = MakeFromEuler(FVector(R.Roll, R.Pitch, R.Yaw));
 }
 
 FQuat::FQuat(const FMatrix& M)

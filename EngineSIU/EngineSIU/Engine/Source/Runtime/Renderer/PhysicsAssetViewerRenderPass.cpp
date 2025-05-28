@@ -159,7 +159,9 @@ void FPhysicsAssetViewerRenderPass::RenderSkelComp(USkeletalMeshComponent* SkelC
         for (FKSphereElem& SphereElem : AggGeom.SphereElems)
         {
             FTransform Src = FTransform(SphereElem.Center);
-            FTransform Dst = InitialTransform * Src;
+            FTransform Dst;
+            Dst = InitialTransform * Src;
+
             SphereElem.Center = Dst.GetTranslation();
             Shape::FSphere Sphere(SphereElem.Center, SphereElem.Radius);
             Spheres.Add(TPair<Shape::FSphere, FLinearColor>(Sphere, Color));
@@ -167,8 +169,11 @@ void FPhysicsAssetViewerRenderPass::RenderSkelComp(USkeletalMeshComponent* SkelC
 
         for (FKBoxElem& BoxElem : AggGeom.BoxElems)
         {
-            FTransform Src = { BoxElem.Rotation, BoxElem.Center };
-            FTransform Dst = InitialTransform * Src;
+            FQuat Rotation = BoxElem.Rotation.Quaternion();
+            FTransform Src = { Rotation, BoxElem.Center };
+            FTransform Dst;
+            Dst = InitialTransform * Src;
+
             BoxElem.SetTransform(Dst);
             Shape::FOrientedBox OrientedBox = BoxElem.ToFOrientedBox();
             OrientedBoxes.Add(TPair<Shape::FOrientedBox, FLinearColor>(OrientedBox, Color));
@@ -176,13 +181,10 @@ void FPhysicsAssetViewerRenderPass::RenderSkelComp(USkeletalMeshComponent* SkelC
 
         for (FKSphylElem& SphylElem : AggGeom.SphylElems)
         {
-            const FVector Axis = FVector(1, 0, 0);
-            const float Degree = HALF_PI;
-            FQuat Correction = FQuat(Axis, Degree); // 여기선 x축이 capsule 방향이지만, physx에서는 y축임.
-            FQuat Rotation = Correction * FQuat(SphylElem.Rotation);
+            FQuat Rotation = SphylElem.Rotation.Quaternion();
             FTransform Src = { Rotation, SphylElem.Center };
-            FTransform Dst = InitialTransform * Src;
-            //Dst = InitialTransform * Src;
+            FTransform Dst;
+            Dst = InitialTransform * Src;
 
             SphylElem.SetTransform(Dst);
             Shape::FCapsule Capsule = SphylElem.ToFCapsule();

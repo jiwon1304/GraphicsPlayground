@@ -181,8 +181,28 @@ void ControlEditorPanel::Render()
         /* Move Cursor X Position */
         if (Width >= 880.f)
         {
-            ImGui::SetCursorPosX(ContentWidth - (IconSize.x * 3.0f + 16.0f));
+            ImGui::SetCursorPosX(ContentWidth - (IconSize.x * 4.0f + 70.0f));
         }
+        ImGui::PopFont();
+
+        const UEditorEngine* EditorEngine = Cast<UEditorEngine>(GEngine);
+        
+        if (EditorEngine->GetEditorPlayer()->GetCoordMode() == ECoordMode::CDM_WORLD)
+        {
+            if (ImGui::Button("World", ImVec2(IconSize.x + 12, IconSize.y)))
+            {
+                EditorEngine->GetEditorPlayer()->AddCoordMode();
+            }
+        }
+        else if (EditorEngine->GetEditorPlayer()->GetCoordMode() == ECoordMode::CDM_LOCAL)
+        {
+            if (ImGui::Button("Local", ImVec2(IconSize.x + 12, IconSize.y)))
+            {
+                EditorEngine->GetEditorPlayer()->AddCoordMode();
+            }
+        }
+        ImGui::SameLine(0, 40);
+        ImGui::PushFont(IconFont);
         CreateSRTButton(IconSize);
         ImGui::PopFont();
     }

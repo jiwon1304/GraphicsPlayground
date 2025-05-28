@@ -44,6 +44,11 @@ public:
 
     FString ToString() const;
     bool InitFromString(const FString& InSourceString);
+
+    FVector xyz() const
+    {
+        return { X, Y, Z };
+    }
 };
 
 inline FVector4 FVector4::operator-(const FVector4& Other) const

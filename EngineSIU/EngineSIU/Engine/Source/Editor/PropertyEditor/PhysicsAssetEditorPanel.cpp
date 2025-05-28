@@ -10,6 +10,7 @@
 
 #include "Developer/PhysicsUtilities/PhysicsAssetUtils.h"
 #include "PhysicalMaterials/Defines.h"
+#include "Renderer/PhysicsAssetViewerRenderPass.h"
 
 const float	DefaultPrimSize = 15.0f;
 const float	DuplicateXOffset = 10.0f;

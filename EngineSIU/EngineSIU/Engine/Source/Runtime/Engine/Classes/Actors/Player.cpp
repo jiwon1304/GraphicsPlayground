@@ -14,6 +14,8 @@
 #include "UObject/UObjectIterator.h"
 #include "Engine/EditorEngine.h"
 #include "Engine/SkeletalMesh.h"
+#include "PhysicsEngine/BodySetup.h"
+#include "PhysicsEngine/PhysicsAsset.h"
 #include "World/PhysicsAssetWorld.h"
 
 
@@ -61,27 +63,29 @@ void AEditorPlayer::Input()
             {
                 UEditorEngine* Engine = Cast<UEditorEngine>(GEngine);
                 if (Engine->ActiveWorld->WorldType == EWorldType::SkeletalViewer || Engine->ActiveWorld->WorldType == EWorldType::PhysicsAssetEditor)
-                if (USkeletalMeshComponent* SkeletalMeshComp = Cast<USkeletalMeshComponent>(Engine->GetSelectedComponent()))
                 {
-                    UGizmoBaseComponent* Gizmo = Cast<UGizmoBaseComponent>(ActiveViewport->GetPickedGizmoComponent());
-                    int BoneIndex = -1;
-                    if (SkeletalMeshComp->GetWorld()->WorldType == EWorldType::SkeletalViewer)
+                    if (USkeletalMeshComponent* SkeletalMeshComp = Cast<USkeletalMeshComponent>(Engine->GetSelectedComponent()))
                     {
-                        BoneIndex = Engine->SkeletalMeshViewerWorld->SelectBoneIndex;
-                    }
-                    else if (SkeletalMeshComp->GetWorld()->WorldType == EWorldType::PhysicsAssetEditor)
-                    {
-                        BoneIndex = Engine->PhysicsAssetEditorWorld->SelectBoneIndex;
-                    }
-                    if (BoneIndex == -1)
-                    {
-                        return;
-                    }
-                    TArray<FMatrix> GlobalBoneMatrices;
-                    SkeletalMeshComp->GetCurrentGlobalBoneMatrices(GlobalBoneMatrices);
+                        UGizmoBaseComponent* Gizmo = Cast<UGizmoBaseComponent>(ActiveViewport->GetPickedGizmoComponent());
+                        int BoneIndex = -1;
+                        if (SkeletalMeshComp->GetWorld()->WorldType == EWorldType::SkeletalViewer)
+                        {
+                            BoneIndex = Engine->SkeletalMeshViewerWorld->SelectBoneIndex;
+                        }
+                        else if (SkeletalMeshComp->GetWorld()->WorldType == EWorldType::PhysicsAssetEditor)
+                        {
+                            BoneIndex = Engine->PhysicsAssetEditorWorld->SelectBoneIndex;
+                        }
+                        if (BoneIndex == -1)
+                        {
+                            return;
+                        }
+                        TArray<FMatrix> GlobalBoneMatrices;
+                        SkeletalMeshComp->GetCurrentGlobalBoneMatrices(GlobalBoneMatrices);
 
-                    FTransform GlobalBoneTransform = FTransform(GlobalBoneMatrices[BoneIndex]);
-                    InitialBoneRotationForGizmo = GlobalBoneTransform.GetRotation();
+                        FTransform GlobalBoneTransform = FTransform(GlobalBoneMatrices[BoneIndex]);
+                        InitialBoneRotationForGizmo = GlobalBoneTransform.GetRotation();
+                    }
                 }
                 //bIsGizmoDragging = true;
                 //GizmoDrag_InitialLocalXAxis = InitialBoneRotationForGizmo.RotateVector(FVector::ForwardVector); // 또는 (1,0,0) 등 FBX 기준 축
@@ -92,15 +96,27 @@ void AEditorPlayer::Input()
         }
         else
         {
+            POINT CurrentMousePos;
+            GetCursorPos(&CurrentMousePos);
+            const float DeltaX = static_cast<float>(CurrentMousePos.x - LastMousePos.x);
+            const float DeltaY = static_cast<float>(CurrentMousePos.y - LastMousePos.y);
+            const FVector2D DeltaPoint = FVector2D(DeltaX, DeltaY);
+            
             UEditorEngine* Engine = Cast<UEditorEngine>(GEngine);
             if (Engine->ActiveWorld->WorldType == EWorldType::Editor)
             {
-                PickedObjControl();
+                PickedObjControl(DeltaPoint);
             }
-            else if (Engine->ActiveWorld->WorldType == EWorldType::SkeletalViewer || Engine->ActiveWorld->WorldType == EWorldType::PhysicsAssetEditor)
+            else if (Engine->ActiveWorld->WorldType == EWorldType::SkeletalViewer)
             {
-                PickedBoneControl();
+                PickedBoneControl(DeltaPoint);
             }
+            else if (Engine->ActiveWorld->WorldType == EWorldType::PhysicsAssetEditor)
+            {
+                PickedBoneControl(DeltaPoint);
+                ControlPickedPhysicsAsset(DeltaPoint);
+            }
+            LastMousePos = CurrentMousePos;
         }
     }
     else
@@ -311,17 +327,12 @@ int AEditorPlayer::RayIntersectsObject(const FVector& PickPosition, USceneCompon
     }
 }
 
-void AEditorPlayer::PickedObjControl()
+void AEditorPlayer::PickedObjControl(FVector2D DeltaPoint)
 {
     UEditorEngine* Engine = Cast<UEditorEngine>(GEngine);
     FEditorViewportClient* ActiveViewport = GEngineLoop.GetLevelEditor()->GetActiveViewportClient().get();
     if (Engine && Engine->GetSelectedActor() && ActiveViewport->GetPickedGizmoComponent())
-    {
-        POINT CurrentMousePos;
-        GetCursorPos(&CurrentMousePos);
-        const float DeltaX = static_cast<float>(CurrentMousePos.x - LastMousePos.x);
-        const float DeltaY = static_cast<float>(CurrentMousePos.y - LastMousePos.y);
-
+    {        
         USceneComponent* TargetComponent = Engine->GetSelectedComponent();
         if (!TargetComponent)
         {
@@ -343,96 +354,159 @@ void AEditorPlayer::PickedObjControl()
             // SLevelEditor에 있음
             break;
         case CM_SCALE:
-            ControlScale(TargetComponent, Gizmo, DeltaX, DeltaY);
+            ControlScale(TargetComponent, Gizmo, DeltaPoint.X, DeltaPoint.Y);
             break;
         case CM_ROTATION:
-            ControlRotation(TargetComponent, Gizmo, DeltaX, DeltaY);
+            ControlRotation(TargetComponent, Gizmo, DeltaPoint.X, DeltaPoint.Y);
             break;
         default:
             break;
         }
-        LastMousePos = CurrentMousePos;
     }
 }
 
-void AEditorPlayer::PickedBoneControl()
+void AEditorPlayer::PickedBoneControl(FVector2D DeltaPoint)
 {
     UEditorEngine* Engine = Cast<UEditorEngine>(GEngine);
     FEditorViewportClient* ActiveViewport = GEngineLoop.GetLevelEditor()->GetActiveViewportClient().get();
-    if (Engine && Engine->GetSelectedActor() && ActiveViewport->GetPickedGizmoComponent())
+    if (Engine && ActiveViewport->GetPickedGizmoComponent())
     {
+        USkeletalMeshComponent* SkeletalMeshComp = nullptr;
+        int32 BoneIndex = -1;
+
+        if (Engine->ActiveWorld->WorldType == EWorldType::SkeletalViewer)
+        {
+            SkeletalMeshComp = Engine->SkeletalMeshViewerWorld->GetSkeletalMeshComponent();
+            BoneIndex = Engine->SkeletalMeshViewerWorld->SelectBoneIndex;
+        }
+        else if (Engine->ActiveWorld->WorldType == EWorldType::PhysicsAssetEditor)
+        {
+            SkeletalMeshComp = Engine->PhysicsAssetEditorWorld->GetSkeletalMeshComponent();
+            BoneIndex = Engine->PhysicsAssetEditorWorld->SelectBoneIndex;
+        }
         
-        POINT CurrentMousePos;
-        GetCursorPos(&CurrentMousePos);
-        const float DeltaX = static_cast<float>(CurrentMousePos.x - LastMousePos.x);
-        const float DeltaY = static_cast<float>(CurrentMousePos.y - LastMousePos.y);
-
-        if (DeltaX > 1.f)
+        if (BoneIndex == -1 || SkeletalMeshComp == nullptr)
         {
-            int a = 0;
+            return;
         }
+        
+        UGizmoBaseComponent* Gizmo = Cast<UGizmoBaseComponent>(ActiveViewport->GetPickedGizmoComponent());
+            
+        TArray<FMatrix> GlobalBoneMatrices;
+        SkeletalMeshComp->GetCurrentGlobalBoneMatrices(GlobalBoneMatrices);
 
-        USceneComponent* TargetComponent = Engine->GetSelectedComponent();
-        if (!TargetComponent)
+        FTransform GlobalBoneTransform = FTransform(GlobalBoneMatrices[BoneIndex]);
+
+
+        switch (ControlMode)
         {
-            if (AActor* SelectedActor = Engine->GetSelectedActor())
-            {
-                TargetComponent = SelectedActor->GetRootComponent();
-            }
-            else
-            {
-                return;
-            }
+        case CM_TRANSLATION:
+            // ControlTranslation(TargetComponent, Gizmo, deltaX, deltaY);
+            // SLevelEditor에 있음
+            break;
+        case CM_SCALE:
+        {
+            FVector ScaleDelta = ControlBoneScale(GlobalBoneTransform, Gizmo, DeltaPoint.X, DeltaPoint.Y);
+            SkeletalMeshComp->RefBonePoseTransforms[BoneIndex].Scale3D += ScaleDelta;
         }
-
-        if (USkeletalMeshComponent* SkeletalMeshComp = Cast<USkeletalMeshComponent>(TargetComponent))
+            break;
+        case CM_ROTATION:
         {
-            UGizmoBaseComponent* Gizmo = Cast<UGizmoBaseComponent>(ActiveViewport->GetPickedGizmoComponent());
-            int BoneIndex;
-            if (SkeletalMeshComp->GetWorld()->WorldType == EWorldType::SkeletalViewer)
-            {
-                BoneIndex = Engine->SkeletalMeshViewerWorld->SelectBoneIndex;
-            }
-            else if (SkeletalMeshComp->GetWorld()->WorldType == EWorldType::PhysicsAssetEditor)
-            {
-                BoneIndex = Engine->PhysicsAssetEditorWorld->SelectBoneIndex;
-            }
-            if (BoneIndex == -1)
-            {
-                return;
-            }
+            FQuat RotationDelta = ControlBoneRotation(Gizmo, DeltaPoint.X, DeltaPoint.Y);
+            SkeletalMeshComp->RefBonePoseTransforms[BoneIndex].Rotation = RotationDelta * SkeletalMeshComp->RefBonePoseTransforms[BoneIndex].Rotation;
+        }
+            break;
+        default:
+            break;
+        }
+        // 본의 로컬 변환을 업데이트
+        //SkeletalMeshComp->BoneTransforms[BoneIndex] = GlobalBoneTransform;
+    }
+}
+
+void AEditorPlayer::ControlPickedPhysicsAsset(FVector2D DeltaPoint)
+{
+    UEditorEngine* EditorEngine = Cast<UEditorEngine>(GEngine);
+    std::shared_ptr<FEditorViewportClient> ActiveViewport = GEngineLoop.GetLevelEditor()->GetActiveViewportClient();
+    if (EditorEngine && ActiveViewport->GetPickedGizmoComponent())
+    {
+        USkeletalMeshComponent* SkeletalMeshComp = EditorEngine->PhysicsAssetEditorWorld->GetSkeletalMeshComponent();
+
+        if (SkeletalMeshComp == nullptr)
+        {
+            return;
+        }
+        
+        UGizmoBaseComponent* Gizmo = Cast<UGizmoBaseComponent>(ActiveViewport->GetPickedGizmoComponent());
+        USkeletalMesh* SkeletalMesh = EditorEngine->PhysicsAssetEditorWorld->GetSkeletalMeshComponent()->GetSkeletalMeshAsset();
+        
+        UBodySetup* TargetBodySetup;
+        FKShapeElem* TargetAggregateGeom;
+        EAggCollisionShape::Type TargetPrimitiveType;
+        
+        if (GetAggregateGeom(TargetBodySetup, TargetAggregateGeom, TargetPrimitiveType))
+        {
             TArray<FMatrix> GlobalBoneMatrices;
             SkeletalMeshComp->GetCurrentGlobalBoneMatrices(GlobalBoneMatrices);
 
+            int32 BoneIndex = SkeletalMesh->GetRefSkeleton()->FindBoneIndex(TargetBodySetup->BoneName); 
+
             FTransform GlobalBoneTransform = FTransform(GlobalBoneMatrices[BoneIndex]);
 
+            if (TargetPrimitiveType == EAggCollisionShape::Sphere)
+            {
+                FKSphereElem SphereElem = *static_cast<FKSphereElem*>(TargetAggregateGeom);
+                GlobalBoneTransform.AddToTranslation(SphereElem.Center);
+                // GlobalBoneTransform.Scale3D *= SphereElem.Radius;
+            }
+            else if (TargetPrimitiveType == EAggCollisionShape::Box)
+            {
+                FKBoxElem BoxElem = *static_cast<FKBoxElem*>(TargetAggregateGeom);
+                GlobalBoneTransform.AddToTranslation(BoxElem.Center);
+                GlobalBoneTransform.Rotation = GlobalBoneTransform.Rotation * BoxElem.Rotation.Quaternion();
+                // GlobalBoneTransform.Scale3D *= FVector(BoxElem.X, BoxElem.Y, BoxElem.Z);
+            }
+            else if (TargetPrimitiveType == EAggCollisionShape::Sphyl)
+            {
+                FKSphylElem SphylElem = *static_cast<FKSphylElem*>(TargetAggregateGeom);
+                GlobalBoneTransform.AddToTranslation(SphylElem.Center);
+                GlobalBoneTransform.Rotation = GlobalBoneTransform.Rotation * SphylElem.Rotation.Quaternion();
+                // GlobalBoneTransform.Scale3D *= FVector(SphylElem..X, BoxElem.Y, BoxElem.Z);
+            }
 
             switch (ControlMode)
             {
             case CM_TRANSLATION:
                 // ControlTranslation(TargetComponent, Gizmo, deltaX, deltaY);
-                    // SLevelEditor에 있음
-                        break;
+                // SLevelEditor에 있음
+                break;
             case CM_SCALE:
-                {
-                    FVector ScaleDelta = ControlBoneScale(GlobalBoneTransform, Gizmo, DeltaX, DeltaY);
-                    SkeletalMeshComp->RefBonePoseTransforms[BoneIndex].Scale3D += ScaleDelta;
-                }
+            {
+                // TODO UISOO
+                // FVector ScaleDelta = ControlAggregateGeomScale(GlobalBoneTransform, Gizmo, DeltaX, DeltaY);
+            }
                 break;
             case CM_ROTATION:
+            {
+                FQuat RotationDelta = ControlBoneRotation(Gizmo, DeltaPoint.X, DeltaPoint.Y);
+                if (TargetPrimitiveType == EAggCollisionShape::Box)
                 {
-                    FQuat RotationDelta = ControlBoneRotation(GlobalBoneTransform, Gizmo, DeltaX, DeltaY);
-                    SkeletalMeshComp->RefBonePoseTransforms[BoneIndex].Rotation = RotationDelta * SkeletalMeshComp->RefBonePoseTransforms[BoneIndex].Rotation;
+                    FKBoxElem& BoxElem = *static_cast<FKBoxElem*>(TargetAggregateGeom);
+                            
+                    BoxElem.Rotation = (RotationDelta * BoxElem.Rotation.Quaternion()).Rotator();
                 }
+                else if (TargetPrimitiveType == EAggCollisionShape::Sphyl)
+                {
+                    FKSphylElem& SphylElem = *static_cast<FKSphylElem*>(TargetAggregateGeom);
+                            
+                    SphylElem.Rotation = (RotationDelta * SphylElem.Rotation.Quaternion()).Rotator();
+                }
+            }
                 break;
             default:
                 break;
             }
-            // 본의 로컬 변환을 업데이트
-            //SkeletalMeshComp->BoneTransforms[BoneIndex] = GlobalBoneTransform;
         }
-        
-        LastMousePos = CurrentMousePos;
     }
 }
 
@@ -523,7 +597,7 @@ void AEditorPlayer::ControlScale(USceneComponent* Component, UGizmoBaseComponent
         Component->AddScale(FVector(0.0f, 0.0f, moveDir.Z));
     }
 }
-FQuat AEditorPlayer::ControlBoneRotation(FTransform& BoneTransform, UGizmoBaseComponent* Gizmo, float DeltaX, float DeltaY)
+FQuat AEditorPlayer::ControlBoneRotation(UGizmoBaseComponent* Gizmo, float DeltaX, float DeltaY)
 {
     const auto ActiveViewport = GEngineLoop.GetLevelEditor()->GetActiveViewportClient();
     const FViewportCamera* ViewTransform = ActiveViewport->GetViewportType() == LVT_Perspective
@@ -534,7 +608,7 @@ FQuat AEditorPlayer::ControlBoneRotation(FTransform& BoneTransform, UGizmoBaseCo
     FVector CameraRight = ViewTransform->GetRightVector().GetSafeNormal();   // 정규화
     FVector CameraUp = ViewTransform->GetUpVector().GetSafeNormal();         // 정규화
 
-    FQuat CurrentRotation = BoneTransform.GetRotation(); // 현재 회전은 여전히 필요 (결과 적용 시)
+    // FQuat CurrentRotation = BoneTransform.GetRotation(); // 현재 회전은 여전히 필요 (결과 적용 시)
     FQuat RotationDelta = FQuat::Identity;
     float Sensitivity = 0.01f;
 
@@ -545,9 +619,9 @@ FQuat AEditorPlayer::ControlBoneRotation(FTransform& BoneTransform, UGizmoBaseCo
         if (CoordMode == CDM_LOCAL)
         {
             // AxisToRotateAround = GizmoDrag_InitialLocalXAxis; // 드래그 시작 시 저장된 로컬 축 사용
-             AxisToRotateAround = InitialBoneRotationForGizmo.RotateVector(FVector::ForwardVector); // 매번 초기 회전 기준으로 로컬축 계산
+            AxisToRotateAround = InitialBoneRotationForGizmo.RotateVector(FVector::ForwardVector); // 매번 초기 회전 기준으로 로컬축 계산
         }
-        else // CDM_WORLD
+        else if (CoordMode == CDM_WORLD)
         {
             AxisToRotateAround = FVector::ForwardVector; // 월드 X축
         }
@@ -559,7 +633,7 @@ FQuat AEditorPlayer::ControlBoneRotation(FTransform& BoneTransform, UGizmoBaseCo
             // AxisToRotateAround = GizmoDrag_InitialLocalYAxis;
             AxisToRotateAround = InitialBoneRotationForGizmo.RotateVector(FVector::RightVector);
         }
-        else // CDM_WORLD
+        else if (CoordMode == CDM_WORLD)
         {
             AxisToRotateAround = FVector::RightVector; // 월드 Y축
         }
@@ -571,7 +645,7 @@ FQuat AEditorPlayer::ControlBoneRotation(FTransform& BoneTransform, UGizmoBaseCo
             // AxisToRotateAround = GizmoDrag_InitialLocalZAxis;
             AxisToRotateAround = InitialBoneRotationForGizmo.RotateVector(FVector::UpVector);
         }
-        else // CDM_WORLD
+        else if (CoordMode == CDM_WORLD)
         {
             AxisToRotateAround = FVector::UpVector; // 월드 Z축
         }
@@ -640,6 +714,101 @@ FVector AEditorPlayer::ControlBoneScale(FTransform& BoneTransform, UGizmoBaseCom
     }
     
     return BoneScale;
+}
+
+bool AEditorPlayer::GetAggregateGeom(UBodySetup*& TargetBodySetup, FKShapeElem*& TargetAggregateGeom, EAggCollisionShape::Type& TargetPrimitiveType)
+{
+    TargetAggregateGeom = nullptr;
+    TargetBodySetup = nullptr;
+    TargetPrimitiveType = EAggCollisionShape::Unknown;
+    
+    UEditorEngine* Engine = Cast<UEditorEngine>(GEngine);
+    if (!Engine)
+    {
+        return false;
+    }
+    AEditorPlayer* EditorPlayer = Engine->GetEditorPlayer();
+    if (!EditorPlayer)
+    {
+        return false;
+    }
+
+    USkeletalMeshComponent* SkeletalMeshComp = Engine->PhysicsAssetEditorWorld->GetSkeletalMeshComponent();
+
+    if (SkeletalMeshComp == nullptr)
+    {
+        return false;
+    }
+
+    int BodySetupIndex = Engine->PhysicsAssetEditorWorld->SelectedBodySetupIndex;
+    // int ConstraintIndex = Engine->PhysicsAssetEditorWorld->SelectedConstraintIndex;
+    int PrimitiveIndex = Engine->PhysicsAssetEditorWorld->SelectedPrimitive.SelectedPrimitiveIndex;
+    int ParentBodySetupIndex = Engine->PhysicsAssetEditorWorld->SelectedPrimitive.ParentBodySetupIndex;
+    EAggCollisionShape::Type PrimitiveType = Engine->PhysicsAssetEditorWorld->SelectedPrimitive.PrimitiveType;
+
+    if (BodySetupIndex == -1 && (PrimitiveIndex == -1 || ParentBodySetupIndex == -1 || PrimitiveType == EAggCollisionShape::Unknown))
+    {
+        return false;
+    }
+
+    USkeletalMesh* SkeletalMesh = Engine->PhysicsAssetEditorWorld->GetSkeletalMeshComponent()->GetSkeletalMeshAsset();
+    UPhysicsAsset* PhysicsAsset = SkeletalMesh->GetPhysicsAsset();
+
+    if (BodySetupIndex != -1)
+    {
+        TargetBodySetup = PhysicsAsset->BodySetup[BodySetupIndex];
+    }
+    else
+    {
+        TargetBodySetup = PhysicsAsset->BodySetup[ParentBodySetupIndex];
+    }
+
+    if (TargetBodySetup == nullptr || (TargetBodySetup->AggGeom.BoxElems.Num() == 0 && TargetBodySetup->AggGeom.SphereElems.Num() == 0 && TargetBodySetup->AggGeom.SphylElems.Num() == 0))
+    {
+        return false;
+    }
+    
+    if (PrimitiveType != EAggCollisionShape::Unknown && PrimitiveIndex != -1)
+    {
+        TargetPrimitiveType = PrimitiveType;
+        if (PrimitiveType == EAggCollisionShape::Sphere)
+        {
+            TargetAggregateGeom = &(TargetBodySetup->AggGeom.SphereElems[PrimitiveIndex]);
+        }
+        else if (PrimitiveType == EAggCollisionShape::Box)
+        {
+            TargetAggregateGeom = &(TargetBodySetup->AggGeom.BoxElems[PrimitiveIndex]);
+        }
+        else if (PrimitiveType == EAggCollisionShape::Sphyl)
+        {
+            TargetAggregateGeom = &(TargetBodySetup->AggGeom.SphylElems[PrimitiveIndex]);
+        }
+    }
+    else
+    {
+        if (TargetBodySetup->AggGeom.SphereElems.Num() > 0)
+        {
+            TargetPrimitiveType = EAggCollisionShape::Sphere;
+            TargetAggregateGeom = &(TargetBodySetup->AggGeom.SphereElems[0]);
+        }
+        else if (TargetBodySetup->AggGeom.BoxElems.Num() > 0)
+        {
+            TargetPrimitiveType = EAggCollisionShape::Box;
+            TargetAggregateGeom = &(TargetBodySetup->AggGeom.BoxElems[0]);
+        }
+        else if (TargetBodySetup->AggGeom.SphylElems.Num() > 0)
+        {
+            TargetPrimitiveType = EAggCollisionShape::Sphyl;
+            TargetAggregateGeom = &(TargetBodySetup->AggGeom.SphylElems[0]);
+        }
+    }
+
+    if (TargetAggregateGeom == nullptr && TargetPrimitiveType == EAggCollisionShape::Unknown)
+    {
+        return false;
+    }
+
+    return true;
 }
 
 UObject* APlayer::Duplicate(UObject* InOuter)

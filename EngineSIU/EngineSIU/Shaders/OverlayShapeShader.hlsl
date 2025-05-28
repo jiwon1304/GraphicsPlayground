@@ -65,91 +65,81 @@ PS_INPUT CapsuleVS(VS_INPUT_POS_ONLY input, uint VertexID : SV_VertexID, uint in
 {
     PS_INPUT output;
 
-    // 메시 생성 규칙
-    
+    // --- 캡슐 파라미터 추출 ---
+    float3 CapsuleA = Capsules[instanceID].A;
+    float3 CapsuleB = Capsules[instanceID].B;
+    float CapsuleRadius = Capsules[instanceID].Radius;
+    float4 CapsuleColor = Capsules[instanceID].Color;
+    float3 CapsuleDir = normalize(CapsuleB - CapsuleA);
+    float CapsuleLen = length(CapsuleB - CapsuleA);
+    float CapsuleHalfHeight = CapsuleLen * 0.5f;
+    float3 center = (CapsuleA + CapsuleB) * 0.5;
+
+    // --- 메시 생성 규칙 ---
     const int NumRings = 32;
     const int NumSegments = 32;
-    
     float halfRings = NumRings * 0.5f;
     float vertsPerRing = NumSegments + 1;
-
-    // 총 버텍스 개수 계산
     float topHemiVertCount = (halfRings + 1) * vertsPerRing;
     float cylinderVertCount = 2 * vertsPerRing;
     float bottomHemiVertCount = (halfRings + 1) * vertsPerRing;
 
-    // 기본 위치
-    float3 meshPos = input.position;
-
-    // 실린더 구간 인덱스
     uint cylinderStart = (uint) topHemiVertCount;
     uint cylinderEnd = cylinderStart + (uint) cylinderVertCount;
 
+    // --- Step 1: 메시를 먼저 +y축이 CapsuleDir이 되도록 회전 ---
+    // input.position은 캡슐 로컬 기준(세로로 선 상태, y축이 중심축)
+    float3 meshPos = input.position;
 
-    float CapsuleRadius = Capsules[instanceID].Radius;
-    float CapsuleHalfHeight = length(Capsules[instanceID].B - Capsules[instanceID].A) * 0.5f;
-    float3 CapsuleA = Capsules[instanceID].A;
-    float3 CapsuleB = Capsules[instanceID].B;
-    
-    meshPos *= CapsuleRadius;
+    // 로드리게스 공식으로 y축(0,1,0)->CapsuleDir로 회전
+    float3 up = float3(0, 1, 0);
+    float3 axis = cross(up, CapsuleDir);
+    float sinTheta = length(axis);
+    float cosTheta = dot(up, CapsuleDir);
 
-    // 메시 생성 구간 판별
+    float3 rotatedPos;
+    if (sinTheta < 1e-5)
+    {
+        // 이미 같은 방향이거나 반대 방향
+        rotatedPos = (cosTheta > 0) ? meshPos : float3(meshPos.x, -meshPos.y, -meshPos.z);
+    }
+    else
+    {
+        axis = normalize(axis);
+        float3 v = axis;
+        float3 p = meshPos;
+        // 로드리게스 공식
+        rotatedPos = p * cosTheta + cross(v, p) * sinTheta + v * dot(v, p) * (1 - cosTheta);
+    }
+
+    // --- Step 2: Cylinder 구간만 CapsuleDir 방향(이미 회전된 y축)으로 ±CapsuleHalfHeight 오프셋 ---
+    float3 offset = float3(0, 0, 0);
     if (VertexID < cylinderStart)
-    { // 상단 반구
-        meshPos.y += CapsuleHalfHeight;
+    {
+        offset = CapsuleDir * CapsuleHalfHeight;
     }
     else if (VertexID >= cylinderEnd)
-    { // 하단 반구
-        meshPos.y -= CapsuleHalfHeight;
-    }
-    else
-    { // 실린더 구간
-        meshPos.y = -CapsuleHalfHeight;
-    }
-    
-    // 메시 생성 기준: radius=1, halfHeight=1 이라고 가정
-    float3 scaledPos = float3(meshPos.x * CapsuleRadius,
-                              meshPos.y * CapsuleHalfHeight,
-                              meshPos.z * CapsuleRadius);
-
-    // 캡슐의 방향 계산 (A~B)
-    float3 CapsuleDir = normalize(CapsuleB - CapsuleA);
-    float CapsuleLen = length(CapsuleB - CapsuleA);
-    float3 center = (CapsuleA + CapsuleB) * 0.5;
-
-    // Y축 -> CapsuleDir로 회전 (Rodrigues' rotation)
-    float3 up = float3(0, 1, 0);
-    float3 v = cross(up, CapsuleDir);
-    float s = length(v);
-    float c = dot(up, CapsuleDir);
-
-    float3x3 rotMatrix;
-    if (s < 1e-5)
     {
-        rotMatrix = (c > 0) ? float3x3(1, 0, 0, 0, 1, 0, 0, 0, 1)
-                            : float3x3(1, 0, 0, 0, -1, 0, 0, 0, -1);
+        offset = -CapsuleDir * CapsuleHalfHeight;
     }
     else
     {
-        float vx = v.x, vy = v.y, vz = v.z;
-        float vx2 = vx * vx, vy2 = vy * vy, vz2 = vz * vz;
-        float3x3 vxmat = float3x3(0, -vz, vy, vz, 0, -vx, -vy, vx, 0);
-        rotMatrix =
-            float3x3(c + (1 - c) * vx2, (1 - c) * vx * vy - vz * s, (1 - c) * vx * vz + vy * s,
-                     (1 - c) * vx * vy + vz * s, c + (1 - c) * vy2, (1 - c) * vy * vz - vx * s,
-                     (1 - c) * vx * vz - vy * s, (1 - c) * vy * vz + vx * s, c + (1 - c) * vz2);
+        offset = -CapsuleDir * CapsuleHalfHeight;
     }
-    float3 rotated = mul(meshPos, rotMatrix);
 
-    float3 worldPos = center + rotated;
+    // --- Step 3: 반지름 적용 ---
+    rotatedPos *= CapsuleRadius;
 
+    // --- Step 4: 최종 위치 계산 ---
+    float3 worldPos = center + rotatedPos + offset;
+
+    // --- Step 5: 변환 ---
     float4 localPos = float4(worldPos, 1.0f);
     localPos = mul(localPos, ViewMatrix);
     localPos = mul(localPos, ProjectionMatrix);
 
     output.position = localPos;
-    output.color = Capsules[instanceID].Color;
-
+    output.color = CapsuleColor;
     return output;
 }
 
@@ -219,10 +209,7 @@ PS_INPUT OrientedBoxVS(VS_INPUT_POS_ONLY input, uint vertexID : SV_VertexID, uin
     PS_INPUT output;
 
     OrientedBox box = OrientedBoxes[instanceID];
-    box.AxisX = float3(1, 0, 0);
-    box.AxisY = float3(0, 1, 0);
-    box.AxisZ = float3(0, 0, 1);
-    // CalcVertices와 동일하게 vertexID로 꼭짓점 위치 계산
+
     float3 worldPos = GetOrientedBoxVertex(vertexID % 8, box);
 
     float4 clipPos = mul(float4(worldPos, 1.0f), ViewMatrix);
