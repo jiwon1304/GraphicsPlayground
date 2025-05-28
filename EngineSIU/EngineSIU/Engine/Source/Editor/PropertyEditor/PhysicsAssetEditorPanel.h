@@ -25,7 +25,9 @@ private:
     
     void DrawPopupBone(UPhysicsAsset* PhysicsAsset, UBodySetup* BodySetup, int32 InBoneIndex) const;
     void DrawPopupBodySetup(UPhysicsAsset* PhysicsAsset, UBodySetup* BodySetup, int32 InBoneIndex, bool& bIsDelete);
-    void DrawPopupPrimitive(UPhysicsAsset* InPhysicsAsset, UBodySetup* InBodySetup, EAggCollisionShape::Type PrimitiveType, uint32 PrimitiveIndex, bool& bIsDelete);
+    void DrawPopupPrimitive(UPhysicsAsset* InPhysicsAsset, UBodySetup* InBodySetup, EAggCollisionShape::Type PrimitiveType, uint32 PrimitiveIndex, int32
+                            InBoneIndex, bool& bIsDelete
+    );
     void DrawPopupConstraint(UPhysicsAsset* PhysicsAsset, int32 TargetConstraintIndex, bool& bIsDelete) const;
     
     FString GetCleanBoneName(const FMeshBoneInfo& BoneInfo, int32 BoneIndex = -1, uint8 bShowBoneIndices = false) const;
