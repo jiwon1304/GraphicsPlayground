@@ -7,7 +7,10 @@
 #include "PhysicsEngine/PhysicsConstraintTemplate.h"
 #include "World/PhysicsAssetWorld.h"
 #include <PhysicalMaterials/PhysicalMaterial.h>
+
+#include "Developer/PhysicsUtilities/PhysicsAssetUtils.h"
 #include "PhysicalMaterials/Defines.h"
+#include "Renderer/PhysicsAssetViewerRenderPass.h"
 
 const float	DefaultPrimSize = 15.0f;
 const float	DuplicateXOffset = 10.0f;
@@ -39,7 +42,7 @@ void FPhysicsAssetEditorPanel::Render()
 
     /* Pre Setup */
     float TreePanelWidth = (Width) * 0.2f - 6.0f;
-    float TreePanelHeight = (Height - 30.f) * 0.5f - 10.f;
+    float TreePanelHeight = (Height - 80.f) * 0.5f - 10.f;
 
     float TreePanelPosX = (Width) * 0.8f + 5.0f;
     float TreePanelPosY = 5.0f;
@@ -73,10 +76,10 @@ void FPhysicsAssetEditorPanel::Render()
     /* Detail Pre Setup */
     
     float DetailPanelWidth = (Width) * 0.2f - 6.0f;
-    float DetailPanelHeight = (Height - 30.f) * 0.5f - 40.f;
+    float DetailPanelHeight = (Height - 80.f) * 0.5f;
 
     float DetailPanelPosX = (Width) * 0.8f + 5.0f;
-    float DetailPanelPosY = (Height - 30.f) * 0.5f;
+    float DetailPanelPosY = (Height - 80.f) * 0.5f;
 
     ImVec2 DetailMinSize(140, 100);
     ImVec2 DetailMaxSize(FLT_MAX, 1000);
@@ -95,12 +98,72 @@ void FPhysicsAssetEditorPanel::Render()
     RenderDetailPanel();
 
     ImGui::End();
-    
+
+    float ReCreatePanelWidth = (Width) * 0.2f - 6.0f;
+    float ReCreatePanelHeight = 30.0f;
+
+    float ReCreatePanelPosX = Width - ReCreatePanelWidth;
+    float ReCreatePanelPosY = Height - ReCreatePanelHeight - 40;
+
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+
+    ImGui::SetNextWindowSize(ImVec2(ReCreatePanelWidth, ReCreatePanelHeight), ImGuiCond_Always);
+    ImGui::SetNextWindowPos(ImVec2(ReCreatePanelPosX, ReCreatePanelPosY), ImGuiCond_Always);
+
+    constexpr ImGuiWindowFlags ReCreatePanelFlags =
+        ImGuiWindowFlags_NoResize
+        | ImGuiWindowFlags_NoMove
+        | ImGuiWindowFlags_NoTitleBar
+        | ImGuiWindowFlags_NoBackground
+        | ImGuiWindowFlags_NoScrollbar;
+        
+    ImGui::Begin("ReCreate", nullptr, ReCreatePanelFlags);
+
+    const ImVec4 ButtonBackgroundColor = ImVec4(0.f, 0.f, 1.f, 1.0f);
+    const ImVec4 WhiteTextColor = ImVec4(1.f, 1.f, 1.f, 1.0f);
+    ImGui::PushStyleColor(ImGuiCol_Button, ButtonBackgroundColor);
+    ImGui::PushStyleColor(ImGuiCol_Text, WhiteTextColor);
+    if (ImGui::Button("ReCreate", ImVec2(ReCreatePanelWidth, ReCreatePanelHeight)))
+    {
+        USkeletalMesh* SkeletalMesh = EditorEngine->PhysicsAssetEditorWorld->GetSkeletalMeshComponent()->GetSkeletalMeshAsset();
+        UPhysicsAsset* PhysicsAsset = SkeletalMesh->GetPhysicsAsset();
+
+        UAssetManager::Get().RemovePhysicsAsset(PhysicsAsset->GetName());
+        UAssetManager::Get().RemoveAssetInfo(PhysicsAsset);
+
+        for (UBodySetup* BodySetup : PhysicsAsset->BodySetup)
+        {
+            delete BodySetup->PhysMaterial->Material;
+            GUObjectArray.MarkRemoveObject(BodySetup->PhysMaterial);
+            GUObjectArray.MarkRemoveObject(BodySetup);
+        }
+
+        for (UPhysicsConstraintTemplate* PhysicsConstraintTemplate : PhysicsAsset->ConstraintSetup)
+        {
+            GUObjectArray.MarkRemoveObject(PhysicsConstraintTemplate);
+        }
+        
+        GUObjectArray.MarkRemoveObject(PhysicsAsset);
+
+        
+        PhysicsAsset = FObjectFactory::ConstructObject<UPhysicsAsset>(nullptr);
+        FPhysicsAssetUtils::CreateFromSkeletalMesh(PhysicsAsset, SkeletalMesh);
+
+        UAssetManager::Get().AddPhysicsAsset(PhysicsAsset->GetName(), PhysicsAsset);
+        UAssetManager::Get().AddAssetInfo(PhysicsAsset);
+
+        EditorEngine->PhysicsAssetEditorWorld->ClearSelected();
+    }
+    ImGui::PopStyleColor();
+    ImGui::PopStyleColor();
+    ImGui::End();
+    ImGui::PopStyleVar();
+
     float ExitPanelWidth = (Width) * 0.2f - 6.0f;
     float ExitPanelHeight = 30.0f;
 
     float ExitPanelPosX = Width - ExitPanelWidth;
-    float ExitPanelPosY = Height - ExitPanelHeight - 10;
+    float ExitPanelPosY = Height - ExitPanelHeight - 5;
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 
@@ -802,7 +865,7 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
     ImGui::PopID(); // ID 스택 복원
 }
 
-void FPhysicsAssetEditorPanel::DrawPopupBodySetup(UPhysicsAsset* PhysicsAsset, UBodySetup* BodySetup, int32 InBoneIndex, bool& bIsDelete)
+void FPhysicsAssetEditorPanel::DrawPopupBodySetup(UPhysicsAsset* InPhysicsAsset, UBodySetup* InBodySetup, int32 InBoneIndex, bool& bIsDelete)
 {
     bIsDelete = false;
     UEditorEngine* EditorEngine = Cast<UEditorEngine>(GEngine);
@@ -832,19 +895,19 @@ void FPhysicsAssetEditorPanel::DrawPopupBodySetup(UPhysicsAsset* PhysicsAsset, U
             ImGui::SameLine();
             if (ImGui::MenuItem("Add Box"))
             {
-                AddShape(PhysicsAsset, BodySetup, InBoneIndex, EAggCollisionShape::Box);
+                AddShape(InPhysicsAsset, InBodySetup, InBoneIndex, EAggCollisionShape::Box);
             }
             ImGui::Image((ImTextureID)SpherePhATIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
             ImGui::SameLine();
             if (ImGui::MenuItem("Add Sphere"))
             {
-                AddShape(PhysicsAsset, BodySetup, InBoneIndex, EAggCollisionShape::Sphere);
+                AddShape(InPhysicsAsset, InBodySetup, InBoneIndex, EAggCollisionShape::Sphere);
             }
             ImGui::Image((ImTextureID)SphylPhATIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
             ImGui::SameLine();
             if (ImGui::MenuItem("Add Capsule"))
             {
-                AddShape(PhysicsAsset, BodySetup, InBoneIndex, EAggCollisionShape::Sphyl);
+                AddShape(InPhysicsAsset, InBodySetup, InBoneIndex, EAggCollisionShape::Sphyl);
             }
             ImGui::EndMenu();
         }
@@ -857,9 +920,9 @@ void FPhysicsAssetEditorPanel::DrawPopupBodySetup(UPhysicsAsset* PhysicsAsset, U
             ImGui::PopStyleColor();
             if (ImGui::BeginChild("Create New Constraint"))
             {
-                for (UBodySetup* TempBodySetup : PhysicsAsset->BodySetup)
+                for (UBodySetup* TempBodySetup : InPhysicsAsset->BodySetup)
                 {
-                    if (TempBodySetup == BodySetup)
+                    if (TempBodySetup == InBodySetup)
                     {
                         continue;
                     }
@@ -868,21 +931,21 @@ void FPhysicsAssetEditorPanel::DrawPopupBodySetup(UPhysicsAsset* PhysicsAsset, U
                     ImGui::SameLine();
                     if (ImGui::MenuItem(GetData(GetCleanBoneName(TempBodySetup->BoneName.ToString()))))
                     {
-                        const FMeshBoneInfo& MeshBoneInfo = PhysicsAsset->PreviewSkeletalMesh->GetRefSkeleton()->GetRawRefBoneInfo()[InBoneIndex];
-                        int32 OtherBoneIndex = PhysicsAsset->PreviewSkeletalMesh->GetRefSkeleton()->FindBoneIndex(TempBodySetup->BoneName);
-                        const FMeshBoneInfo& OtherMeshBoneInfo = PhysicsAsset->PreviewSkeletalMesh->GetRefSkeleton()->GetRawRefBoneInfo()[OtherBoneIndex];
-                        UPhysicsConstraintTemplate* NewPhysicsConstraintTemplate = FObjectFactory::ConstructObject<UPhysicsConstraintTemplate>(PhysicsAsset);
+                        const FMeshBoneInfo& MeshBoneInfo = InPhysicsAsset->PreviewSkeletalMesh->GetRefSkeleton()->GetRawRefBoneInfo()[InBoneIndex];
+                        int32 OtherBoneIndex = InPhysicsAsset->PreviewSkeletalMesh->GetRefSkeleton()->FindBoneIndex(TempBodySetup->BoneName);
+                        const FMeshBoneInfo& OtherMeshBoneInfo = InPhysicsAsset->PreviewSkeletalMesh->GetRefSkeleton()->GetRawRefBoneInfo()[OtherBoneIndex];
+                        UPhysicsConstraintTemplate* NewPhysicsConstraintTemplate = FObjectFactory::ConstructObject<UPhysicsConstraintTemplate>(InPhysicsAsset);
 
-                        PhysicsAsset->ConstraintSetup.Add(NewPhysicsConstraintTemplate);
-                        int32 NewConstraintIndex = PhysicsAsset->ConstraintSetup.Num() - 1;
+                        InPhysicsAsset->ConstraintSetup.Add(NewPhysicsConstraintTemplate);
+                        int32 NewConstraintIndex = InPhysicsAsset->ConstraintSetup.Num() - 1;
                         
                         NewPhysicsConstraintTemplate->DefaultInstance.JointName = MeshBoneInfo.Name;
                         // TODO Check
                         // NewPhysicsConstraintTemplate->DefaultInstance.SetAngularSwing1Motion(Params.AngularConstraintMode);
                         // NewPhysicsConstraintTemplate->DefaultInstance.SetAngularSwing2Motion(Params.AngularConstraintMode);
                         // NewPhysicsConstraintTemplate->DefaultInstance.SetAngularTwistMotion(Params.AngularConstraintMode);
-                        NewPhysicsConstraintTemplate->DefaultInstance.ConstraintBone1 = MeshBoneInfo.Name;
-                        NewPhysicsConstraintTemplate->DefaultInstance.ConstraintBone2 = OtherMeshBoneInfo.Name;
+                        NewPhysicsConstraintTemplate->DefaultInstance.ConstraintBone1 = OtherMeshBoneInfo.Name;
+                        NewPhysicsConstraintTemplate->DefaultInstance.ConstraintBone2 = MeshBoneInfo.Name;
                         // NewPhysicsConstraintTemplate->DefaultInstance.SnapTransformsToDefault(EConstraintTransformComponentFlags::All, PhysicsAsset);
                         // NewPhysicsConstraintTemplate->SetDefaultProfile(NewPhysicsConstraintTemplate->DefaultInstance);
                         NewPhysicsConstraintTemplate->DefaultInstance.ConstraintIndex = NewConstraintIndex;
@@ -906,26 +969,29 @@ void FPhysicsAssetEditorPanel::DrawPopupBodySetup(UPhysicsAsset* PhysicsAsset, U
         {
             bIsDelete = true;
 
-            BodySetup->AggGeom.BoxElems.Empty();
-            BodySetup->AggGeom.SphereElems.Empty();
-            BodySetup->AggGeom.SphylElems.Empty();
+            InBodySetup->AggGeom.BoxElems.Empty();
+            InBodySetup->AggGeom.SphereElems.Empty();
+            InBodySetup->AggGeom.SphylElems.Empty();
 
-            TArray<UPhysicsConstraintTemplate*> ConstraintSetups = PhysicsAsset->ConstraintSetup;
+            TArray<UPhysicsConstraintTemplate*> ConstraintSetups = InPhysicsAsset->ConstraintSetup;
             
             for (UPhysicsConstraintTemplate* ConstraintSetup : ConstraintSetups)
             {
-                FName BoneName = PhysicsAsset->PreviewSkeletalMesh->GetRefSkeleton()->GetBoneName(InBoneIndex);
+                FName BoneName = InPhysicsAsset->PreviewSkeletalMesh->GetRefSkeleton()->GetBoneName(InBoneIndex);
                 if (ConstraintSetup->DefaultInstance.ConstraintBone1 == BoneName || ConstraintSetup->DefaultInstance.ConstraintBone2 == BoneName)
                 {
                     GUObjectArray.MarkRemoveObject(ConstraintSetup);
-                    PhysicsAsset->ConstraintSetup.Remove(ConstraintSetup);
+                    InPhysicsAsset->ConstraintSetup.Remove(ConstraintSetup);
                 }
             }
+
+            delete InBodySetup->PhysMaterial->Material;
+            GUObjectArray.MarkRemoveObject(InBodySetup->PhysMaterial);
             
-            PhysicsAsset->BodySetup.Remove(BodySetup);
-            PhysicsAsset->UpdateBodySetupIndexMap();
+            InPhysicsAsset->BodySetup.Remove(InBodySetup);
+            InPhysicsAsset->UpdateBodySetupIndexMap();
             EditorEngine->PhysicsAssetEditorWorld->ClearSelected();
-            GUObjectArray.MarkRemoveObject(BodySetup);
+            GUObjectArray.MarkRemoveObject(InBodySetup);
         }
         ImGui::EndPopup();
     }
@@ -1025,6 +1091,9 @@ void FPhysicsAssetEditorPanel::DrawPopupPrimitive(UPhysicsAsset* InPhysicsAsset,
                         InPhysicsAsset->ConstraintSetup.Remove(ConstraintSetup);
                     }
                 }
+
+                delete InBodySetup->PhysMaterial->Material;
+                GUObjectArray.MarkRemoveObject(InBodySetup->PhysMaterial);
                 
                 InPhysicsAsset->BodySetup.Remove(InBodySetup);
                 InPhysicsAsset->UpdateBodySetupIndexMap();
@@ -1050,7 +1119,7 @@ void FPhysicsAssetEditorPanel::DrawPopupConstraint(UPhysicsAsset* PhysicsAsset, 
         if (ImGui::MenuItem("Delete"))
         {
             bIsDelete = true;
-            UPhysicsConstraintTemplate*  TargetPhysicsConstraintTemplate = PhysicsAsset->ConstraintSetup[TargetConstraintIndex];
+            UPhysicsConstraintTemplate* TargetPhysicsConstraintTemplate = PhysicsAsset->ConstraintSetup[TargetConstraintIndex];
             PhysicsAsset->ConstraintSetup.RemoveAt(TargetConstraintIndex);
             GUObjectArray.MarkRemoveObject(TargetPhysicsConstraintTemplate);
             EditorEngine->PhysicsAssetEditorWorld->ClearSelected();

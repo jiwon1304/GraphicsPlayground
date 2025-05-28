@@ -141,10 +141,10 @@ void USkeletalMeshComponent::ClearAnimScriptInstance()
 
 void USkeletalMeshComponent::SetSkeletalMeshAsset(USkeletalMesh* InSkeletalMeshAsset)
 {
-    if (InSkeletalMeshAsset == GetSkeletalMeshAsset())
-    {
-        return;
-    }
+    //if (InSkeletalMeshAsset == GetSkeletalMeshAsset())
+    //{
+    //    return;
+    //}
     
     SkeletalMeshAsset = InSkeletalMeshAsset;
 
@@ -384,6 +384,16 @@ FTransform USkeletalMeshComponent::GetBoneComponentSpaceTransform(int32 BoneInde
     }
 
     return AccumulatedTransform; // 컴포넌트 공간 트랜스폼 
+}
+
+void USkeletalMeshComponent::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+    UObject** ChangedObject = (UObject**)((uint8*)PropertyChangedEvent.ObjectThatChanged + PropertyChangedEvent.Property->Offset);
+
+    if (USkeletalMesh* NewMesh = Cast<USkeletalMesh>(*ChangedObject))
+    {
+        SetSkeletalMeshAsset(NewMesh);
+    }
 }
 
 bool USkeletalMeshComponent::NeedToSpawnAnimScriptInstance() const

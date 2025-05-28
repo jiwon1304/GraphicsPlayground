@@ -24,7 +24,7 @@ private:
     void RenderTreeRecursive(USkeletalMesh* InSkeletalMesh, UPhysicsAsset* InPhysicsAsset, int32 InBoneIndex, uint8 bShowBones, uint8 bShowBoneIndices, uint8 bShowBodies, uint8 bShowConstraints, uint8 bShowPrimitives);
     
     void DrawPopupBone(UPhysicsAsset* PhysicsAsset, UBodySetup* BodySetup, int32 InBoneIndex) const;
-    void DrawPopupBodySetup(UPhysicsAsset* PhysicsAsset, UBodySetup* BodySetup, int32 InBoneIndex, bool& bIsDelete);
+    void DrawPopupBodySetup(UPhysicsAsset* InPhysicsAsset, UBodySetup* InBodySetup, int32 InBoneIndex, bool& bIsDelete);
     void DrawPopupPrimitive(UPhysicsAsset* InPhysicsAsset, UBodySetup* InBodySetup, EAggCollisionShape::Type PrimitiveType, uint32 PrimitiveIndex, int32
                             InBoneIndex, bool& bIsDelete
     );

@@ -34,7 +34,7 @@ void FPhysxSolversModule::Initialize()
 #endif
 
     PxInitExtensions(*Physics, Pvd);
-    DefaultMaterial = Physics->createMaterial(0.5f, 0.5f, 0.6f);
+    DefaultMaterial = Physics->createMaterial(0.5f, 0.5f, 0.02f);
 }
 
 void FPhysxSolversModule::Shutdown()
@@ -98,9 +98,15 @@ PxScene* FPhysxSolversModule::CreateScene()
 #endif // _DEBUG
 
     PxScene* Scene = Physics->createScene(sceneDesc);
-    //Scene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f); // PVD용
-    //Scene->setVisualizationParameter(PxVisualizationParameter::eACTOR_AXES, 1.0f); // PVD용
-    //Scene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_SHAPES, 1.0f); // PVD용
+
+
+
+    Scene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f); // PVD용
+    Scene->setVisualizationParameter(PxVisualizationParameter::eACTOR_AXES, 1.0f); // PVD용
+    Scene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_SHAPES, 1.0f); // PVD용
+    Scene->setVisualizationParameter(PxVisualizationParameter::eJOINT_LOCAL_FRAMES, 1.0f);
+    Scene->setVisualizationParameter(PxVisualizationParameter::eJOINT_LIMITS, 1.0f);
+    Scene->getScenePvdClient()->setScenePvdFlags(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS | PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES | PxPvdSceneFlag::eTRANSMIT_CONTACTS);
 
     return Scene;
 }

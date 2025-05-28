@@ -14,6 +14,8 @@
 #include "UObject/UObjectIterator.h"
 #include "Engine/EditorEngine.h"
 #include "Engine/SkeletalMesh.h"
+#include "PhysicsEngine/BodySetup.h"
+#include "PhysicsEngine/PhysicsAsset.h"
 #include "World/PhysicsAssetWorld.h"
 
 
@@ -61,27 +63,29 @@ void AEditorPlayer::Input()
             {
                 UEditorEngine* Engine = Cast<UEditorEngine>(GEngine);
                 if (Engine->ActiveWorld->WorldType == EWorldType::SkeletalViewer || Engine->ActiveWorld->WorldType == EWorldType::PhysicsAssetEditor)
-                if (USkeletalMeshComponent* SkeletalMeshComp = Cast<USkeletalMeshComponent>(Engine->GetSelectedComponent()))
                 {
-                    UGizmoBaseComponent* Gizmo = Cast<UGizmoBaseComponent>(ActiveViewport->GetPickedGizmoComponent());
-                    int BoneIndex = -1;
-                    if (SkeletalMeshComp->GetWorld()->WorldType == EWorldType::SkeletalViewer)
+                    if (USkeletalMeshComponent* SkeletalMeshComp = Cast<USkeletalMeshComponent>(Engine->GetSelectedComponent()))
                     {
-                        BoneIndex = Engine->SkeletalMeshViewerWorld->SelectBoneIndex;
-                    }
-                    else if (SkeletalMeshComp->GetWorld()->WorldType == EWorldType::PhysicsAssetEditor)
-                    {
-                        BoneIndex = Engine->PhysicsAssetEditorWorld->SelectBoneIndex;
-                    }
-                    if (BoneIndex == -1)
-                    {
-                        return;
-                    }
-                    TArray<FMatrix> GlobalBoneMatrices;
-                    SkeletalMeshComp->GetCurrentGlobalBoneMatrices(GlobalBoneMatrices);
+                        UGizmoBaseComponent* Gizmo = Cast<UGizmoBaseComponent>(ActiveViewport->GetPickedGizmoComponent());
+                        int BoneIndex = -1;
+                        if (SkeletalMeshComp->GetWorld()->WorldType == EWorldType::SkeletalViewer)
+                        {
+                            BoneIndex = Engine->SkeletalMeshViewerWorld->SelectBoneIndex;
+                        }
+                        else if (SkeletalMeshComp->GetWorld()->WorldType == EWorldType::PhysicsAssetEditor)
+                        {
+                            BoneIndex = Engine->PhysicsAssetEditorWorld->SelectBoneIndex;
+                        }
+                        if (BoneIndex == -1)
+                        {
+                            return;
+                        }
+                        TArray<FMatrix> GlobalBoneMatrices;
+                        SkeletalMeshComp->GetCurrentGlobalBoneMatrices(GlobalBoneMatrices);
 
-                    FTransform GlobalBoneTransform = FTransform(GlobalBoneMatrices[BoneIndex]);
-                    InitialBoneRotationForGizmo = GlobalBoneTransform.GetRotation();
+                        FTransform GlobalBoneTransform = FTransform(GlobalBoneMatrices[BoneIndex].GetMatrixWithoutScale());
+                        InitialBoneRotationForGizmo = GlobalBoneTransform.GetRotation();
+                    }
                 }
                 //bIsGizmoDragging = true;
                 //GizmoDrag_InitialLocalXAxis = InitialBoneRotationForGizmo.RotateVector(FVector::ForwardVector); // 또는 (1,0,0) 등 FBX 기준 축
@@ -92,15 +96,27 @@ void AEditorPlayer::Input()
         }
         else
         {
+            POINT CurrentMousePos;
+            GetCursorPos(&CurrentMousePos);
+            const float DeltaX = static_cast<float>(CurrentMousePos.x - LastMousePos.x);
+            const float DeltaY = static_cast<float>(CurrentMousePos.y - LastMousePos.y);
+            const FVector2D DeltaPoint = FVector2D(DeltaX, DeltaY);
+            
             UEditorEngine* Engine = Cast<UEditorEngine>(GEngine);
             if (Engine->ActiveWorld->WorldType == EWorldType::Editor)
             {
-                PickedObjControl();
+                PickedObjControl(DeltaPoint);
             }
-            else if (Engine->ActiveWorld->WorldType == EWorldType::SkeletalViewer || Engine->ActiveWorld->WorldType == EWorldType::PhysicsAssetEditor)
+            else if (Engine->ActiveWorld->WorldType == EWorldType::SkeletalViewer)
             {
-                PickedBoneControl();
+                PickedBoneControl(DeltaPoint);
             }
+            else if (Engine->ActiveWorld->WorldType == EWorldType::PhysicsAssetEditor)
+            {
+                PickedBoneControl(DeltaPoint);
+                // ControlPickedPhysicsAsset(DeltaPoint);
+            }
+            LastMousePos = CurrentMousePos;
         }
     }
     else
@@ -311,17 +327,12 @@ int AEditorPlayer::RayIntersectsObject(const FVector& PickPosition, USceneCompon
     }
 }
 
-void AEditorPlayer::PickedObjControl()
+void AEditorPlayer::PickedObjControl(FVector2D DeltaPoint)
 {
     UEditorEngine* Engine = Cast<UEditorEngine>(GEngine);
     FEditorViewportClient* ActiveViewport = GEngineLoop.GetLevelEditor()->GetActiveViewportClient().get();
     if (Engine && Engine->GetSelectedActor() && ActiveViewport->GetPickedGizmoComponent())
-    {
-        POINT CurrentMousePos;
-        GetCursorPos(&CurrentMousePos);
-        const float DeltaX = static_cast<float>(CurrentMousePos.x - LastMousePos.x);
-        const float DeltaY = static_cast<float>(CurrentMousePos.y - LastMousePos.y);
-
+    {        
         USceneComponent* TargetComponent = Engine->GetSelectedComponent();
         if (!TargetComponent)
         {
@@ -343,96 +354,243 @@ void AEditorPlayer::PickedObjControl()
             // SLevelEditor에 있음
             break;
         case CM_SCALE:
-            ControlScale(TargetComponent, Gizmo, DeltaX, DeltaY);
+            ControlScale(TargetComponent, Gizmo, DeltaPoint.X, DeltaPoint.Y);
             break;
         case CM_ROTATION:
-            ControlRotation(TargetComponent, Gizmo, DeltaX, DeltaY);
+            ControlRotation(TargetComponent, Gizmo, DeltaPoint.X, DeltaPoint.Y);
             break;
         default:
             break;
         }
-        LastMousePos = CurrentMousePos;
     }
 }
 
-void AEditorPlayer::PickedBoneControl()
+void AEditorPlayer::PickedBoneControl(FVector2D DeltaPoint)
 {
     UEditorEngine* Engine = Cast<UEditorEngine>(GEngine);
     FEditorViewportClient* ActiveViewport = GEngineLoop.GetLevelEditor()->GetActiveViewportClient().get();
-    if (Engine && Engine->GetSelectedActor() && ActiveViewport->GetPickedGizmoComponent())
+    if (Engine && ActiveViewport->GetPickedGizmoComponent())
     {
-        
-        POINT CurrentMousePos;
-        GetCursorPos(&CurrentMousePos);
-        const float DeltaX = static_cast<float>(CurrentMousePos.x - LastMousePos.x);
-        const float DeltaY = static_cast<float>(CurrentMousePos.y - LastMousePos.y);
+        USkeletalMeshComponent* SkeletalMeshComp = nullptr;
+        int32 BoneIndex = -1;
 
-        if (DeltaX > 1.f)
+        if (Engine->ActiveWorld->WorldType == EWorldType::SkeletalViewer)
         {
-            int a = 0;
+            SkeletalMeshComp = Engine->SkeletalMeshViewerWorld->GetSkeletalMeshComponent();
+            BoneIndex = Engine->SkeletalMeshViewerWorld->SelectBoneIndex;
         }
-
-        USceneComponent* TargetComponent = Engine->GetSelectedComponent();
-        if (!TargetComponent)
+        else if (Engine->ActiveWorld->WorldType == EWorldType::PhysicsAssetEditor)
         {
-            if (AActor* SelectedActor = Engine->GetSelectedActor())
+            SkeletalMeshComp = Engine->PhysicsAssetEditorWorld->GetSkeletalMeshComponent();
+            BoneIndex = Engine->PhysicsAssetEditorWorld->SelectBoneIndex;
+        }
+        
+        if (BoneIndex == -1 || SkeletalMeshComp == nullptr)
+        {
+            return;
+        }
+        
+        UGizmoBaseComponent* Gizmo = Cast<UGizmoBaseComponent>(ActiveViewport->GetPickedGizmoComponent());
+            
+        TArray<FMatrix> GlobalBoneMatrices;
+        SkeletalMeshComp->GetCurrentGlobalBoneMatrices(GlobalBoneMatrices);
+
+        FTransform GlobalBoneTransform = FTransform(GlobalBoneMatrices[BoneIndex].GetMatrixWithoutScale());
+
+
+        switch (ControlMode)
+        {
+        case CM_TRANSLATION:
+            // ControlTranslation(TargetComponent, Gizmo, deltaX, deltaY);
+            // SLevelEditor에 있음
+            break;
+        case CM_SCALE:
+        {
+            FVector ScaleDelta = ControlBoneScale(GlobalBoneTransform, Gizmo, DeltaPoint.X, DeltaPoint.Y);
+            SkeletalMeshComp->RefBonePoseTransforms[BoneIndex].Scale3D += ScaleDelta;
+        }
+            break;
+        case CM_ROTATION:
+        {
+            FQuat RotationDelta = ControlBoneRotation(GlobalBoneTransform, Gizmo, DeltaPoint.X, DeltaPoint.Y);
+            SkeletalMeshComp->RefBonePoseTransforms[BoneIndex].Rotation = RotationDelta * SkeletalMeshComp->RefBonePoseTransforms[BoneIndex].Rotation;
+        }
+            break;
+        default:
+            break;
+        }
+        // 본의 로컬 변환을 업데이트
+        //SkeletalMeshComp->BoneTransforms[BoneIndex] = GlobalBoneTransform;
+    }
+}
+
+void AEditorPlayer::ControlPickedPhysicsAsset(FVector2D DeltaPoint)
+{
+    UEditorEngine* EditorEngine = Cast<UEditorEngine>(GEngine);
+    std::shared_ptr<FEditorViewportClient> ActiveViewport = GEngineLoop.GetLevelEditor()->GetActiveViewportClient();
+    if (EditorEngine && ActiveViewport->GetPickedGizmoComponent())
+    {
+        USkeletalMeshComponent* SkeletalMeshComp = EditorEngine->PhysicsAssetEditorWorld->GetSkeletalMeshComponent();
+
+        if (SkeletalMeshComp == nullptr)
+        {
+            return;
+        }
+        
+        UGizmoBaseComponent* Gizmo = Cast<UGizmoBaseComponent>(ActiveViewport->GetPickedGizmoComponent());
+        USkeletalMesh* SkeletalMesh = EditorEngine->PhysicsAssetEditorWorld->GetSkeletalMeshComponent()->GetSkeletalMeshAsset();
+        
+        UBodySetup* TargetBodySetup;
+        FKShapeElem* TargetAggregateGeom;
+        EAggCollisionShape::Type TargetPrimitiveType;
+        
+        if (GetAggregateGeom(TargetBodySetup, TargetAggregateGeom, TargetPrimitiveType))
+        {
+            FTransform WorldTransform;
+            WorldTransform.SetTranslation(SkeletalMeshComp->GetComponentLocation());
+            if (EditorEngine->GetEditorPlayer()->GetCoordMode() == ECoordMode::CDM_LOCAL || EditorEngine->GetEditorPlayer()->GetControlMode() == EControlMode::CM_SCALE)
             {
-                TargetComponent = SelectedActor->GetRootComponent();
+                WorldTransform.SetRotation(SkeletalMeshComp->GetWorldMatrix().GetMatrixWithoutScale().ToQuat());
             }
             else
             {
-                return;
+                SetActorRotation(FRotator(0.0f, 0.0f, 0.0f));
             }
-        }
-
-        if (USkeletalMeshComponent* SkeletalMeshComp = Cast<USkeletalMeshComponent>(TargetComponent))
-        {
-            UGizmoBaseComponent* Gizmo = Cast<UGizmoBaseComponent>(ActiveViewport->GetPickedGizmoComponent());
-            int BoneIndex;
-            if (SkeletalMeshComp->GetWorld()->WorldType == EWorldType::SkeletalViewer)
-            {
-                BoneIndex = Engine->SkeletalMeshViewerWorld->SelectBoneIndex;
-            }
-            else if (SkeletalMeshComp->GetWorld()->WorldType == EWorldType::PhysicsAssetEditor)
-            {
-                BoneIndex = Engine->PhysicsAssetEditorWorld->SelectBoneIndex;
-            }
-            if (BoneIndex == -1)
-            {
-                return;
-            }
+            
             TArray<FMatrix> GlobalBoneMatrices;
-            SkeletalMeshComp->GetCurrentGlobalBoneMatrices(GlobalBoneMatrices);
+            int32 BoneIndex = SkeletalMesh->GetRefSkeleton()->FindBoneIndex(TargetBodySetup->BoneName);
+            FTransform TargetBoneTransform = SkeletalMeshComp->GetBoneComponentSpaceTransform(BoneIndex);
+            FTransform WorldBoneTransform = TargetBoneTransform * WorldTransform;
+            
+            FTransform GeomLocalTransform = FTransform::Identity;
 
-            FTransform GlobalBoneTransform = FTransform(GlobalBoneMatrices[BoneIndex]);
-
+            if (TargetPrimitiveType == EAggCollisionShape::Sphere)
+            {
+                FKSphereElem SphereElem = *static_cast<FKSphereElem*>(TargetAggregateGeom);
+                FVector NewLocation = WorldBoneTransform.TransformDirection(SphereElem.Center);
+                GeomLocalTransform.AddToTranslation(NewLocation);
+                GeomLocalTransform.Scale3D *= SphereElem.Radius;
+            }
+            else if (TargetPrimitiveType == EAggCollisionShape::Box)
+            {
+                FKBoxElem BoxElem = *static_cast<FKBoxElem*>(TargetAggregateGeom);
+                FVector NewLocation = WorldBoneTransform.TransformDirection(BoxElem.Center);
+                GeomLocalTransform.AddToTranslation(NewLocation);
+                GeomLocalTransform.Rotation = BoxElem.Rotation.Quaternion() * GeomLocalTransform.Rotation;
+                GeomLocalTransform.Scale3D *= FVector(BoxElem.X, BoxElem.Y, BoxElem.Z);
+            }
+            else if (TargetPrimitiveType == EAggCollisionShape::Sphyl)
+            {
+                FKSphylElem SphylElem = *static_cast<FKSphylElem*>(TargetAggregateGeom);
+                FVector NewLocation = WorldBoneTransform.TransformDirection(SphylElem.Center);
+                GeomLocalTransform.AddToTranslation(NewLocation);
+                GeomLocalTransform.Rotation = SphylElem.Rotation.Quaternion() * GeomLocalTransform.Rotation;
+                GeomLocalTransform.Scale3D.X *= SphylElem.Length / 2;
+                GeomLocalTransform.Scale3D.Y *= SphylElem.Radius;
+                GeomLocalTransform.Scale3D.Z *= SphylElem.Radius;
+            }
 
             switch (ControlMode)
             {
             case CM_TRANSLATION:
-                // ControlTranslation(TargetComponent, Gizmo, deltaX, deltaY);
-                    // SLevelEditor에 있음
-                        break;
-            case CM_SCALE:
+            {
+                FTransform NewIdentity = WorldBoneTransform * WorldBoneTransform.Inverse();
+                FTransform Test = GeomLocalTransform * WorldBoneTransform * WorldBoneTransform.Inverse();
+                // ComponentSpace * WorldSpace
+                FTransform GeomWorldTransform = GeomLocalTransform * WorldBoneTransform;
+
+                FTransform TargetTransform = GeomWorldTransform;
+                
+                ControlTranslation(TargetTransform, Gizmo, DeltaPoint.X, DeltaPoint.Y);
+                
+                FTransform NewGeomTransform = TargetTransform * WorldBoneTransform.Inverse();
+
+                if (TargetPrimitiveType == EAggCollisionShape::Sphere)
                 {
-                    FVector ScaleDelta = ControlBoneScale(GlobalBoneTransform, Gizmo, DeltaX, DeltaY);
-                    SkeletalMeshComp->RefBonePoseTransforms[BoneIndex].Scale3D += ScaleDelta;
+                    FKSphereElem& SphereElem = *static_cast<FKSphereElem*>(TargetAggregateGeom);
+                    SphereElem.Center = NewGeomTransform.GetTranslation();
+                }
+                else if (TargetPrimitiveType == EAggCollisionShape::Box)
+                {
+                    FKBoxElem& BoxElem = *static_cast<FKBoxElem*>(TargetAggregateGeom);
+                    BoxElem.Center = NewGeomTransform.GetTranslation();
+                }
+                else if (TargetPrimitiveType == EAggCollisionShape::Sphyl)
+                {
+                    FKSphylElem& SphylElem = *static_cast<FKSphylElem*>(TargetAggregateGeom);
+                    SphylElem.Center = NewGeomTransform.GetTranslation();
                 }
                 break;
-            case CM_ROTATION:
+            }
+            case CM_SCALE:
+            {
+                if (DeltaPoint.X > 1 || DeltaPoint.Y > 1)
                 {
-                    FQuat RotationDelta = ControlBoneRotation(GlobalBoneTransform, Gizmo, DeltaX, DeltaY);
-                    SkeletalMeshComp->RefBonePoseTransforms[BoneIndex].Rotation = RotationDelta * SkeletalMeshComp->RefBonePoseTransforms[BoneIndex].Rotation;
+                    int a = 0;
                 }
+                FTransform GeomWorldTransform = GeomLocalTransform * WorldBoneTransform;
+                ControlScale(GeomWorldTransform, Gizmo, DeltaPoint.X, DeltaPoint.Y);
+
+                FTransform NewGeomTransform = GeomWorldTransform * WorldBoneTransform.Inverse();
+
+                if (TargetPrimitiveType == EAggCollisionShape::Sphere)
+                {
+                    FKSphereElem& SphereElem = *static_cast<FKSphereElem*>(TargetAggregateGeom);
+                    if (SphereElem.Radius < NewGeomTransform.Scale3D.GetMax())
+                    {
+                        SphereElem.Radius = NewGeomTransform.Scale3D.GetMax();
+                    }
+                    else if (SphereElem.Radius > NewGeomTransform.Scale3D.GetMin())
+                    {
+                        SphereElem.Radius = NewGeomTransform.Scale3D.GetMin();
+                    }
+                }
+                else if (TargetPrimitiveType == EAggCollisionShape::Box)
+                {
+                    FKBoxElem& BoxElem = *static_cast<FKBoxElem*>(TargetAggregateGeom);
+                    BoxElem.X = NewGeomTransform.Scale3D.X;
+                    BoxElem.Y = NewGeomTransform.Scale3D.Y;
+                    BoxElem.Z = NewGeomTransform.Scale3D.Z;
+                }
+                else if (TargetPrimitiveType == EAggCollisionShape::Sphyl)
+                {
+                    FKSphylElem& SphylElem = *static_cast<FKSphylElem*>(TargetAggregateGeom);
+                    SphylElem.Length = NewGeomTransform.Scale3D.X / 2;
+                    SphylElem.Radius = FMath::Max(NewGeomTransform.Scale3D.Y, NewGeomTransform.Scale3D.X);
+                }
+            }
+                break;
+            case CM_ROTATION:
+            {
+                FTransform GeomWorldTransform = GeomLocalTransform * WorldBoneTransform;
+
+                if (TargetPrimitiveType == EAggCollisionShape::Box)
+                {
+                    ControlRotation(GeomWorldTransform, Gizmo, DeltaPoint.X, DeltaPoint.Y);
+                }
+                else if (TargetPrimitiveType == EAggCollisionShape::Sphyl)
+                {
+                    ControlRotation(GeomWorldTransform, Gizmo, DeltaPoint.X, DeltaPoint.Y);
+                }
+                
+                FTransform NewGeomTransform = GeomWorldTransform * WorldBoneTransform.Inverse();
+                
+                if (TargetPrimitiveType == EAggCollisionShape::Box)
+                {
+                    FKBoxElem& BoxElem = *static_cast<FKBoxElem*>(TargetAggregateGeom);
+                    BoxElem.Rotation = NewGeomTransform.Rotator();
+                }
+                else if (TargetPrimitiveType == EAggCollisionShape::Sphyl)
+                {
+                    FKSphylElem& SphylElem = *static_cast<FKSphylElem*>(TargetAggregateGeom);
+                    SphylElem.Rotation = NewGeomTransform.Rotator();
+                }
+            }
                 break;
             default:
                 break;
             }
-            // 본의 로컬 변환을 업데이트
-            //SkeletalMeshComp->BoneTransforms[BoneIndex] = GlobalBoneTransform;
         }
-        
-        LastMousePos = CurrentMousePos;
     }
 }
 
@@ -523,6 +681,7 @@ void AEditorPlayer::ControlScale(USceneComponent* Component, UGizmoBaseComponent
         Component->AddScale(FVector(0.0f, 0.0f, moveDir.Z));
     }
 }
+
 FQuat AEditorPlayer::ControlBoneRotation(FTransform& BoneTransform, UGizmoBaseComponent* Gizmo, float DeltaX, float DeltaY)
 {
     const auto ActiveViewport = GEngineLoop.GetLevelEditor()->GetActiveViewportClient();
@@ -534,7 +693,7 @@ FQuat AEditorPlayer::ControlBoneRotation(FTransform& BoneTransform, UGizmoBaseCo
     FVector CameraRight = ViewTransform->GetRightVector().GetSafeNormal();   // 정규화
     FVector CameraUp = ViewTransform->GetUpVector().GetSafeNormal();         // 정규화
 
-    FQuat CurrentRotation = BoneTransform.GetRotation(); // 현재 회전은 여전히 필요 (결과 적용 시)
+    // FQuat CurrentRotation = BoneTransform.GetRotation(); // 현재 회전은 여전히 필요 (결과 적용 시)
     FQuat RotationDelta = FQuat::Identity;
     float Sensitivity = 0.01f;
 
@@ -545,9 +704,9 @@ FQuat AEditorPlayer::ControlBoneRotation(FTransform& BoneTransform, UGizmoBaseCo
         if (CoordMode == CDM_LOCAL)
         {
             // AxisToRotateAround = GizmoDrag_InitialLocalXAxis; // 드래그 시작 시 저장된 로컬 축 사용
-             AxisToRotateAround = InitialBoneRotationForGizmo.RotateVector(FVector::ForwardVector); // 매번 초기 회전 기준으로 로컬축 계산
+            AxisToRotateAround = InitialBoneRotationForGizmo.RotateVector(FVector::ForwardVector); // 매번 초기 회전 기준으로 로컬축 계산
         }
-        else // CDM_WORLD
+        else if (CoordMode == CDM_WORLD)
         {
             AxisToRotateAround = FVector::ForwardVector; // 월드 X축
         }
@@ -559,7 +718,7 @@ FQuat AEditorPlayer::ControlBoneRotation(FTransform& BoneTransform, UGizmoBaseCo
             // AxisToRotateAround = GizmoDrag_InitialLocalYAxis;
             AxisToRotateAround = InitialBoneRotationForGizmo.RotateVector(FVector::RightVector);
         }
-        else // CDM_WORLD
+        else if (CoordMode == CDM_WORLD)
         {
             AxisToRotateAround = FVector::RightVector; // 월드 Y축
         }
@@ -571,7 +730,7 @@ FQuat AEditorPlayer::ControlBoneRotation(FTransform& BoneTransform, UGizmoBaseCo
             // AxisToRotateAround = GizmoDrag_InitialLocalZAxis;
             AxisToRotateAround = InitialBoneRotationForGizmo.RotateVector(FVector::UpVector);
         }
-        else // CDM_WORLD
+        else if (CoordMode == CDM_WORLD)
         {
             AxisToRotateAround = FVector::UpVector; // 월드 Z축
         }
@@ -640,6 +799,307 @@ FVector AEditorPlayer::ControlBoneScale(FTransform& BoneTransform, UGizmoBaseCom
     }
     
     return BoneScale;
+}
+
+void AEditorPlayer::ControlTranslation(FTransform& Transform, UGizmoBaseComponent* Gizmo, float DeltaX, float DeltaY)
+{
+    const auto ActiveViewport = GEngineLoop.GetLevelEditor()->GetActiveViewportClient();
+    const FViewportCamera* ViewTransform = ActiveViewport->GetViewportType() == LVT_Perspective
+                                                        ? &ActiveViewport->PerspectiveCamera
+                                                        : &ActiveViewport->OrthogonalCamera;
+    FVector CameraRight = ViewTransform->GetRightVector();
+    FVector CameraUp = ViewTransform->GetUpVector();
+    
+    // 월드 좌표계에서 카메라 방향을 고려한 이동
+    if (Gizmo->GetGizmoType() == UGizmoBaseComponent::ArrowX)
+    {
+        FVector Axis = FVector::ForwardVector;
+        if (CoordMode == CDM_LOCAL)
+        {
+            Axis = JungleMath::FVectorRotate(Axis, Transform.Rotation);
+        }
+
+        // 카메라의 오른쪽 방향을 X축 이동에 사용
+        FVector moveDir = CameraRight * DeltaX * 0.05f;        
+        Transform.Translation += Axis * moveDir;
+    }
+    else if (Gizmo->GetGizmoType() == UGizmoBaseComponent::ArrowY)
+    {
+        FVector Axis = FVector::RightVector;
+        if (CoordMode == CDM_LOCAL)
+        {
+            Axis = JungleMath::FVectorRotate(Axis, Transform.Rotation);
+        }
+        
+        // 카메라의 오른쪽 방향을 Y축 이동에 사용
+        FVector moveDir = CameraRight * DeltaX * 0.05f;
+        Transform.Translation += Axis * moveDir;
+    }
+    else if (Gizmo->GetGizmoType() == UGizmoBaseComponent::ArrowZ)
+    {
+        FVector Axis = FVector::UpVector;
+        if (CoordMode == CDM_LOCAL)
+        {
+            Axis = JungleMath::FVectorRotate(Axis, Transform.Rotation);
+        }
+        
+        // 카메라의 위쪽 방향을 Z축 이동에 사용
+        FVector moveDir = CameraUp * -DeltaY * 0.05f;
+        Transform.Translation += Axis * moveDir;
+    }
+}
+
+void AEditorPlayer::ControlRotation(FTransform& Transform, UGizmoBaseComponent* Gizmo, float DeltaX, float DeltaY)
+{
+    const auto ActiveViewport = GEngineLoop.GetLevelEditor()->GetActiveViewportClient();
+    const FViewportCamera* ViewTransform = ActiveViewport->GetViewportType() == LVT_Perspective
+                                                        ? &ActiveViewport->PerspectiveCamera
+                                                        : &ActiveViewport->OrthogonalCamera;
+
+    FVector CameraForward = ViewTransform->GetForwardVector();
+    FVector CameraRight = ViewTransform->GetRightVector();
+    FVector CameraUp = ViewTransform->GetUpVector();
+
+    FQuat CurrentRotation = Transform.Rotation;
+
+    FQuat RotationDelta = FQuat();
+
+    if (Gizmo->GetGizmoType() == UGizmoBaseComponent::CircleX)
+    {
+        float RotationAmount = (CameraUp.Z >= 0 ? -1.0f : 1.0f) * DeltaY * 0.01f;
+        RotationAmount = RotationAmount + (CameraRight.X >= 0 ? 1.0f : -1.0f) * DeltaX * 0.01f;
+
+        FVector Axis = FVector::ForwardVector;
+        if (CoordMode == CDM_LOCAL)
+        {
+            FVector ForwardVector = FVector::ForwardVector;
+            ForwardVector = JungleMath::FVectorRotate(ForwardVector, Transform.Rotation);
+            Axis = ForwardVector;
+        }
+
+        RotationDelta = FQuat(Axis, RotationAmount);
+    }
+    else if (Gizmo->GetGizmoType() == UGizmoBaseComponent::CircleY)
+    {
+        float RotationAmount = (CameraRight.X >= 0 ? 1.0f : -1.0f) * DeltaX * 0.01f;
+        RotationAmount = RotationAmount + (CameraUp.Z >= 0 ? 1.0f : -1.0f) * DeltaY * 0.01f;
+
+        FVector Axis = FVector::RightVector;
+        if (CoordMode == CDM_LOCAL)
+        {
+            FVector RightVector = FVector::RightVector;
+            RightVector = JungleMath::FVectorRotate(RightVector, Transform.Rotation);
+            Axis = RightVector;
+        }
+
+        RotationDelta = FQuat(Axis, RotationAmount);
+    }
+    else if (Gizmo->GetGizmoType() == UGizmoBaseComponent::CircleZ)
+    {
+        float RotationAmount = (CameraForward.X <= 0 ? -1.0f : 1.0f) * DeltaX * 0.01f;
+
+        FVector Axis = FVector::UpVector;
+        if (CoordMode == CDM_LOCAL)
+        {
+            FVector UpVector = FVector::UpVector;
+            UpVector = JungleMath::FVectorRotate(UpVector, Transform.Rotation);
+            Axis = UpVector;
+        }
+        
+        RotationDelta = FQuat(Axis, RotationAmount);
+    }
+    CurrentRotation = RotationDelta * CurrentRotation;
+    CurrentRotation.Normalize();
+    Transform.SetRotation(CurrentRotation);
+}
+
+void AEditorPlayer::ControlRotation(FRotator& Rotator, UGizmoBaseComponent* Gizmo, float DeltaX, float DeltaY)
+{
+    const auto ActiveViewport = GEngineLoop.GetLevelEditor()->GetActiveViewportClient();
+    const FViewportCamera* ViewTransform = ActiveViewport->GetViewportType() == LVT_Perspective
+                                                        ? &ActiveViewport->PerspectiveCamera
+                                                        : &ActiveViewport->OrthogonalCamera;
+
+    FVector CameraForward = ViewTransform->GetForwardVector();
+    FVector CameraRight = ViewTransform->GetRightVector();
+    FVector CameraUp = ViewTransform->GetUpVector();
+
+    FQuat CurrentRotation = Rotator.Quaternion();
+
+    FQuat RotationDelta = FQuat();
+
+    if (Gizmo->GetGizmoType() == UGizmoBaseComponent::CircleX)
+    {
+        float RotationAmount = (CameraUp.Z >= 0 ? -1.0f : 1.0f) * DeltaY * 0.01f;
+        RotationAmount = RotationAmount + (CameraRight.X >= 0 ? 1.0f : -1.0f) * DeltaX * 0.01f;
+
+        FVector Axis = FVector::ForwardVector;
+        if (CoordMode == CDM_LOCAL)
+        {
+            FVector ForwardVector = FVector::ForwardVector;
+            ForwardVector = JungleMath::FVectorRotate(ForwardVector, Rotator);
+            Axis = ForwardVector;
+        }
+
+        RotationDelta = FQuat(Axis, RotationAmount);
+    }
+    else if (Gizmo->GetGizmoType() == UGizmoBaseComponent::CircleY)
+    {
+        float RotationAmount = (CameraRight.X >= 0 ? 1.0f : -1.0f) * DeltaX * 0.01f;
+        RotationAmount = RotationAmount + (CameraUp.Z >= 0 ? 1.0f : -1.0f) * DeltaY * 0.01f;
+
+        FVector Axis = FVector::RightVector;
+        if (CoordMode == CDM_LOCAL)
+        {
+            FVector RightVector = FVector::RightVector;
+            RightVector = JungleMath::FVectorRotate(RightVector, Rotator);
+            Axis = RightVector;
+        }
+
+        RotationDelta = FQuat(Axis, RotationAmount);
+    }
+    else if (Gizmo->GetGizmoType() == UGizmoBaseComponent::CircleZ)
+    {
+        float RotationAmount = (CameraForward.X <= 0 ? -1.0f : 1.0f) * DeltaX * 0.01f;
+
+        FVector Axis = FVector::UpVector;
+        if (CoordMode == CDM_LOCAL)
+        {
+            FVector UpVector = FVector::UpVector;
+            UpVector = JungleMath::FVectorRotate(UpVector, Rotator);
+            Axis = UpVector;
+        }
+        
+        RotationDelta = FQuat(Axis, RotationAmount);
+    }
+    CurrentRotation = RotationDelta * CurrentRotation;
+    CurrentRotation.Normalize();
+    Rotator = CurrentRotation.Rotator(); 
+}
+
+void AEditorPlayer::ControlScale(FTransform& Transform, UGizmoBaseComponent* Gizmo, float DeltaX, float DeltaY)
+{
+    const auto ActiveViewport = GEngineLoop.GetLevelEditor()->GetActiveViewportClient();
+    const FViewportCamera* ViewTransform = ActiveViewport->GetViewportType() == LVT_Perspective
+                                                        ? &ActiveViewport->PerspectiveCamera
+                                                        : &ActiveViewport->OrthogonalCamera;
+    FVector CameraRight = ViewTransform->GetRightVector();
+    FVector CameraUp = ViewTransform->GetUpVector();
+    
+    // 월드 좌표계에서 카메라 방향을 고려한 이동
+    if (Gizmo->GetGizmoType() == UGizmoBaseComponent::ScaleX)
+    {
+        // 카메라의 오른쪽 방향을 X축 이동에 사용
+        FVector moveDir = CameraRight * DeltaX * 0.05f;
+        Transform.Scale3D += FVector(moveDir.X, 0.0f, 0.0f);
+    }
+    else if (Gizmo->GetGizmoType() == UGizmoBaseComponent::ScaleY)
+    {
+        // 카메라의 오른쪽 방향을 Y축 이동에 사용
+        FVector moveDir = CameraRight * DeltaX * 0.05f;
+        Transform.Scale3D += FVector(0.0f, moveDir.Y, 0.0f);
+    }
+    else if (Gizmo->GetGizmoType() == UGizmoBaseComponent::ScaleZ)
+    {
+        // 카메라의 위쪽 방향을 Z축 이동에 사용
+        FVector moveDir = CameraUp * -DeltaY * 0.05f;
+        Transform.Scale3D += FVector(0.0f, 0.0f, moveDir.Z);
+    }
+}
+
+bool AEditorPlayer::GetAggregateGeom(UBodySetup*& TargetBodySetup, FKShapeElem*& TargetAggregateGeom, EAggCollisionShape::Type& TargetPrimitiveType)
+{
+    TargetAggregateGeom = nullptr;
+    TargetBodySetup = nullptr;
+    TargetPrimitiveType = EAggCollisionShape::Unknown;
+    
+    UEditorEngine* Engine = Cast<UEditorEngine>(GEngine);
+    if (!Engine)
+    {
+        return false;
+    }
+    AEditorPlayer* EditorPlayer = Engine->GetEditorPlayer();
+    if (!EditorPlayer)
+    {
+        return false;
+    }
+
+    USkeletalMeshComponent* SkeletalMeshComp = Engine->PhysicsAssetEditorWorld->GetSkeletalMeshComponent();
+
+    if (SkeletalMeshComp == nullptr)
+    {
+        return false;
+    }
+
+    int BodySetupIndex = Engine->PhysicsAssetEditorWorld->SelectedBodySetupIndex;
+    // int ConstraintIndex = Engine->PhysicsAssetEditorWorld->SelectedConstraintIndex;
+    int PrimitiveIndex = Engine->PhysicsAssetEditorWorld->SelectedPrimitive.SelectedPrimitiveIndex;
+    int ParentBodySetupIndex = Engine->PhysicsAssetEditorWorld->SelectedPrimitive.ParentBodySetupIndex;
+    EAggCollisionShape::Type PrimitiveType = Engine->PhysicsAssetEditorWorld->SelectedPrimitive.PrimitiveType;
+
+    if (BodySetupIndex == -1 && (PrimitiveIndex == -1 || ParentBodySetupIndex == -1 || PrimitiveType == EAggCollisionShape::Unknown))
+    {
+        return false;
+    }
+
+    USkeletalMesh* SkeletalMesh = Engine->PhysicsAssetEditorWorld->GetSkeletalMeshComponent()->GetSkeletalMeshAsset();
+    UPhysicsAsset* PhysicsAsset = SkeletalMesh->GetPhysicsAsset();
+
+    if (BodySetupIndex != -1)
+    {
+        TargetBodySetup = PhysicsAsset->BodySetup[BodySetupIndex];
+    }
+    else
+    {
+        TargetBodySetup = PhysicsAsset->BodySetup[ParentBodySetupIndex];
+    }
+
+    if (TargetBodySetup == nullptr || (TargetBodySetup->AggGeom.BoxElems.Num() == 0 && TargetBodySetup->AggGeom.SphereElems.Num() == 0 && TargetBodySetup->AggGeom.SphylElems.Num() == 0))
+    {
+        return false;
+    }
+    
+    if (PrimitiveType != EAggCollisionShape::Unknown && PrimitiveIndex != -1)
+    {
+        TargetPrimitiveType = PrimitiveType;
+        if (PrimitiveType == EAggCollisionShape::Sphere)
+        {
+            TargetAggregateGeom = &(TargetBodySetup->AggGeom.SphereElems[PrimitiveIndex]);
+        }
+        else if (PrimitiveType == EAggCollisionShape::Box)
+        {
+            TargetAggregateGeom = &(TargetBodySetup->AggGeom.BoxElems[PrimitiveIndex]);
+        }
+        else if (PrimitiveType == EAggCollisionShape::Sphyl)
+        {
+            TargetAggregateGeom = &(TargetBodySetup->AggGeom.SphylElems[PrimitiveIndex]);
+        }
+    }
+    else
+    {
+        if (TargetBodySetup->AggGeom.SphereElems.Num() > 0)
+        {
+            TargetPrimitiveType = EAggCollisionShape::Sphere;
+            TargetAggregateGeom = &(TargetBodySetup->AggGeom.SphereElems[0]);
+        }
+        else if (TargetBodySetup->AggGeom.BoxElems.Num() > 0)
+        {
+            TargetPrimitiveType = EAggCollisionShape::Box;
+            TargetAggregateGeom = &(TargetBodySetup->AggGeom.BoxElems[0]);
+        }
+        else if (TargetBodySetup->AggGeom.SphylElems.Num() > 0)
+        {
+            TargetPrimitiveType = EAggCollisionShape::Sphyl;
+            TargetAggregateGeom = &(TargetBodySetup->AggGeom.SphylElems[0]);
+        }
+    }
+
+    if (TargetAggregateGeom == nullptr && TargetPrimitiveType == EAggCollisionShape::Unknown)
+    {
+        return false;
+    }
+
+    return true;
 }
 
 UObject* APlayer::Duplicate(UObject* InOuter)

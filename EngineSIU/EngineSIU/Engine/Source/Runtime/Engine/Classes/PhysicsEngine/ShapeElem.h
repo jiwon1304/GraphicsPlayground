@@ -236,10 +236,7 @@ struct FKSphylElem : public FKShapeElem
 
     Shape::FCapsule ToFCapsule() const
     {
-        // 캡슐의 축 방향 (로컬 Y축 기준, Unreal은 Y축이 up이 아님에 유의!)
-        // Unreal의 FKSphylElem은 로컬 Z축이 캡슐의 길이 방향임 (참고: 소스 주석)
-        // [참고: UE 소스](https://github.com/EpicGames/UnrealEngine/blob/main/Engine/Source/Runtime/Engine/Classes/PhysicsEngine/KSphylElem.h)
-        FVector LocalAxis = FVector(0, 0, 1); // Z축 기준
+        FVector LocalAxis = FVector(1, 0, 0);
         FVector WorldAxis = Rotation.RotateVector(LocalAxis);
 
         FVector HalfSegment = WorldAxis * (Length * 0.5f);

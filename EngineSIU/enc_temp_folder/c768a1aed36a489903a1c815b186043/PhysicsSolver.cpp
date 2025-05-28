@@ -12,10 +12,6 @@
 #include "UObject/Casts.h"
 #include "PhysicsEngine/ConstraintInstance.h"
 #include "Developer/PhysicsUtilities/PhysicsAssetUtils.h"
-#include "Engine/Classes/PhysicsEngine/Vehicle/VehicleMovementComponent.h"
-#include "Engine/Source/Runtime/PhysicsVehicle/Vehicle4W.h"
-#include "Engine/Classes/PhysicsEngine/Vehicle/WheeledVehiclePawn.h"
-
 void FPhysicsSolver::Init()
 {
 
@@ -184,17 +180,6 @@ physx::PxActor* FPhysicsSolver::RegisterObject(FPhysScene* InScene, const FBodyI
     return NewRigidActor;
 }
 
-PxActor* FPhysicsSolver::RegisterObject(FPhysScene* InScene, FBodyInstance* NewInstance, UVehicleMovementComponent* InVehicleMovementComponent, const FMatrix& InitialMatrix)
-{
-    FVehicle4W* Vehicle = new FVehicle4W();
-    Vehicles.Add(Vehicle);
-
-    FPhysxSolversModule* PhysxSolverModule = FPhysxSolversModule::GetModule();
-
-    return Vehicle->InitVehicle(InVehicleMovementComponent, NewInstance, InitialMatrix, PhysxSolverModule->Physics, PhysxSolverModule->Foundation
-        , InScene->PhysxScene, &PhysxSolverModule->Allocator, PhysxSolverModule->DefaultMaterial);
-}
-
 physx::PxJoint* FPhysicsSolver::CreateJoint(FPhysScene* InScene, PxActor* Child, PxActor* Parent, const FConstraintInstance* NewInstance)
 {
     PxRigidDynamic* ParentDynamic = Parent->is<PxRigidDynamic>();
@@ -204,24 +189,16 @@ physx::PxJoint* FPhysicsSolver::CreateJoint(FPhysScene* InScene, PxActor* Child,
         UE_LOG(ELogLevel::Error, TEXT("Parent or Child is not a dynamic actor!"));
         return nullptr;
     }
+    //PxTransform localChildTransform = Actor2Dynamic->getGlobalPose();
+    //PxTransform localFrameParent = PxTransform(Actor1Dynamic->getGlobalPose().getInverse() * localChildTransform);
+    //PxTransform localFrameChild = PxTransform(PxVec3(0));
 
-   // PhysX 액터의 글로벌 포즈를 가져옵니다 (이미 PhysX 좌표계 기준).
     PxTransform parentWorld = ParentDynamic->getGlobalPose();
     PxTransform childWorld = ChildDynamic->getGlobalPose();
 
-    PxQuat q_AxisCorrection = PxQuat(PxMat33(
-        PxVec3(0.0f, 0.0f, 1.0f),
-        PxVec3(1.0f, 0.0f, 0.0f), 
-        PxVec3(0.0f, 1.0f, 0.0f)  
-    ));
-    q_AxisCorrection.normalize(); // 정규화
-
-    // 자식 액터에 대한 조인트의 로컬 프레임입니다.
-    // 위치는 자식 액터의 원점, 방향은 위에서 정의한 축 보정 회전을 적용합니다.
-    PxTransform localFrameChild(PxVec3(0.0f), q_AxisCorrection);
-
-    PxTransform childJointFrameInWorld = childWorld * localFrameChild;
-    PxTransform localFrameParent = parentWorld.getInverse() * childJointFrameInWorld;
+    // 두 객체의 상대 위치 + 회전 차이 모두 포함
+    PxTransform localFrameParent = parentWorld.getInverse() * childWorld;
+    PxTransform localFrameChild(PxIdentity); // 또는 상대적으로 회전을 명시적으로 설정
 
     PxD6Joint* Joint = PxD6JointCreate(*FPhysxSolversModule::GetModule()->Physics, ParentDynamic, localFrameParent, ChildDynamic, localFrameChild);
 
@@ -317,8 +294,8 @@ physx::PxJoint* FPhysicsSolver::CreateJoint(FPhysScene* InScene, PxActor* Child,
         physx::PxJointLimitCone coneLimitParams
         (
             swing2Angle,
-            swing1Angle,
-            spring
+            swing1Angle
+            //spring
         );
         Joint->setSwingLimit(coneLimitParams);
     }
@@ -351,8 +328,8 @@ physx::PxJoint* FPhysicsSolver::CreateJoint(FPhysScene* InScene, PxActor* Child,
         physx::PxJointAngularLimitPair twistLimitParams
         (
             -halfAngleRad, // 최소 각도
-            halfAngleRad,  // 최대 각도
-            spring          // 스프링 설정
+            halfAngleRad  // 최대 각도
+            //spring          // 스프링 설정
         );
 
         Joint->setTwistLimit(twistLimitParams);
@@ -370,12 +347,6 @@ physx::PxJoint* FPhysicsSolver::CreateJoint(FPhysScene* InScene, PxActor* Child,
 void FPhysicsSolver::AdvanceOneTimeStep(FPhysScene* InScene, float Dt)
 {
     //PxSceneWriteLock scopedWriteLock(*InScene->PhysxScene);
-    
-    for (int VehicleNum = 0; VehicleNum < Vehicles.Num(); VehicleNum++) 
-    {
-        Vehicles[VehicleNum]->StepPhysics(Dt, InScene->PhysxScene);
-    }
-    
     InScene->PhysxScene->simulate(Dt);
 }
 
@@ -404,71 +375,13 @@ void FPhysicsSolver::FetchData(FPhysScene* InScene)
 
         if (BodyInstance->OwnerComponent)
         {
-            if (BodyInstance->bCar) 
-            {
-                FQuat PhysicQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w);
-
-                BodyInstance->OwnerComponent->SetWorldTransform(
-                    FTransform(
-                        PhysicQuat * BodyInstance->InvPhysXQuat,
-                        FVector(Transform.p.x, Transform.p.y, Transform.p.z),
-                        FVector(BodyInstance->Scale3D.X, BodyInstance->Scale3D.Y, BodyInstance->Scale3D.Z)
-                    )
-                );
-                
-                // TODO 아래는 Vehicle이 1개일 때만 작동! 무 조 건 고쳐야함
-                FVehicle4W* Vehicle4W = Vehicles[0];
-
-                AWheeledVehiclePawn* WheelPawn = Cast<AWheeledVehiclePawn>(BodyInstance->OwnerComponent->GetOwner());
-
-                TArray<UStaticMeshComponent*> StaticMeshComps;
-
-                for (auto iter : WheelPawn->GetComponents()) 
-                {
-                    if (UStaticMeshComponent* StaticMeshComp = Cast<UStaticMeshComponent>(iter)) 
-                    {
-                        StaticMeshComps.Add(StaticMeshComp);
-                    }
-                }
-                PxTransform Transform;
-                for (auto StaticMesh : StaticMeshComps) 
-                {
-                    if (StaticMesh == BodyInstance->OwnerComponent) continue;
-
-                    if (StaticMesh->GetRelativeLocation() == WheelPawn->ForwardLeftTireLocation)
-                    {
-                        Transform = Vehicle4W->WheelShapes[0]->getLocalPose();
-                    }
-                    else if (StaticMesh->GetRelativeLocation() == WheelPawn->ForwardRightTireLocation)
-                    {
-                        Transform = Vehicle4W->WheelShapes[1]->getLocalPose();
-                    }
-                    else if (StaticMesh->GetRelativeLocation() == WheelPawn->RearLeftTireLocation)
-                    {
-                        Transform = Vehicle4W->WheelShapes[2]->getLocalPose();
-                    }
-                    else if (StaticMesh->GetRelativeLocation() == WheelPawn->RearRightTireLocation)
-                    {
-                        Transform = Vehicle4W->WheelShapes[3]->getLocalPose();
-                    }
-
-                    /*Transform.q = Transform.q * PxQuat(BodyInstance->InvPhysXQuat.X, BodyInstance->InvPhysXQuat.Y, BodyInstance->InvPhysXQuat.Z, BodyInstance->InvPhysXQuat.W);
-
-                    StaticMesh->SetRelativeRotation(FQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w));*/
-                }
-
-                continue;
-            }
-
             if (UStaticMeshComponent* StaticMeshComp = Cast<UStaticMeshComponent>(BodyInstance->OwnerComponent))
             {
-                FQuat PhysicQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w);
-
                 BodyInstance->OwnerComponent->SetWorldTransform(
                     FTransform(
-                        PhysicQuat * BodyInstance->InvPhysXQuat,
+                        FQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w),
                         FVector(Transform.p.x, Transform.p.y, Transform.p.z),
-                        BodyInstance->OwnerComponent->GetComponentScale3D()
+                        FVector(BodyInstance->Scale3D.X, BodyInstance->Scale3D.Y, BodyInstance->Scale3D.Z)
                     )
                 );
             }
@@ -489,11 +402,8 @@ void FPhysicsSolver::FetchData(FPhysScene* InScene)
 
                 FTransform CachedBoneWorldTransform = SkeletalMeshComp->GetComponentTransform() * SkeletalMeshComp->GetBoneComponentSpaceTransform(BoneIndex);
                 FVector OriginScale = CachedBoneWorldTransform.Scale3D;
-
-                FQuat PhysicQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w);
-
                 FTransform SimulatedWorldTransform = FTransform(
-                    PhysicQuat * BodyInstance->InvPhysXQuat,
+                    FQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w),
                     FVector(Transform.p.x, Transform.p.y, Transform.p.z),
                     OriginScale
                 );

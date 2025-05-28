@@ -1,4 +1,5 @@
 #include "PhysicsAssetViewerRenderPass.h"
+#include "Container/Map.h"
 #include "PhysicsEngine/PhysicsAsset.h"
 #include "UnrealEd/EditorViewportClient.h"
 #include "Engine/World/PhysicsAssetWorld.h"
@@ -6,7 +7,8 @@
 #include "PhysicsEngine/BodySetup.h"
 #include "PhysicsEngine/PhysicsConstraintTemplate.h"
 #include "Engine/EditorEngine.h"
-
+#include "Components/StaticMeshComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 FPhysicsAssetViewerRenderPass::FPhysicsAssetViewerRenderPass()
 {
     Super::FOverlayShapeRenderPass();
@@ -30,21 +32,40 @@ void FPhysicsAssetViewerRenderPass::PrepareRenderArr()
 
 void FPhysicsAssetViewerRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& Viewport)
 {
-    UPhysicsAssetWorld* PhysicsAssetWorld = Cast<UPhysicsAssetWorld>(GEngine->ActiveWorld);
-    if (!PhysicsAssetWorld)
+    if (UPhysicsAssetWorld* PhysicsAssetWorld = Cast<UPhysicsAssetWorld>(GEngine->ActiveWorld))
     {
-        return;
-    }
-
-    USkeletalMeshComponent* SkelComp = PhysicsAssetWorld->GetSkeletalMeshComponent();
-    if (!SkelComp)
-    {
-        return;
-    }
+        USkeletalMeshComponent* SkelComp = PhysicsAssetWorld->GetSkeletalMeshComponent();
+        if (!SkelComp)
+        {
+            return;
+        }
     
-    RenderSkelComp(SkelComp);
+        RenderSkelComp(SkelComp, true);
 
+    }
+    // 그냥 월드일경우
+    else if (UWorld* World = GEngine->ActiveWorld)
+    {
+        for (UStaticMeshComponent* SMComp : TObjectRange<UStaticMeshComponent>())
+        {
+            if (!SMComp || SMComp->GetWorld() != World)
+            {
+                continue;
+            }
+            RenderStaticComp(SMComp, false);
+        }
+
+        for (USkeletalMeshComponent* SkelComp : TObjectRange<USkeletalMeshComponent>())
+        {
+            if (!SkelComp || SkelComp->GetWorld() != World)
+            {
+                continue;
+            }
+            RenderSkelComp(SkelComp, false);
+        }
+    }
     Super::Render(Viewport);
+
 }
 
 void FPhysicsAssetViewerRenderPass::ClearRenderArr()
@@ -52,7 +73,88 @@ void FPhysicsAssetViewerRenderPass::ClearRenderArr()
     Super::ClearRenderArr();
 }
 
-void FPhysicsAssetViewerRenderPass::RenderSkelComp(USkeletalMeshComponent* SkelComp)
+void FPhysicsAssetViewerRenderPass::RenderStaticComp(UStaticMeshComponent* StaticComp, bool bPreviewWorld)
+{
+    UEditorEngine* EditorEngine = Cast<UEditorEngine>(GEngine);
+    if (!EditorEngine)
+    {
+        return;
+    }
+
+    UStaticMesh* StaticMesh = StaticComp->GetStaticMesh();
+    if (!StaticMesh)
+    {
+        return;
+    }
+
+    UBodySetup* BodySetup = StaticMesh->GetBodySetup();
+    if (!BodySetup)
+    {
+        return;
+    }
+
+    FKAggregateGeom AggGeom = BodySetup->AggGeom;
+
+    FLinearColor Color = FLinearColor(1, 0, 1, 0.3);
+
+    if (!bPreviewWorld)
+    {
+        if (UEditorEngine* Engine = Cast<UEditorEngine>(GEngine))
+        {
+            if (Engine->GetSelectedActor() == StaticComp->GetOwner())
+            {
+                Color = FLinearColor(0, 1, 1, 0.3);
+            }
+        }
+    }
+
+    FMatrix InitialMatrix = StaticComp->GetWorldMatrix();
+    InitialMatrix.GetMatrixWithoutScale();
+    FVector InitialPosition = InitialMatrix.GetTranslationVector();
+    FQuat InitialRotation = InitialMatrix.ToQuat();
+    InitialRotation.Normalize();
+
+    FTransform InitialTransform(InitialRotation, InitialPosition);
+
+    for (FKSphereElem& SphereElem : AggGeom.SphereElems)
+    {
+        FTransform Src = FTransform(SphereElem.Center);
+        FTransform Dst;
+        Dst = InitialTransform * Src;
+
+        SphereElem.Center = Dst.GetTranslation();
+        Shape::FSphere Sphere(SphereElem.Center, SphereElem.Radius);
+        Spheres.Add(TPair<Shape::FSphere, FLinearColor>(Sphere, Color));
+    }
+
+    for (FKBoxElem& BoxElem : AggGeom.BoxElems)
+    {
+        FQuat Rotation = BoxElem.Rotation.Quaternion();
+        FTransform Src = { Rotation, BoxElem.Center };
+        FTransform Dst;
+        Dst = InitialTransform * Src;
+
+        BoxElem.SetTransform(Dst);
+        Shape::FOrientedBox OrientedBox = BoxElem.ToFOrientedBox();
+        OrientedBoxes.Add(TPair<Shape::FOrientedBox, FLinearColor>(OrientedBox, Color));
+    }
+
+    for (FKSphylElem& SphylElem : AggGeom.SphylElems)
+    {
+        FQuat Rotation = SphylElem.Rotation.Quaternion();
+        FTransform Src = { Rotation, SphylElem.Center };
+        FTransform Dst;
+        Dst = InitialTransform * Src;
+
+        SphylElem.SetTransform(Dst);
+        Shape::FCapsule Capsule = SphylElem.ToFCapsule();
+        Capsules.Add(TPair<Shape::FCapsule, FLinearColor>(Capsule, Color));
+    }
+
+
+}
+
+void FPhysicsAssetViewerRenderPass::RenderSkelComp(USkeletalMeshComponent* SkelComp, bool bPreviewWorld)
 {
     UEditorEngine* EditorEngine = Cast<UEditorEngine>(GEngine);
     if (!EditorEngine)
@@ -71,6 +173,73 @@ void FPhysicsAssetViewerRenderPass::RenderSkelComp(USkeletalMeshComponent* SkelC
     {
         return;
     }
+
+    // ----- [선택 정보 얻기] -----
+    int32 SelectedBoneIndex = -1; 
+    int32 SelectedBodySetupIndex = -1;
+    int32 SelectedConstraintIndex = -1;
+
+    int32 ParentBodySetupIndex = -1;
+    int32 SelectedPrimitiveIndex = -1;
+    EAggCollisionShape::Type PrimitiveType = EAggCollisionShape::Unknown;
+
+    if (bPreviewWorld)
+    {
+        SelectedBoneIndex = EditorEngine->PhysicsAssetEditorWorld->SelectBoneIndex;
+        SelectedBodySetupIndex = EditorEngine->PhysicsAssetEditorWorld->SelectedBodySetupIndex;
+        SelectedConstraintIndex = EditorEngine->PhysicsAssetEditorWorld->SelectedConstraintIndex;
+        ParentBodySetupIndex = EditorEngine->PhysicsAssetEditorWorld->SelectedPrimitive.ParentBodySetupIndex;
+        SelectedPrimitiveIndex = EditorEngine->PhysicsAssetEditorWorld->SelectedPrimitive.SelectedPrimitiveIndex;
+        PrimitiveType = EditorEngine->PhysicsAssetEditorWorld->SelectedPrimitive.PrimitiveType;
+    }
+
+    UBodySetup* SelectedBodySetup = SelectedBodySetupIndex == -1 ? nullptr : PhysicsAsset->BodySetup[SelectedBodySetupIndex];
+
+    // 뼈의 유효성 체크
+    bool bIsBoneValid = SelectedBoneIndex != -1 ?
+        SkeletalMesh->GetSkeleton()->GetReferenceSkeleton().IsValidRawIndex(SelectedBoneIndex) : false;
+
+    UBodySetup* ParentBodySetup = ParentBodySetupIndex == -1 ? nullptr : PhysicsAsset->BodySetup[ParentBodySetupIndex];
+    UPhysicsConstraintTemplate* PhysicsConstraintTemplate = SelectedConstraintIndex == -1 ? nullptr : PhysicsAsset->ConstraintSetup[SelectedConstraintIndex];
+
+    // Primitive 유효성 체크
+    bool bIsPrimitiveExist = false;
+    if (PrimitiveType == EAggCollisionShape::Box)
+    {
+        if (SelectedPrimitiveIndex >= 0 && ParentBodySetup && SelectedPrimitiveIndex < ParentBodySetup->AggGeom.BoxElems.Num())
+        {
+            bIsPrimitiveExist = true;
+        }
+    }
+    else if (PrimitiveType == EAggCollisionShape::Sphere)
+    {
+        if (SelectedPrimitiveIndex >= 0 && ParentBodySetup && SelectedPrimitiveIndex < ParentBodySetup->AggGeom.SphereElems.Num())
+        {
+            bIsPrimitiveExist = true;
+        }
+    }
+    else if (PrimitiveType == EAggCollisionShape::Sphyl)
+    {
+        if (SelectedPrimitiveIndex >= 0 && ParentBodySetup && SelectedPrimitiveIndex < ParentBodySetup->AggGeom.SphylElems.Num())
+        {
+            bIsPrimitiveExist = true;
+        }
+    }
+    if (!bIsPrimitiveExist)
+    {
+        ParentBodySetup = nullptr;
+    }
+
+    UBodySetup* TargetBodySetup = nullptr;
+    if (ParentBodySetup)
+    {
+        TargetBodySetup = ParentBodySetup;
+    }
+    else if (SelectedBodySetup)
+    {
+        TargetBodySetup = SelectedBodySetup;
+    }
+
     // Bone의 정보 얻기
     const FReferenceSkeleton* ReferenceSkeleton = SkeletalMesh->GetRefSkeleton();
     const TArray<FMeshBoneInfo>& RawBoneInfo = ReferenceSkeleton->GetRawRefBoneInfo();
@@ -125,15 +294,6 @@ void FPhysicsAssetViewerRenderPass::RenderSkelComp(USkeletalMeshComponent* SkelC
 
     // Rigid Body
     // 선택된 Bone은 다른색으로
-    int32 SelectedBoneIndex = EditorEngine->PhysicsAssetEditorWorld->SelectBoneIndex;
-    if (SelectedBoneIndex == -1)
-    {
-        SelectedBoneIndex = EditorEngine->PhysicsAssetEditorWorld->SelectedBodySetupIndex;
-    }
-    if (SelectedBoneIndex == -1)
-    {
-        SelectedBoneIndex = EditorEngine->PhysicsAssetEditorWorld->SelectedPrimitive.ParentBodySetupIndex;
-    }
 
     for (UBodySetup* BodySetup : PhysicsAsset->BodySetup)
     {
@@ -144,13 +304,25 @@ void FPhysicsAssetViewerRenderPass::RenderSkelComp(USkeletalMeshComponent* SkelC
             continue; // 해당 Bone이 없으면 건너뜀
         }
 
-        FLinearColor Color = (BoneIndex == SelectedBoneIndex) ? FLinearColor(0, 1, 1, 0.5) : FLinearColor(1, 0, 1, 0.3);
+        FLinearColor Color = (TargetBodySetup == BodySetup) ? FLinearColor(0, 1, 1, 0.5) : FLinearColor(1, 0, 1, 0.3);
+        if (!bPreviewWorld)
+        {
+            if (UEditorEngine* Engine = Cast<UEditorEngine>(GEngine))
+            {
+                if (Engine->GetSelectedActor() == SkelComp->GetOwner())
+                {
+                    Color = FLinearColor(0, 1, 1, 0.3);
+                }
+            }
+        }
 
-        FMatrix InitialMatrix = SkelComp->GetBoneComponentSpaceTransform(BoneIndex).ToMatrixNoScale() 
+        FMatrix InitialMatrix = SkelComp->GetBoneComponentSpaceTransform(BoneIndex).ToMatrixNoScale()
             * SkelComp->GetWorldMatrix();
+        InitialMatrix.GetMatrixWithoutScale();
 
         FVector InitialPosition = InitialMatrix.GetTranslationVector();
         FQuat InitialRotation = InitialMatrix.ToQuat();
+        InitialRotation.Normalize();
 
         FTransform InitialTransform(InitialRotation, InitialPosition);
 
@@ -159,7 +331,9 @@ void FPhysicsAssetViewerRenderPass::RenderSkelComp(USkeletalMeshComponent* SkelC
         for (FKSphereElem& SphereElem : AggGeom.SphereElems)
         {
             FTransform Src = FTransform(SphereElem.Center);
-            FTransform Dst = InitialTransform * Src;
+            FTransform Dst;
+            Dst = InitialTransform * Src;
+
             SphereElem.Center = Dst.GetTranslation();
             Shape::FSphere Sphere(SphereElem.Center, SphereElem.Radius);
             Spheres.Add(TPair<Shape::FSphere, FLinearColor>(Sphere, Color));
@@ -167,8 +341,11 @@ void FPhysicsAssetViewerRenderPass::RenderSkelComp(USkeletalMeshComponent* SkelC
 
         for (FKBoxElem& BoxElem : AggGeom.BoxElems)
         {
-            FTransform Src = { BoxElem.Rotation, BoxElem.Center };
-            FTransform Dst = InitialTransform * Src;
+            FQuat Rotation = BoxElem.Rotation.Quaternion();
+            FTransform Src = { Rotation, BoxElem.Center };
+            FTransform Dst;
+            Dst = InitialTransform * Src;
+
             BoxElem.SetTransform(Dst);
             Shape::FOrientedBox OrientedBox = BoxElem.ToFOrientedBox();
             OrientedBoxes.Add(TPair<Shape::FOrientedBox, FLinearColor>(OrientedBox, Color));
@@ -176,13 +353,10 @@ void FPhysicsAssetViewerRenderPass::RenderSkelComp(USkeletalMeshComponent* SkelC
 
         for (FKSphylElem& SphylElem : AggGeom.SphylElems)
         {
-            const FVector Axis = FVector(1, 0, 0);
-            const float Degree = HALF_PI;
-            FQuat Correction = FQuat(Axis, Degree); // 여기선 x축이 capsule 방향이지만, physx에서는 y축임.
-            FQuat Rotation = Correction * FQuat(SphylElem.Rotation);
+            FQuat Rotation = SphylElem.Rotation.Quaternion();
             FTransform Src = { Rotation, SphylElem.Center };
-            FTransform Dst = InitialTransform * Src;
-            //Dst = InitialTransform * Src;
+            FTransform Dst;
+            Dst = InitialTransform * Src;
 
             SphylElem.SetTransform(Dst);
             Shape::FCapsule Capsule = SphylElem.ToFCapsule();
@@ -192,17 +366,13 @@ void FPhysicsAssetViewerRenderPass::RenderSkelComp(USkeletalMeshComponent* SkelC
 
     // Constraint
     // 선택된 Constraint은 다른색으로
-    int32 SelectedConstraintIndex = EditorEngine->PhysicsAssetEditorWorld->SelectedConstraintIndex;
-    if (SelectedConstraintIndex == -1)
+    // 월드 에디터에서는 나오지 않음
+    if (!bPreviewWorld)
     {
-        SelectedConstraintIndex = EditorEngine->PhysicsAssetEditorWorld->SelectedBodySetupIndex;
-    }
-    if (SelectedConstraintIndex == -1)
-    {
-        SelectedConstraintIndex = EditorEngine->PhysicsAssetEditorWorld->SelectedPrimitive.ParentBodySetupIndex;
+        return;
     }
     TArray<UPhysicsConstraintTemplate*>& ConstraintSetup = PhysicsAsset->ConstraintSetup;
-    for(const UPhysicsConstraintTemplate* Template : ConstraintSetup)
+    for (const UPhysicsConstraintTemplate* Template : ConstraintSetup)
     {
         if (Template == nullptr)
         {
@@ -221,9 +391,19 @@ void FPhysicsAssetViewerRenderPass::RenderSkelComp(USkeletalMeshComponent* SkelC
 
         FMatrix InitialMatrix = SkelComp->GetBoneComponentSpaceTransform(BoneIndex).ToMatrixNoScale()
             * SkelComp->GetWorldMatrix();
+        InitialMatrix.GetMatrixWithoutScale();
+
+        FMatrix CorrectionMatrix;
+        CorrectionMatrix.M[0][0] = 0.f; CorrectionMatrix.M[0][1] = 0.f; CorrectionMatrix.M[0][2] = 1.f; CorrectionMatrix.M[0][3] = 0.f;
+        CorrectionMatrix.M[1][0] = 1.f; CorrectionMatrix.M[1][1] = 0.f; CorrectionMatrix.M[1][2] = 0.f; CorrectionMatrix.M[1][3] = 0.f;
+        CorrectionMatrix.M[2][0] = 0.f; CorrectionMatrix.M[2][1] = 1.f; CorrectionMatrix.M[2][2] = 0.f; CorrectionMatrix.M[2][3] = 0.f;
+        CorrectionMatrix.M[3][0] = 0.f; CorrectionMatrix.M[3][1] = 0.f; CorrectionMatrix.M[3][2] = 0.f; CorrectionMatrix.M[3][3] = 1.f;
+        FQuat CorrectionRotation = FQuat(CorrectionMatrix);
+        CorrectionRotation.Normalize();
 
         FVector InitialPosition = InitialMatrix.GetTranslationVector();
-        FQuat InitialRotation = InitialMatrix.ToQuat();
+        FQuat InitialRotation = InitialMatrix.ToQuat() * CorrectionRotation;
+        InitialRotation.Normalize();
 
         FTransform InitialTransform(InitialRotation, InitialPosition);
 
@@ -234,7 +414,7 @@ void FPhysicsAssetViewerRenderPass::RenderSkelComp(USkeletalMeshComponent* SkelC
         const FConeConstraint& Cone = Profile.ConeLimit;
         Shape::FEllipticalCone ConeShape;
         ConeShape.ApexPosition = InitialPosition;
-        ConeShape.Direction = InitialRotation.RotateVector(FVector(1,0,0));
+        ConeShape.Direction = InitialRotation.RotateVector(FVector(1, 0, 0));
         ConeShape.AngleWidth = Cone.Swing1LimitDegrees;
         ConeShape.AngleHeight = Cone.Swing2LimitDegrees;
         ConeShape.AngleWidth = FMath::DegreesToRadians(ConeShape.AngleWidth);
@@ -249,9 +429,9 @@ void FPhysicsAssetViewerRenderPass::RenderSkelComp(USkeletalMeshComponent* SkelC
         Shape::FEllipticalCone TwistShape;
         TwistShape.ApexPosition = InitialPosition;
         TwistShape.Direction = InitialRotation.RotateVector(FVector(0, 1, 0));
-        TwistShape.AngleWidth = Twist.TwistLimitDegrees;
-        TwistShape.AngleHeight = 0; // 높이는 0으로 설정
-        TwistShape.AngleWidth = FMath::DegreesToRadians(TwistShape.AngleWidth);
+        TwistShape.AngleHeight = Twist.TwistLimitDegrees;
+        TwistShape.AngleWidth = 0; // 높이는 0으로 설정
+        TwistShape.AngleHeight = FMath::DegreesToRadians(TwistShape.AngleHeight);
         TwistShape.Radius = Radius;
         EllipticalCones.Add(TPair<Shape::FEllipticalCone, FLinearColor>(TwistShape, FLinearColor(0, 1, 0, 0.2)));
     }

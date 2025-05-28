@@ -384,6 +384,7 @@ void FRenderer::RenderWorldScene(const std::shared_ptr<FEditorViewportClient>& V
         }
     }
 
+    if (ShowFlag & EEngineShowFlags::SF_PhysicsPreview)
     {
         PhysicsAssetViewerRenderPass->Render(Viewport);
     }
@@ -395,34 +396,33 @@ void FRenderer::RenderPostProcess(const std::shared_ptr<FEditorViewportClient>& 
     const uint64 ShowFlag = Viewport->GetShowFlag();
     const EViewModeIndex ViewMode = Viewport->GetViewMode();
     
-    if (ViewMode >= EViewModeIndex::VMI_Unlit)
+    if (ViewMode < EViewModeIndex::VMI_Unlit)
     {
-        return;
-    }
     
-    if (ShowFlag & EEngineShowFlags::SF_Fog)
-    {
-        QUICK_SCOPE_CYCLE_COUNTER(FogPass_CPU)
-        QUICK_GPU_SCOPE_CYCLE_COUNTER(FogPass_GPU, *GPUTimingManager)
-        FogRenderPass->Render(Viewport);
+        if (ShowFlag & EEngineShowFlags::SF_Fog)
+        {
+            QUICK_SCOPE_CYCLE_COUNTER(FogPass_CPU)
+            QUICK_GPU_SCOPE_CYCLE_COUNTER(FogPass_GPU, *GPUTimingManager)
+            FogRenderPass->Render(Viewport);
+            /**
+             * TODO: Fog 렌더 작업 해야 함.
+             * 여기에서는 씬 렌더가 적용된 뎁스 스텐실 뷰를 SRV로 전달하고, 뎁스 스텐실 뷰를 아래에서 다시 써야함.
+             */
+        }
+
+        if(ShowFlag & EEngineShowFlags::SF_DOF)
+        {
+            BlurRenderPass->Render(Viewport);
+        }
+        // TODO: 포스트 프로세스 별로 각자의 렌더 타겟 뷰에 렌더하기
+
         /**
-         * TODO: Fog 렌더 작업 해야 함.
-         * 여기에서는 씬 렌더가 적용된 뎁스 스텐실 뷰를 SRV로 전달하고, 뎁스 스텐실 뷰를 아래에서 다시 써야함.
+         * TODO: 반드시 씬에 먼저 반영되어야 하는 포스트 프로세싱 효과는 먼저 씬에 반영하고,
+         *       그 외에는 렌더한 포스트 프로세싱 효과들을 이 시점에서 하나로 합친 후에, 다음에 올 컴포짓 과정에서 합성.
          */
-    }
-
-    if(ShowFlag & EEngineShowFlags::SF_DOF)
-    {
-        BlurRenderPass->Render(Viewport);
-    }
-    // TODO: 포스트 프로세스 별로 각자의 렌더 타겟 뷰에 렌더하기
-
-    /**
-     * TODO: 반드시 씬에 먼저 반영되어야 하는 포스트 프로세싱 효과는 먼저 씬에 반영하고,
-     *       그 외에는 렌더한 포스트 프로세싱 효과들을 이 시점에서 하나로 합친 후에, 다음에 올 컴포짓 과정에서 합성.
-     */
-    {
-        CameraEffectRenderPass->Render(Viewport);
+        {
+            CameraEffectRenderPass->Render(Viewport);
+        }
     }
 
     {

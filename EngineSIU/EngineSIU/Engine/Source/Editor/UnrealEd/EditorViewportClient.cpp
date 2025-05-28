@@ -14,6 +14,7 @@
 #include "Camera/CameraComponent.h"
 #include "LevelEditor/SLevelEditor.h"
 #include "SlateCore/Input/Events.h"
+#include "World/PhysicsAssetWorld.h"
 
 FVector FEditorViewportClient::Pivot = FVector(0.0f, 0.0f, 0.0f);
 float FEditorViewportClient::OrthoSize = 10.0f;
@@ -244,9 +245,19 @@ void FEditorViewportClient::InputKey(const FKeyEvent& InKeyEvent)
                     FVector LocalExtents = (Box.MaxLocation - Box.MinLocation) * 0.5f;
                     float Radius = LocalExtents.Length();
 
-
-                    FMatrix ComponentToWorld = Primitive->GetWorldMatrix();
-                    FVector WorldCenter = ComponentToWorld.TransformPosition(LocalCenter);
+                    FVector WorldCenter;
+                    
+                    if (Engine->ActiveWorld->WorldType == EWorldType::PhysicsAssetEditor)
+                    {
+                        FMatrix ComponentToWorld = Engine->PhysicsAssetEditorWorld->GetSelectedTransform().ToMatrixWithScale();
+                        WorldCenter = ComponentToWorld.GetTranslationVector();
+                        Radius = 10;
+                    }
+                    else
+                    {
+                        FMatrix ComponentToWorld = Primitive->GetWorldMatrix();
+                        WorldCenter = ComponentToWorld.TransformPosition(LocalCenter);
+                    }
 
                     // FOV 기반 거리 계산
                     float VerticalFOV = FMath::DegreesToRadians(FOV);

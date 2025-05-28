@@ -191,7 +191,7 @@ void ATransformGizmo::Tick(float DeltaTime)
                     FTransform GlobalBoneTransform = FTransform(GlobalBoneMatrices[BoneIndex]);
 
                     AddActorLocation(GlobalBoneTransform.Translation);
-                    if (EditorPlayer->GetCoordMode() == ECoordMode::CDM_LOCAL || EditorPlayer->GetControlMode() == EControlMode::CM_SCALE)
+                    if (EditorPlayer->GetCoordMode() == ECoordMode::CDM_LOCAL || EditorPlayer->GetControlMode() == EControlMode::CM_SCALE || GEngine->ActiveWorld->WorldType == EWorldType::PhysicsAssetEditor)
                     {
                         AddActorRotation(GlobalBoneTransform.Rotation);
                     }
@@ -269,15 +269,22 @@ void ATransformGizmo::Tick(float DeltaTime)
             
             if (TargetAggregateGeom != nullptr && TargetPrimitiveType != EAggCollisionShape::Unknown)
             {
+                TArray<FMatrix> GlobalBoneMatrices;
+                Engine->PhysicsAssetEditorWorld->GetSkeletalMeshComponent()->GetCurrentGlobalBoneMatrices(GlobalBoneMatrices);
+                int32 BoneIndex = SkeletalMesh->GetRefSkeleton()->FindBoneIndex(TargetBodySetup->BoneName);
+                FTransform GlobalBoneTransform = FTransform(GlobalBoneMatrices[BoneIndex]);
+                
                 if (TargetPrimitiveType == EAggCollisionShape::Sphere)
                 {
                     FKSphereElem SphereElem = *static_cast<FKSphereElem*>(TargetAggregateGeom);
-                    AddActorLocation(SphereElem.Center);
+                    FVector NewLocation = GetRootComponent()->GetComponentTransform().TransformDirection(SphereElem.Center);
+                    AddActorLocation(NewLocation);
                 }
                 else if (TargetPrimitiveType == EAggCollisionShape::Box)
                 {
                     FKBoxElem BoxElem = *static_cast<FKBoxElem*>(TargetAggregateGeom);
-                    AddActorLocation(BoxElem.Center);
+                    FVector NewLocation = GetRootComponent()->GetComponentTransform().TransformDirection(BoxElem.Center);
+                    AddActorLocation(NewLocation);
                     if (EditorPlayer->GetCoordMode() == ECoordMode::CDM_LOCAL || EditorPlayer->GetControlMode() == EControlMode::CM_SCALE)
                     {
                         AddActorRotation(BoxElem.Rotation);
@@ -286,7 +293,8 @@ void ATransformGizmo::Tick(float DeltaTime)
                 else if (TargetPrimitiveType == EAggCollisionShape::Sphyl)
                 {
                     FKSphylElem SphylElem = *static_cast<FKSphylElem*>(TargetAggregateGeom);
-                    AddActorLocation(SphylElem.Center);
+                    FVector NewLocation = GetRootComponent()->GetComponentTransform().TransformDirection(SphylElem.Center);
+                    AddActorLocation(NewLocation);
                     if (EditorPlayer->GetCoordMode() == ECoordMode::CDM_LOCAL || EditorPlayer->GetControlMode() == EControlMode::CM_SCALE)
                     {
                         AddActorRotation(SphylElem.Rotation);

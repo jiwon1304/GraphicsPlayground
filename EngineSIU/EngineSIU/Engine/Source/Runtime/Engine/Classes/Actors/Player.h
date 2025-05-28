@@ -1,6 +1,7 @@
 #pragma once
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/Actor.h"
+#include "PhysicsEngine/ShapeElem.h"
 #include "UObject/ObjectMacros.h"
 #include "UObject/ObjectTypes.h"
 
@@ -33,16 +34,26 @@ class AEditorPlayer : public AActor
 private:
     static int RayIntersectsObject(const FVector& PickPosition, USceneComponent* Component, float& HitDistance, int& IntersectCount);
     void ScreenToViewSpace(int32 ScreenX, int32 ScreenY, std::shared_ptr<FEditorViewportClient> ActiveViewport, FVector& RayOrigin);
-    void PickedObjControl();
-    void PickedBoneControl();
+    void PickedObjControl(FVector2D DeltaPoint);
+    void PickedBoneControl(FVector2D DeltaPoint);
+    void ControlPickedPhysicsAsset(FVector2D DeltaPoint);
     
     void ControlRotation(USceneComponent* Component, UGizmoBaseComponent* Gizmo, float DeltaX, float DeltaY);
-    
     void ControlScale(USceneComponent* Component, UGizmoBaseComponent* Gizmo, float DeltaX, float DeltaY);
-    FQuat ControlBoneRotation(FTransform& Component, UGizmoBaseComponent* Gizmo, float DeltaX, float DeltaY);
-    FVector ControlBoneScale(FTransform& Component, UGizmoBaseComponent* Gizmo, float DeltaX, float DeltaY);
     
+    FQuat ControlBoneRotation(FTransform& BoneTransform, UGizmoBaseComponent* Gizmo, float DeltaX, float DeltaY);
+    FVector ControlBoneScale(FTransform& BoneTransform, UGizmoBaseComponent* Gizmo, float DeltaX, float DeltaY);
 
+    void ControlTranslation(FTransform& Transform, UGizmoBaseComponent* Gizmo, float DeltaX, float DeltaY);
+
+    void ControlRotation(FTransform& Transform, UGizmoBaseComponent* Gizmo, float DeltaX, float DeltaY);
+    void ControlRotation(FRotator& Rotator, UGizmoBaseComponent* Gizmo, float DeltaX, float DeltaY);
+
+    void ControlScale(FTransform& Transform, UGizmoBaseComponent* Gizmo, float DeltaX, float DeltaY);
+
+
+    bool GetAggregateGeom(UBodySetup*& TargetBodySetup, FKShapeElem*& TargetAggregateGeom, EAggCollisionShape::Type& TargetPrimitiveType);
+    
     bool bLeftMouseDown = false;
 
     POINT LastMousePos;

@@ -144,6 +144,11 @@ void UAssetManager::AddAssetInfo(UPhysicsAsset* PhysicsAsset) const
     AssetRegistry->PathNameToAssetInfo.Add(Info.PackagePath.ToString() + Info.AssetName.ToString(), Info);
 }
 
+void UAssetManager::RemoveAssetInfo(const UPhysicsAsset* PhysicsAsset) const
+{
+    AssetRegistry->PathNameToAssetInfo.Remove("Contents/PhysicsAsset/" + PhysicsAsset->GetName());
+}
+
 void UAssetManager::AddSkeleton(const FName& Key, USkeleton* Skeleton)
 {
     SkeletonMap.Add(Key, Skeleton);

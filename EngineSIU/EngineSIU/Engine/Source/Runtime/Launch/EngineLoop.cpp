@@ -82,6 +82,7 @@ int32 FEngineLoop::Init(HINSTANCE hInstance)
     EngineProfiler.RegisterStatScope(TEXT("|- SkinningPass"), FName(TEXT("SkinningPass_CPU")), FName(TEXT("SkinningPass_GPU")));
     EngineProfiler.RegisterStatScope(TEXT("|- ParticlePass"), FName(TEXT("ParticlePass_CPU")), FName(TEXT("ParticlePass_GPU")));
     EngineProfiler.RegisterStatScope(TEXT("SlatePass"), FName(TEXT("SlatePass_CPU")), FName(TEXT("SlatePass_GPU")));
+    EngineProfiler.RegisterStatScope(TEXT("Physics"), FName(TEXT("PhysicsSceneUpdate")), FName(TEXT("")));
 
     BufferManager->Initialize(GraphicDevice.Device, GraphicDevice.DeviceContext);
     Renderer.Initialize(&GraphicDevice, BufferManager, &GPUTimingManager);

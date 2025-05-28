@@ -121,7 +121,7 @@ public:
     bool gIsVehicleInAir = true;
 
 
-    PxF32 VehicleModeLifetime = 4.0f;
+    PxF32 VehicleModeLifetime = 2.0f;
     PxF32 VehicleModeTimer = 0.0f;
     PxU32 VehicleOrderProgress = 0;
     bool VehicleOrderComplete = false;
