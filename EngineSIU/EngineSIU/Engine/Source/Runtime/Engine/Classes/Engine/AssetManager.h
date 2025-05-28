@@ -98,6 +98,8 @@ public:
 
     void AddAssetInfo(const FAssetInfo& Info);
     void AddAssetInfo(UPhysicsAsset* PhysicsAsset) const;
+
+    void RemoveAssetInfo(const UPhysicsAsset* PhysicsAsset) const;
     
     void AddSkeleton(const FName& Key, USkeleton* Skeleton);
     void AddSkeletalMesh(const FName& Key, USkeletalMesh* SkeletalMesh);
