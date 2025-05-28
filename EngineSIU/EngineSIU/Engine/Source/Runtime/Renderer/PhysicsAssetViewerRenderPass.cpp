@@ -176,12 +176,20 @@ void FPhysicsAssetViewerRenderPass::RenderSkelComp(USkeletalMeshComponent* SkelC
 
         for (FKSphylElem& SphylElem : AggGeom.SphylElems)
         {
-            const FVector Axis = FVector(1, 0, 0);
-            const float Degree = HALF_PI;
-            FQuat Correction = FQuat(Axis, Degree); // 여기선 x축이 capsule 방향이지만, physx에서는 y축임.
-            FQuat Rotation = Correction * FQuat(SphylElem.Rotation);
+            FQuat Correction = FQuat(Axis, Rad); // 여기선 x축이 capsule 방향이지만, physx에서는 y축임.
+            //FQuat Rotation1 = FQuat(SphylElem.Rotation);
+            FQuat Rotation = SphylElem.Rotation.Quaternion();
             FTransform Src = { Rotation, SphylElem.Center };
-            FTransform Dst = InitialTransform * Src;
+            FTransform Dst;
+            Dst = InitialTransform * Src;
+            //if (Swap)
+            //{   // physx에서는 Y축이 capsule 방향이므로, X축과 Y축을 바꿔줌
+            //    Dst = Src * InitialTransform;
+            //}
+            //else
+            //{
+            //    Dst = InitialTransform * Src;
+            //}
             //Dst = InitialTransform * Src;
 
             SphylElem.SetTransform(Dst);

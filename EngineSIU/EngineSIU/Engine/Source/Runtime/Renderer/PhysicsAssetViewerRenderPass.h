@@ -16,4 +16,10 @@ public:
 
 private:
     void RenderSkelComp(USkeletalMeshComponent* SkelComp);
+
+    // 디버그용
+public:
+    inline static FVector Axis = FVector(1, 0, 0);
+    inline static float Rad = HALF_PI;
+    inline static bool Swap = true;
 };

@@ -34,6 +34,7 @@ FQuat::FQuat(const FRotator& R)
     // Z = CR*CP*SY - SR*SP*CY;
     // 위는 일반적인 공식. 언리얼은 FQuat(Pitch,0,0) * FQuat(0,Yaw,0) * FQuat(0,0,Roll) 과 유사하게 계산
     // MakeFromEuler 참조
+    assert(0); // 이거 Rotator::Quaternion()이랑 값이 다름. 이게 틀린거같음.
     *this = MakeFromEuler(FVector(R.Roll, R.Pitch, R.Yaw));
 }
 

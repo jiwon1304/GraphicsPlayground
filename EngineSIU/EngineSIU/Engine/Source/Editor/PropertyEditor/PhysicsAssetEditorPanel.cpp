@@ -10,6 +10,7 @@
 
 #include "Developer/PhysicsUtilities/PhysicsAssetUtils.h"
 #include "PhysicalMaterials/Defines.h"
+#include "Renderer/PhysicsAssetViewerRenderPass.h"
 
 const float	DefaultPrimSize = 15.0f;
 const float	DuplicateXOffset = 10.0f;
@@ -503,6 +504,29 @@ void FPhysicsAssetEditorPanel::RenderDetailPanel()
     {
         TargetBodySetup = SelectedBodySetup;
     }
+
+    // 임시로 입력값을 저장할 버퍼 준비
+    static float AxisBuffer[3] = { FPhysicsAssetViewerRenderPass::Axis.X, FPhysicsAssetViewerRenderPass::Axis.Y, FPhysicsAssetViewerRenderPass::Axis.Z };
+    static float RadBuffer = FPhysicsAssetViewerRenderPass::Rad;
+
+    // 입력창 (버퍼를 수정)
+    ImGui::SliderFloat3("RenderPassAxis", AxisBuffer, -1, 1);
+    ImGui::SliderFloat("RenderPassRad", &RadBuffer, -PI, PI);
+    ImGui::Checkbox("SwapOrder", &FPhysicsAssetViewerRenderPass::Swap);
+
+    FVector Axis(AxisBuffer[0], AxisBuffer[1], AxisBuffer[2]);
+    Axis.Normalize();
+
+    AxisBuffer[0] = Axis.X;
+    AxisBuffer[1] = Axis.Y;
+    AxisBuffer[2] = Axis.Z;
+
+    // 적용 버튼
+    if (ImGui::Button("Apply RenderPass Settings"))
+    {
+        FPhysicsAssetViewerRenderPass::Axis = FVector(AxisBuffer[0], AxisBuffer[1], AxisBuffer[2]);
+    }
+        FPhysicsAssetViewerRenderPass::Rad = RadBuffer;
 
     if (isBoneValid)
     {
