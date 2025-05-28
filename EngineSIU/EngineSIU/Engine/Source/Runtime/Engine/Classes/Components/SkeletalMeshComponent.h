@@ -120,6 +120,8 @@ public:
     FPoseContext& GetBonePoseContext() { return BonePoseContext; }
 
     FTransform GetBoneComponentSpaceTransform(int32 BoneIndex) const;
+
+    virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
     
 protected:
     bool NeedToSpawnAnimScriptInstance() const;
@@ -129,7 +131,12 @@ protected:
 private:
     FPoseContext BonePoseContext;
 
-    USkeletalMesh* SkeletalMeshAsset;
+    UPROPERTY(
+        EditAnywhere | EditInline,
+        USkeletalMesh*,
+        SkeletalMeshAsset,
+        = nullptr
+    )
 
     bool bPlayAnimation;
 
