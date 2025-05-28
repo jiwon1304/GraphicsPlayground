@@ -433,9 +433,9 @@ void FPhysicsSolver::FetchData(FPhysScene* InScene)
                         Transform = Vehicle4W->WheelShapes[3]->getLocalPose();
                     }
 
-                    Transform.q = Transform.q * PxQuat(BodyInstance->InvPhysXQuat.X, BodyInstance->InvPhysXQuat.Y, BodyInstance->InvPhysXQuat.Z, BodyInstance->InvPhysXQuat.W);
+                    /*Transform.q = Transform.q * PxQuat(BodyInstance->InvPhysXQuat.X, BodyInstance->InvPhysXQuat.Y, BodyInstance->InvPhysXQuat.Z, BodyInstance->InvPhysXQuat.W);
 
-                    StaticMesh->SetRelativeRotation(FQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w));
+                    StaticMesh->SetRelativeRotation(FQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w));*/
                 }
 
                 return;
