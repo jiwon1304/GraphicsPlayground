@@ -127,8 +127,8 @@ namespace FPhysicsAssetUtils
                     FConstraintInstance& JointInstance = ConstraintSetup->DefaultInstance;
 
                     JointInstance.JointName = ParentBoneName;
-                    JointInstance.ConstraintBone1 = ParentBoneName;
-                    JointInstance.ConstraintBone2 = ChildBoneName;
+                    JointInstance.ConstraintBone1 = ChildBoneName;
+                    JointInstance.ConstraintBone2 = ParentBoneName;
 
                     int32 NewConstraintIndex = PhysicsAsset->ConstraintSetup.Num() - 1;
                     JointInstance.ConstraintIndex = NewConstraintIndex;

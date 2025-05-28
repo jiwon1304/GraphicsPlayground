@@ -65,7 +65,7 @@ void FPhysicsAssetEditorPanel::Render()
     ImGui::Spacing();
     ImGui::Separator();
 
-    ImGui::BeginChild("Skeletal Tree Id");
+    ImGui::BeginChild("Skeletal Tree Id", ImVec2(0, 0), 0, ImGuiWindowFlags_HorizontalScrollbar);
     RenderSkeletonBoneTree();    // Render Bone, Body, Constraint ...
     ImGui::EndChild();
     ImGui::End();
@@ -197,7 +197,7 @@ void FPhysicsAssetEditorPanel::RenderAddPrimitiveButton()
                 int32 SelectedPrimitiveIndex = EditorEngine->PhysicsAssetEditorWorld->SelectedPrimitive.SelectedPrimitiveIndex;
                 EAggCollisionShape::Type PrimitiveType = EditorEngine->PhysicsAssetEditorWorld->SelectedPrimitive.PrimitiveType;
         
-                if (SelectedBoneIndex == -1 && SelectedBodySetupIndex == -1 && (SelectedPrimitiveIndex == -1 || ParentBodySetupIndex == -1))
+                if (SelectedBoneIndex == -1 && SelectedBodySetupIndex == -1 && (SelectedPrimitiveIndex == -1 || ParentBodySetupIndex == -1 || PrimitiveType == EAggCollisionShape::Unknown))
                 {
                     continue;
                 }
@@ -383,7 +383,7 @@ void FPhysicsAssetEditorPanel::RenderDetailPanel()
     int32 SelectedPrimitiveIndex = EditorEngine->PhysicsAssetEditorWorld->SelectedPrimitive.SelectedPrimitiveIndex;
     EAggCollisionShape::Type PrimitiveType = EditorEngine->PhysicsAssetEditorWorld->SelectedPrimitive.PrimitiveType;
 
-    if (SelectedBoneIndex == -1 && SelectedBodySetupIndex == -1 && (SelectedPrimitiveIndex == -1 || ParentBodySetupIndex == -1) && SelectedConstraintIndex == -1)
+    if (SelectedBoneIndex == -1 && SelectedBodySetupIndex == -1 && (SelectedPrimitiveIndex == -1 || ParentBodySetupIndex == -1 || PrimitiveType == EAggCollisionShape::Unknown) && SelectedConstraintIndex == -1)
     {
         return;
     }
