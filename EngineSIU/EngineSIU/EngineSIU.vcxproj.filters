@@ -1708,6 +1708,13 @@
     <ClCompile Include="Engine\Source\Runtime\PhysicsCore\PhysXIntegration.cpp" />
     <ClCompile Include="Engine\Source\Runtime\PhysicsCore\PhysxSolversModule.cpp" />
     <ClCompile Include="Engine\Source\Runtime\PhysicsCore\PhysicsScene.cpp" />
+    <ClCompile Include="Engine\Source\Developer\PhysicsUtilities\PhysicsAssetUtils.cpp" />
+    <ClCompile Include="Engine\Source\Editor\PropertyEditor\PhysicsAssetEditorPanel.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\PhysicsAsset.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Engine\World\PhysicsAssetWorld.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Renderer\BlurRenderPass.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Renderer\OverlayShapeRenderPass.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Renderer\PhysicsAssetViewerRenderPass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="EngineSIU.natvis" />
@@ -1719,6 +1726,8 @@
     <FxCompile Include="Shaders\DepthOnlyVS.hlsl" />
     <FxCompile Include="Shaders\LightPBR.hlsl" />
     <FxCompile Include="Shaders\PointLightCubemapGS.hlsl" />
+    <FxCompile Include="Shaders\BlurEffectShader.hlsl" />
+    <FxCompile Include="Shaders\OverlayShapeShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Components\SkeletalMeshComponent.h" />
@@ -2031,6 +2040,13 @@
     <ClInclude Include="Engine\Source\Runtime\PhysicsCore\PhysXIntegration.h" />
     <ClInclude Include="Engine\Source\Runtime\PhysicsCore\PhysxSolversModule.h" />
     <ClInclude Include="Engine\Source\Runtime\PhysicsCore\ImplicitObject.h" />
+    <ClInclude Include="Engine\Source\Developer\PhysicsUtilities\PhysicsAssetUtils.h" />
+    <ClInclude Include="Engine\Source\Editor\PropertyEditor\PhysicsAssetEditorPanel.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Math\Shapes.h" />
+    <ClInclude Include="Engine\Source\Runtime\Engine\World\PhysicsAssetWorld.h" />
+    <ClInclude Include="Engine\Source\Runtime\Renderer\BlurRenderPass.h" />
+    <ClInclude Include="Engine\Source\Runtime\Renderer\OverlayShapeRenderPass.h" />
+    <ClInclude Include="Engine\Source\Runtime\Renderer\PhysicsAssetViewerRenderPass.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\CompositingShader.hlsl" />

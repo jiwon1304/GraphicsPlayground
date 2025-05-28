@@ -452,7 +452,7 @@ FodyWeavers.xsd
 !EngineSIU/EngineSIU/Engine/Source/ThirdParty/**
 
 *.bin
-EngineSIU/EngineSIU/Shaders/*.cso
+EngineSIU/EngineSIU/Shaders/Binary/*.cso
 
 .idea
 

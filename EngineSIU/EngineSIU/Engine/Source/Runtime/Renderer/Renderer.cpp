@@ -14,8 +14,10 @@
 #include "UpdateLightBufferPass.h"
 #include "LineRenderPass.h"
 #include "FogRenderPass.h"
+#include "BlurRenderPass.h"
 #include "CameraEffectRenderPass.h"
 #include "SlateRenderPass.h"
+#include "PhysicsAssetViewerRenderPass.h"
 #include "EditorRenderPass.h"
 #include "DepthPrePass.h"
 #include "TileLightCullingPass.h"
@@ -58,7 +60,9 @@ void FRenderer::Initialize(FGraphicsDevice* InGraphics, FDXDBufferManager* InBuf
     UpdateLightBufferPass = AddRenderPass<FUpdateLightBufferPass>();
     LineRenderPass = AddRenderPass<FLineRenderPass>();
     FogRenderPass = AddRenderPass<FFogRenderPass>();
+    BlurRenderPass = AddRenderPass<FBlurRenderPass>();
     CameraEffectRenderPass = AddRenderPass<FCameraEffectRenderPass>();
+    PhysicsAssetViewerRenderPass = AddRenderPass<FPhysicsAssetViewerRenderPass>();
     EditorRenderPass = AddRenderPass<FEditorRenderPass>();
     
     DepthPrePass = AddRenderPass<FDepthPrePass>();
@@ -379,6 +383,11 @@ void FRenderer::RenderWorldScene(const std::shared_ptr<FEditorViewportClient>& V
             WorldBillboardRenderPass->Render(Viewport);
         }
     }
+
+    {
+        PhysicsAssetViewerRenderPass->Render(Viewport);
+    }
+
 }
 
 void FRenderer::RenderPostProcess(const std::shared_ptr<FEditorViewportClient>& Viewport) const
@@ -402,6 +411,10 @@ void FRenderer::RenderPostProcess(const std::shared_ptr<FEditorViewportClient>& 
          */
     }
 
+    if(ShowFlag & EEngineShowFlags::SF_DOF)
+    {
+        BlurRenderPass->Render(Viewport);
+    }
     // TODO: 포스트 프로세스 별로 각자의 렌더 타겟 뷰에 렌더하기
 
     /**

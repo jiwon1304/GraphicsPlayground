@@ -1,0 +1,38 @@
+#pragma once
+
+#include "IRenderPass.h"
+#include "D3D11RHI/GraphicDevice.h"
+#include "D3D11RHI/DXDShaderManager.h"
+#include "D3D11RHI/DXDBufferManager.h"
+
+/*
+FRenderer::RenderPostProcess를 시작할 때 이후 Blur에 사용될 Texture를 생성합니다.
+*/
+class FBlurRenderPass : public IRenderPass
+{
+public:
+    FBlurRenderPass();
+    virtual ~FBlurRenderPass() override;
+    virtual void PrepareRenderArr() override {}
+    virtual void ClearRenderArr() override {}
+
+    virtual void Initialize(FDXDBufferManager* InBufferManager, FGraphicsDevice* InGraphics, FDXDShaderManager* InShaderManager) override;
+    void ReleaseShader();
+    void CreateShader();
+    void UpdateShader();
+    void CreateBlendState();
+    void CreateSampler();
+    void PrepareRenderState();
+
+    virtual void Render(const std::shared_ptr<FEditorViewportClient>& Viewport) override;
+
+private:
+    FGraphicsDevice* Graphics = nullptr;
+    FDXDBufferManager* BufferManager = nullptr;
+    FDXDShaderManager* ShaderManager = nullptr;
+
+    ID3D11VertexShader* VertexShader = nullptr;
+    ID3D11PixelShader* PixelShader = nullptr;
+    ID3D11BlendState* BlendState = nullptr;
+    ID3D11SamplerState* Sampler = nullptr;
+};

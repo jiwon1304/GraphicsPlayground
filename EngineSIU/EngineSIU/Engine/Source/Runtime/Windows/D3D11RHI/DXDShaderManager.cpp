@@ -5,6 +5,7 @@
 #include <sstream>
 #include <unordered_set>
 #include <functional>
+#include <filesystem>
 
 FDXDShaderManager::FDXDShaderManager(ID3D11Device* Device)
     : DXDDevice(Device)
@@ -1427,25 +1428,33 @@ std::wstring FDXDShaderManager::GenerateCSOFileName(const std::wstring& FileName
 {
     std::wstringstream ss;
 
-    // 디렉토리 포함한 파일명에서 확장자만 제거
-    size_t dot = FileName.find_last_of(L'.');
-    std::wstring baseName;
-    if (dot != std::wstring::npos)
-        baseName = FileName.substr(0, dot);
+    // 1. 디렉토리와 파일명 분리
+    size_t slash = FileName.find_last_of(L"/\\");
+    std::wstring dir, fileOnly;
+    if (slash != std::wstring::npos)
+    {
+        dir = FileName.substr(0, slash);
+        fileOnly = FileName.substr(slash + 1);
+    }
     else
-        baseName = FileName; // 확장자 없는 경우 전체 사용
+    {
+        dir = L".";
+        fileOnly = FileName;
+    }
 
+    // 2. 확장자 제거
+    size_t dot = fileOnly.find_last_of(L'.');
+    std::wstring baseName = (dot != std::wstring::npos) ? fileOnly.substr(0, dot) : fileOnly;
+
+    // 3. entrypoint, define hash, shader type suffix
     ss << baseName;
 
-    // entrypoint 추가
     ss << L"_" << std::wstring(EntryPoint.begin(), EntryPoint.end());
 
-    // define 해시 추가
     std::string defineStr = MakeDefineString(Defines);
     std::string defineHash = ComputeStdHash(defineStr);
     ss << L"_" << std::wstring(defineHash.begin(), defineHash.end());
 
-    // shader type suffix
     switch (Version)
     {
     case ShaderType::VertexShader: ss << L"_vs_5_0.cso"; break;
@@ -1453,7 +1462,10 @@ std::wstring FDXDShaderManager::GenerateCSOFileName(const std::wstring& FileName
     default: return L""; // unsupported
     }
 
-    return ss.str();
+    // 4. Baked 폴더 경로로 합치기
+    std::wstring BinaryDir = dir + L"/Binary";
+    std::wstring fullPath = BinaryDir + L"/" + ss.str();
+    return fullPath;
 }
 
 HRESULT FDXDShaderManager::ReadShaderFile(
@@ -1496,6 +1508,13 @@ HRESULT FDXDShaderManager::SaveShaderFile(
     std::wstring CSOFileName = GenerateCSOFileName(FileName, Version, EntryPoint, *Defines);
     if (DXDDevice == nullptr)
         return S_FALSE;
+
+    // 가장 깊은 디렉토리까지 생성
+    std::filesystem::path csoPath(CSOFileName);
+    std::filesystem::path dir = csoPath.parent_path();
+    if (!dir.empty() && !std::filesystem::exists(dir)) {
+        std::filesystem::create_directories(dir);
+    }
 
     return D3DWriteBlobToFile(Blob, CSOFileName.c_str(), TRUE);
 }

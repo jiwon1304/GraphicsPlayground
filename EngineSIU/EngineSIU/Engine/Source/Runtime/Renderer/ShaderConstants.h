@@ -245,3 +245,11 @@ struct alignas(16) FConstantBufferLetterBox
     float LetterBoxAspectRatio;
     FVector2D Padding;
 };
+
+struct alignas(16) FConstantBufferDOF
+{
+    float FocalDistance = 0.0f;
+    float FocalRegion = 0.0f;
+    float BlurAmount = 0.0f;
+    float BlurRadius = 0.0f;
+};

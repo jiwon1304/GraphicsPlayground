@@ -48,6 +48,47 @@ void FDXDBufferManager::ReleaseConstantBuffer()
     ConstantBufferPool.Empty();
 }
 
+HRESULT FDXDBufferManager::CreateStructuredBuffer(const FString& KeyName, UINT ByteWidth, UINT Stride, UINT BindFlags, D3D11_USAGE Usage, UINT CpuAccessFlags)
+{
+    if (ConstantBufferPool.Contains(KeyName))
+    {
+        return S_OK;
+    }
+    ByteWidth = Align16(ByteWidth);
+    D3D11_BUFFER_DESC Desc = {};
+    Desc.ByteWidth = ByteWidth;
+    Desc.Usage = Usage;
+    Desc.BindFlags = BindFlags | D3D11_BIND_SHADER_RESOURCE;
+    Desc.CPUAccessFlags = CpuAccessFlags;
+    Desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+    Desc.StructureByteStride = Stride;
+
+    ID3D11Buffer* Buffer = nullptr;
+    HRESULT Result = DXDevice->CreateBuffer(&Desc, nullptr, &Buffer);
+    if (FAILED(Result))
+    {
+        UE_LOG(ELogLevel::Error, TEXT("Error Create Structured Buffer!"));
+        return Result;
+    }
+
+    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+    srvDesc.Format = DXGI_FORMAT_UNKNOWN;
+    srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
+    srvDesc.Buffer.ElementWidth = ByteWidth;
+
+    ID3D11ShaderResourceView* SRV = nullptr;
+    Result = DXDevice->CreateShaderResourceView(Buffer, &srvDesc, &SRV);
+    if (FAILED(Result))
+    {
+        UE_LOG(ELogLevel::Error, TEXT("Error Create Structured Buffer SRV!"));
+        SafeRelease(Buffer);
+        return Result;
+    }
+
+    StructuredBufferPool.Add(KeyName, { Buffer, SRV });
+    return S_OK;
+}
+
 void FDXDBufferManager::BindConstantBuffers(const TArray<FString>& Keys, UINT StartSlot, EShaderStage Stage) const
 {
     const int Count = Keys.Num();
@@ -125,6 +166,21 @@ ID3D11Buffer* FDXDBufferManager::GetConstantBuffer(const FString& InName) const
 {
     if (ConstantBufferPool.Contains(InName))
         return ConstantBufferPool[InName];
+
+    return nullptr;
+}
+
+ID3D11Buffer* FDXDBufferManager::GetStructuredBuffer(const FString& InName) const
+{
+    if (StructuredBufferPool.Contains(InName))
+        return StructuredBufferPool[InName].Key;
+    return nullptr;
+}
+
+ID3D11ShaderResourceView* FDXDBufferManager::GetStructuredBufferSRV(const FString& InName) const
+{
+    if (StructuredBufferPool.Contains(InName))
+        return StructuredBufferPool[InName].Value;
 
     return nullptr;
 }
