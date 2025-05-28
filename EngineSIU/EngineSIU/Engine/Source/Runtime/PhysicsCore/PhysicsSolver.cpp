@@ -389,7 +389,7 @@ void FPhysicsSolver::FetchData(FPhysScene* InScene)
                     FTransform(
                         FQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w),
                         FVector(Transform.p.x, Transform.p.y, Transform.p.z),
-                        FVector(BodyInstance->Scale3D.X, BodyInstance->Scale3D.Y, BodyInstance->Scale3D.Z)
+                        BodyInstance->OwnerComponent->GetComponentScale3D()
                     )
                 );
             }

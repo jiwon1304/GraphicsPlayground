@@ -127,6 +127,7 @@ void UWorld::Tick(float DeltaTime)
         
         if (PhysicsScene)
         {
+            QUICK_SCOPE_CYCLE_COUNTER(PhysicsSceneUpdate)
             PhysicsScene->AdvanceAndDispatch_External(DeltaTime);
             PhysicsScene->SyncBodies();
         }
