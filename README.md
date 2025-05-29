@@ -45,25 +45,25 @@
                 
                 
  ## Vehicle4W System
-  - **AWheeledVehiclePawn**: StaticMeshComponent(차체) + 4×StaticMeshComponent(바퀴) 생성
-  - **UVehicleMovementComponent** 추가: 물리 파라미터 보관
-  - 스폰 시 `FPhysScene::AddVehicle` → `FPhysicsSolver::RegisterObject` 호출하여 PhysX에 차량 등록
+  -  **AWheeledVehiclePawn**: StaticMeshComponent(차체) + 4×StaticMeshComponent(바퀴) 생성
+  -  **UVehicleMovementComponent** 추가: 물리 파라미터 보관
+  -  스폰 시 `FPhysScene::AddVehicle` → `FPhysicsSolver::RegisterObject` 호출하여 PhysX에 차량 등록
 
-## Movement Component 파라미터
+- Movement Component 파라미터
   -  **ChassisMass**, **ChassisBoxExtents**: 질량·크기
-  - **WheelMass**, **WheelRadius/Width**, **WheelOffset**: 바퀴 질량·형상·위치
-  - **ChassisCMOffset**: 무게중심 오프셋
-  - **PeakTorque**, **MaxOmega**, **ClutchStrength**: 엔진 구동 파라미터
-  - `Duplicate()` 오버라이드로 컴포넌트 복제 시 값 유지
+  -  **WheelMass**, **WheelRadius/Width**, **WheelOffset**: 바퀴 질량·형상·위치
+  -  **ChassisCMOffset**: 무게중심 오프셋
+  -  **PeakTorque**, **MaxOmega**, **ClutchStrength**: 엔진 구동 파라미터
+  -  `Duplicate()` 오버라이드로 컴포넌트 복제 시 값 유지
 
-## PhysX 통합 (FVehicle4W)
-  - **InitVehicle**: `PxVehicleDrive4W` 생성 (서스펜션, 타이어, 엔진 설정)
-  - **좌표계 보정**: PhysX(X축 전진) ↔ 엔진(Y축 전진) 90° 회전 쿼터니언(`InvPhysXQuat`) 적용
-  - PhysX Actor `userData`에 `FBodyInstance` 연결
+- PhysX 통합 (FVehicle4W)
+  -  **InitVehicle**: `PxVehicleDrive4W` 생성 (서스펜션, 타이어, 엔진 설정)
+  -  **좌표계 보정**: PhysX(X축 전진) ↔ 엔진(Y축 전진) 90° 회전 쿼터니언(`InvPhysXQuat`) 적용
+  -  PhysX Actor `userData`에 `FBodyInstance` 연결
 
-## 시뮬레이션 & 결과 동기화
-  - 매 프레임 `FPhysicsSolver::AdvanceOneTimeStep` → PhysX `simulate(Dt)`
-  - `FetchData`
-    - 차체 Transform 자동 적용
+- 시뮬레이션 & 결과 동기화
+  -  매 프레임 `FPhysicsSolver::AdvanceOneTimeStep` → PhysX `simulate(Dt)`
+  -  `FetchData`
+    -  차체 Transform 자동 적용
     -  바퀴 로컬 포즈(fetch) → `InvPhysXQuat` 보정 → 메시 상대 회전 설정
-    - **현재**: 바퀴 회전 시각화 로직 이슈로 임시 주석 처리
+    -  **현재**: 바퀴 회전 시각화 로직 이슈로 임시 주석 처리
