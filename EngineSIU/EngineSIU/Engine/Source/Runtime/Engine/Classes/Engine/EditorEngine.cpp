@@ -152,7 +152,9 @@ void UEditorEngine::StartPIE()
     PIEWorld = Cast<UWorld>(EditorWorld->Duplicate(this));
     PIEWorld->WorldType = EWorldType::PIE;
     PIEWorld->CreatePhysicsScene();
+#ifdef _DEBUG
     FPhysxSolversModule::GetModule()->ConnectToPVD();
+#endif
     PIEWorldContext.SetCurrentWorld(PIEWorld);
     ActiveWorld = PIEWorld;
     

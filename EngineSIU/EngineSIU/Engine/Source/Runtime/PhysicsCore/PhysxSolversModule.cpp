@@ -100,13 +100,13 @@ PxScene* FPhysxSolversModule::CreateScene()
     PxScene* Scene = Physics->createScene(sceneDesc);
 
 
-
+#ifdef _DEBUG
     Scene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f); // PVD용
     Scene->setVisualizationParameter(PxVisualizationParameter::eACTOR_AXES, 1.0f); // PVD용
     Scene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_SHAPES, 1.0f); // PVD용
     Scene->setVisualizationParameter(PxVisualizationParameter::eJOINT_LOCAL_FRAMES, 1.0f);
     Scene->setVisualizationParameter(PxVisualizationParameter::eJOINT_LIMITS, 1.0f);
     Scene->getScenePvdClient()->setScenePvdFlags(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS | PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES | PxPvdSceneFlag::eTRANSMIT_CONTACTS);
-
+#endif
     return Scene;
 }
