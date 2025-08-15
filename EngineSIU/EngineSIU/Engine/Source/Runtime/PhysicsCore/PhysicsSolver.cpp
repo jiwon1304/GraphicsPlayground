@@ -474,34 +474,44 @@ void FPhysicsSolver::FetchData(FPhysScene* InScene)
             }
             else if (USkeletalMeshComponent* SkeletalMeshComp = Cast<USkeletalMeshComponent>(BodyInstance->OwnerComponent))
             {
-                // !TODO : Bone을 찾아서 해당 Bone의 위치 변경. 또는 Bonematrix 변경
                 USkeletalMesh* SkeletalMesh = SkeletalMeshComp->GetSkeletalMeshAsset();
-                if (!SkeletalMesh)
-                {
-                    UE_LOG(ELogLevel::Warning, TEXT("SkeletalMeshComponent '%s' has no SkeletalMesh assigned."), *SkeletalMeshComp->GetName());
-                    continue;
-                }
                 int16 BoneIndex = BodyInstance->InstanceBoneIndex;
-                int16 ParentIndex = SkeletalMesh->GetSkeleton()->GetReferenceSkeleton().GetRawRefBoneInfo()[BoneIndex].ParentIndex;
-                FTransform ParentComponentSpaceTransform = ParentIndex != INDEX_NONE ? SkeletalMeshComp->GetBoneComponentSpaceTransform(ParentIndex) : FTransform::Identity;
+                const FReferenceSkeleton& RefSkeleton = SkeletalMesh->GetSkeleton()->GetReferenceSkeleton();
+                int16 ParentIndex = RefSkeleton.GetRawRefBoneInfo()[BoneIndex].ParentIndex;
 
-                FTransform ComponentSpaceTransform = SkeletalMeshComp->GetComponentTransform();
+                // 부모 본의 컴포넌트 공간 트랜스폼
+                FTransform ParentComponentSpaceTransform =
+                    (ParentIndex != INDEX_NONE)
+                    ? SkeletalMeshComp->GetBoneComponentSpaceTransform(ParentIndex)
+                    : FTransform::Identity;
 
-                FTransform CachedBoneWorldTransform = SkeletalMeshComp->GetComponentTransform() * SkeletalMeshComp->GetBoneComponentSpaceTransform(BoneIndex);
-                FVector OriginScale = CachedBoneWorldTransform.Scale3D;
-
+                // 시뮬레이션 결과(월드 좌표계)
                 FQuat PhysicQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w);
+                FVector PhysicPos(Transform.p.x, Transform.p.y, Transform.p.z);
 
-                FTransform SimulatedWorldTransform = FTransform(
-                    PhysicQuat * BodyInstance->InvPhysXQuat,
-                    FVector(Transform.p.x, Transform.p.y, Transform.p.z),
-                    OriginScale
-                );
+                // PhysX에서 넘어온 쿼터니언은 보정이 필요할 수 있음
+                FQuat CorrectedQuat = PhysicQuat * BodyInstance->InvPhysXQuat;
 
-                FTransform NewBoneTransform = (ParentComponentSpaceTransform.Inverse() * ComponentSpaceTransform.Inverse())
-                    * SimulatedWorldTransform; // 컴포넌트 공간 트랜스폼을 적용하여 본의 위치를 계산
+                // 현재 본의 스케일 유지
+                FTransform CachedBoneWorldTransform =
+                    SkeletalMeshComp->GetComponentTransform() *
+                    SkeletalMeshComp->GetBoneComponentSpaceTransform(BoneIndex);
 
-                SkeletalMeshComp->GetBonePoseContext().Pose[BoneIndex] = NewBoneTransform; // 본 위치 갱신
+                FVector OriginScale = CachedBoneWorldTransform.GetScale3D();
+
+                // 시뮬레이션 월드 변환
+                FTransform SimulatedWorldTransform(CorrectedQuat, PhysicPos, OriginScale);
+
+                // 월드 → 컴포넌트 공간
+                FTransform SimulatedComponentSpace =
+                    SimulatedWorldTransform.GetRelativeTransform(SkeletalMeshComp->GetComponentTransform());
+
+                // 컴포넌트 공간 → 부모 본 로컬 공간
+                FTransform NewBoneLocal =
+                    SimulatedComponentSpace.GetRelativeTransform(ParentComponentSpaceTransform);
+
+                // 본 위치 갱신
+                SkeletalMeshComp->GetBonePoseContext().Pose[BoneIndex] = NewBoneLocal;
             }
             
         }
