@@ -34,5 +34,5 @@ public:
     virtual FRHIViewportRef CreateViewport(const FRHIViewportDesc& Desc) = 0;
 };
 
-//extern FDynamicRHI* GDynamicRHI;
+extern FDynamicRHI* GDynamicRHI;
 } // namespace RHI

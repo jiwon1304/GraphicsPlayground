@@ -204,7 +204,7 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Engine\Source\Runtime\RHI\PixelFormat.h" />
+    <ClCompile Include="Engine\Source\Runtime\RHI\DynamicRHI.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Windows\D3D11RHI\D3D11Resources.cpp" />
     <ClCompile Include="Engine\Source\Contents\Actors\ParticleSystemActor.cpp" />
     <ClCompile Include="Engine\Source\Contents\Actors\Fish.cpp" />
@@ -367,6 +367,7 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModules\ParticleModuleVelocity.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModules\ParticleModuleVelocityBase.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleSpriteEmitter.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\PhysicalMaterials\PhysicalMaterial.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\BodySetup.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\PhysicsAsset.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Classes\PhysicsEngine\PhysicsConstraintTemplate.cpp" />
@@ -597,7 +598,7 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="D3D11Resources.h" />
+    <ClInclude Include="Engine\Source\Runtime\RHI\PixelFormat.h" />
     <ClInclude Include="Engine\Source\Contents\Actors\ParticleSystemActor.h" />
     <ClInclude Include="Engine\Source\Contents\Actors\Fish.h" />
     <ClInclude Include="Engine\Source\Contents\Actors\GoalPlatformActor.h" />
@@ -856,7 +857,6 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     <ClInclude Include="Engine\Source\Runtime\Launch\ImGuiManager.h" />
     <ClInclude Include="Engine\Source\Runtime\Launch\LightDefine.h" />
     <ClInclude Include="Engine\Source\Runtime\PhysicalMaterials\Defines.h" />
-    <ClInclude Include="Engine\Source\Runtime\PhysicalMaterials\PhysicalMaterial.cpp" />
     <ClInclude Include="Engine\Source\Runtime\PhysicalMaterials\PhysicalMaterial.h" />
     <ClInclude Include="Engine\Source\Runtime\PhysicsCore\BodySetupCore.h" />
     <ClInclude Include="Engine\Source\Runtime\PhysicsCore\CollisionManager.h" />
@@ -910,6 +910,7 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     <ClInclude Include="Engine\Source\Runtime\SlateCore\Input\Events.h" />
     <ClInclude Include="Engine\Source\Runtime\SlateCore\Widgets\SWindow.h" />
     <ClInclude Include="Engine\Source\Runtime\Slate\Widgets\Layout\SSplitter.h" />
+    <ClInclude Include="Engine\Source\Runtime\Windows\D3D11RHI\D3D11Resources.h" />
     <ClInclude Include="Engine\Source\Runtime\Windows\D3D11RHI\DXDBufferManager.h" />
     <ClInclude Include="Engine\Source\Runtime\Windows\D3D11RHI\DXDShaderManager.h" />
     <ClInclude Include="Engine\Source\Runtime\Windows\D3D11RHI\GraphicDevice.h" />
