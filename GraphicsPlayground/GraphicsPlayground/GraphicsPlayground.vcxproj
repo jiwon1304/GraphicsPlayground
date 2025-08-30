@@ -204,6 +204,8 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Source\Runtime\RHI\PixelFormat.h" />
+    <ClCompile Include="Engine\Source\Runtime\Windows\D3D11RHI\D3D11Resources.cpp" />
     <ClCompile Include="Engine\Source\Contents\Actors\ParticleSystemActor.cpp" />
     <ClCompile Include="Engine\Source\Contents\Actors\Fish.cpp" />
     <ClCompile Include="Engine\Source\Contents\Actors\GoalPlatformActor.cpp" />
@@ -595,6 +597,7 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="D3D11Resources.h" />
     <ClInclude Include="Engine\Source\Contents\Actors\ParticleSystemActor.h" />
     <ClInclude Include="Engine\Source\Contents\Actors\Fish.h" />
     <ClInclude Include="Engine\Source\Contents\Actors\GoalPlatformActor.h" />
@@ -608,6 +611,8 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     <ClInclude Include="Engine\Source\Developer\PhysicsUtilities\PhysicsAssetUtils.h" />
     <ClInclude Include="Engine\Source\Editor\PropertyEditor\PhysicsAssetEditorPanel.h" />
     <ClInclude Include="Engine\Source\Runtime\CoreUObject\UObject\PropertyEvent.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\HAL\Event.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\HAL\Runnable.h" />
     <ClInclude Include="Engine\Source\Runtime\Core\Math\CurveEdInterface.h" />
     <ClInclude Include="Engine\Source\Runtime\Core\Math\RandomStream.h" />
     <ClInclude Include="Engine\Source\Runtime\Core\Math\Shapes.h" />
@@ -897,6 +902,10 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     <ClInclude Include="Engine\Source\Runtime\Renderer\TileLightCullingPass.h" />
     <ClInclude Include="Engine\Source\Runtime\Renderer\UpdateLightBufferPass.h" />
     <ClInclude Include="Engine\Source\Runtime\Renderer\WorldBillboardRenderPass.h" />
+    <ClInclude Include="Engine\Source\Runtime\RHI\DynamicRHI.h" />
+    <ClInclude Include="Engine\Source\Runtime\RHI\RHICommandList.h" />
+    <ClInclude Include="Engine\Source\Runtime\RHI\RHIDefinitions.h" />
+    <ClInclude Include="Engine\Source\Runtime\RHI\RHIFwd.h" />
     <ClInclude Include="Engine\Source\Runtime\Serialization\Serializer.h" />
     <ClInclude Include="Engine\Source\Runtime\SlateCore\Input\Events.h" />
     <ClInclude Include="Engine\Source\Runtime\SlateCore\Widgets\SWindow.h" />
@@ -1165,6 +1174,7 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     <ClInclude Include="Engine\Source\Editor\PropertyEditor\SubEditor\ParticleViewerPanel.h" />
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModules\ParticleModuleColorBase.h" />
     <ClInclude Include="Engine\Source\Runtime\Engine\Classes\Particles\ParticleModules\ParticleModuleColorOverLife.h" />
+    <ClInclude Include="Engine\Source\Runtime\RHI\RHIResources.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Engine\Source\Runtime\Windows\SubWindow\SubEngine.h" />
     <ClInclude Include="Engine\Source\Runtime\Windows\SubWindow\SubRenderer.h" />
