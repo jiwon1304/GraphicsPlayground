@@ -3,6 +3,8 @@
 #include <memory>
 //#include "RHIResources.h"
 
+template<typename T> using TSharedPtr = std::shared_ptr<T>; 
+
 namespace RHI
 {
 struct IRHIBindable;
@@ -34,26 +36,26 @@ struct FRHIUniformBuffer;
 struct FRHIViewportDesc;
 struct FRHIViewport;
 
-using FRHIResourceRef = std::shared_ptr<FRHIResource>;
+using FRHIResourceRef = TSharedPtr<FRHIResource>;
 
-using FRHIBufferRef = std::shared_ptr<FRHIBuffer>;
+using FRHIBufferRef = TSharedPtr<FRHIBuffer>;
 
-using FRHIInputLayoutRef = std::shared_ptr<FRHIInputLayout>;
+using FRHIInputLayoutRef = TSharedPtr<FRHIInputLayout>;
 
-using FRHIShaderRef = std::shared_ptr<FRHIShader>;
-using FRHIVertexShaderRef = std::shared_ptr<FRHIVertexShader>;
-using FRHIPixelShaderRef = std::shared_ptr<FRHIPixelShader>;
-using FRHIComputeShaderRef = std::shared_ptr<FRHIComputeShader>;
-using FRHIGeometryShaderRef = std::shared_ptr<FRHIGeometryShader>;
+using FRHIShaderRef = TSharedPtr<FRHIShader>;
+using FRHIVertexShaderRef = TSharedPtr<FRHIVertexShader>;
+using FRHIPixelShaderRef = TSharedPtr<FRHIPixelShader>;
+using FRHIComputeShaderRef = TSharedPtr<FRHIComputeShader>;
+using FRHIGeometryShaderRef = TSharedPtr<FRHIGeometryShader>;
 
-using FRHITextureRef = std::shared_ptr<FRHITexture>;
-using FRHISamplerStateRef = std::shared_ptr<FRHISamplerState>;
-using FRHIRasterizerStateRef = std::shared_ptr<FRHIRasterizerState>;
-using FRHIBlendStateRef = std::shared_ptr<FRHIBlendState>;
+using FRHITextureRef = TSharedPtr<FRHITexture>;
+using FRHISamplerStateRef = TSharedPtr<FRHISamplerState>;
+using FRHIRasterizerStateRef = TSharedPtr<FRHIRasterizerState>;
+using FRHIBlendStateRef = TSharedPtr<FRHIBlendState>;
 
-using FRHIDepthStencilStateRef = std::shared_ptr<FRHIDepthStencilState>;
-using FRHIUniformBufferRef = std::shared_ptr<FRHIUniformBuffer>;
-using FRHIViewportRef = std::shared_ptr<FRHIViewport>;
+using FRHIDepthStencilStateRef = TSharedPtr<FRHIDepthStencilState>;
+using FRHIUniformBufferRef = TSharedPtr<FRHIUniformBuffer>;
+using FRHIViewportRef = TSharedPtr<FRHIViewport>;
 
 struct FRHIRenderPassInfo;
 struct FAttribute;

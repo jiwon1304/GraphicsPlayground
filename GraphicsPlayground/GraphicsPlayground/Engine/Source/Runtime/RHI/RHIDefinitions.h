@@ -29,9 +29,22 @@ enum class EShaderType : uint8
 
 struct FRHIRenderPassInfo
 {
+    static constexpr uint32 MaxColorRenderTargets = 8;
+
+    /** Info of render target*/
+    struct FColorEntry
+    {
+        FRHITexture* RenderTarget = nullptr;
+    };
+    FColorEntry ColorRenderTargets[MaxColorRenderTargets];
     uint32 NumColorRenderTargets = 0;
-    FRHIView* ColorRenderTargets[8] = { nullptr }; // 최대 8개의 렌더 타겟 지원
-    FRHIView* DepthStencilRenderTarget = nullptr;
+
+    struct FDepthStencilEntry
+    {
+        FRHITexture* DepthStencilTarget = nullptr;
+    };
+    FDepthStencilEntry ExclusiveDepthStencil;
+
     // Clear options
     bool bClearColor = false;
     FLinearColor ClearColor = FLinearColor::Black;
@@ -39,14 +52,15 @@ struct FRHIRenderPassInfo
     float ClearDepth = 1.0f;
     bool bClearStencil = false;
     uint8 ClearStencil = 0;
+
     FRHIRenderPassInfo() = default;
-    FRHIRenderPassInfo(uint32 InNumColorRTs, FRHIView* const* InColorRTs, FRHIView* InDSV)
-        : NumColorRenderTargets(InNumColorRTs)
-        , DepthStencilRenderTarget(InDSV)
+    FRHIRenderPassInfo(uint32 NumColorRTs, FRHITexture* ColorRTs[], FRHITexture* DepthRT)
+        : NumColorRenderTargets(NumColorRTs)
+        , ExclusiveDepthStencil{ DepthRT }
     {
-        for (uint32 i = 0; i < InNumColorRTs && i < 8; ++i)
+        for (uint32 i = 0; i < NumColorRTs && i < MaxColorRenderTargets; ++i)
         {
-            ColorRenderTargets[i] = InColorRTs[i];
+            ColorRenderTargets[i].RenderTarget = ColorRTs[i];
         }
     };
 };

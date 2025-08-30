@@ -3,6 +3,8 @@
 #include "RHIDefinitions.h"
 #include "Container/Array.h"
 
+class FRHICommandList;
+
 namespace RHI
 {
 class FDynamicRHI
@@ -15,6 +17,9 @@ public:
     //virtual void RHIEndFrame_RenderThread(FRHICommandListImmediate& RHICmdList);
 
     //virtual void RHIEndFrame(const FRHIEndFrameArgs& Args) = 0;
+
+    virtual void RHITick(float DeltaTime) = 0;
+    virtual void RHIExecuteCommandList(FRHICommandList* CmdList) = 0;
 
     // -------------------------------------------------------------
     // Resource Creation
@@ -32,6 +37,8 @@ public:
     virtual FRHIDepthStencilStateRef CreateDepthStencilState(const FRHIDepthStencilStateDesc& Desc) = 0;
     virtual FRHIUniformBufferRef CreateUniformBuffer(const FRHIUniformBufferLayout* Layout, EUniformBufferUsage Usage) = 0;
     virtual FRHIViewportRef CreateViewport(const FRHIViewportDesc& Desc) = 0;
+
+    // Update Uniform Buffer?
 };
 
 extern FDynamicRHI* GDynamicRHI;

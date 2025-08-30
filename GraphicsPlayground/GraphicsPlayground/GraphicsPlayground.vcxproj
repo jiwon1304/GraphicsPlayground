@@ -204,6 +204,7 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Source\Runtime\Windows\D3D11RHI\D3D11DynamicRHI.cpp" />
     <ClCompile Include="Engine\Source\Runtime\RHI\DynamicRHI.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Windows\D3D11RHI\D3D11Resources.cpp" />
     <ClCompile Include="Engine\Source\Contents\Actors\ParticleSystemActor.cpp" />
@@ -428,6 +429,7 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     <ClCompile Include="Engine\Source\Runtime\SlateCore\Input\Events.cpp" />
     <ClCompile Include="Engine\Source\Runtime\SlateCore\Widgets\SWindow.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Slate\Widgets\Layout\SSplitter.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Windows\D3D11RHI\D3D11Viewport.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Windows\D3D11RHI\DXDBufferManager.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Windows\D3D11RHI\DXDShaderManager.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Windows\D3D11RHI\GraphicDevice.cpp" />
@@ -598,6 +600,9 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Source\Runtime\Core\HAL\LinearAllocator.h" />
+    <ClInclude Include="Engine\Source\Runtime\RHI\RHIContext.h" />
+    <ClInclude Include="Engine\Source\Runtime\Windows\D3D11RHI\D3D11DynamicRHI.h" />
     <ClInclude Include="Engine\Source\Runtime\RHI\PixelFormat.h" />
     <ClInclude Include="Engine\Source\Contents\Actors\ParticleSystemActor.h" />
     <ClInclude Include="Engine\Source\Contents\Actors\Fish.h" />
@@ -911,6 +916,7 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     <ClInclude Include="Engine\Source\Runtime\SlateCore\Widgets\SWindow.h" />
     <ClInclude Include="Engine\Source\Runtime\Slate\Widgets\Layout\SSplitter.h" />
     <ClInclude Include="Engine\Source\Runtime\Windows\D3D11RHI\D3D11Resources.h" />
+    <ClInclude Include="Engine\Source\Runtime\Windows\D3D11RHI\D3D11Viewport.h" />
     <ClInclude Include="Engine\Source\Runtime\Windows\D3D11RHI\DXDBufferManager.h" />
     <ClInclude Include="Engine\Source\Runtime\Windows\D3D11RHI\DXDShaderManager.h" />
     <ClInclude Include="Engine\Source\Runtime\Windows\D3D11RHI\GraphicDevice.h" />

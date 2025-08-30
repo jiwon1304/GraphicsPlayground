@@ -1,21 +1,16 @@
 #pragma once
 
 #include "RHI/RHIResources.h"
-
-#define _TCHAR_DEFINED
 #include "Define.h"
-#include <d3d11.h>
-#include <d3dcompiler.h>
 
-namespace RHI
+struct FD3D11Buffer : public RHI::FRHIBuffer
 {
-struct FD3D11Buffer : public FRHIBuffer
-{
-public:
+protected:
     ID3D11Buffer* Resource;
 
-    FD3D11Buffer(ID3D11Buffer* InResource, FRHIBufferDesc InDesc)
-        : FRHIBuffer(InDesc)
+public:
+    FD3D11Buffer(ID3D11Buffer* InResource, RHI::FRHIBufferDesc InDesc)
+        : RHI::FRHIBuffer(InDesc)
         , Resource(InResource)
     {
 
@@ -31,11 +26,12 @@ public:
     }
 };
 
-struct FD3D11Layout : public FRHIInputLayout
+struct FD3D11Layout : public RHI::FRHIInputLayout
 {
-public:
+protected:
     ID3D11InputLayout* Resource;
 
+public:
     FD3D11Layout(ID3D11InputLayout* InResource)
         : Resource(InResource)
     {
@@ -52,12 +48,13 @@ public:
     }
 };
 
-struct FD3D11VertexShader : public FRHIVertexShader
+struct FD3D11VertexShader : public RHI::FRHIVertexShader
 {
-public:
+protected:
     ID3D11VertexShader* Resource;
-    FD3D11VertexShader(ID3D11VertexShader* InResource, FRHIShaderDesc InDesc)
-        : FRHIVertexShader(InDesc)
+public:
+    FD3D11VertexShader(ID3D11VertexShader* InResource, RHI::FRHIShaderDesc InDesc)
+        : RHI::FRHIVertexShader(InDesc)
         , Resource(InResource)
     {
     }
@@ -71,12 +68,13 @@ public:
     }
 };
 
-struct FD3D11PixelShader : public FRHIPixelShader
+struct FD3D11PixelShader : public RHI::FRHIPixelShader
 {
-public:
+protected:
     ID3D11PixelShader* Resource;
-    FD3D11PixelShader(ID3D11PixelShader* InResource, FRHIShaderDesc InDesc)
-        : FRHIPixelShader(InDesc)
+public:
+    FD3D11PixelShader(ID3D11PixelShader* InResource, RHI::FRHIShaderDesc InDesc)
+        : RHI::FRHIPixelShader(InDesc)
         , Resource(InResource)
     {
     }
@@ -90,31 +88,13 @@ public:
     }
 };
 
-struct FD3D11ComputeShader : public FRHIComputeShader
+struct FD3D11ComputeShader : public RHI::FRHIComputeShader
 {
-public:
+protected:
     ID3D11ComputeShader* Resource;
-    FD3D11ComputeShader(ID3D11ComputeShader* InResource, FRHIShaderDesc InDesc)
-        : FRHIComputeShader(InDesc)
-        , Resource(InResource)
-    {
-    }
-    virtual void Release() override final
-    {
-        if (Resource)
-        {
-            Resource->Release();
-            Resource = nullptr;
-        }
-    }
-};
-
-struct FD3D11GeometryShader : public FRHIGeometryShader
-{
 public:
-    ID3D11GeometryShader* Resource;
-    FD3D11GeometryShader(ID3D11GeometryShader* InResource, FRHIShaderDesc InDesc)
-        : FRHIGeometryShader(InDesc)
+    FD3D11ComputeShader(ID3D11ComputeShader* InResource, RHI::FRHIShaderDesc InDesc)
+        : RHI::FRHIComputeShader(InDesc)
         , Resource(InResource)
     {
     }
@@ -128,8 +108,29 @@ public:
     }
 };
 
-struct FD3D11View : public FRHIView
+struct FD3D11GeometryShader : public RHI::FRHIGeometryShader
 {
+protected:
+    ID3D11GeometryShader* Resource;
+public:
+    FD3D11GeometryShader(ID3D11GeometryShader* InResource, RHI::FRHIShaderDesc InDesc)
+        : RHI::FRHIGeometryShader(InDesc)
+        , Resource(InResource)
+    {
+    }
+    virtual void Release() override final
+    {
+        if (Resource)
+        {
+            Resource->Release();
+            Resource = nullptr;
+        }
+    }
+};
+
+struct FD3D11View : public RHI::FRHIView
+{
+protected:
     union
     {
         ID3D11ShaderResourceView* SRV;
@@ -139,84 +140,96 @@ struct FD3D11View : public FRHIView
         void* Ptr;
     } Resource;
 
+public:
     virtual void Release() override final
     {
         if (Resource.Ptr)
         {
-            if (ViewTarget == EViewTarget::SRV)
+            if (ViewTarget == RHI::EViewTarget::SRV)
             {
                 Resource.SRV->Release();
             }
-            else if (ViewTarget == EViewTarget::RTV)
+            else if (ViewTarget == RHI::EViewTarget::RTV)
             {
                 Resource.RTV->Release();
             }
-            else if (ViewTarget == EViewTarget::DSV)
+            else if (ViewTarget == RHI::EViewTarget::DSV)
             {
                 Resource.DSV->Release();
             }
-            else if (ViewTarget == EViewTarget::UAV)
+            else if (ViewTarget == RHI::EViewTarget::UAV)
             {
                 Resource.UAV->Release();
             }
         }
     }
+
+    void* GetNativeView() const
+    {
+        return Resource.Ptr;
+    }
+
+    void SetNativeView(void* InView)
+    {
+        Resource.Ptr = InView;
+    }
 };
 
-struct FD3D11Texture : public FRHITexture
+struct FD3D11Texture : public RHI::FRHITexture
 {
-public:
+protected:
     ID3D11Texture2D* Resource;
 
-    FD3D11Texture(ID3D11Texture2D* InResource, ID3D11ShaderResourceView* InSRV, ID3D11RenderTargetView* InRTV, ID3D11DepthStencilView* InDSV, ID3D11UnorderedAccessView* InUAV, FRHITextureDesc InDesc)
-        : FRHITexture(InDesc)
+public:
+    FD3D11Texture(ID3D11Texture2D* InResource, ID3D11ShaderResourceView* InSRV, ID3D11RenderTargetView* InRTV, ID3D11DepthStencilView* InDSV, ID3D11UnorderedAccessView* InUAV, RHI::FRHITextureDesc InDesc)
+        : RHI::FRHITexture(InDesc)
         , Resource(InResource)
     {
         if (InSRV)
         {
             FD3D11View* NewSRV = new FD3D11View();
-            NewSRV->ViewTarget = EViewTarget::SRV;
-            NewSRV->ViewType = static_cast<EViewType>(Desc.Type);
+            NewSRV->ViewTarget = RHI::EViewTarget::SRV;
+            NewSRV->ViewType = static_cast<RHI::EViewType>(Desc.Type);
             NewSRV->Format = Desc.Format;
             NewSRV->MostDetailedMip = Desc.MostDetailedMip;
             NewSRV->MipLevels = Desc.MipLevels;
-            NewSRV->Resource.SRV = InSRV;
+            NewSRV->SetNativeView(InSRV);
             SRV = NewSRV;
         }
 
         if (InRTV)
         {
             FD3D11View* NewRTV = new FD3D11View();
-            NewRTV->ViewTarget = EViewTarget::RTV;
-            NewRTV->ViewType = static_cast<EViewType>(Desc.Type);
+            NewRTV->ViewTarget = RHI::EViewTarget::RTV;
+            NewRTV->ViewType = static_cast<RHI::EViewType>(Desc.Type);
             NewRTV->Format = Desc.Format;
             NewRTV->MostDetailedMip = Desc.MostDetailedMip;
             NewRTV->MipLevels = Desc.MipLevels;
-            NewRTV->Resource.RTV = InRTV;
+            NewRTV->SetNativeView(InRTV);
             RTV = NewRTV;
         }
 
         if (InDSV)
         {
             FD3D11View* NewDSV = new FD3D11View();
-            NewDSV->ViewTarget = EViewTarget::DSV;
-            NewDSV->ViewType = static_cast<EViewType>(Desc.Type);
+            NewDSV->ViewTarget = RHI::EViewTarget::DSV;
+            NewDSV->ViewType = static_cast<RHI::EViewType>(Desc.Type);
             NewDSV->Format = Desc.Format;
             NewDSV->MostDetailedMip = Desc.MostDetailedMip;
             NewDSV->MipLevels = Desc.MipLevels;
-            NewDSV->Resource.DSV = InDSV;
+            NewDSV->SetNativeView(InDSV);
             DSV = NewDSV;
         }
 
         if (InUAV)
         {
             FD3D11View* NewUAV = new FD3D11View();
-            NewUAV->ViewTarget = EViewTarget::UAV;
-            NewUAV->ViewType = static_cast<EViewType>(Desc.Type);
+            NewUAV->ViewTarget = RHI::EViewTarget::UAV;
+            NewUAV->ViewType = static_cast<RHI::EViewType>(Desc.Type);
             NewUAV->Format = Desc.Format;
             NewUAV->MostDetailedMip = Desc.MostDetailedMip;
             NewUAV->MipLevels = Desc.MipLevels;
-            NewUAV->Resource.UAV = InUAV;
+            NewUAV->SetNativeView(InUAV);
             UAV = NewUAV;
         }
     }
@@ -251,12 +264,13 @@ public:
     }
 };
 
-struct FD3D11SamplerState : public FRHISamplerState
+struct FD3D11SamplerState : public RHI::FRHISamplerState
 {
-public:
+protected:
     ID3D11SamplerState* Resource;
-    FD3D11SamplerState(ID3D11SamplerState* InResource, FRHISamplerStateDesc InDesc)
-        : FRHISamplerState(InDesc)
+public:
+    FD3D11SamplerState(ID3D11SamplerState* InResource, RHI::FRHISamplerStateDesc InDesc)
+        : RHI::FRHISamplerState(InDesc)
         , Resource(InResource)
     {
     }
@@ -270,31 +284,13 @@ public:
     }
 };
 
-struct FD3D11RasterizerState : public FRHIRasterizerState
+struct FD3D11RasterizerState : public RHI::FRHIRasterizerState
 {
-public:
+protected:
     ID3D11RasterizerState* Resource;
-    FD3D11RasterizerState(ID3D11RasterizerState* InResource, FRHIRasterizerStateDesc InDesc)
-        : FRHIRasterizerState(InDesc)
-        , Resource(InResource)
-    {
-    }
-    virtual void Release() override final
-    {
-        if (Resource)
-        {
-            Resource->Release();
-            Resource = nullptr;
-        }
-    }
-};
-
-struct FD3D11BlendState : public FRHIBlendState
-{
 public:
-    ID3D11BlendState* Resource;
-    FD3D11BlendState(ID3D11BlendState* InResource, FRHIBlendStateDesc InDesc)
-        : FRHIBlendState(InDesc)
+    FD3D11RasterizerState(ID3D11RasterizerState* InResource, RHI::FRHIRasterizerStateDesc InDesc)
+        : RHI::FRHIRasterizerState(InDesc)
         , Resource(InResource)
     {
     }
@@ -308,12 +304,32 @@ public:
     }
 };
 
-struct FD3D11DepthStencilState : public FRHIDepthStencilState
+struct FD3D11BlendState : public RHI::FRHIBlendState
+{
+protected:
+    ID3D11BlendState* Resource;
+public:
+    FD3D11BlendState(ID3D11BlendState* InResource, RHI::FRHIBlendStateDesc InDesc)
+        : RHI::FRHIBlendState(InDesc)
+        , Resource(InResource)
+    {
+    }
+    virtual void Release() override final
+    {
+        if (Resource)
+        {
+            Resource->Release();
+            Resource = nullptr;
+        }
+    }
+};
+
+struct FD3D11DepthStencilState : public RHI::FRHIDepthStencilState
 {
 public:
     ID3D11DepthStencilState* Resource;
-    FD3D11DepthStencilState(ID3D11DepthStencilState* InResource, FRHIDepthStencilStateDesc InDesc)
-        : FRHIDepthStencilState(InDesc)
+    FD3D11DepthStencilState(ID3D11DepthStencilState* InResource, RHI::FRHIDepthStencilStateDesc InDesc)
+        : RHI::FRHIDepthStencilState(InDesc)
         , Resource(InResource)
     {
     }
@@ -326,59 +342,3 @@ public:
         }
     }
 };
-
-struct FD3D11Viewport : public FRHIViewport
-{
-public:
-    IDXGISwapChain* SwapChain;
-    ID3D11RenderTargetView* BackBufferRTV;
-    ID3D11Texture2D* BackBufferTexture;
-    ID3D11Texture2D* DepthStencilTexture;
-    ID3D11DepthStencilView* DepthStencilView;
-    D3D11_VIEWPORT Viewport;
-    FD3D11Viewport(IDXGISwapChain* InSwapChain, ID3D11RenderTargetView* InRTV, ID3D11Texture2D* InBackBuffer, ID3D11Texture2D* InDSVTex, ID3D11DepthStencilView* InDSV, FRHIViewportDesc InDesc)
-        : FRHIViewport(InDesc)
-        , SwapChain(InSwapChain)
-        , BackBufferRTV(InRTV)
-        , BackBufferTexture(InBackBuffer)
-        , DepthStencilTexture(InDSVTex)
-        , DepthStencilView(InDSV)
-    {
-        Viewport.TopLeftX = 0.0f;
-        Viewport.TopLeftY = 0.0f;
-        Viewport.Width = static_cast<FLOAT>(Desc.Width);
-        Viewport.Height = static_cast<FLOAT>(Desc.Height);
-        Viewport.MinDepth = 0.0f;
-        Viewport.MaxDepth = 1.0f;
-    }
-    virtual void Release() override final
-    {
-        if (BackBufferRTV)
-        {
-            BackBufferRTV->Release();
-            BackBufferRTV = nullptr;
-        }
-        if (BackBufferTexture)
-        {
-            BackBufferTexture->Release();
-            BackBufferTexture = nullptr;
-        }
-        if (DepthStencilView)
-        {
-            DepthStencilView->Release();
-            DepthStencilView = nullptr;
-        }
-        if (DepthStencilTexture)
-        {
-            DepthStencilTexture->Release();
-            DepthStencilTexture = nullptr;
-        }
-        if (SwapChain)
-        {
-            SwapChain->Release();
-            SwapChain = nullptr;
-        }
-    }
-};
-
-}; // namespace RHI
