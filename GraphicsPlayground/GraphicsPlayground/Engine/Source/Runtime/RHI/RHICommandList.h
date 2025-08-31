@@ -19,6 +19,9 @@ struct FRHICommandBase
     virtual ~FRHICommandBase() = default;
 };
 
+/*
+* For general purpose
+*/
 template <typename RHICmdListType, typename LAMBDA>
 struct TRHILambdaCommand final : public FRHICommandBase
 {
@@ -35,6 +38,59 @@ struct TRHILambdaCommand final : public FRHICommandBase
         this->~TRHILambdaCommand();
     }
 };
+
+template <typename TCmd>
+struct FRHICommand : public FRHICommandBase
+{
+void ExecuteAndDestruct(FRHICommandListBase& CmdList) override final
+    {
+        static_cast<TCmd*>(this)->Execute(CmdList);
+        this->~TCmd();
+    }
+};
+
+#define FRHICOMMAND_MACRO(CommandName) \
+struct CommandName final : public FRHICommand<CommandName>
+
+FRHICOMMAND_MACRO(FRHICommandDrawPrimitive)
+{
+    uint32         BaseVertexIndex;
+    uint32         NumPrimitives;
+    uint32         NumInstances;
+    inline FRHICommandDrawPrimitive(uint32 InBaseVertexIndex, uint32 InNumVertices, uint32 InNumInstances)
+        : BaseVertexIndex(InBaseVertexIndex)
+        , NumPrimitives(InNumVertices)
+        , NumInstances(InNumInstances)
+    {
+    }
+    void Execute(FRHICommandListBase& CmdList);
+};
+
+FRHICOMMAND_MACRO(FRHICommandDrawIndexedPrimitive)
+{
+    uint32 BaseVertexIndex;
+    uint32 StartIndex;
+    uint32 NumIndices;
+    uint32 NumInstances;
+    inline FRHICommandDrawIndexedPrimitive(uint32 InBaseVertexIndex, uint32 InStartIndex, uint32 InNumIndices, uint32 InNumInstances)
+        : BaseVertexIndex(InBaseVertexIndex)
+        , StartIndex(InStartIndex)
+        , NumIndices(InNumIndices)
+        , NumInstances(InNumInstances)
+    {
+    }
+    void Execute(FRHICommandListBase& CmdList);
+}
+
+
+
+
+
+/*
+* Allocate Command 
+*/
+#define ALLOC_COMMAND(CmdList, Type) new ((CmdList).AllocCommand(sizeof(Type), alignof(Type))) Type
+
 
 class FRHICommandListBase
 {
@@ -72,7 +128,7 @@ public:
     uint32_t GetNumCommands() const { return NumCommands; }
     bool HasCommands() const { return Root != nullptr; }
 
-    // Record API -------------------------------------------------
+    // For general purpose
     template <typename RHICmdListType, typename LAMBDA>
     void EnqueueLambda(LAMBDA&& Fn)
     {
@@ -87,7 +143,6 @@ public:
     }
 
     // Execute ----------------------------------------------------
-    // 한 번 재생; 재생 후에는 Root/CommandLink를 초기화 (ResetAndRelease 호출 권장)
     void Execute()
     {
         FRHICommandBase* Node = Root;
@@ -118,6 +173,8 @@ public:
         NumCommands = 0;
         Allocator.Reset();
     }
+
+    FRHICommandContext& GetContext() const { return *GraphicsContext; }
 
 protected:
     void* AllocCommand(size_t Size, size_t Alignment)
@@ -154,6 +211,7 @@ private:
     }
 
 protected:
+    FRHICommandContext* GraphicsContext = nullptr;
     FRHICommandBase* Root = nullptr;
     FRHICommandBase** CommandLink = nullptr;
     uint32_t           NumCommands = 0;
@@ -161,6 +219,7 @@ protected:
     FLinearAllocator   Allocator;
 };
 
+class FRHICommandContext;
 /*
 * 실제론 Immediate Context를 이용하기 때문에 commandlist를 사용하진 않지만, 향후 Deferred Context를 사용할 경우를 대비해 인터페이스는 유지.
 */
@@ -170,21 +229,6 @@ public:
     virtual ~FRHICommandList() = default;
     virtual void Init() = 0;
     virtual void Shutdown() = 0;
-
-    // Resource Creation
-    virtual FRHIBufferRef CreateBuffer(const FRHIBufferDesc& Desc, const void* InitialData) = 0;
-    virtual FRHIInputLayoutRef CreateInputLayout(const TArray<FAttribute>& Attributes, const FRHIVertexShaderRef& VertexShader) = 0;
-    virtual FRHIVertexShaderRef CreateVertexShader(const FRHIShaderDesc& Desc) = 0;
-    virtual FRHIPixelShaderRef CreatePixelShader(const FRHIShaderDesc& Desc) = 0;
-    virtual FRHIComputeShaderRef CreateComputeShader(const FRHIShaderDesc& Desc) = 0;
-    virtual FRHIGeometryShaderRef CreateGeometryShader(const FRHIShaderDesc& Desc) = 0;
-    virtual FRHITextureRef CreateTexture(const FRHITextureDesc& Desc, const void* InitialData) = 0;
-    virtual FRHISamplerStateRef CreateSamplerState(const FRHISamplerStateDesc& Desc) = 0;
-    virtual FRHIRasterizerStateRef CreateRasterizerState(const FRHIRasterizerStateDesc& Desc) = 0;
-    virtual FRHIBlendStateRef CreateBlendState(const FRHIBlendStateDesc& Desc) = 0;
-    virtual FRHIDepthStencilStateRef CreateDepthStencilState(const FRHIDepthStencilStateDesc& Desc) = 0;
-    virtual FRHIUniformBufferRef CreateUniformBuffer(const FRHIUniformBufferLayout* Layout, EUniformBufferUsage Usage) = 0;
-    virtual FRHIViewportRef CreateViewport(const FRHIViewportDesc& Desc) = 0;
 
     // Render Passes
     virtual void BeginRenderPass(const FRHIRenderPassInfo& InInfo, const TCHAR* Name) = 0;
@@ -218,6 +262,7 @@ public:
 
     // Updates
     virtual void UpdateBuffer(FRHIBuffer* Buffer, const void* Data, uint32 Size) = 0;
+    virtual void UpdateUniformBuffer(FRHIUniformBuffer* UniformBuffer, const void* Data, uint32 Size) = 0;
     virtual void UpdateTexture(FRHITexture* Texture, const void* Data, uint32 Size) = 0;
     virtual void UpdateViewport(FRHIViewport* Viewport, const FRHIViewportDesc& Desc) = 0;
 
@@ -240,4 +285,59 @@ public:
 
     virtual void ImmediateFlush();
 };
+
+/** Kind of an executor */
+class FRHICommandContext
+{
+public:
+    virtual ~FRHICommandContext() = default;
+    // Render Passes
+    virtual void RHIBeginRenderPass(const FRHIRenderPassInfo& InInfo, const TCHAR* Name) = 0;
+    virtual void RHIEndRenderPass() = 0;
+
+    // Input Assembly
+    virtual void RHISetPrimitiveTopology(EPrimitiveType PrimitiveType) = 0;
+    virtual void RHISetInputLayout(FRHIInputLayout* InputLayout) = 0;
+    virtual void RHISetVertexBuffer(uint32 Slot, FRHIBuffer* VertexBuffer, uint32 Stride, uint32 Offset) = 0;
+    virtual void RHISetIndexBuffer(uint32 Slot, FRHIBuffer* IndexBuffer, uint32 Offset) = 0; // Index buffer uses uint32
+
+    // Shaders
+    virtual void RHISetVertexShader(FRHIVertexShader* VertexShader) = 0;
+    virtual void RHISetPixelShader(FRHIPixelShader* PixelShader) = 0;
+    virtual void RHISetComputeShader(FRHIComputeShader* ComputeShader) = 0;
+    virtual void RHISetGeometryShader(FRHIGeometryShader* GeometryShader) = 0;
+
+    virtual void RHISetStaticUniformBuffer(EShaderType TargetShader, FUniformBufferStaticSlot Slot, FRHIUniformBuffer* UniformBuffer) = 0;
+    virtual void RHISetDynamicUniformBuffer(EShaderType TargetShader, FUniformBufferStaticSlot Slot, FRHIUniformBuffer* UniformBuffer) = 0;
+    virtual void RHISetShaderResourceView(EShaderType TargetShader, FShaderResourceStaticSlot Slot, FRHIView* SRV) = 0;
+    virtual void RHISetSampler(EShaderType TargetShader, FSamplerStaticSlot Slot, FRHISamplerState* SamplerState) = 0;
+
+    // Rasterizer
+    virtual void RHISetRasterizerState(FRHIRasterizerState* RasterizerState) = 0;
+    virtual void RHISetBlendState(FRHIBlendState* BlendState, const FLinearColor& BlendFactor, uint32 SampleMask) = 0;
+    virtual void RHISetDepthStencilState(FRHIDepthStencilState* DepthStencilState, uint32 StencilRef) = 0;
+    virtual void RHISetViewport(FRHIViewport* Viewport) = 0;
+
+    // Output Merger
+    virtual void RHISetRenderTargets(uint32 NumRTVs, FRHIView* const* RTVs, FRHIView* DSV) = 0;
+
+    // Updates
+    virtual void RHIUpdateBuffer(FRHIBuffer* Buffer, const void* Data, uint32 Size) = 0;
+    virtual void RHIUpdateUniformBuffer(FRHIUniformBuffer* UniformBuffer, const void* Data, uint32 Size) = 0;
+    virtual void RHIUpdateTexture(FRHITexture* Texture, const void* Data, uint32 Size) = 0;
+    virtual void RHIUpdateViewport(FRHIViewport* Viewport, const FRHIViewportDesc& Desc) = 0;
+
+    // Clear
+    /*
+    * Note that BeginRenderPass() clears the render targets if specified in FRHIRenderPassInfo.
+    */
+    virtual void RHIClearColorTexture(FRHITexture* Texture, const FLinearColor& ClearColor) = 0;
+    virtual void RHIClearDepthTexture(FRHITexture* Texture, float Depth, uint8 Stencil) = 0;
+
+    // Draw
+    virtual void RHIDrawPrimitive(uint32 BaseVertexIndex, uint32 NumVertices, uint32 NumInstances) = 0;
+    virtual void RHIDrawIndexedPrimitive(uint32 BaseVertexIndex, uint32 StartIndex, uint32 NumIndices, uint32 NumInstances) = 0;
+};
 } // namespace RHI
+
+#include "RHICommandListCommandExecutes.inl"

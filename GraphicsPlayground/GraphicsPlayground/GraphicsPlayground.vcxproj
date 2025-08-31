@@ -204,6 +204,7 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Source\Runtime\RHI\RHICommandList.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Windows\D3D11RHI\D3D11DynamicRHI.cpp" />
     <ClCompile Include="Engine\Source\Runtime\RHI\DynamicRHI.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Windows\D3D11RHI\D3D11Resources.cpp" />
@@ -460,6 +461,9 @@ xcopy /y /d "$(SolutionDir)$(ProjectName)\Engine\Source\ThirdParty\FBX\lib\x64\$
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Windows\SubWindow\SubEngine.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Windows\SubWindow\SubRenderer.cpp" />
+    <ClInclude Include="Engine\Source\Runtime\RHI\RHICommandListCommandExecutes.inl">
+      <FileType>Document</FileType>
+    </ClInclude>
     <None Include="Shaders\CompositingShader.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
