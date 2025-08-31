@@ -264,11 +264,25 @@ _pkginfo.txt
 *.appxbundle
 *.appxupload
 
+# Mac filesystem cache
+.DS_Store
+
 # Visual Studio cache files
 # files ending in .cache can be ignored
 *.[Cc]ache
 # but keep track of directories ending in .cache
 !?*.[Cc]ache/
+
+# CMake build directory
+/build/
+/Build/
+
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+*.cmake
 
 # Others
 ClientBin/
