@@ -1,5 +1,5 @@
 #pragma once
-#include "GameFramework/Actor.h"
+#include "Runtime/Engine/Classes/GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 

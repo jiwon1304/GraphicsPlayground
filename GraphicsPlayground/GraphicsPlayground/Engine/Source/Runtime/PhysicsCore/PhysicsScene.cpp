@@ -1,7 +1,7 @@
 #include "PhysicsScene.h"
 #include "Components/ShapeComponent.h"
 #include "Components/ProjectileMovementComponent.h"
-#include "Classes/GameFramework/Actor.h"
+#include "Engine/Classes/GameFramework/Actor.h"
 #include "PhysicsCore/PhysXIntegration.h"
 #include "PhysicsSolver.h"
 #include "PhysxSolversModule.h"

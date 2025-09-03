@@ -6,7 +6,7 @@
 #include "Level.h"
 #include "Animation/SkeletalMeshActor.h"
 #include "GameFramework/Actor.h"
-#include "Classes/Engine/AssetManager.h"
+#include "Engine/Classes/Engine/AssetManager.h"
 #include "Contents/Actors/SkeletalMeshActorTest.h"
 #include "UObject/UObjectIterator.h"
 #include "Animation/SkeletalMeshActor.h"

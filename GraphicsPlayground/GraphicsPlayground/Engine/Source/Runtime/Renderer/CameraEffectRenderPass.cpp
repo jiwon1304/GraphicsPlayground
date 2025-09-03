@@ -2,7 +2,7 @@
 #include "Engine/Engine.h"
 #include "UnrealEd/EditorViewportClient.h"
 #include "Engine/World/World.h"
-#include "Classes/Camera/PlayerCameraManager.h"
+#include "Engine/Classes/Camera/PlayerCameraManager.h"
 #include "Renderer/ShaderConstants.h"
 #include "RendererHelpers.h"
 #include "UnrealClient.h"

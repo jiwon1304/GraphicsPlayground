@@ -1,5 +1,5 @@
 #pragma once
-#include "Components/SceneComponent.h"
+#include "Engine/Classes/Components/SceneComponent.h"
 #include "Container/Set.h"
 #include "Engine/Classes/Engine/EngineTypes.h"
 #include "UObject/Casts.h"

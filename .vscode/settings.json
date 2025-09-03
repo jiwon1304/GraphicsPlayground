@@ -1,3 +1,10 @@
 {
-    "cmake.sourceDirectory": "/Users/jiwon/git/GraphicsPlayground/GraphicsPlayground"
+    "cmake.sourceDirectory": "/Users/jiwon/git/GraphicsPlayground/GraphicsPlayground",
+    "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
+    "files.associations": {
+        "*.gs": "glsl",
+        "memory": "cpp",
+        "cstddef": "cpp",
+        "functional": "cpp"
+    }
 }

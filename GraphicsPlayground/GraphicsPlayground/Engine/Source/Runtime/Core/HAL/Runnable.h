@@ -5,6 +5,14 @@
 #include <memory>
 #include <iostream>
 
+/**
+ * FRunnable is a simple wrapper of std::thread
+ * It has three pure virtual function : Init(), Run(), Exit()
+ * Above functions are called inside the new thread.
+ * As soon as the thread is created, it is detached.
+ * If Init fails, the thread immediately returns. 
+ * When the stop is requested, the Run() function should return, then Exit() is called. 
+ */
 class FRunnable
 {
 public:
@@ -18,9 +26,6 @@ public:
     // 스레드 시작
     bool StartThread()
     {
-        if (!Init())
-            return false;
-
         bStopRequested = false;
         ThreadPtr = std::make_unique<std::thread>(&FRunnable::RunInternal, this);
         return true;
@@ -44,6 +49,7 @@ protected:
     // 스레드 안전 종료
     void RunInternal()
     {
+        if (!Init()) { return; }
         Run();
         Exit();
     }

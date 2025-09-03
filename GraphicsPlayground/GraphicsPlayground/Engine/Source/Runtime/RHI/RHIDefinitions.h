@@ -27,6 +27,12 @@ enum class EShaderType : uint8
     Geometry
 };
 
+/**
+ * Contains information of
+ * 1. Color render targets
+ * 2. Depth stencil target
+ * 3. Clear options
+ */
 struct FRHIRenderPassInfo
 {
     static constexpr uint32 MaxColorRenderTargets = 8;

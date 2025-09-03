@@ -4,7 +4,7 @@
 #include "Container/Set.h"
 #include "Engine/OverlapInfo.h"
 #include "Math/Transform.h"
-#include "Classes/PhysicsEngine/BodyInstance.h"
+#include "Engine/Classes/PhysicsEngine/BodyInstance.h"
 
 class UShapeComponent;
 struct FPhysicsSolver;

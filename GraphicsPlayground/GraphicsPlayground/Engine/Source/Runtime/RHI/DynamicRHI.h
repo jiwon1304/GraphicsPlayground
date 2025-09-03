@@ -41,5 +41,5 @@ public:
     // Update Uniform Buffer?
 };
 
-extern FDynamicRHI* GDynamicRHI;
 } // namespace RHI
+extern RHI::FDynamicRHI* GDynamicRHI;

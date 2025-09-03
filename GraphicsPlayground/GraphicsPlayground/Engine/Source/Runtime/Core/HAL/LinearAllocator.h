@@ -2,10 +2,12 @@
 #include <cstddef>
 #include <memory>
 
+/**
+ * Allocate arbitrary size linearly in heap.
+ */
 class FLinearAllocator
 {
 public:
-    /** 기본 크기를 64KB */
     explicit FLinearAllocator(size_t InitialCapacity = 64 * 1024)
         : Capacity(InitialCapacity)
     {
@@ -17,27 +19,31 @@ public:
         ::operator delete(Data);
     }
 
+    /**
+     * Allocate memory with the given size and alignment.
+     */
     void* Alloc(size_t Size, size_t Alignment)
     {
         size_t Current = reinterpret_cast<size_t>(Data) + Offset;
         size_t Aligned = (Current + (Alignment - 1)) & ~(Alignment - 1);
-        size_t NewOffset = (Aligned - reinterpret_cast<size_t>(Data)) + Size;
+        size_t AlignedOffset = Aligned - reinterpret_cast<size_t>(Data);
+        size_t NewOffset = AlignedOffset + Size;
         if (NewOffset > Capacity)
         {
             Grow(Size + Alignment);
-            return Alloc(Size, Alignment); // 재귀 재시도
+            return Alloc(Size, Alignment); // recursive
         }
         Offset = NewOffset;
         return reinterpret_cast<void*>(Aligned);
     }
 
-    // Clear memory to zero
+    /** (Optional) Clear memory to zero. */
     void Clear()
     {
         std::memset(Data, 0, Capacity);
     }
-    
-    // do not clear memory but reset offset.
+
+    /** Do not clear memory but reset offset. */
     void Reset()
     {
         Offset = 0;
@@ -59,7 +65,10 @@ private:
     }
 
 private:
+    /** Pointer to the allocated memory */
     std::byte* Data = nullptr;
+    /** Total capacity of the allocated memory */
     size_t Capacity = 0;
+    /** Current offset in the allocated memory = Allocated size */
     size_t Offset = 0;
 };

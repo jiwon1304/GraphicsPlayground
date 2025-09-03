@@ -1,3 +1,9 @@
 #include "DynamicRHI.h"
 
-RHI::FDynamicRHI* RHI::GDynamicRHI;
+RHI::FDynamicRHI* GDynamicRHI = nullptr;
+
+void RHIInit()
+{
+    assert(GDynamicRHI == nullptr);
+    GDynamicRHI = PlatformCreateDynamicRHI();
+}

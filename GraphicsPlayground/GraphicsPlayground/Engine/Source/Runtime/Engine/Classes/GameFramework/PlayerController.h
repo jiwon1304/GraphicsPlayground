@@ -2,7 +2,7 @@
 #include "Camera/CameraComponent.h"
 #include "Camera/PlayerCameraManager.h"
 #include "GameFramework/Actor.h" 
-#include "Classes/Components/InputComponent.h"
+#include "Engine/Classes/Components/InputComponent.h"
 
 class APlayerCameraManager;
 
