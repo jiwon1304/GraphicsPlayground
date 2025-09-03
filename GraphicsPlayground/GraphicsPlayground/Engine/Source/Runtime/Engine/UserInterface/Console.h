@@ -1,9 +1,9 @@
 #pragma once
 #include <format>
 #include "Container/Array.h"
-#include "D3D11RHI/GraphicDevice.h"
+#include "Windows/D3D11RHI/GraphicDevice.h"
 #include "HAL/PlatformType.h"
-#include "UObject/NameTypes.h"
+#include "CoreUObject/UObject/NameTypes.h"
 #include "ImGui/imgui.h"
 #include "PropertyEditor/IWindowToggleable.h"
 

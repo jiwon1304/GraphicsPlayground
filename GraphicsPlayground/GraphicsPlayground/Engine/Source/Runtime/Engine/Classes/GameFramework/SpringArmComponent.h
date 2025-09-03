@@ -1,8 +1,8 @@
 #pragma once
 
-#include "UObject/ObjectMacros.h"
+#include "CoreUObject/UObject/ObjectMacros.h"
 #include "Engine/Classes/Engine/EngineTypes.h"
-#include "Components/SceneComponent.h"
+#include "Engine/Classes/Components/SceneComponent.h"
 #include "Math/Quat.h"
 #include "Math/Vector.h"
 #include "PropertyEditor/PropertyEditorPanel.h"

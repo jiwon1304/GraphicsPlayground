@@ -2,7 +2,7 @@
 #include "CameraShakeBase.h"
 
 #include "Math/Quat.h"
-#include "UObject/UObjectArray.h"
+#include "CoreUObject/UObject/UObjectArray.h"
 
 FCameraShakeState::FCameraShakeState()
     : ElapsedTime(0.f)

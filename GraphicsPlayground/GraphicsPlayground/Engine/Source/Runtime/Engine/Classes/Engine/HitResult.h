@@ -3,7 +3,7 @@
 #include "Container/Array.h"
 #include "HAL/PlatformType.h"
 #include "Math/Vector.h"
-#include "UObject/NameTypes.h"
+#include "CoreUObject/UObject/NameTypes.h"
 
 class UPrimitiveComponent;
 class AActor;

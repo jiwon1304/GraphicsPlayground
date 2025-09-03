@@ -6,7 +6,7 @@
 #include "UnrealClient.h" // Depth Stencil View
 #include <d3d11.h>
 
-#include "Components/Light/PointLightComponent.h"
+#include "Engine/Classes/Components/Light/PointLightComponent.h"
 
 
 // ShadowMap을 생성하기 위한 Render Pass입니다.

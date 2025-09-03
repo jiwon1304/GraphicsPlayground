@@ -1,5 +1,5 @@
 ﻿#include "ObjectUtils.h"
-#include "UObjectArray.h"
+#include "CoreUObject/UObjectArray.h"
 
 
 bool IsValid(const UObject* Test)

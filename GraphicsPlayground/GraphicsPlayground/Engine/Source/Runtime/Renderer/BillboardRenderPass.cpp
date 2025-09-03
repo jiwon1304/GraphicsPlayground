@@ -1,20 +1,20 @@
 #include "BillboardRenderPass.h"
 
-#include "D3D11RHI/DXDBufferManager.h"
-#include "D3D11RHI/GraphicDevice.h"
-#include "D3D11RHI/DXDShaderManager.h"
+#include "Windows/D3D11RHI/DXDBufferManager.h"
+#include "Windows/D3D11RHI/GraphicDevice.h"
+#include "Windows/D3D11RHI/DXDShaderManager.h"
 
-#include "UObject/UObjectIterator.h"
-#include "UObject/Casts.h"
+#include "CoreUObject/UObject/UObjectIterator.h"
+#include "CoreUObject/UObject/Casts.h"
 
 #include "UnrealEd/EditorViewportClient.h"
 
-#include "Components/BillboardComponent.h"
-#include "Components/ParticleSubUVComponent.h"
-#include "Components/TextComponent.h"
-#include "Engine/EditorEngine.h"
+#include "Engine/Classes/Components/BillboardComponent.h"
+#include "Engine/Classes/Components/ParticleSubUVComponent.h"
+#include "Engine/Classes/Components/TextComponent.h"
+#include "Engine/Classes/Engine/EditorEngine.h"
 
-#include "EngineLoop.h"
+#include "Launch/EngineLoop.h"
 #include "UnrealClient.h"
 
 #include "World/World.h"

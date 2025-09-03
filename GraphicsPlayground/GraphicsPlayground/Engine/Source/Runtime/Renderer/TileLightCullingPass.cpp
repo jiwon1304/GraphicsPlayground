@@ -1,17 +1,17 @@
 #include "TileLightCullingPass.h"
-#include "D3D11RHI/DXDBufferManager.h"
-#include "D3D11RHI/GraphicDevice.h"
-#include "D3D11RHI/DXDShaderManager.h"
+#include "Windows/D3D11RHI/DXDBufferManager.h"
+#include "Windows/D3D11RHI/GraphicDevice.h"
+#include "Windows/D3D11RHI/DXDShaderManager.h"
 
 #include "UnrealClient.h"
 #include "UnrealEd/EditorViewportClient.h"
 #include "LevelEditor/SLevelEditor.h"
-#include "UObject/Casts.h"
-#include "Engine/EditorEngine.h"
-#include "Components/Light/LightComponent.h"
-#include "Components/Light/PointLightComponent.h"
-#include "Components/Light/SpotLightComponent.h"
-#include "UObject/UObjectIterator.h"
+#include "CoreUObject/UObject/Casts.h"
+#include "Engine/Classes/Engine/EditorEngine.h"
+#include "Engine/Classes/Components/Light/LightComponent.h"
+#include "Engine/Classes/Components/Light/PointLightComponent.h"
+#include "Engine/Classes/Components/Light/SpotLightComponent.h"
+#include "CoreUObject/UObject/UObjectIterator.h"
 
 #define SAFE_RELEASE(p) if (p) { (p)->Release(); (p) = nullptr; }
 

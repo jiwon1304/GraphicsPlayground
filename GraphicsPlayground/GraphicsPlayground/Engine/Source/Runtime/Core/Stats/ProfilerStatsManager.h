@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Core/HAL/PlatformType.h"
-#include "UObject/NameTypes.h" // For FName
+#include "CoreUObject/UObject/NameTypes.h" // For FName
 #include "Container/Map.h"     // For TMap
 #include "Stats.h"             // For TStatId
 

@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "Engine/Classes/Animation/AnimInstance.h"
 #include "Engine/Classes/Animation/AnimStateMachine.h"
-#include "UObject/ObjectMacros.h"
+#include "CoreUObject/UObject/ObjectMacros.h"
 
 class UAnimSequence;
 class UAnimationAsset;

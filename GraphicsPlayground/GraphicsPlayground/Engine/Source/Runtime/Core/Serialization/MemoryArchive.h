@@ -3,7 +3,7 @@
 
 #include "Archive.h"
 #include "Container/Array.h"
-#include "UObject/NameTypes.h"
+#include "CoreUObject/UObject/NameTypes.h"
 
 
 class FMemoryArchive : public FArchive

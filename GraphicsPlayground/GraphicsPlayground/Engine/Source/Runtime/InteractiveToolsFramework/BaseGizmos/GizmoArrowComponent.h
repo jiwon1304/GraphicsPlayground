@@ -1,6 +1,6 @@
 #pragma once
 #include "GizmoBaseComponent.h"
-#include "UObject/ObjectTypes.h"
+#include "CoreUObject/UObject/ObjectTypes.h"
 
 
 class UGizmoArrowComponent : public UGizmoBaseComponent

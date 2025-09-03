@@ -1,5 +1,5 @@
 #include "CubeActor.h"
-#include "Components/BoxComponent.h"
+#include "Engine/Classes/Components/BoxComponent.h"
 
 ACubeActor::ACubeActor()
 {

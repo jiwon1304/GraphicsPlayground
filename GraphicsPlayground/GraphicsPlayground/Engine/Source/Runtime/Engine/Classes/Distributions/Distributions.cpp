@@ -12,7 +12,7 @@
 #include "DistributionVector.h"
 #include "DistributionVectorUniform.h"
 #include "Particles/ParticleModules/ParticleModule.h"
-#include "UObject/Property.h"
+#include "CoreUObject/UObject/Property.h"
 
 // UDistribution 객체들을 기본 서브 오브젝트가 되지 않도록 PostInitProps로 이동
 // 에디터에서 0.0으로 반올림될 정도로 충분히 작은 값이지만,

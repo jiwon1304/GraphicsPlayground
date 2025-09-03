@@ -3,7 +3,7 @@
 #include "Core/Container/Map.h"
 #include "Delegates/DelegateCombination.h"
 #include "Runtime/InputCore/InputCoreTypes.h"
-#include "Components/ActorComponent.h"
+#include "Engine/Classes/Components/ActorComponent.h"
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOneFloatDelegate, const float&)
 

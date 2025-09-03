@@ -4,8 +4,8 @@
 #include <unordered_map>
 #include <wincodec.h>
 #include "Define.h"
-#include "Components/SkySphereComponent.h"
-#include "D3D11RHI/GraphicDevice.h"
+#include "Engine/Classes/Components/SkySphereComponent.h"
+#include "Windows/D3D11RHI/GraphicDevice.h"
 #include "DirectXTK/DDSTextureLoader.h"
 #include "Engine/FObjLoader.h"
 

@@ -5,7 +5,7 @@
 
 #include "AssetManager.h"
 #include "Asset/SkeletalMeshAsset.h"
-#include "UObject/ObjectFactory.h"
+#include "CoreUObject/UObject/ObjectFactory.h"
 #include "Math/transform.h"
 #include "Animation/Skeleton.h"
 #include "SkeletalMesh.h"

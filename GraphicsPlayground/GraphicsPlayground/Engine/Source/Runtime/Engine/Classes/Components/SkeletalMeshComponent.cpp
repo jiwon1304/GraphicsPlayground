@@ -10,9 +10,9 @@
 #include "Animation/AnimSingleNodeInstance.h"
 #include "Animation/AnimTypes.h"
 #include "Contents/AnimInstance/MyAnimInstance.h"
-#include "Engine/Engine.h"
-#include "UObject/Casts.h"
-#include "UObject/ObjectFactory.h"
+#include "Engine/Classes/Engine/Engine.h"
+#include "CoreUObject/UObject/Casts.h"
+#include "CoreUObject/UObject/ObjectFactory.h"
 
 bool USkeletalMeshComponent::bIsCPUSkinning = false;
 

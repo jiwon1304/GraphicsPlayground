@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Actors/Player.h"
-#include "Components/ActorComponent.h"
+#include "Engine/Classes/Components/ActorComponent.h"
 #include "Camera/CameraComponent.h"
-#include "Components/SceneComponent.h"
-#include "GameFramework/Actor.h"
+#include "Engine/Classes/Components/SceneComponent.h"
+#include "Engine/Classes/GameFramework/Actor.h"
 #include "UnrealEd/EditorPanel.h"
 #include "Math/Rotator.h"
-#include "UObject/Casts.h"
+#include "CoreUObject/UObject/Casts.h"
 
 class USkeletalMeshComponent;
 class USpringArmComponent;

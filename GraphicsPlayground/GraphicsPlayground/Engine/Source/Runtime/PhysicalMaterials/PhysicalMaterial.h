@@ -2,7 +2,7 @@
 
 #include "Defines.h"
 #include "CoreUObject/UObject/ObjectMacros.h"
-#include "UObject/ObjectFactory.h"
+#include "CoreUObject/UObject/ObjectFactory.h"
 
 class UPhysicalMaterial : public UObject
 {

@@ -1,14 +1,14 @@
 #include "ParticleModuleVelocity.h"
 
 #include "ParticleModuleRequired.h"
-#include "Components/ParticleSystemComponent.h"
+#include "Engine/Classes/Components/ParticleSystemComponent.h"
 #include "Distributions/DistributionFloatUniform.h"
 #include "Distributions/DistributionVectorUniform.h"
 #include "Particles/ParticleEmitter.h"
 #include "Particles/ParticleEmitterInstances.h"
 #include "Particles/ParticleHelper.h"
 #include "Particles/ParticleLODLevel.h"
-#include "UObject/ObjectFactory.h"
+#include "CoreUObject/UObject/ObjectFactory.h"
 
 UParticleModuleVelocity::UParticleModuleVelocity()
 {

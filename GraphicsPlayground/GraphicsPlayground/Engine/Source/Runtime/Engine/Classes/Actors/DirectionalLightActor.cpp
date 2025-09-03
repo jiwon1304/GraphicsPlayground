@@ -1,6 +1,6 @@
 #include "DirectionalLightActor.h"
-#include "Components/Light/DirectionalLightComponent.h"
-#include "Components/BillboardComponent.h"
+#include "Engine/Classes/Components/Light/DirectionalLightComponent.h"
+#include "Engine/Classes/Components/BillboardComponent.h"
 ADirectionalLight::ADirectionalLight()
 {
     DirectionalLightComponent = AddComponent<UDirectionalLightComponent>("UDirectionalLightComponent_0");

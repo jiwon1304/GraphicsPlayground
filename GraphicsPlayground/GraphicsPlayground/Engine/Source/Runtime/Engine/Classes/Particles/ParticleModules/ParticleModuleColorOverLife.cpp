@@ -1,14 +1,14 @@
 #include "ParticleModuleColorOverLife.h"
 #include "Particles/ParticleHelper.h"
 #include "Particles/ParticleEmitterInstances.h"
-#include "Components/ParticleSystemComponent.h"
+#include "Engine/Classes/Components/ParticleSystemComponent.h"
 #include "Particles/ParticleEmitter.h"
-#include "UObject/Casts.h"
+#include "CoreUObject/UObject/Casts.h"
 #include "Particles/ParticleLODLevel.h"
 #include "Particles/ParticleSystem.h"
 #include "Distributions/DistributionFloatUniform.h"
 #include "Distributions/DistributionVectorUniform.h"
-#include "UObject/ObjectFactory.h"
+#include "CoreUObject/UObject/ObjectFactory.h"
 void UParticleModuleColorOverLife::InitializeDefaults()
 {
 

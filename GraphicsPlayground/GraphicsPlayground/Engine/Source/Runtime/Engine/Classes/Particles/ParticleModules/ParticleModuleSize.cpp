@@ -1,12 +1,12 @@
 #include "ParticleModuleSize.h"
 
 #include "ParticleModuleRequired.h"
-#include "Components/ParticleSystemComponent.h"
+#include "Engine/Classes/Components/ParticleSystemComponent.h"
 #include "Distributions/DistributionVectorUniform.h"
 #include "Particles/ParticleEmitterInstances.h"
 #include "Particles/ParticleHelper.h"
 #include "Particles/ParticleLODLevel.h"
-#include "UObject/ObjectFactory.h"
+#include "CoreUObject/UObject/ObjectFactory.h"
 
 
 void UParticleModuleSize::PostInitProperties()

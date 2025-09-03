@@ -1,6 +1,6 @@
 #include "EditorRenderPass.h"
 
-#include "EngineLoop.h" // GEngineLoop
+#include "Launch/EngineLoop.h" // GEngineLoop
 #include "Engine/Source/Runtime/Engine/Classes/Engine/Engine.h" // GEngine
 #include "Engine/Source/Runtime/CoreUObject/UObject/Casts.h"
 #include "Engine/Source/Runtime/Engine/Classes/Engine/EditorEngine.h"
@@ -9,12 +9,12 @@
 #include "UnrealClient.h"
 #include "Engine/Source/Runtime/Engine/World/World.h"
 #include "UnrealEd/EditorViewportClient.h"
-#include "UObject/UObjectIterator.h"
+#include "CoreUObject/UObject/UObjectIterator.h"
 #include "BaseGizmos/GizmoBaseComponent.h"
-#include "Components/BoxComponent.h"
-#include "Components/CapsuleComponent.h"
-#include "Components/SphereComponent.h"
-#include "D3D11RHI/GraphicDevice.h"
+#include "Engine/Classes/Components/BoxComponent.h"
+#include "Engine/Classes/Components/CapsuleComponent.h"
+#include "Engine/Classes/Components/SphereComponent.h"
+#include "Windows/D3D11RHI/GraphicDevice.h"
 #include "Engine/FObjLoader.h"
 #include "Engine/Classes/Actors/Player.h"
 #include "Engine/Classes/Components/Light/LightComponent.h"

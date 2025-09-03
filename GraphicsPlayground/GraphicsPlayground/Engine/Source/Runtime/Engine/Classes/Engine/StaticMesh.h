@@ -1,7 +1,7 @@
 #pragma once
-#include "UObject/Object.h"
-#include "UObject/ObjectMacros.h"
-#include "Components/Material/Material.h"
+#include "CoreUObject/UObject/Object.h"
+#include "CoreUObject/UObject/ObjectMacros.h"
+#include "Engine/Classes/Components/Material/Material.h"
 #include "Define.h"
 
 struct FStaticMeshRenderData;

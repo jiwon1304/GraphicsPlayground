@@ -5,7 +5,7 @@
 #include <concepts>
 #include "Class.h"
 #include "ScriptStruct.h"
-#include "UObjectHash.h"
+#include "CoreUObject/UObjectHash.h"
 
 // MSVC에서 매크로 확장 문제를 해결하기 위한 매크로
 #define EXPAND_MACRO(x) x

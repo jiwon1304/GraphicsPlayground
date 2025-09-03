@@ -1,6 +1,6 @@
 #include "SphereActor.h"
 
-#include "Components/SphereComponent.h"
+#include "Engine/Classes/Components/SphereComponent.h"
 
 
 ASphereActor::ASphereActor()

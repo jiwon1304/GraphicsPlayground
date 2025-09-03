@@ -1,20 +1,20 @@
 // ParticleRenderPass.cpp (Instancing Version)
 #include "ParticleRenderPass.h"
 
-#include "EngineLoop.h"
+#include "Launch/EngineLoop.h"
 #include "Particles/ParticleHelper.h"
-#include "Engine/Engine.h"
+#include "Engine/Classes/Engine/Engine.h"
 #include "UnrealEd/EditorViewportClient.h"
-#include "D3D11RHI/DXDShaderManager.h"
-#include "D3D11RHI/GraphicDevice.h"
+#include "Windows/D3D11RHI/DXDShaderManager.h"
+#include "Windows/D3D11RHI/GraphicDevice.h"
 #include "UnrealClient.h"
 #include "RendererHelpers.h"
-#include "Components/ParticleSystemComponent.h"
+#include "Engine/Classes/Components/ParticleSystemComponent.h"
 #include "Engine/FObjLoader.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/Asset/StaticMeshAsset.h"
 #include "Particles/ParticleEmitterInstances.h"
-#include "UObject/UObjectIterator.h"
+#include "CoreUObject/UObject/UObjectIterator.h"
 
 struct FSpriteVertex
 {

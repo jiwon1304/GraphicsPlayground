@@ -1,13 +1,13 @@
 
 #include "StaticMeshRenderPassBase.h"
 
-#include "Engine/Engine.h"
-#include "UObject/UObjectIterator.h"
-#include "Components/StaticMeshComponent.h"
+#include "Engine/Classes/Engine/Engine.h"
+#include "CoreUObject/UObject/UObjectIterator.h"
+#include "Engine/Classes/Components/StaticMeshComponent.h"
 #include "BaseGizmos/GizmoBaseComponent.h"
-#include "Engine/EditorEngine.h"
+#include "Engine/Classes/Engine/EditorEngine.h"
 #include "UnrealEd/EditorViewportClient.h"
-#include "UObject/Casts.h"
+#include "CoreUObject/UObject/Casts.h"
 #include "Editor/PropertyEditor/ShowFlags.h"
 
 FStaticMeshRenderPassBase::FStaticMeshRenderPassBase()

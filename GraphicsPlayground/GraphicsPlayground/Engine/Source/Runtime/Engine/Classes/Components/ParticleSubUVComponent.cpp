@@ -1,7 +1,7 @@
 #include "ParticleSubUVComponent.h"
-#include "EngineLoop.h"
-#include "UObject/Casts.h"
-#include "D3D11RHI/DXDBufferManager.h"
+#include "Launch/EngineLoop.h"
+#include "CoreUObject/UObject/Casts.h"
+#include "Windows/D3D11RHI/DXDBufferManager.h"
 
 // 생성자: 기본 값 설정
 UParticleSubUVComponent::UParticleSubUVComponent()

@@ -3,9 +3,9 @@
 
 #include <array>
 #include "World/World.h"
-#include "Engine/EditorEngine.h"
+#include "Engine/Classes/Engine/EditorEngine.h"
 #include "UnrealEd/EditorViewportClient.h"
-#include "D3D11RHI/DXDShaderManager.h"
+#include "Windows/D3D11RHI/DXDShaderManager.h"
 #include "RendererHelpers.h"
 #include "StaticMeshRenderPass.h"
 #include "WorldBillboardRenderPass.h"
@@ -30,7 +30,7 @@
 #include "ShadowRenderPass.h"
 #include "SkeletalMeshRenderPass.h"
 #include "UnrealClient.h"
-#include "GameFrameWork/Actor.h"
+#include "Engine/Classes/GameFramework/Actor.h"
 
 #include "PropertyEditor/ShowFlags.h"
 #include "Stats/Stats.h"

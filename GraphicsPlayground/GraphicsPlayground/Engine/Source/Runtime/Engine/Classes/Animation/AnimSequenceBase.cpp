@@ -1,7 +1,7 @@
 
 #include "AnimSequenceBase.h"
 
-#include "UObject/ObjectFactory.h"
+#include "CoreUObject/UObject/ObjectFactory.h"
 #include "Animation/AnimData/AnimDataModel.h"
 #include "Developer/AnimDataController/AnimDataController.h"
 #include "Animation/AnimTypes.h"

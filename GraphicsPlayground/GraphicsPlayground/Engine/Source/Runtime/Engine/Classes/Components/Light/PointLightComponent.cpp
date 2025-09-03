@@ -1,8 +1,8 @@
 #include "PointLightComponent.h"
 
 #include "Math/JungleMath.h"
-#include "UObject/Casts.h"
-#include "EngineLoop.h"
+#include "CoreUObject/UObject/Casts.h"
+#include "Launch/EngineLoop.h"
 
 UPointLightComponent::UPointLightComponent()
 {

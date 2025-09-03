@@ -6,7 +6,7 @@
 #include "LevelEditor/SLevelEditor.h"
 #include "Math/MathUtility.h"
 #include "UnrealEd/EditorViewportClient.h"
-#include "EngineLoop.h"
+#include "Launch/EngineLoop.h"
 
 UBillboardComponent::UBillboardComponent()
 {

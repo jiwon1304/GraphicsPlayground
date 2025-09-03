@@ -4,7 +4,7 @@
 
 #include "IRenderPass.h"
 #include "RenderResources.h"
-#include "D3D11RHI/DXDBufferManager.h"
+#include "Windows/D3D11RHI/DXDBufferManager.h"
 
 class FDXDBufferManager;
 class UWorld;

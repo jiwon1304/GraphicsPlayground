@@ -1,7 +1,7 @@
 #include "GizmoBaseComponent.h"
 
 #include "TransformGizmo.h"
-#include "GameFramework/Actor.h"
+#include "Engine/Classes/GameFramework/Actor.h"
 #include "LevelEditor/SLevelEditor.h"
 #include "UnrealEd/EditorViewportClient.h"
 

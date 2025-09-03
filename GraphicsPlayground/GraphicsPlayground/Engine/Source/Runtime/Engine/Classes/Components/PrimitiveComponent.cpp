@@ -1,9 +1,9 @@
 #include "PrimitiveComponent.h"
 
-#include "UObject/Casts.h"
+#include "CoreUObject/UObject/Casts.h"
 #include "Engine/OverlapInfo.h"
 #include "Engine/OverlapResult.h"
-#include "GameFramework/Actor.h"
+#include "Engine/Classes/GameFramework/Actor.h"
 #include "World/World.h"
 
 // 언리얼 엔진에서도 여기에서 FOverlapInfo의 생성자를 정의하고 있음.

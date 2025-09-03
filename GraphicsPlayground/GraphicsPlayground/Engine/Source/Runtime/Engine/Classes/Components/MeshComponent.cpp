@@ -1,7 +1,7 @@
 #include "MeshComponent.h"
 
 #include "CoreMiscDefines.h"
-#include "UObject/Casts.h"
+#include "CoreUObject/UObject/Casts.h"
 
 
 UObject* UMeshComponent::Duplicate(UObject* InOuter)

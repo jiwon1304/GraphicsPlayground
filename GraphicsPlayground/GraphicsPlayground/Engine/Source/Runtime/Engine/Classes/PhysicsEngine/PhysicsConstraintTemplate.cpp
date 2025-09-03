@@ -1,6 +1,6 @@
 ﻿#include "PhysicsConstraintTemplate.h"
 
-#include "UObject/ObjectFactory.h"
+#include "CoreUObject/UObject/ObjectFactory.h"
 
 FArchive& operator<<(FArchive& Ar, UPhysicsConstraintTemplate*& PhysicsConstraintTemplate)
 {

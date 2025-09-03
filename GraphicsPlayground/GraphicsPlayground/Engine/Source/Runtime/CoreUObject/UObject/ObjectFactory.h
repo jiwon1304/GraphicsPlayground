@@ -2,7 +2,7 @@
 #include "EngineStatics.h"
 #include "Object.h"
 #include "Class.h"
-#include "UObjectArray.h"
+#include "CoreUObject/UObjectArray.h"
 #include "UserInterface/Console.h"
 
 class FObjectFactory

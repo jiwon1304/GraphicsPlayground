@@ -1,6 +1,6 @@
 #pragma once
 #include "Runtime/CoreUObject/UObject/ObjectMacros.h"
-#include "Components/ActorComponent.h"
+#include "Engine/Classes/Components/ActorComponent.h"
 #include <sol/sol.hpp>
 #include <filesystem>
 

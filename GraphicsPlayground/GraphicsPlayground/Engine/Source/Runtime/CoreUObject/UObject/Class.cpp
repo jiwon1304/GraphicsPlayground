@@ -2,7 +2,7 @@
 #include <cassert>
 
 #include "EngineStatics.h"
-#include "UObjectArray.h"
+#include "CoreUObject/UObjectArray.h"
 #include "Serialization/Archive.h"
 
 

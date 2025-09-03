@@ -1,4 +1,4 @@
 ﻿#include "PhysicalMaterial.h"
 
 #include "Defines.h"
-#include "UObject/ObjectFactory.h"
+#include "CoreUObject/UObject/ObjectFactory.h"

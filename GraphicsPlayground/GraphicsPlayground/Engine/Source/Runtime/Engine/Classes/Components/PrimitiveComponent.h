@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Engine/Classes/PhysicsEngine/BodyInstance.h"
-#include "Components/SceneComponent.h"
+#include "Engine/Classes/Components/SceneComponent.h"
 #include "Engine/OverlapInfo.h"
 
 DECLARE_MULTICAST_DELEGATE_FiveParams(FComponentHitSignature, UPrimitiveComponent* /* HitComponent */, AActor* /* OtherActor */, UPrimitiveComponent* /* OtherComp */, FVector /* NormalImpulse */, const FHitResult& /* Hit */);

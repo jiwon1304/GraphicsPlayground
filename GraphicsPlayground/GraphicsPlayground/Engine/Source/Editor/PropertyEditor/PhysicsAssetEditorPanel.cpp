@@ -1,6 +1,6 @@
 #include "PhysicsAssetEditorPanel.h"
 
-#include "Engine/EditorEngine.h"
+#include "Engine/Classes/Engine/EditorEngine.h"
 #include "Engine/SkeletalMesh.h"
 #include "PhysicsEngine/BodySetup.h"
 #include "PhysicsEngine/PhysicsAsset.h"

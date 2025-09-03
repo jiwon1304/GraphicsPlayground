@@ -1,6 +1,6 @@
 #pragma once
 #include "Container/Array.h"
-#include "UObject/NameTypes.h"
+#include "CoreUObject/UObject/NameTypes.h"
 #include "Math/Quat.h"
 #include "Math/Vector.h"
 

@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "UObject/Object.h"
+#include "CoreUObject/UObject/Object.h"
 
 struct FProperty;
 

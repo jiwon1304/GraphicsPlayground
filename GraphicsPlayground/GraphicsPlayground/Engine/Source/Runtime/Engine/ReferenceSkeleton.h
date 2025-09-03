@@ -2,7 +2,7 @@
 #include "CoreMiscDefines.h"
 #include "Container/Array.h"
 #include "Container/Map.h"
-#include "UObject/NameTypes.h"
+#include "CoreUObject/UObject/NameTypes.h"
 #include "Math/Transform.h"
 
 struct FMeshBoneInfo

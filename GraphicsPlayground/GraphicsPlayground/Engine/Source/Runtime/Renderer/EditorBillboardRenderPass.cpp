@@ -2,9 +2,9 @@
 #include "EditorBillboardRenderPass.h"
 
 #include "UnrealClient.h"
-#include "Engine/Engine.h"
-#include "UObject/UObjectIterator.h"
-#include "Components/BillboardComponent.h"
+#include "Engine/Classes/Engine/Engine.h"
+#include "CoreUObject/UObject/UObjectIterator.h"
+#include "Engine/Classes/Components/BillboardComponent.h"
 
 FEditorBillboardRenderPass::FEditorBillboardRenderPass()
 {

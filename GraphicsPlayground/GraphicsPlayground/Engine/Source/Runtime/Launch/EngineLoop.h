@@ -1,12 +1,11 @@
 #pragma once
 #include "Core/HAL/PlatformType.h"
-#include "Engine/ResourceMgr.h"
+#include "Engine/Classes/Engine/ResourceMgr.h"
 #include "LevelEditor/SlateAppMessageHandler.h"
 #include "Renderer/Renderer.h"
 #include "UnrealEd/PrimitiveDrawBatch.h"
 #include "Stats/ProfilerStatsManager.h"
 #include "Stats/GPUTimingManager.h"
-
 
 class FSlateAppMessageHandler;
 class UnrealEd;
@@ -31,10 +30,11 @@ public:
     void Tick();
     void Exit();
 
-    void GetClientSize(uint32& OutWidth, uint32& OutHeight) const;
+    void GetClientSize(uint32 &OutWidth, uint32 &OutHeight) const;
 
     void OpenParticleSystemViewer();
     void SubEngineControl();
+
 private:
     void WindowInit(HINSTANCE hInstance);
     static LRESULT CALLBACK AppWndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
@@ -59,25 +59,25 @@ public:
     void ParticleSubWindowInit(HINSTANCE hInstance);
     void CleanupSubWindow();
 
-    USubEngine* ParticleSubEngine;
+    USubEngine *ParticleSubEngine;
 
 private:
-    UImGuiManager* UIManager;
-    ImGuiContext* CurrentImGuiContext;
-    //TODO: GWorld 제거, Editor들 EditorEngine으로 넣기
+    UImGuiManager *UIManager;
+    ImGuiContext *CurrentImGuiContext;
+    // TODO: GWorld 제거, Editor들 EditorEngine으로 넣기
 
     std::unique_ptr<FSlateAppMessageHandler> AppMessageHandler;
-    SLevelEditor* LevelEditor;
-    UnrealEd* UnrealEditor;
-    FDXDBufferManager* BufferManager; //TODO: UEngine으로 옮겨야함.
+    SLevelEditor *LevelEditor;
+    UnrealEd *UnrealEditor;
+    FDXDBufferManager *BufferManager; // TODO: UEngine으로 옮겨야함.
 
     bool bIsExit = false;
     // @todo Option으로 선택 가능하도록
     int32 TargetFPS = 999;
 
 public:
-    SLevelEditor* GetLevelEditor() const { return LevelEditor; }
-    UnrealEd* GetUnrealEditor() const { return UnrealEditor; }
+    SLevelEditor *GetLevelEditor() const { return LevelEditor; }
+    UnrealEd *GetUnrealEditor() const { return UnrealEditor; }
 
-    FSlateAppMessageHandler* GetAppMessageHandler() const { return AppMessageHandler.get(); }
+    FSlateAppMessageHandler *GetAppMessageHandler() const { return AppMessageHandler.get(); }
 };

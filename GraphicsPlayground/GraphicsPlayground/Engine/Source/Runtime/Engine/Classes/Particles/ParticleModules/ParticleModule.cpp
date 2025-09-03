@@ -1,6 +1,6 @@
 #include "ParticleModule.h"
 #include "Particles/ParticleSystem.h"
-#include "UObject/Casts.h"
+#include "CoreUObject/UObject/Casts.h"
 #include "Particles/ParticleHelper.h"
 #include "Particles/ParticleEmitterInstances.h"
 

@@ -1,6 +1,6 @@
 #pragma once
-#include "Engine/EditorEngine.h"
-#include "GameFramework/Actor.h"
+#include "Engine/Classes/Engine/EditorEngine.h"
+#include "Engine/Classes/GameFramework/Actor.h"
 #include "UnrealEd/EditorPanel.h"
 
 class USkeletalMesh;

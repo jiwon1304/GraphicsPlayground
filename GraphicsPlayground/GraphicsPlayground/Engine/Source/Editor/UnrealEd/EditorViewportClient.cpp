@@ -6,10 +6,10 @@
 #include "UnrealClient.h"
 #include "WindowsCursor.h"
 #include "World/World.h"
-#include "GameFramework/Actor.h"
-#include "Engine/EditorEngine.h"
+#include "Engine/Classes/GameFramework/Actor.h"
+#include "Engine/Classes/Engine/EditorEngine.h"
 
-#include "UObject/ObjectFactory.h"
+#include "CoreUObject/UObject/ObjectFactory.h"
 #include "BaseGizmos/TransformGizmo.h"
 #include "Camera/CameraComponent.h"
 #include "LevelEditor/SLevelEditor.h"

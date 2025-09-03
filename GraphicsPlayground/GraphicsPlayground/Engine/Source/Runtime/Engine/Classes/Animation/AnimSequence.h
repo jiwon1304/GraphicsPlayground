@@ -1,6 +1,6 @@
 #pragma once
 #include "AnimSequenceBase.h"
-#include "UObject/ObjectMacros.h"
+#include "CoreUObject/UObject/ObjectMacros.h"
 
 struct FPoseContext;
 struct FTransform;

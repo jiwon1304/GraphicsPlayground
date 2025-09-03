@@ -2,7 +2,7 @@
 
 #include <array>
 
-#include "EngineLoop.h"
+#include "Launch/EngineLoop.h"
 #include "World/World.h"
 
 #include "RendererHelpers.h"
@@ -11,22 +11,22 @@
 #include "UnrealClient.h"
 #include "Math/JungleMath.h"
 
-#include "UObject/UObjectIterator.h"
-#include "UObject/Casts.h"
+#include "CoreUObject/UObject/UObjectIterator.h"
+#include "CoreUObject/UObject/Casts.h"
 
-#include "D3D11RHI/DXDBufferManager.h"
-#include "D3D11RHI/GraphicDevice.h"
-#include "D3D11RHI/DXDShaderManager.h"
+#include "Windows/D3D11RHI/DXDBufferManager.h"
+#include "Windows/D3D11RHI/GraphicDevice.h"
+#include "Windows/D3D11RHI/DXDShaderManager.h"
 
-#include "Components/StaticMeshComponent.h"
+#include "Engine/Classes/Components/StaticMeshComponent.h"
 
 #include "BaseGizmos/GizmoBaseComponent.h"
-#include "Engine/EditorEngine.h"
+#include "Engine/Classes/Engine/EditorEngine.h"
 
 #include "PropertyEditor/ShowFlags.h"
 
 #include "UnrealEd/EditorViewportClient.h"
-#include "Components/Light/PointLightComponent.h"
+#include "Engine/Classes/Components/Light/PointLightComponent.h"
 #include "Contents/Actors/Fish.h"
 #include "Engine/AssetManager.h"
 

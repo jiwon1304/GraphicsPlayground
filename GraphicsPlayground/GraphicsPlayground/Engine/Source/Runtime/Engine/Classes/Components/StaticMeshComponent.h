@@ -1,5 +1,5 @@
 #pragma once
-#include "Components/MeshComponent.h"
+#include "Engine/Classes/Components/MeshComponent.h"
 #include "Engine/StaticMesh.h"
 
 #include "Engine/Asset/StaticMeshAsset.h"

@@ -3,7 +3,7 @@
 #include "Animation/Skeleton.h"
 #include "Engine/SkeletalMesh.h"
 #include "PhysicsEngine/PhysicsAsset.h"
-#include "UObject/ObjectFactory.h"
+#include "CoreUObject/UObject/ObjectFactory.h"
 #include "PhysicsEngine/BodySetup.h"
 #include "PhysicalMaterials/Defines.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"

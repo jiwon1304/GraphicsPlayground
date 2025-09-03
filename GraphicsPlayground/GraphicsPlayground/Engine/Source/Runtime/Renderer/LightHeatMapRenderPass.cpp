@@ -1,8 +1,8 @@
 #include "LightHeatMapRenderPass.h"
 
-#include "D3D11RHI/GraphicDevice.h"
-#include "D3D11RHI/DXDShaderManager.h"
-#include "D3D11RHI/DXDBufferManager.h"
+#include "Windows/D3D11RHI/GraphicDevice.h"
+#include "Windows/D3D11RHI/DXDShaderManager.h"
+#include "Windows/D3D11RHI/DXDBufferManager.h"
 #include "UnrealEd/EditorViewportClient.h"
 #include "Define.h"
 #include "Engine/Classes/GameFramework/Actor.h"

@@ -2,8 +2,8 @@
 #include "IRenderPass.h"
 #include "Container/Array.h"
 #include "Define.h"
-#include "D3D11RHI/DXDShaderManager.h"
-#include "D3D11RHI/DXDBufferManager.h"
+#include "Windows/D3D11RHI/DXDShaderManager.h"
+#include "Windows/D3D11RHI/DXDBufferManager.h"
 #include "Math/Shapes.h"
 #include "Math/Color.h"
 

@@ -1,11 +1,11 @@
-#include "Components/SceneComponent.h"
+#include "Engine/Classes/Components/SceneComponent.h"
 
 #include "Math/Rotator.h"
 #include "Math/JungleMath.h"
-#include "UObject/Casts.h"
-#include "UObject/ObjectFactory.h"
+#include "CoreUObject/UObject/Casts.h"
+#include "CoreUObject/UObject/ObjectFactory.h"
 #include "Engine/HitResult.h"
-#include "GameFramework/Actor.h"
+#include "Engine/Classes/GameFramework/Actor.h"
 #include "Math/Transform.h"
 
 USceneComponent::USceneComponent()

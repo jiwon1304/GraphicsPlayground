@@ -4,14 +4,14 @@
 
 #include "Actors/PointLightActor.h"
 #include "Actors/SpotLightActor.h"
-#include "Components/SkeletalMeshComponent.h"
-#include "Components/Light/LightComponent.h"
-#include "Engine/Engine.h"
+#include "Engine/Classes/Components/SkeletalMeshComponent.h"
+#include "Engine/Classes/Components/Light/LightComponent.h"
+#include "Engine/Classes/Engine/Engine.h"
 #include "Renderer/UpdateLightBufferPass.h"
 #include "Stats/GPUTimingManager.h"
 #include "Stats/ProfilerStatsManager.h"
 #include "UnrealEd/EditorViewportClient.h"
-#include "UObject/UObjectIterator.h"
+#include "CoreUObject/UObject/UObjectIterator.h"
 
 
 void FStatOverlay::ToggleStat(const std::string& Command)

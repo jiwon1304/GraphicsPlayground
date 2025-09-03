@@ -3,12 +3,12 @@
 
 #include <array>
 
-#include "UObject/UObjectIterator.h"
-#include "UObject/Casts.h"
+#include "CoreUObject/UObject/UObjectIterator.h"
+#include "CoreUObject/UObject/Casts.h"
 
-#include "D3D11RHI/DXDBufferManager.h"
-#include "D3D11RHI/GraphicDevice.h"
-#include "D3D11RHI/DXDShaderManager.h"
+#include "Windows/D3D11RHI/DXDBufferManager.h"
+#include "Windows/D3D11RHI/GraphicDevice.h"
+#include "Windows/D3D11RHI/DXDShaderManager.h"
 
 #include "RendererHelpers.h"
 #include "Math/JungleMath.h"
@@ -22,13 +22,13 @@
 
 #include "UnrealEd/EditorViewportClient.h"
 
-#include "EngineLoop.h"
+#include "Launch/EngineLoop.h"
 #include "UnrealClient.h"
 
-#include "UObject/ObjectTypes.h"
+#include "CoreUObject/UObject/ObjectTypes.h"
 
-#include "Components/StaticMeshComponent.h"
-#include "Engine/EditorEngine.h"
+#include "Engine/Classes/Components/StaticMeshComponent.h"
+#include "Engine/Classes/Engine/EditorEngine.h"
 
 
 FGizmoRenderPass::FGizmoRenderPass()

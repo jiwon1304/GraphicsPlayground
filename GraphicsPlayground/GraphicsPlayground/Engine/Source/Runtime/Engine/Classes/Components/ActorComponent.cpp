@@ -1,6 +1,6 @@
 #include "ActorComponent.h"
 
-#include "GameFramework/Actor.h"
+#include "Engine/Classes/GameFramework/Actor.h"
 
 
 UObject* UActorComponent::Duplicate(UObject* InOuter)

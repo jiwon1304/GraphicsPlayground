@@ -2,7 +2,7 @@
 #include "CameraModifier_CameraShake.h"
 
 #include "CameraShakeBase.h"
-#include "UObject/ObjectFactory.h"
+#include "CoreUObject/UObject/ObjectFactory.h"
 #include "World/World.h"
 
 UCameraShakeBase* UCameraModifier_CameraShake::AddCameraShake(UClass* ShakeClass)

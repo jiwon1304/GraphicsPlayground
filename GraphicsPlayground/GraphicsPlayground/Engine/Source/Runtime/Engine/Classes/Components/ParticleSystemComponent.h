@@ -1,7 +1,7 @@
 #pragma once
-#include "UObject/Object.h"
-#include "UObject/ObjectMacros.h"
-#include "Components/PrimitiveComponent.h"
+#include "CoreUObject/UObject/Object.h"
+#include "CoreUObject/UObject/ObjectMacros.h"
+#include "Engine/Classes/Components/PrimitiveComponent.h"
 #include "Particles/ParticleHelper.h"
 
 struct FParticleEmitterInstance;

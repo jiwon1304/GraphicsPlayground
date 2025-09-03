@@ -1,8 +1,8 @@
 
 #include "ItemActor.h"
 
-#include "Components/SphereComponent.h"
-#include "Components/StaticMeshComponent.h"
+#include "Engine/Classes/Components/SphereComponent.h"
+#include "Engine/Classes/Components/StaticMeshComponent.h"
 #include "Engine/FObjLoader.h"
 
 AItemActor::AItemActor()

@@ -2,9 +2,9 @@
 #include "LuaBindingHelpers.h"
 #include "LuaScriptFileUtils.h"
 #include "World/World.h"
-#include "Engine/EditorEngine.h"
+#include "Engine/Classes/Engine/EditorEngine.h"
 #include "Runtime/Engine/Classes/GameFramework/Actor.h"
-// #include "Engine/Engine.h"
+// #include "Engine/Classes/Engine/Engine.h"
 
 ULuaScriptComponent::ULuaScriptComponent()
 {

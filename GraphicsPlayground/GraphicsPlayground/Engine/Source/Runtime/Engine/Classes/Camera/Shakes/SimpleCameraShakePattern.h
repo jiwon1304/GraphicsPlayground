@@ -1,6 +1,6 @@
 #pragma once
 #include "Camera/CameraShakeBase.h"
-#include "UObject/ObjectMacros.h"
+#include "CoreUObject/UObject/ObjectMacros.h"
 
 class USimpleCameraShakePattern : public UCameraShakePattern
 {

@@ -1,6 +1,6 @@
 #pragma once
 #include "CoreUObject/UObject/ObjectMacros.h"
-#include "Engine/EngineTypes.h"
+#include "Engine/Classes/Engine/EngineTypes.h"
 #include "Math/Shapes.h"
 
 namespace EAggCollisionShape

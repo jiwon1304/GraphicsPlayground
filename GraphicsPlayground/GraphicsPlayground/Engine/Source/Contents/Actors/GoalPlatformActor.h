@@ -1,7 +1,7 @@
 #pragma once
 #include "Engine/Classes/GameFramework/Actor.h"
-#include "Components/BoxComponent.h"
-#include "Components/StaticMeshComponent.h"
+#include "Engine/Classes/Components/BoxComponent.h"
+#include "Engine/Classes/Components/StaticMeshComponent.h"
 
 class AGoalPlatformActor : public AActor
 {

@@ -10,7 +10,7 @@
 #include "Particles/ParticleSystem.h"
 #include "Particles/ParticleEmitter.h"
 #include "Particles/ParticleModules/ParticleModuleRequired.h"
-#include "Components/ParticleSystemComponent.h"
+#include "Engine/Classes/Components/ParticleSystemComponent.h"
 UParticleSubEngine::UParticleSubEngine()
 {
 }

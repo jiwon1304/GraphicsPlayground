@@ -1,7 +1,7 @@
 #include "ParticleSystem.h"
 #include "Particles/ParticleEmitter.h"
-#include "Components/ParticleSystemComponent.h"
-#include "UObject/Casts.h"
+#include "Engine/Classes/Components/ParticleSystemComponent.h"
+#include "CoreUObject/UObject/Casts.h"
 
 void UParticleSystem::PostEditChangeProperty()
 {

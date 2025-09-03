@@ -1,7 +1,7 @@
 #include "PlayerCameraManager.h"
 
 #include "CameraModifier.h"
-#include "GameFramework/PlayerController.h"
+#include "Engine/Classes/GameFramework/PlayerController.h"
 #include "Camera/CameraModifier_CameraShake.h"
 #include "World/World.h"
 

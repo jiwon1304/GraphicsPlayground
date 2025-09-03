@@ -1,8 +1,8 @@
 #include "PlayerController.h"
 
 #include "Camera/PlayerCameraManager.h"
-#include "Engine/Engine.h"
-#include "UObject/UObjectIterator.h"
+#include "Engine/Classes/Engine/Engine.h"
+#include "CoreUObject/UObject/UObjectIterator.h"
 #include "World/World.h"
 
 

@@ -1,5 +1,5 @@
 #include "Material.h"
-#include "UObject/Casts.h"
+#include "CoreUObject/UObject/Casts.h"
 
 
 UObject* UMaterial::Duplicate(UObject* InOuter)

@@ -1,20 +1,20 @@
 #include "Define.h"
-#include "UObject/Casts.h"
+#include "CoreUObject/UObject/Casts.h"
 #include "UpdateLightBufferPass.h"
 
 #include <algorithm>
 #include <utility>
-#include "D3D11RHI/DXDBufferManager.h"
-#include "D3D11RHI/GraphicDevice.h"
-#include "D3D11RHI/DXDShaderManager.h"
-#include "Components/Light/LightComponent.h"
-#include "Components/Light/PointLightComponent.h"
-#include "Components/Light/SpotLightComponent.h"
-#include "Components/Light/DirectionalLightComponent.h"
-#include "Components/Light/AmbientLightComponent.h"
-#include "Engine/EditorEngine.h"
-#include "GameFramework/Actor.h"
-#include "UObject/UObjectIterator.h"
+#include "Windows/D3D11RHI/DXDBufferManager.h"
+#include "Windows/D3D11RHI/GraphicDevice.h"
+#include "Windows/D3D11RHI/DXDShaderManager.h"
+#include "Engine/Classes/Components/Light/LightComponent.h"
+#include "Engine/Classes/Components/Light/PointLightComponent.h"
+#include "Engine/Classes/Components/Light/SpotLightComponent.h"
+#include "Engine/Classes/Components/Light/DirectionalLightComponent.h"
+#include "Engine/Classes/Components/Light/AmbientLightComponent.h"
+#include "Engine/Classes/Engine/EditorEngine.h"
+#include "Engine/Classes/GameFramework/Actor.h"
+#include "CoreUObject/UObject/UObjectIterator.h"
 #include "TileLightCullingPass.h"
 
 //------------------------------------------------------------------------------

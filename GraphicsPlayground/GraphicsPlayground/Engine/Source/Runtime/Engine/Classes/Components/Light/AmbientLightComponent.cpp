@@ -1,6 +1,6 @@
 ﻿#include "AmbientLightComponent.h"
 
-#include "UObject/Casts.h"
+#include "CoreUObject/UObject/Casts.h"
 
 UAmbientLightComponent::UAmbientLightComponent()
 {

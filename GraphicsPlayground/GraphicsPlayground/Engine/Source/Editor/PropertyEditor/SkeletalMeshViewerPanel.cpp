@@ -1,5 +1,5 @@
 #include "SkeletalMeshViewerPanel.h"
-#include "Engine/EditorEngine.h"
+#include "Engine/Classes/Engine/EditorEngine.h"
 #include <ReferenceSkeleton.h>
 
 #include "Animation/AnimSequence.h"

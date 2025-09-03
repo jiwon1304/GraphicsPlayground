@@ -1,7 +1,7 @@
 ﻿#include "BodySetup.h"
 
 #include "PhysicalMaterials/PhysicalMaterial.h"
-#include "UObject/ObjectFactory.h"
+#include "CoreUObject/UObject/ObjectFactory.h"
 
 
 FArchive& operator<<(FArchive& Ar, UBodySetup*& BodySetup)

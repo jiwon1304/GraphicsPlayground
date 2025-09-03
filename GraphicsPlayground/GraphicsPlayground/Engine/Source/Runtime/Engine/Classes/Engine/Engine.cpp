@@ -3,7 +3,7 @@
 #include "EditorEngine.h"
 #include "WindowsPlatformTime.h"
 #include "UnrealEd/SceneManager.h"
-#include "UObject/Casts.h"
+#include "CoreUObject/UObject/Casts.h"
 #include "World/World.h"
 #include "PhysicsCore/PhysxSolversModule.h"
 

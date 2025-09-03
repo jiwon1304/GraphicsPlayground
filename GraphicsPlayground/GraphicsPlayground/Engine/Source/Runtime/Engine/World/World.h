@@ -1,17 +1,17 @@
 #pragma once
 #include "Define.h"
 #include "Container/Set.h"
-#include "UObject/ObjectFactory.h"
-#include "UObject/ObjectMacros.h"
+#include "CoreUObject/UObject/ObjectFactory.h"
+#include "CoreUObject/UObject/ObjectMacros.h"
 #include "WorldType.h"
 #include "Level.h"
 #include "Actors/Player.h"
-#include "GameFramework/PlayerController.h"
+#include "Engine/Classes/GameFramework/PlayerController.h"
 #include "Camera/CameraComponent.h"
 #include "Camera/PlayerCameraManager.h"
-#include "Engine/Engine.h"
-#include "Engine/EventManager.h"
-#include "UObject/UObjectIterator.h"
+#include "Engine/Classes/Engine/Engine.h"
+#include "Engine/Classes/Engine/EventManager.h"
+#include "CoreUObject/UObject/UObjectIterator.h"
 
 class UPrimitiveComponent;
 struct FOverlapResult;

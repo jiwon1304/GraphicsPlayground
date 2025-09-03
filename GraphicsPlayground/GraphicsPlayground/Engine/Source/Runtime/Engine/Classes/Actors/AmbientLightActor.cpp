@@ -1,6 +1,6 @@
 #include "AmbientLightActor.h"
-#include "Components/Light/AmbientLightComponent.h"
-#include "Components/BillboardComponent.h"
+#include "Engine/Classes/Components/Light/AmbientLightComponent.h"
+#include "Engine/Classes/Components/BillboardComponent.h"
 
 AAmbientLight::AAmbientLight()
 {

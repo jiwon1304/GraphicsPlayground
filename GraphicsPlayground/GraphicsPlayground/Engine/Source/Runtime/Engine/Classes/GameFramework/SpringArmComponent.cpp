@@ -2,10 +2,10 @@
 
 #include "Actor.h"
 #include "HAL/PlatformType.h"
-#include "Components/BoxComponent.h"
-#include "Components/SphereComponent.h"
+#include "Engine/Classes/Components/BoxComponent.h"
+#include "Engine/Classes/Components/SphereComponent.h"
 #include "Engine/OverlapResult.h"
-#include "UObject/UObjectIterator.h"
+#include "CoreUObject/UObject/UObjectIterator.h"
 #include "World/World.h"
 
 USpringArmComponent::USpringArmComponent()

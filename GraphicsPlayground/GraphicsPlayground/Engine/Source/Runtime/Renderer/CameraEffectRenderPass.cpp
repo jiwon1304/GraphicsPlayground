@@ -1,5 +1,5 @@
 #include "CameraEffectRenderPass.h"
-#include "Engine/Engine.h"
+#include "Engine/Classes/Engine/Engine.h"
 #include "UnrealEd/EditorViewportClient.h"
 #include "Engine/World/World.h"
 #include "Engine/Classes/Camera/PlayerCameraManager.h"

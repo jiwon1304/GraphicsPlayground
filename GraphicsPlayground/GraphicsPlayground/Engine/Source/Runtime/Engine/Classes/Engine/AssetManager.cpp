@@ -8,14 +8,14 @@
 #include "SkeletalMesh.h"
 #include "Animation/AnimationAsset.h"
 #include "Animation/AnimSequence.h"
-#include "Components/Material/Material.h"
+#include "Engine/Classes/Components/Material/Material.h"
 #include "Engine/FObjLoader.h"
-#include "UObject/Casts.h"
+#include "CoreUObject/UObject/Casts.h"
 #include "Asset/SkeletalMeshAsset.h"
 #include "Asset/StaticMeshAsset.h"
 #include "PhysicsEngine/PhysicsAsset.h"
 #include "Serialization/MemoryArchive.h"
-#include "UObject/ObjectFactory.h"
+#include "CoreUObject/UObject/ObjectFactory.h"
 
 bool UAssetManager::IsInitialized()
 {

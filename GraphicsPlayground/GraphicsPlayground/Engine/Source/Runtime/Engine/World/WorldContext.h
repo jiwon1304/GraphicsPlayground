@@ -1,7 +1,7 @@
 #pragma once
 
 #include "WorldType.h"
-#include "UObject/NameTypes.h"
+#include "CoreUObject/UObject/NameTypes.h"
 
 class UWorld;
 

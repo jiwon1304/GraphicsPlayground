@@ -1,8 +1,8 @@
 #pragma once
 #include "WindowsCursor.h"
 #include "BaseGizmos/GizmoBaseComponent.h"
-#include "Engine/EditorEngine.h"
-#include "GameFramework/Actor.h"
+#include "Engine/Classes/Engine/EditorEngine.h"
+#include "Engine/Classes/GameFramework/Actor.h"
 #include "UnrealEd/EditorViewportClient.h"
 #include "UnrealEd/UnrealEd.h"
 

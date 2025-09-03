@@ -7,8 +7,8 @@
 #include "Developer/AnimDataController/AnimDataController.h"
 #include "Math/Transform.h"
 #include "Misc/FrameTime.h"
-#include "UObject/Casts.h"
-#include "UObject/ObjectFactory.h"
+#include "CoreUObject/UObject/Casts.h"
+#include "CoreUObject/UObject/ObjectFactory.h"
 
 UAnimDataModel::UAnimDataModel()
     : BoneAnimationTracks()

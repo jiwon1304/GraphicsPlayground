@@ -1,7 +1,7 @@
 #pragma once
 #include <functional>
 #include "Core/Container/Map.h"
-#include "UObject/WeakObjectPtr.h"
+#include "CoreUObject/UObject/WeakObjectPtr.h"
 #include "UserInterface/Console.h"
 
 

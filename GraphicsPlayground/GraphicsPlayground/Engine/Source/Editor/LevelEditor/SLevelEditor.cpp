@@ -2,11 +2,11 @@
 #include <fstream>
 #include <ostream>
 #include <sstream>
-#include "EngineLoop.h"
+#include "Launch/EngineLoop.h"
 #include "UnrealClient.h"
 #include "WindowsCursor.h"
 #include "BaseGizmos/GizmoBaseComponent.h"
-#include "Engine/EditorEngine.h"
+#include "Engine/Classes/Engine/EditorEngine.h"
 #include "Slate/Widgets/Layout/SSplitter.h"
 #include "SlateCore/Widgets/SWindow.h"
 #include "UnrealEd/EditorViewportClient.h"

@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "Math/CurveEdInterface.h"
-#include "UObject/Object.h"
-#include "UObject/ObjectMacros.h"
+#include "CoreUObject/UObject/Object.h"
+#include "CoreUObject/UObject/ObjectMacros.h"
 
 
 class UDistribution : public UObject, public FCurveEdInterface

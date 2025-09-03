@@ -11,8 +11,8 @@
 #include "Define.h"
 #include "Container/Set.h"
 
-#include "D3D11RHI/GraphicDevice.h"
-#include "D3D11RHI/DXDBufferManager.h"
+#include "Windows/D3D11RHI/GraphicDevice.h"
+#include "Windows/D3D11RHI/DXDBufferManager.h"
 
 
 class FParticleRenderPass;

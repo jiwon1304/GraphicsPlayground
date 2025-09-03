@@ -3,7 +3,7 @@
 #include <memory>
 
 #include "IRenderPass.h"
-#include "D3D11RHI/DXDShaderManager.h"
+#include "Windows/D3D11RHI/DXDShaderManager.h"
 
 class FCompositingPass : public IRenderPass
 {

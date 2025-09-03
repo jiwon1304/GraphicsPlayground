@@ -1,7 +1,7 @@
 ﻿#include "WindowsCursor.h"
 
 #include "Define.h"
-#include "UObject/Object.h"
+#include "CoreUObject/UObject/Object.h"
 
 bool FWindowsCursor::bShowCursor = true;
 

@@ -1,7 +1,7 @@
 #include "ParticleModuleLifetime.h"
 #include "Particles/ParticleEmitterInstances.h"
 #include "Particles/ParticleHelper.h"
-#include "UObject/ObjectFactory.h"
+#include "CoreUObject/UObject/ObjectFactory.h"
 #include <Distributions/DistributionFloatUniform.h>
 
 

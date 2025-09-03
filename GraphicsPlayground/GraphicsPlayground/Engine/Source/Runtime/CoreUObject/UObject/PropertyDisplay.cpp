@@ -3,7 +3,7 @@
 #include "Class.h"
 #include "PropertyEvent.h"
 #include "ScriptStruct.h"
-#include "UObjectHash.h"
+#include "CoreUObject/UObjectHash.h"
 #include "Editor/UnrealEd/ImGuiWidget.h"
 #include "Math/NumericLimits.h"
 #include "Template/SubclassOf.h"

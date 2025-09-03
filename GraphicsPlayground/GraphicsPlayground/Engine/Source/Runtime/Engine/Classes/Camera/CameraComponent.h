@@ -1,6 +1,6 @@
 #pragma once
 #include "CameraTypes.h"
-#include "Components/SceneComponent.h"
+#include "Engine/Classes/Components/SceneComponent.h"
 
 class UCameraComponent : public USceneComponent
 {

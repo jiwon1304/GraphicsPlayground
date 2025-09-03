@@ -1,7 +1,7 @@
 #pragma once
 #include "Engine/Classes/Engine/EngineTypes.h"
-#include "UObject/Object.h"
-#include "UObject/ObjectMacros.h"
+#include "CoreUObject/UObject/Object.h"
+#include "CoreUObject/UObject/ObjectMacros.h"
 
 class AActor;
 

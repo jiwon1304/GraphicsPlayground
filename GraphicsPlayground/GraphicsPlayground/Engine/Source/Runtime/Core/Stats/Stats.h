@@ -2,7 +2,7 @@
 #include "StatDefine.h"
 #include "Container/String.h"
 #include "HAL/PlatformType.h"
-#include "UObject/NameTypes.h"
+#include "CoreUObject/UObject/NameTypes.h"
 
 class FGPUTimingManager; // Forward declaration
 

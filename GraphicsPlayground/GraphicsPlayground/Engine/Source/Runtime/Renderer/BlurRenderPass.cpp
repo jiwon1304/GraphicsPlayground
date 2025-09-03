@@ -1,5 +1,5 @@
 #include "BlurRenderPass.h"
-#include "Engine/Engine.h"
+#include "Engine/Classes/Engine/Engine.h"
 #include "Engine/World/World.h"
 #include "Engine/Classes/Camera/PlayerCameraManager.h"
 #include "UnrealEd/EditorViewportClient.h"

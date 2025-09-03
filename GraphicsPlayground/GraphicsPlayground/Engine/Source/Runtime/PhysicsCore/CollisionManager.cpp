@@ -1,15 +1,15 @@
 #include "CollisionManager.h"
 
-#include "Components/PrimitiveComponent.h"
-#include "Components/ShapeComponent.h"
-#include "Components/BoxComponent.h"
-#include "Components/SphereComponent.h"
-#include "Components/CapsuleComponent.h"
+#include "Engine/Classes/Components/PrimitiveComponent.h"
+#include "Engine/Classes/Components/ShapeComponent.h"
+#include "Engine/Classes/Components/BoxComponent.h"
+#include "Engine/Classes/Components/SphereComponent.h"
+#include "Engine/Classes/Components/CapsuleComponent.h"
 
 #include "Engine/OverlapResult.h"
 #include "Math/Quat.h"
-#include "UObject/Casts.h"
-#include "UObject/UObjectIterator.h"
+#include "CoreUObject/UObject/Casts.h"
+#include "CoreUObject/UObject/UObjectIterator.h"
 
 /**
  * @brief 점 Point와 선분 SegmentStart-SegmentEnd 사이의 가장 가까운 점을 찾습니다.

@@ -1,7 +1,7 @@
 #pragma once
 #include "ActorComponent.h"
 #include "Math/Rotator.h"
-#include "UObject/ObjectMacros.h"
+#include "CoreUObject/UObject/ObjectMacros.h"
 #include "Math/Transform.h"
 
 struct FHitResult;

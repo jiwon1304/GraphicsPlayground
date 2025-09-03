@@ -1,6 +1,6 @@
 ﻿#include "AnimSingleNodeInstance.h"
 
-#include "Components/SkeletalMeshComponent.h"
+#include "Engine/Classes/Components/SkeletalMeshComponent.h"
 #include "AnimationAsset.h"
 #include "Animation/AnimNodeBase.h"
 #include "Animation/AnimTypes.h"
@@ -9,7 +9,7 @@
 #include "Animation/AnimSequence.h"
 #include "Engine/SkeletalMesh.h"
 #include "Misc/FrameTime.h"
-#include "UObject/Casts.h"
+#include "CoreUObject/UObject/Casts.h"
 
 UAnimSingleNodeInstance::UAnimSingleNodeInstance()
     : CurrentAsset(nullptr)

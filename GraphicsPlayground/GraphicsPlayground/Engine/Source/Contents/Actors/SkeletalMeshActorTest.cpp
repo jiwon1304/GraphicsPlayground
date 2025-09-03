@@ -3,8 +3,8 @@
 
 #include "Animation/AnimSequence.h"
 #include "Animation/Skeleton.h"
-#include "Components/SkeletalMeshComponent.h"
-#include "Components/StaticMeshComponent.h"
+#include "Engine/Classes/Components/SkeletalMeshComponent.h"
+#include "Engine/Classes/Components/StaticMeshComponent.h"
 #include "Engine/AssetManager.h"
 #include "Engine/FObjLoader.h"
 #include "Engine/SkeletalMesh.h"

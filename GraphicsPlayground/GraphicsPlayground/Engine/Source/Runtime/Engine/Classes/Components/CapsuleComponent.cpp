@@ -1,6 +1,6 @@
 #include "CapsuleComponent.h"
 
-#include "UObject/Casts.h"
+#include "CoreUObject/UObject/Casts.h"
 
 UCapsuleComponent::UCapsuleComponent()
 {

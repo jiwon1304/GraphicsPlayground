@@ -6,14 +6,14 @@
 #include "Actors/LightActor.h"
 #include "Actors/FireballActor.h"
 
-#include "Components/Light/LightComponent.h"
-#include "Components/Light/PointLightComponent.h"
-#include "Components/Light/SpotLightComponent.h"
-#include "Components/SphereComp.h"
-#include "Components/ParticleSubUVComponent.h"
-#include "Components/TextComponent.h"
+#include "Engine/Classes/Components/Light/LightComponent.h"
+#include "Engine/Classes/Components/Light/PointLightComponent.h"
+#include "Engine/Classes/Components/Light/SpotLightComponent.h"
+#include "Engine/Classes/Components/SphereComp.h"
+#include "Engine/Classes/Components/ParticleSubUVComponent.h"
+#include "Engine/Classes/Components/TextComponent.h"
 #include "Camera/CameraComponent.h"
-#include "Components/ProjectileMovementComponent.h"
+#include "Engine/Classes/Components/ProjectileMovementComponent.h"
 
 #include "Engine/FObjLoader.h"
 #include "Engine/StaticMeshActor.h"
@@ -24,7 +24,7 @@
 
 #include "Actors/Cube.h"
 
-#include "Engine/EditorEngine.h"
+#include "Engine/Classes/Engine/EditorEngine.h"
 #include <Actors/HeightFogActor.h>
 #include "Actors/PointLightActor.h"
 #include "Actors/DirectionalLightActor.h"
@@ -35,8 +35,8 @@
 #include "Actors/SphereActor.h"
 #include "Actors/CapsuleActor.h"
 #include "Animation/SkeletalMeshActor.h"
-#include "Components/SkeletalMeshComponent.h"
-#include "GameFramework/PlayerController.h"
+#include "Engine/Classes/Components/SkeletalMeshComponent.h"
+#include "Engine/Classes/GameFramework/PlayerController.h"
 #include "Contents/Actors/Fish.h"
 #include "Contents/Actors/ItemActor.h"
 #include "Contents/Actors/PlatformActor.h"
@@ -48,7 +48,7 @@
 
 #include "Contents/Actors/ParticleSystemActor.h"
 #include "Engine/Classes/Engine/AssetManager.h"
-#include "Components/ParticleSystemComponent.h"
+#include "Engine/Classes/Components/ParticleSystemComponent.h"
 #include "Particles/ParticleSystem.h"
 #include "Particles/ParticleSpriteEmitter.h"
 #include <Particles/ParticleModules/ParticleModuleLifetime.h>

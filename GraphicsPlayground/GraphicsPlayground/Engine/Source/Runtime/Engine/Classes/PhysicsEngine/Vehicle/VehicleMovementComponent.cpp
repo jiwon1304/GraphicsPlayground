@@ -1,5 +1,5 @@
 #include "VehicleMovementComponent.h"
-#include "UObject/Casts.h"
+#include "CoreUObject/UObject/Casts.h"
 
 UVehicleMovementComponent::UVehicleMovementComponent()
     : ChassisMass(100.0f), ChassisBoxExtents(FVector(2.5f, 2.0f, 5.0f))

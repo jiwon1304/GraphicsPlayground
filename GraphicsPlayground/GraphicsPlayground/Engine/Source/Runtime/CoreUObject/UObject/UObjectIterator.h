@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "Object.h"
-#include "UObjectHash.h"
+#include "CoreUObject/UObjectHash.h"
 #include "Container/Array.h"
 
 #undef GetObject // Windows.h 이름 겹침

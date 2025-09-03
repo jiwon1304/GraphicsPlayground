@@ -1,8 +1,8 @@
-#include "UObjectArray.h"
+#include "CoreUObject/UObjectArray.h"
 
 #include "Class.h"
 #include "Object.h"
-#include "UObjectHash.h"
+#include "CoreUObject/UObjectHash.h"
 
 
 void FUObjectArray::AddObject(UObject* Object)

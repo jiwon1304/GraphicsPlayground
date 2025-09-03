@@ -1,6 +1,6 @@
 #pragma once
 
-#include "UObject/NameTypes.h"
+#include "CoreUObject/UObject/NameTypes.h"
 
 struct TStatId
 {

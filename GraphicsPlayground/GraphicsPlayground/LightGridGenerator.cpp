@@ -2,10 +2,10 @@
 #include "Actors/PointLightActor.h"
 #include "Actors/SpotLightActor.h"
 #include "World/World.h"
-#include "Components/Light/PointLightComponent.h"
-#include "Components/Light/SpotLightComponent.h"
-#include "Engine/EditorEngine.h"
-#include "Engine/Engine.h"
+#include "Engine/Classes/Components/Light/PointLightComponent.h"
+#include "Engine/Classes/Components/Light/SpotLightComponent.h"
+#include "Engine/Classes/Engine/EditorEngine.h"
+#include "Engine/Classes/Engine/Engine.h"
 
 FLightGridGenerator::~FLightGridGenerator()
 {

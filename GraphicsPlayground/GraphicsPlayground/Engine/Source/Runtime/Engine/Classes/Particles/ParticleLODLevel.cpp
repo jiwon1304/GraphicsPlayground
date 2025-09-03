@@ -2,8 +2,8 @@
 #include "Particles/ParticleModules/ParticleModuleSpawn.h"
 #include "Particles/ParticleModules/ParticleModuleRequired.h"
 #include "Particles/ParticleModules/ParticleModuleTypeDataBase.h"
-#include "UObject/Casts.h"
-#include "UObject/ObjectFactory.h"
+#include "CoreUObject/UObject/Casts.h"
+#include "CoreUObject/UObject/ObjectFactory.h"
 
 void UParticleLODLevel::Initialize()
 {

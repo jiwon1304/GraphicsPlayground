@@ -271,8 +271,8 @@
 	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=001A8C64211DD943B37D5BE61C16906E/Section/=411C74B55B3D8D4A96204100E0F420DF/SectionPlain/Text/@EntryValue">$PCH$#include "$NAME$.h"</s:String>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=001A8C64211DD943B37D5BE61C16906E/ShortenQualifiedReferences/@EntryValue">True</s:Boolean>
 	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=001A8C64211DD943B37D5BE61C16906E/Text/@EntryValue">$HEADER$#pragma once
-#include "UObject/Object.h"
-#include "UObject/ObjectMacros.h"
+#include "CoreUObject/UObject/Object.h"
+#include "CoreUObject/UObject/ObjectMacros.h"
 
 
 class U$CLASS$ : public UObject
@@ -324,7 +324,7 @@ $END$
 	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=703BA03B30658A40A7E5241A4B95BC6B/Scope/=CD5B1AEA8099834C8F10F84286AA88CA/Type/@EntryValue">InCppProjectFile</s:String>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=703BA03B30658A40A7E5241A4B95BC6B/ShortenQualifiedReferences/@EntryValue">True</s:Boolean>
 	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=703BA03B30658A40A7E5241A4B95BC6B/Text/@EntryValue">$HEADER$#pragma once
-#include "GameFramework/Actor.h"
+#include "Engine/Classes/GameFramework/Actor.h"
 
 
 class A$CLASS$ : public AActor
@@ -371,7 +371,7 @@ $END$
 	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=73FE84F028F7F74F92CF53F750874D8F/Section/=F90BAB8A563D294595571539A97F86F2/SectionPlain/Text/@EntryValue">$PCH$#include "$NAME$.h"</s:String>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=73FE84F028F7F74F92CF53F750874D8F/ShortenQualifiedReferences/@EntryValue">True</s:Boolean>
 	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=73FE84F028F7F74F92CF53F750874D8F/Text/@EntryValue">$HEADER$#pragma once
-#include "GameFramework/Actor.h"
+#include "Engine/Classes/GameFramework/Actor.h"
 
 
 class A$CLASS$ : public AActor

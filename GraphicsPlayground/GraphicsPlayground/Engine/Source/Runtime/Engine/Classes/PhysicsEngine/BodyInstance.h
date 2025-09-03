@@ -3,7 +3,7 @@
 #include "Engine/PhysxUserData.h"
 #include "EngineTypes.h"
 //#include "ConstraintInstance.h"
-#include "Engine/EngineTypes.h"
+#include "Engine/Classes/Engine/EngineTypes.h"
 
 struct FShapeData;
 

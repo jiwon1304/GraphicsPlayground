@@ -1,7 +1,7 @@
 #include "FObjLoader.h"
 
-#include "UObject/ObjectFactory.h"
-#include "Components/Material/Material.h"
+#include "CoreUObject/UObject/ObjectFactory.h"
+#include "Engine/Classes/Components/Material/Material.h"
 #include "Engine/StaticMesh.h"
 #include "PhysicsEngine/BodySetup.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"

@@ -4,12 +4,12 @@
 #include "Animation/AnimationRuntime.h"
 #include "Animation/AnimSequence.h"
 #include "Animation/AnimTypes.h"
-#include "Components/SkeletalMeshComponent.h"
+#include "Engine/Classes/Components/SkeletalMeshComponent.h"
 #include "Engine/SkeletalMesh.h"
 #include "Misc/FrameTime.h"
 #include "Animation/AnimStateMachine.h"
-#include "UObject/Casts.h"
-#include "UObject/ObjectFactory.h"
+#include "CoreUObject/UObject/Casts.h"
+#include "CoreUObject/UObject/ObjectFactory.h"
 
 UMyAnimInstance::UMyAnimInstance()
     : PrevAnim(nullptr)

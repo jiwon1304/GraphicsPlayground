@@ -6,7 +6,7 @@
 #include "GizmoRectangleComponent.h"
 #include "ReferenceSkeleton.h"
 #include "Animation/Skeleton.h"
-#include "Engine/EditorEngine.h"
+#include "Engine/Classes/Engine/EditorEngine.h"
 #include "World/World.h"
 #include "Engine/FObjLoader.h"
 #include "Engine/SkeletalMesh.h"

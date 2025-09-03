@@ -2,10 +2,10 @@
 
 #include "RendererHelpers.h"
 #include "UnrealClient.h"
-#include "D3D11RHI/DXDBufferManager.h"
-#include "D3D11RHI/DXDShaderManager.h"
+#include "Windows/D3D11RHI/DXDBufferManager.h"
+#include "Windows/D3D11RHI/DXDShaderManager.h"
 #include "UnrealEd/EditorViewportClient.h"
-#include "UObject/Object.h"
+#include "CoreUObject/UObject/Object.h"
 
 FSlateRenderPass::FSlateRenderPass()
     : BufferManager(nullptr)

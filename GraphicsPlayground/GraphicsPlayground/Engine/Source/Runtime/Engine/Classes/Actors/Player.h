@@ -1,9 +1,9 @@
 #pragma once
-#include "Components/SkeletalMeshComponent.h"
-#include "GameFramework/Actor.h"
+#include "Engine/Classes/Components/SkeletalMeshComponent.h"
+#include "Engine/Classes/GameFramework/Actor.h"
 #include "PhysicsEngine/ShapeElem.h"
-#include "UObject/ObjectMacros.h"
-#include "UObject/ObjectTypes.h"
+#include "CoreUObject/UObject/ObjectMacros.h"
+#include "CoreUObject/UObject/ObjectTypes.h"
 
 
 class USkeletalMeshComponent;

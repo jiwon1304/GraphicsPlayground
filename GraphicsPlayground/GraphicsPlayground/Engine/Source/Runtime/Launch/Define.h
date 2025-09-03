@@ -3,7 +3,7 @@
 #include <algorithm>
 #include "Core/Container/String.h"
 #include "Core/Container/Array.h"
-#include "UObject/NameTypes.h"
+#include "CoreUObject/UObject/NameTypes.h"
 
 // 수학 관련
 #include "Math/Vector.h"

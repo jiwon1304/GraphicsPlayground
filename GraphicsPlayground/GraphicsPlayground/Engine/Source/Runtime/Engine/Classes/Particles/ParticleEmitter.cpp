@@ -1,11 +1,11 @@
 #include "ParticleEmitter.h"
-#include "Components/ParticleSystemComponent.h"
+#include "Engine/Classes/Components/ParticleSystemComponent.h"
 #include "Particles/ParticleEmitterInstances.h"
 #include "Particles/ParticleHelper.h"
 #include "Particles/ParticleLODLevel.h"
 #include "Particles/ParticleModules/ParticleModule.h"
 #include "Particles/ParticleModules/ParticleModuleTypeDataBase.h"
-#include "UObject/ObjectFactory.h"
+#include "CoreUObject/UObject/ObjectFactory.h"
 
 FParticleEmitterInstance* UParticleEmitter::CreateInstance(UParticleSystemComponent* InComponent)
 {

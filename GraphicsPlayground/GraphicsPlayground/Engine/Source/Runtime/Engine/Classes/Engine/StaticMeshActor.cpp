@@ -1,5 +1,5 @@
 #include "StaticMeshActor.h"
-#include "Components/StaticMeshComponent.h"
+#include "Engine/Classes/Components/StaticMeshComponent.h"
 
 
 AStaticMeshActor::AStaticMeshActor()

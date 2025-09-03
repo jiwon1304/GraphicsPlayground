@@ -4,7 +4,7 @@
 
 #include "RendererHelpers.h"
 #include "UnrealClient.h"
-#include "D3D11RHI/DXDShaderManager.h"
+#include "Windows/D3D11RHI/DXDShaderManager.h"
 #include "UnrealEd/EditorViewportClient.h"
 
 FPostProcessCompositingPass::FPostProcessCompositingPass()

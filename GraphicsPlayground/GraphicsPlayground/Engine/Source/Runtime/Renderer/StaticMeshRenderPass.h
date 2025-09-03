@@ -4,7 +4,7 @@
 #include "Container/Set.h"
 
 #include "Define.h"
-#include "Components/Light/PointLightComponent.h"
+#include "Engine/Classes/Components/Light/PointLightComponent.h"
 
 struct FStaticMeshRenderData;
 class FShadowManager;

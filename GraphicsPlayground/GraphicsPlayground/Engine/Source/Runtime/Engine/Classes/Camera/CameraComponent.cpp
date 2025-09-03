@@ -1,7 +1,7 @@
 #include "CameraComponent.h"
-#include "Engine/Engine.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "UObject/Casts.h"
+#include "Engine/Classes/Engine/Engine.h"
+#include "Engine/Classes/GameFramework/SpringArmComponent.h"
+#include "CoreUObject/UObject/Casts.h"
 #include "World/World.h"
 
 UObject* UCameraComponent::Duplicate(UObject* InOuter)

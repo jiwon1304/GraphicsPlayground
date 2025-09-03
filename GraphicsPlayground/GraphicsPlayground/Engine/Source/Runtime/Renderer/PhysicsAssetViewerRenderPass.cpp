@@ -6,9 +6,9 @@
 #include "Engine/SkeletalMesh.h"
 #include "PhysicsEngine/BodySetup.h"
 #include "PhysicsEngine/PhysicsConstraintTemplate.h"
-#include "Engine/EditorEngine.h"
-#include "Components/StaticMeshComponent.h"
-#include "Components/SkeletalMeshComponent.h"
+#include "Engine/Classes/Engine/EditorEngine.h"
+#include "Engine/Classes/Components/StaticMeshComponent.h"
+#include "Engine/Classes/Components/SkeletalMeshComponent.h"
 FPhysicsAssetViewerRenderPass::FPhysicsAssetViewerRenderPass()
 {
     Super::FOverlayShapeRenderPass();

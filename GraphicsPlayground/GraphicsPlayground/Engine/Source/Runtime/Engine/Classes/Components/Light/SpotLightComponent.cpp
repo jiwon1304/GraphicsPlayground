@@ -3,7 +3,7 @@
 #include "Math/JungleMath.h"
 #include "Math/Rotator.h"
 #include "Math/Quat.h"
-#include "UObject/Casts.h"
+#include "CoreUObject/UObject/Casts.h"
 
 
 

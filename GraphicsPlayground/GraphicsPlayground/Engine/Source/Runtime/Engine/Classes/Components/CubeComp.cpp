@@ -1,6 +1,6 @@
 #include "CubeComp.h"
 #include "Engine/FObjLoader.h"
-#include "UObject/ObjectFactory.h"
+#include "CoreUObject/UObject/ObjectFactory.h"
 
 
 UCubeComp::UCubeComp()

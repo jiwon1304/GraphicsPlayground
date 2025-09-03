@@ -1,7 +1,7 @@
 #pragma once
 #include "StaticMesh.h"
-#include "UObject/Object.h"
-#include "UObject/ObjectMacros.h"
+#include "CoreUObject/UObject/Object.h"
+#include "CoreUObject/UObject/ObjectMacros.h"
 
 class UPhysicsAsset;
 class UAnimationAsset;

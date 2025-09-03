@@ -2,10 +2,10 @@
 #include "Engine/Classes/Components/SceneComponent.h"
 #include "Container/Set.h"
 #include "Engine/Classes/Engine/EngineTypes.h"
-#include "UObject/Casts.h"
-#include "UObject/Object.h"
-#include "UObject/ObjectFactory.h"
-#include "UObject/ObjectMacros.h"
+#include "CoreUObject/UObject/Casts.h"
+#include "CoreUObject/UObject/Object.h"
+#include "CoreUObject/UObject/ObjectFactory.h"
+#include "CoreUObject/UObject/ObjectMacros.h"
 
 DECLARE_MULTICAST_DELEGATE_TwoParams(FActorBeginOverlapSignature, AActor* /* OverlappedActor */, AActor* /* OtherActor */);
 DECLARE_MULTICAST_DELEGATE_TwoParams(FActorEndOverlapSignature, AActor* /* OverlappedActor */, AActor* /* OtherActor */);

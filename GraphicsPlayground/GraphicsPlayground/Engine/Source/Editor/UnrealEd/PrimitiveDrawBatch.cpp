@@ -3,8 +3,8 @@
 // ============================================================================
 
 #include "PrimitiveDrawBatch.h"
-#include "EngineLoop.h"
-#include "D3D11RHI/GraphicDevice.h"
+#include "Launch/EngineLoop.h"
+#include "Windows/D3D11RHI/GraphicDevice.h"
 #include "UnrealEd/EditorViewportClient.h"
 
 

@@ -2,8 +2,8 @@
 
 #include "ShadowManager.h"
 #include "UnrealClient.h"
-#include "D3D11RHI/DXDShaderManager.h"
-#include "D3D11RHI/GraphicDevice.h"
+#include "Windows/D3D11RHI/DXDShaderManager.h"
+#include "Windows/D3D11RHI/GraphicDevice.h"
 #include "UnrealEd/EditorViewportClient.h"
 
 void FSkeletalMeshRenderPass::CreateResource()

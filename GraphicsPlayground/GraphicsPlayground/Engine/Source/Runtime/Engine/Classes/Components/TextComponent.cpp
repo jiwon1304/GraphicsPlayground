@@ -4,7 +4,7 @@
 #include "Engine/Source/Editor/PropertyEditor/ShowFlags.h"
 #include "UnrealEd/EditorViewportClient.h"
 #include "LevelEditor/SLevelEditor.h"
-#include "UObject/Casts.h"
+#include "CoreUObject/UObject/Casts.h"
 
 UTextComponent::UTextComponent()
 {
