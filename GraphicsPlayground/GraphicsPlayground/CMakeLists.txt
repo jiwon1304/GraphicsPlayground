@@ -178,6 +178,7 @@ target_include_directories(${PROJECT_NAME}
         "${THIRD_PARTY_DIR}/magic_enum/include"
         "${THIRD_PARTY_DIR}/Json/include"
         "${THIRD_PARTY_DIR}/tinyfiledialogs/include"
+        "${THIRD_PARTY_DIR}/FBX/include"
 )
 
 # Windows 전용 ThirdParty include (DirectXTK, fmod, FBX, physx 등)
@@ -185,13 +186,14 @@ if (WIN32)
     target_include_directories(${PROJECT_NAME} PUBLIC
         "${THIRD_PARTY_DIR}/DirectXTK/Include"
         "${THIRD_PARTY_DIR}/fmod/inc"
-        "${THIRD_PARTY_DIR}/FBX/include"
         "${THIRD_PARTY_DIR}/physx/include"
     )
-else(APPLE)
+elseif(APPLE)
     target_include_directories(${PROJECT_NAME} PUBLIC
         "${THIRD_PARTY_DIR}/OpenGL/glad/include"
         "${THIRD_PARTY_DIR}/OpenGL/glfw/MacOS/include"
+        "${THIRD_PARTY_DIR}/stb/stb_image.h"
+        
         # @TODO : physx 관련해서 추가해야함 
     )
 endif()

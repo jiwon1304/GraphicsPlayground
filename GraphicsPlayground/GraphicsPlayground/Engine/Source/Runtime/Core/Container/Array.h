@@ -5,6 +5,7 @@
 #include <cassert>
 
 #include "ContainerAllocator.h"
+#include "Container/ContainerAllocationPolicies.h"
 #include "Serialization/Archive.h"
 
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include <type_traits>
 
 //-----------------------------------------
 // OS별 분기

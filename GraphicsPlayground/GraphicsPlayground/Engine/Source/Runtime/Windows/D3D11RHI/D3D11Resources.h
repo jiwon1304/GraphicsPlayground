@@ -3,14 +3,14 @@
 #include "RHI/RHIResources.h"
 #include "Define.h"
 
-struct FD3D11Buffer : public RHI::FRHIBuffer
+struct FD3D11Buffer : public FRHIBuffer
 {
 protected:
     ID3D11Buffer* Resource;
 
 public:
-    FD3D11Buffer(ID3D11Buffer* InResource, RHI::FRHIBufferDesc InDesc)
-        : RHI::FRHIBuffer(InDesc)
+    FD3D11Buffer(ID3D11Buffer* InResource, FRHIBufferDesc InDesc)
+        : FRHIBuffer(InDesc)
         , Resource(InResource)
     {
 
@@ -26,7 +26,7 @@ public:
     }
 };
 
-struct FD3D11Layout : public RHI::FRHIInputLayout
+struct FD3D11Layout : public FRHIVertexDeclaration
 {
 protected:
     ID3D11InputLayout* Resource;
@@ -48,13 +48,13 @@ public:
     }
 };
 
-struct FD3D11VertexShader : public RHI::FRHIVertexShader
+struct FD3D11VertexShader : public FRHIVertexShader
 {
 protected:
     ID3D11VertexShader* Resource;
 public:
-    FD3D11VertexShader(ID3D11VertexShader* InResource, RHI::FRHIShaderDesc InDesc)
-        : RHI::FRHIVertexShader(InDesc)
+    FD3D11VertexShader(ID3D11VertexShader* InResource, FRHIShaderDesc InDesc)
+        : FRHIVertexShader(InDesc)
         , Resource(InResource)
     {
     }
@@ -68,13 +68,13 @@ public:
     }
 };
 
-struct FD3D11PixelShader : public RHI::FRHIPixelShader
+struct FD3D11PixelShader : public FRHIPixelShader
 {
 protected:
     ID3D11PixelShader* Resource;
 public:
-    FD3D11PixelShader(ID3D11PixelShader* InResource, RHI::FRHIShaderDesc InDesc)
-        : RHI::FRHIPixelShader(InDesc)
+    FD3D11PixelShader(ID3D11PixelShader* InResource, FRHIShaderDesc InDesc)
+        : FRHIPixelShader(InDesc)
         , Resource(InResource)
     {
     }
@@ -88,13 +88,13 @@ public:
     }
 };
 
-struct FD3D11ComputeShader : public RHI::FRHIComputeShader
+struct FD3D11ComputeShader : public FRHIComputeShader
 {
 protected:
     ID3D11ComputeShader* Resource;
 public:
-    FD3D11ComputeShader(ID3D11ComputeShader* InResource, RHI::FRHIShaderDesc InDesc)
-        : RHI::FRHIComputeShader(InDesc)
+    FD3D11ComputeShader(ID3D11ComputeShader* InResource, FRHIShaderDesc InDesc)
+        : FRHIComputeShader(InDesc)
         , Resource(InResource)
     {
     }
@@ -108,13 +108,13 @@ public:
     }
 };
 
-struct FD3D11GeometryShader : public RHI::FRHIGeometryShader
+struct FD3D11GeometryShader : public FRHIGeometryShader
 {
 protected:
     ID3D11GeometryShader* Resource;
 public:
-    FD3D11GeometryShader(ID3D11GeometryShader* InResource, RHI::FRHIShaderDesc InDesc)
-        : RHI::FRHIGeometryShader(InDesc)
+    FD3D11GeometryShader(ID3D11GeometryShader* InResource, FRHIShaderDesc InDesc)
+        : FRHIGeometryShader(InDesc)
         , Resource(InResource)
     {
     }
@@ -128,7 +128,7 @@ public:
     }
 };
 
-struct FD3D11View : public RHI::FRHIView
+struct FD3D11View : public FRHIView
 {
 protected:
     union
@@ -145,19 +145,19 @@ public:
     {
         if (Resource.Ptr)
         {
-            if (ViewTarget == RHI::EViewTarget::SRV)
+            if (ViewTarget == EViewTarget::SRV)
             {
                 Resource.SRV->Release();
             }
-            else if (ViewTarget == RHI::EViewTarget::RTV)
+            else if (ViewTarget == EViewTarget::RTV)
             {
                 Resource.RTV->Release();
             }
-            else if (ViewTarget == RHI::EViewTarget::DSV)
+            else if (ViewTarget == EViewTarget::DSV)
             {
                 Resource.DSV->Release();
             }
-            else if (ViewTarget == RHI::EViewTarget::UAV)
+            else if (ViewTarget == EViewTarget::UAV)
             {
                 Resource.UAV->Release();
             }
@@ -175,20 +175,20 @@ public:
     }
 };
 
-struct FD3D11Texture : public RHI::FRHITexture
+struct FD3D11Texture : public FRHITexture
 {
 protected:
     ID3D11Texture2D* Resource;
 
 public:
-    FD3D11Texture(ID3D11Texture2D* InResource, ID3D11ShaderResourceView* InSRV, ID3D11RenderTargetView* InRTV, ID3D11DepthStencilView* InDSV, ID3D11UnorderedAccessView* InUAV, RHI::FRHITextureDesc InDesc)
-        : RHI::FRHITexture(InDesc)
+    FD3D11Texture(ID3D11Texture2D* InResource, ID3D11ShaderResourceView* InSRV, ID3D11RenderTargetView* InRTV, ID3D11DepthStencilView* InDSV, ID3D11UnorderedAccessView* InUAV, FRHITextureDesc InDesc)
+        : FRHITexture(InDesc)
         , Resource(InResource)
     {
         if (InSRV)
         {
             FD3D11View* NewSRV = new FD3D11View();
-            NewSRV->ViewTarget = RHI::EViewTarget::SRV;
+            NewSRV->ViewTarget = EViewTarget::SRV;
             NewSRV->ViewType = static_cast<RHI::EViewType>(Desc.Type);
             NewSRV->Format = Desc.Format;
             NewSRV->MostDetailedMip = Desc.MostDetailedMip;
@@ -200,7 +200,7 @@ public:
         if (InRTV)
         {
             FD3D11View* NewRTV = new FD3D11View();
-            NewRTV->ViewTarget = RHI::EViewTarget::RTV;
+            NewRTV->ViewTarget = EViewTarget::RTV;
             NewRTV->ViewType = static_cast<RHI::EViewType>(Desc.Type);
             NewRTV->Format = Desc.Format;
             NewRTV->MostDetailedMip = Desc.MostDetailedMip;
@@ -212,7 +212,7 @@ public:
         if (InDSV)
         {
             FD3D11View* NewDSV = new FD3D11View();
-            NewDSV->ViewTarget = RHI::EViewTarget::DSV;
+            NewDSV->ViewTarget = EViewTarget::DSV;
             NewDSV->ViewType = static_cast<RHI::EViewType>(Desc.Type);
             NewDSV->Format = Desc.Format;
             NewDSV->MostDetailedMip = Desc.MostDetailedMip;
@@ -224,7 +224,7 @@ public:
         if (InUAV)
         {
             FD3D11View* NewUAV = new FD3D11View();
-            NewUAV->ViewTarget = RHI::EViewTarget::UAV;
+            NewUAV->ViewTarget = EViewTarget::UAV;
             NewUAV->ViewType = static_cast<RHI::EViewType>(Desc.Type);
             NewUAV->Format = Desc.Format;
             NewUAV->MostDetailedMip = Desc.MostDetailedMip;
@@ -264,13 +264,13 @@ public:
     }
 };
 
-struct FD3D11SamplerState : public RHI::FRHISamplerState
+struct FD3D11SamplerState : public FRHISamplerState
 {
 protected:
     ID3D11SamplerState* Resource;
 public:
-    FD3D11SamplerState(ID3D11SamplerState* InResource, RHI::FRHISamplerStateDesc InDesc)
-        : RHI::FRHISamplerState(InDesc)
+    FD3D11SamplerState(ID3D11SamplerState* InResource, FRHISamplerStateDesc InDesc)
+        : FRHISamplerState(InDesc)
         , Resource(InResource)
     {
     }
@@ -284,13 +284,13 @@ public:
     }
 };
 
-struct FD3D11RasterizerState : public RHI::FRHIRasterizerState
+struct FD3D11RasterizerState : public FRHIRasterizerState
 {
 protected:
     ID3D11RasterizerState* Resource;
 public:
-    FD3D11RasterizerState(ID3D11RasterizerState* InResource, RHI::FRHIRasterizerStateDesc InDesc)
-        : RHI::FRHIRasterizerState(InDesc)
+    FD3D11RasterizerState(ID3D11RasterizerState* InResource, FRHIRasterizerStateDesc InDesc)
+        : FRHIRasterizerState(InDesc)
         , Resource(InResource)
     {
     }
@@ -304,13 +304,13 @@ public:
     }
 };
 
-struct FD3D11BlendState : public RHI::FRHIBlendState
+struct FD3D11BlendState : public FRHIBlendState
 {
 protected:
     ID3D11BlendState* Resource;
 public:
-    FD3D11BlendState(ID3D11BlendState* InResource, RHI::FRHIBlendStateDesc InDesc)
-        : RHI::FRHIBlendState(InDesc)
+    FD3D11BlendState(ID3D11BlendState* InResource, FRHIBlendStateDesc InDesc)
+        : FRHIBlendState(InDesc)
         , Resource(InResource)
     {
     }
@@ -324,12 +324,12 @@ public:
     }
 };
 
-struct FD3D11DepthStencilState : public RHI::FRHIDepthStencilState
+struct FD3D11DepthStencilState : public FRHIDepthStencilState
 {
 public:
     ID3D11DepthStencilState* Resource;
-    FD3D11DepthStencilState(ID3D11DepthStencilState* InResource, RHI::FRHIDepthStencilStateDesc InDesc)
-        : RHI::FRHIDepthStencilState(InDesc)
+    FD3D11DepthStencilState(ID3D11DepthStencilState* InResource, FRHIDepthStencilStateDesc InDesc)
+        : FRHIDepthStencilState(InDesc)
         , Resource(InResource)
     {
     }

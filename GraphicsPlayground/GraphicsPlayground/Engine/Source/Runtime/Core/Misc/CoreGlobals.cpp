@@ -1,5 +1,9 @@
 #include "Core/Container/String.h"
 
+int GWindowWidth = 1400;
+int GWindowHeight = 1000;
+const TCHAR* GWindowName = "Graphics Playground";
+
 FString GEditorIni;
 FString GEditorIni;
 

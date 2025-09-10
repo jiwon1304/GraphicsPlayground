@@ -9,9 +9,7 @@
 
 class FD3D11Viewport;
 
-namespace RHI
-{
-class FD3D11DynamicRHI : public FDynamicRHI
+class FD3D11DynamicRHI : public ID3D11DynamicRHI
 {
     public:
     virtual ~FD3D11DynamicRHI() override = default;
@@ -23,7 +21,7 @@ class FD3D11DynamicRHI : public FDynamicRHI
     // Resource Creation
     // -------------------------------------------------------------
     virtual FRHIBufferRef CreateBuffer(const FRHIBufferDesc& Desc, const void* InitialData) override final;
-    virtual FRHIInputLayoutRef CreateInputLayout(const TArray<FAttribute>& Attributes, const FRHIVertexShaderRef& VertexShader) override final;
+    virtual FRHIVertexDeclarationRef CreateInputLayout(const TArray<FVertexElement>& Attributes, const FRHIVertexShaderRef& VertexShader) override final;
     virtual FRHIVertexShaderRef CreateVertexShader(const FRHIShaderDesc& Desc) override final;
     virtual FRHIPixelShaderRef CreatePixelShader(const FRHIShaderDesc& Desc) override final;
     virtual FRHIComputeShaderRef CreateComputeShader(const FRHIShaderDesc& Desc) override final;
@@ -45,4 +43,3 @@ protected:
 
     TSharedPtr<IDXGIAdapter> Adapter;
 };
-} // namespace RHI

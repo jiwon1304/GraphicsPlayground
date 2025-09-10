@@ -2,8 +2,6 @@
 
 #include "Core/HAL/PlatformType.h"
 
-namespace RHI
-{
 enum EPixelFormat : uint8
 {
     PF_Unknown = 0,
@@ -32,4 +30,3 @@ enum EPixelFormat : uint8
     PF_D32_FLOAT,
     PF_D16_UNORM,
 };
-}

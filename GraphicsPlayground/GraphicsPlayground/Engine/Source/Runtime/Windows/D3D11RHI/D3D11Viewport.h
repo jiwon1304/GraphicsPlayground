@@ -9,7 +9,7 @@
 
 class FD3D11DynamicRHI;
 
-struct FD3D11Viewport : public RHI::FRHIViewport
+struct FD3D11Viewport : public FRHIViewport
 {
 protected:
     TSharedPtr<FD3D11DynamicRHI> D3DRHI;

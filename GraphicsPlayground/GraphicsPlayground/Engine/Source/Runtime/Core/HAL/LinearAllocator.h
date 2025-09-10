@@ -1,6 +1,7 @@
 #pragma once
 #include <cstddef>
 #include <memory>
+#include "Core/HAL/PlatformMemory.h"
 
 /**
  * Allocate arbitrary size linearly in heap.
@@ -11,12 +12,12 @@ public:
     explicit FLinearAllocator(size_t InitialCapacity = 64 * 1024)
         : Capacity(InitialCapacity)
     {
-        Data = static_cast<std::byte*>(::operator new(Capacity));
+        Data = static_cast<uint8*>(FPlatformMemory::Malloc<EAT_Container>(Capacity));
     }
 
     ~FLinearAllocator()
     {
-        ::operator delete(Data);
+        FPlatformMemory::Free<EAT_Container>(Data, Capacity);
     }
 
     /**
@@ -40,15 +41,14 @@ public:
     /** (Optional) Clear memory to zero. */
     void Clear()
     {
-        std::memset(Data, 0, Capacity);
+        FPlatformMemory::Memset(Data, 0, Capacity);
     }
 
-    /** Do not clear memory but reset offset. */
+    /** Do not clear memory but reset the offset. */
     void Reset()
     {
         Offset = 0;
     }
-
 
 private:
     void Grow(size_t MinAdditional)
@@ -57,16 +57,16 @@ private:
         while (NewCapacity < Capacity + MinAdditional)
             NewCapacity *= 2;
 
-        std::byte* NewData = static_cast<std::byte*>(::operator new(NewCapacity));
-        std::memcpy(NewData, Data, Offset);
-        ::operator delete(Data);
+        uint8* NewData = static_cast<uint8*>(FPlatformMemory::Malloc<EAT_Container>(NewCapacity));
+        FPlatformMemory::Memcpy(NewData, Data, Offset);
+        FPlatformMemory::Free<EAT_Container>(Data, Capacity);
         Data = NewData;
         Capacity = NewCapacity;
     }
 
 private:
     /** Pointer to the allocated memory */
-    std::byte* Data = nullptr;
+    uint8* Data = nullptr;
     /** Total capacity of the allocated memory */
     size_t Capacity = 0;
     /** Current offset in the allocated memory = Allocated size */

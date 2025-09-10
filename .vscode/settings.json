@@ -5,6 +5,25 @@
         "*.gs": "glsl",
         "memory": "cpp",
         "cstddef": "cpp",
-        "functional": "cpp"
+        "functional": "cpp",
+        "type_traits": "cpp",
+        "utility": "cpp",
+        "__config_site": "cpp",
+        "vector": "cpp",
+        "__locale": "cpp",
+        "__node_handle": "cpp",
+        "__split_buffer": "cpp",
+        "bitset": "cpp",
+        "deque": "cpp",
+        "forward_list": "cpp",
+        "iomanip": "cpp",
+        "iosfwd": "cpp",
+        "istream": "cpp",
+        "queue": "cpp",
+        "sstream": "cpp",
+        "string": "cpp",
+        "unordered_map": "cpp",
+        "unordered_set": "cpp",
+        "initializer_list": "cpp"
     }
 }

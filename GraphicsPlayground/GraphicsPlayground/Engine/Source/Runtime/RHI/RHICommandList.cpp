@@ -1,7 +1,5 @@
 #include "RHICommandList.h"
 
-namespace RHI
-{
 FRHICommandListExecutor GRHICommandList;
 
 // https://dev.epicgames.com/documentation/ko-kr/unreal-engine/parallel-rendering-overview-for-unreal-engine
@@ -23,6 +21,4 @@ void FRHICommandListExecutor::Submit()
 inline FRHICommandListImmediate &FRHICommandListImmediate::Get()
 {
     return FRHICommandListExecutor::GetImmediateCommandList();
-}
-
 }
