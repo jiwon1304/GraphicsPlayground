@@ -137,6 +137,6 @@ using FStagingBufferRHIRef           = TRefCountPtr<FRHIStagingBuffer>;
 using FRenderTargetViewRHIRef        = TRefCountPtr<FRHIRenderTargetView>;
 using FDepthRenderTargetViewRHIRef   = TRefCountPtr<FRHIDepthRenderTargetView>;
 using FSetRenderTargetsInfoRHIRef    = TRefCountPtr<FRHISetRenderTargetsInfo>;
-using FGraphicsPipelineStateRHIRef   = TRefCountPtr<FGraphicsPipelineState>;
+using FGraphicsPipelineStateRHIRef   = TRefCountPtr<FRHIGraphicsPipelineState>;
 using FGraphicsPipelineStateFallBackRHIRef = TRefCountPtr<FRHIGraphicsPipelineStateFallBack>;
 using FRenderPassInfoRHIRef          = TRefCountPtr<FRHIRenderPassInfo>;
