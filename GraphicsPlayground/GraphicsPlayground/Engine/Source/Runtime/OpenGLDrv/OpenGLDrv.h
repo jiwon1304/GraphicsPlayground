@@ -1,8 +1,8 @@
 #pragma once
 
 #include "OpenGLFwd.h"
-#include "RHI.h"
-#include "RHIContext.h"
+#include "RHI/RHI.h"
+#include "RHI/RHIContext.h"
 #include "IOpenGLDynamicRHI.h"
 #include "OpenGLState.h"
 

@@ -7,7 +7,8 @@
 enum EAllocationType : uint8
 {
     EAT_Object,
-    EAT_Container
+    EAT_Container,
+    EAT_RHI
 };
 
 /**

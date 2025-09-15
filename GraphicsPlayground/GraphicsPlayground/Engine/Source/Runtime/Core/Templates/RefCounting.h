@@ -5,6 +5,7 @@
 /** 
  * ReferencedType must have its own AddRef() and Release()
  * This class has no counter so ReferencedType must implement its own reference counting.
+ * @todo : reference 제대로 늘고 주는지 확인
  */
 template<typename ReferencedType>
 class TRefCountPtr

@@ -336,7 +336,8 @@ enum class ETextureUsage : uint8
 enum class ESamplerFilter : uint8
 {
     Point,
-    Linear,
+    Bilinear,
+    Trilinear,
     Anisotropic
 };
 

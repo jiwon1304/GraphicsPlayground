@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PlatformType.h"
+#include "HAL/PlatformType.h"
 #include "Core/Misc/EnumClassFlags.h"
 
 /**

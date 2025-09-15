@@ -1,7 +1,41 @@
 #include "OpenGLState.h"
-#include "RHI.h"
+#include "RHI/RHI.h"
+#include "OpenGLDrv.h"
 
-EFillMode TranslateFillMode(GLenum Mode)
+// cannot be referenced outside of this translation unit (= .cpp file)
+// we cache sampler states to avoid redundant creations and bindings
+static TMap<FSamplerStateInitializerRHI, FOpenGLSamplerState*> GSamplerStateCache;
+
+// Utility functions for translating between engine enums and OpenGL enums
+static ESamplerAddressMode TranslateAddressMode(GLenum Mode)
+{
+    switch (Mode)
+    {
+    case GL_REPEAT:          return ESamplerAddressMode::Wrap;
+    case GL_MIRRORED_REPEAT: return ESamplerAddressMode::Mirror;
+    case GL_CLAMP_TO_EDGE:   return ESamplerAddressMode::Clamp;
+    case GL_CLAMP_TO_BORDER: return ESamplerAddressMode::Border;
+    default:
+        assert(false);
+        return ESamplerAddressMode::Wrap;
+    }
+}
+
+static GLenum TranslateAddressMode(ESamplerAddressMode Mode)
+{
+    switch (Mode)
+    {
+    case ESamplerAddressMode::Wrap:   return GL_REPEAT;
+    case ESamplerAddressMode::Mirror: return GL_MIRRORED_REPEAT;
+    case ESamplerAddressMode::Clamp:  return GL_CLAMP_TO_EDGE;
+    case ESamplerAddressMode::Border: return GL_CLAMP_TO_BORDER;
+    default:
+        assert(false);
+        return GL_REPEAT;
+    }
+}
+
+static EFillMode TranslateFillMode(GLenum Mode)
 {
     switch (Mode)
     {
@@ -13,7 +47,19 @@ EFillMode TranslateFillMode(GLenum Mode)
     }
 }
 
-ECullMode TranslateCullMode(GLenum Mode)
+static GLenum TranslateFillMode(EFillMode Mode)
+{
+    switch (Mode)
+    {
+    case EFillMode::Solid:      return GL_FILL;
+    case EFillMode::Wireframe:  return GL_LINE;
+    default:
+        assert(false);
+        return GL_FILL;
+    }
+}
+
+static ECullMode TranslateCullMode(GLenum Mode)
 {
     switch (Mode)
     {
@@ -26,7 +72,20 @@ ECullMode TranslateCullMode(GLenum Mode)
     }
 }
 
-EComparisonFunc TranslateComparisonFunc(GLenum Func)
+static GLenum TranslateCullMode(ECullMode Mode)
+{
+    switch (Mode)
+    {
+    case ECullMode::Front:   return GL_FRONT;
+    case ECullMode::Back:    return GL_BACK;
+    case ECullMode::None:    return GL_NONE;
+    default:
+        assert(false);
+        return GL_NONE;
+    }
+}
+
+static EComparisonFunc TranslateComparisonFunc(GLenum Func)
 {
     switch (Func)
     {
@@ -44,7 +103,25 @@ EComparisonFunc TranslateComparisonFunc(GLenum Func)
     }
 }
 
-EStencilOp TranslateStencilOp(GLenum Op)
+static GLenum TranslateComparisonFunc(EComparisonFunc Func)
+{
+    switch (Func)
+    {
+    case EComparisonFunc::Never:          return GL_NEVER;
+    case EComparisonFunc::Less:           return GL_LESS;
+    case EComparisonFunc::Equal:          return GL_EQUAL;
+    case EComparisonFunc::LessEqual:      return GL_LEQUAL;
+    case EComparisonFunc::Greater:        return GL_GREATER;
+    case EComparisonFunc::NotEqual:       return GL_NOTEQUAL;
+    case EComparisonFunc::GreaterEqual:   return GL_GEQUAL;
+    case EComparisonFunc::Always:         return GL_ALWAYS;
+    default:
+        assert(false);
+        return GL_ALWAYS;
+    }
+}
+
+static EStencilOp TranslateStencilOp(GLenum Op)
 {
     switch (Op)
     {
@@ -62,7 +139,25 @@ EStencilOp TranslateStencilOp(GLenum Op)
     }
 }
 
-EBlendFactor TranslateBlendFactor(GLenum Factor)
+static GLenum TranslateStencilOp(EStencilOp Op)
+{
+    switch (Op)
+    {
+    case EStencilOp::Keep:      return GL_KEEP;
+    case EStencilOp::Zero:      return GL_ZERO;
+    case EStencilOp::Replace:   return GL_REPLACE;
+    case EStencilOp::IncrSat:   return GL_INCR;
+    case EStencilOp::DecrSat:   return GL_DECR;
+    case EStencilOp::Invert:    return GL_INVERT;
+    case EStencilOp::Incr:      return GL_INCR_WRAP;
+    case EStencilOp::Decr:      return GL_DECR_WRAP;
+    default:
+        assert(false);
+        return GL_KEEP;
+    }
+}
+
+static EBlendFactor TranslateBlendFactor(GLenum Factor)
 {
     switch (Factor)
     {
@@ -85,7 +180,30 @@ EBlendFactor TranslateBlendFactor(GLenum Factor)
     }
 }
 
-EBlendOp TranslateBlendOp(GLenum Op)
+static GLenum TranslateBlendFactor(EBlendFactor Factor)
+{
+    switch (Factor)
+    {
+    case EBlendFactor::Zero:            return GL_ZERO;
+    case EBlendFactor::One:             return GL_ONE;
+    case EBlendFactor::SrcColor:        return GL_SRC_COLOR;
+    case EBlendFactor::InvSrcColor:     return GL_ONE_MINUS_SRC_COLOR;
+    case EBlendFactor::SrcAlpha:        return GL_SRC_ALPHA;
+    case EBlendFactor::InvSrcAlpha:     return GL_ONE_MINUS_SRC_ALPHA;
+    case EBlendFactor::DestAlpha:       return GL_DST_ALPHA;
+    case EBlendFactor::InvDestAlpha:    return GL_ONE_MINUS_DST_ALPHA;
+    case EBlendFactor::DestColor:       return GL_DST_COLOR;
+    case EBlendFactor::InvDestColor:    return GL_ONE_MINUS_DST_COLOR;
+    case EBlendFactor::BlendFactor:     return GL_CONSTANT_COLOR;
+    case EBlendFactor::InvBlendFactor:  return GL_ONE_MINUS_CONSTANT_COLOR;
+    // Note: OpenGL does not have separate Src1 / InvSrc1 factors
+    default:
+        assert(false);
+        return GL_ONE;
+    }
+}
+
+static EBlendOp TranslateBlendOp(GLenum Op)
 {
     switch (Op)
     {
@@ -100,6 +218,89 @@ EBlendOp TranslateBlendOp(GLenum Op)
     }
 }
 
+static GLenum TranslateBlendOp(EBlendOp Op)
+{
+    switch (Op)
+    {
+    case EBlendOp::Add:            return GL_FUNC_ADD;
+    case EBlendOp::Subtract:       return GL_FUNC_SUBTRACT;
+    case EBlendOp::RevSubtract:    return GL_FUNC_REVERSE_SUBTRACT;
+    case EBlendOp::Min:            return GL_MIN;
+    case EBlendOp::Max:            return GL_MAX;
+    default:
+        assert(false);
+        return GL_FUNC_ADD;
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Sampler States
+// -----------------------------------------------------------------------------
+FSamplerStateRHIRef FOpenGLDynamicRHI::RHICreateSamplerState(const FSamplerStateInitializerRHI& Initializer)
+{
+    if (GSamplerStateCache.Contains(Initializer))
+    {
+        return GSamplerStateCache[Initializer];
+    }
+
+    FOpenGLSamplerState* SamplerState = static_cast<FOpenGLSamplerState*>(FPlatformMemory::Malloc<EAT_RHI>(sizeof(FOpenGLSamplerState)));
+    new (SamplerState) FOpenGLSamplerState();
+    
+    SamplerState->Data.WrapS = TranslateAddressMode(Initializer.AddressU);
+    SamplerState->Data.WrapT = TranslateAddressMode(Initializer.AddressV);
+    SamplerState->Data.WrapR = TranslateAddressMode(Initializer.AddressW);
+
+    switch (Initializer.Filter)
+    {
+    case ESamplerFilter::Point:
+        SamplerState->Data.MagFilter = GL_NEAREST;
+        SamplerState->Data.MinFilter = GL_NEAREST_MIPMAP_NEAREST;
+        break;
+    case ESamplerFilter::Bilinear:
+        SamplerState->Data.MagFilter = GL_LINEAR;
+        SamplerState->Data.MinFilter = GL_LINEAR;
+        break;
+    case ESamplerFilter::Trilinear:
+        SamplerState->Data.MagFilter = GL_LINEAR_MIPMAP_LINEAR;
+        SamplerState->Data.MinFilter = GL_LINEAR_MIPMAP_LINEAR;
+        break;
+    case ESamplerFilter::Anisotropic:
+        assert(false && "Anisotropic filter mode not available in OpenGL3.3");
+        SamplerState->Data.MagFilter = GL_LINEAR_MIPMAP_LINEAR;
+        SamplerState->Data.MinFilter = GL_LINEAR_MIPMAP_LINEAR;
+        break;
+    default:
+        assert(false);
+    }
+
+    SamplerState->Data.CompareMode = Initializer.bUseComparison ? GL_COMPARE_REF_TO_TEXTURE : GL_NONE;
+    SamplerState->Data.CompareFunc = Initializer.bUseComparison ? GL_LEQUAL : GL_NONE;
+
+    // Sampler state is an object in OpenGL, so we treat it unlike other states.
+    FRHICommandListImmediate::Get().EnqueueLambda([SamplerState]()
+    {
+        FOpenGL::GenSamplers(1, &SamplerState->Resource);
+
+        FOpenGL::SetSamplerParameter(SamplerState->Resource, GL_TEXTURE_WRAP_S, SamplerState->Data.WrapS);
+        FOpenGL::SetSamplerParameter(SamplerState->Resource, GL_TEXTURE_WRAP_T, SamplerState->Data.WrapT);
+        FOpenGL::SetSamplerParameter(SamplerState->Resource, GL_TEXTURE_WRAP_R, SamplerState->Data.WrapR);
+
+        FOpenGL::SetSamplerParameter(SamplerState->Resource, GL_TEXTURE_MIN_FILTER, SamplerState->Data.MinFilter);
+        FOpenGL::SetSamplerParameter(SamplerState->Resource, GL_TEXTURE_MAG_FILTER, SamplerState->Data.MagFilter);
+
+        FOpenGL::SetSamplerParameter(SamplerState->Resource, GL_TEXTURE_COMPARE_MODE, SamplerState->Data.CompareMode);
+        FOpenGL::SetSamplerParameter(SamplerState->Resource, GL_TEXTURE_COMPARE_FUNC, SamplerState->Data.CompareFunc);
+    });
+
+    FSamplerStateRHIRef SamplerStateRef = SamplerState;
+    GSamplerStateCache.Add(Initializer, SamplerState);
+
+    return SamplerStateRef;
+}
+
+// -----------------------------------------------------------------------------
+// Rasterizer States
+// -----------------------------------------------------------------------------
 bool FOpenGLRasterizerState::GetInitializer(FRasterizerStateInitializerRHI &Init)
 {
     Init.FillMode = TranslateFillMode(Data.FillMode);
@@ -123,6 +324,25 @@ bool FOpenGLRasterizerState::GetInitializer(FRasterizerStateInitializerRHI &Init
     Init.SlopeScaledDepthBias = Data.SlopeScaledDepthBias;
     return true;
 }
+
+FRasterizerStateRHIRef FOpenGLDynamicRHI::RHICreateRasterizerState(const FRasterizerStateInitializerRHI& Initializer)
+{
+    FOpenGLRasterizerState* RasterizerState = static_cast<FOpenGLRasterizerState*>(FPlatformMemory::Malloc<EAT_RHI>(sizeof(FOpenGLRasterizerState)));
+    new (RasterizerState) FOpenGLRasterizerState();
+
+    RasterizerState->Data.FillMode = TranslateFillMode(Initializer.FillMode);
+    RasterizerState->Data.CullMode = TranslateCullMode(Initializer.CullMode);
+    RasterizerState->Data.FrontFace = Initializer.bFrontCounterClockwise ? GL_CCW : GL_CW;
+    RasterizerState->Data.DepthBias = static_cast<GLfloat>(Initializer.DepthBias);
+    RasterizerState->Data.DepthBiasClamp = Initializer.DepthBiasClamp;
+    RasterizerState->Data.SlopeScaledDepthBias = Initializer.SlopeScaledDepthBias;
+
+    return RasterizerState;
+}
+
+// -----------------------------------------------------------------------------
+// Depth Stencil States
+// -----------------------------------------------------------------------------
 
 bool FOpenGLDepthStencilState::GetInitializer(FDepthStencilStateInitializerRHI &Init)
 {
@@ -148,6 +368,38 @@ bool FOpenGLDepthStencilState::GetInitializer(FDepthStencilStateInitializerRHI &
     return true;
 }
 
+FDepthStencilStateRHIRef FOpenGLDynamicRHI::RHICreateDepthStencilState(const FDepthStencilStateInitializerRHI& Initializer)
+{
+    FOpenGLDepthStencilState* DepthStencilState = static_cast<FOpenGLDepthStencilState*>(FPlatformMemory::Malloc<EAT_RHI>(sizeof(FOpenGLDepthStencilState)));
+    new (DepthStencilState) FOpenGLDepthStencilState();
+
+    DepthStencilState->Data.bZEnable = Initializer.bEnableDepth;
+    DepthStencilState->Data.bZWriteEnable = Initializer.bDepthWriteMask;
+    DepthStencilState->Data.ZFunc = TranslateComparisonFunc(Initializer.DepthFunc);
+
+    DepthStencilState->Data.bStencilEnable = Initializer.bEnableStencil;
+    DepthStencilState->Data.StencilReadMask = Initializer.StencilReadMask;
+    DepthStencilState->Data.StencilWriteMask = Initializer.StencilWriteMask;
+
+    // Front face
+    DepthStencilState->Data.StencilFunc = TranslateComparisonFunc(Initializer.FrontFaceStencilFunc);
+    DepthStencilState->Data.StencilFail = TranslateStencilOp(Initializer.FrontFaceStnecilFailOp);
+    DepthStencilState->Data.StencilZFail = TranslateStencilOp(Initializer.FrontFaceStencilDepthFailOp);
+    DepthStencilState->Data.StencilPass = TranslateStencilOp(Initializer.FrontFaceStencilPassOp);
+
+    // Back face
+    DepthStencilState->Data.CCWStencilFunc = TranslateComparisonFunc(Initializer.BackFaceStencilFunc);
+    DepthStencilState->Data.CCWStencilFail = TranslateStencilOp(Initializer.BackFaceStencilFailOp);
+    DepthStencilState->Data.CCWStencilZFail = TranslateStencilOp(Initializer.BackFaceStencilDepthFailOp);
+    DepthStencilState->Data.CCWStencilPass = TranslateStencilOp(Initializer.BackFaceStencilPassOp);
+
+    return DepthStencilState;
+}
+
+// -----------------------------------------------------------------------------
+// Blend States
+// -----------------------------------------------------------------------------
+
 bool FOpenGLBlendState::GetInitializer(FBlendStateInitializerRHI &Init)
 {
     Init.bAlphaToCoverage = Data.bAlphaBlendEnable;
@@ -161,4 +413,22 @@ bool FOpenGLBlendState::GetInitializer(FBlendStateInitializerRHI &Init)
     Init.BlendOpAlpha = TranslateBlendOp(Data.AlphaBlendOperation);
     Init.RenderTargetWriteMask = Data.RenderTargetWriteMask;
     return true;
+}
+
+FBlendStateRHIRef FOpenGLDynamicRHI::RHICreateBlendState(const FBlendStateInitializerRHI& Initializer)
+{
+    FOpenGLBlendState* BlendState = static_cast<FOpenGLBlendState*>(FPlatformMemory::Malloc<EAT_RHI>(sizeof(FOpenGLBlendState)));
+    new (BlendState) FOpenGLBlendState();
+
+    BlendState->Data.bAlphaBlendEnable = Initializer.bEnableBlend;
+    BlendState->Data.ColorBlendOperation = TranslateBlendOp(Initializer.BlendOp);
+    BlendState->Data.ColorSourceBlendFactor = TranslateBlendFactor(Initializer.SrcBlend);
+    BlendState->Data.ColorDestBlendFactor = TranslateBlendFactor(Initializer.DestBlend);
+    BlendState->Data.bSeparateAlphaBlendEnable = Initializer.bIndependentBlend;
+    BlendState->Data.AlphaBlendOperation = TranslateBlendOp(Initializer.BlendOpAlpha);
+    BlendState->Data.AlphaSourceBlendFactor = TranslateBlendFactor(Initializer.SrcBlendAlpha);
+    BlendState->Data.AlphaDestBlendFactor = TranslateBlendFactor(Initializer.DestBlendAlpha);
+    BlendState->Data.RenderTargetWriteMask = Initializer.RenderTargetWriteMask;
+
+    return BlendState;
 }

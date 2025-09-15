@@ -36,7 +36,7 @@ using FVertexDeclarationElementList = TArray<FVertexElement>;
 
 struct FSamplerStateInitializerRHI
 {
-    ESamplerFilter Filter = ESamplerFilter::Linear;
+    ESamplerFilter Filter = ESamplerFilter::Bilinear;
     ESamplerAddressMode AddressU = ESamplerAddressMode::Wrap;
     ESamplerAddressMode AddressV = ESamplerAddressMode::Wrap;
     ESamplerAddressMode AddressW = ESamplerAddressMode::Wrap;
@@ -44,8 +44,8 @@ struct FSamplerStateInitializerRHI
     float MipLODBias = 0.0f;
     uint32 MaxAnisotropy = 1;
     float MinLOD = 0.0f;
-    float MaxLOD = __FLT_MAX__;
-    uint32 BorderColor = 0xFFFFFFFF; // RGBA
+    float MaxLOD = FLT_MAX;
+    uint32 BorderColor = 0x00000000; // white
     bool bUseComparison = false;
 };
 

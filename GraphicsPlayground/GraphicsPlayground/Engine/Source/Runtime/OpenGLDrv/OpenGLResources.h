@@ -1,6 +1,6 @@
 #pragma once
 
-#include "RHIResources.h"
+#include "RHI/RHIResources.h"
 #include "OpenGL3.h"
 #include "RHI/RHICommandList.h"
 #include "Core/HAL/PlatformMemory.h"
@@ -91,7 +91,7 @@ public:
         void* LocalCopy = nullptr;
         if ( InData )
         {
-            LocalCopy = FPlatformMemory::Malloc(Size);
+            LocalCopy = FPlatformMemory::Malloc<EAT_RHI>(Size);
             FPlatformMemory::Memcpy(LocalCopy, InData, Size);
         }
         auto InitLambda = [this, LocalCopy, Size]()
@@ -167,7 +167,8 @@ public:
         }
     }
 
-    void SetGLUniformBufferParams()
+    // void SetGLUniformBufferParams()  
+
 };
 /**
  * We use template (traits) to map RHI resource types to OpenGL resource types.
