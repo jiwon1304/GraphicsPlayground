@@ -180,6 +180,7 @@ target_include_directories(${PROJECT_NAME}
         "${THIRD_PARTY_DIR}/Json/include"
         "${THIRD_PARTY_DIR}/tinyfiledialogs/include"
         "${THIRD_PARTY_DIR}/FBX/include"
+        "${THIRD_PARTY_DIR}/OpenGL/glad/include"
 )
 
 # Windows 전용 ThirdParty include (DirectXTK, fmod, FBX, physx 등)
@@ -188,11 +189,12 @@ if (WIN32)
         "${THIRD_PARTY_DIR}/DirectXTK/Include"
         "${THIRD_PARTY_DIR}/fmod/inc"
         "${THIRD_PARTY_DIR}/physx/include"
+        "${THIRD_PARTY_DIR}/OpenGL/glfw/WIN64/include"
     )
 elseif(APPLE)
     target_include_directories(${PROJECT_NAME} PUBLIC
         "${THIRD_PARTY_DIR}/OpenGL/glad/include"
-        "${THIRD_PARTY_DIR}/OpenGL/glfw/MacOS/include"
+        "${THIRD_PARTY_DIR}/OpenGL/glfw/MACOS/include"
         "${THIRD_PARTY_DIR}/stb/stb_image.h"
         
         # @TODO : physx 관련해서 추가해야함 
@@ -280,7 +282,7 @@ if (WIN32)
 elseif(APPLE)
     # macOS / 기타 (필요시 세분화)
     set(THIRD_PARTY_LIB_DIRS
-        "${THIRD_PARTY_DIR}/OpenGL/glfw/MacOS/lib-universal"
+        "${THIRD_PARTY_DIR}/OpenGL/glfw/MACOS/lib-universal"
         # physx lib 경로 필요 시 추가
     )
     target_link_directories(${PROJECT_NAME} PRIVATE ${THIRD_PARTY_LIB_DIRS})
@@ -325,7 +327,7 @@ if (APPLE)
         TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E echo "[PostBuild] (macOS) dylib 복사 예시"
         COMMAND ${CMAKE_COMMAND} -E copy_if_different 
-            "${THIRD_PARTY_DIR}/OpenGL/glfw/MacOS/lib-universal/libglfw.3.dylib" "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libglfw.3.dylib"
+            "${THIRD_PARTY_DIR}/OpenGL/glfw/MACOS/lib-universal/libglfw.3.dylib" "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libglfw.3.dylib"
     )
 endif()
 

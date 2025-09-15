@@ -1,9 +1,7 @@
 #pragma once
 #include "OpenGLDrv/OpenGLThirdParty.h"
 
-#include "ThirdParty/OpenGL/glad/include/glad/glad.h"
 #include "Core/HAL/PlatformType.h"
-// 그냥 사용하기
 
 namespace FOpenGL
 {
@@ -17,7 +15,7 @@ void WindowHint(int hint, int value)
     glfwWindowHint(hint, value);
 }
 
-GLFWwindow* CreateWindow(int width, int height, const char* title)
+GLFWwindow* CreateWindowGLFW(int width, int height, const char* title)
 {
     return glfwCreateWindow(width, height, title, NULL, NULL);
 }
@@ -57,6 +55,9 @@ void Finish()
     glFinish();
 }
 
+// -------------------------------------------------------------
+// Buffers
+// --------------------------------------------------------------
 void GenBuffers(GLsizei n, GLuint* buffers)
 {
     glGenBuffers(n, buffers);
@@ -72,6 +73,9 @@ void BindBuffer(GLenum target, GLuint buffer)
     glBindBuffer(target, buffer);
 }
 
+// -------------------------------------------------------------
+// Textures
+// --------------------------------------------------------------
 void GenTextures(GLsizei n, GLuint* textures)
 {
     glGenTextures(n, textures);
@@ -87,6 +91,9 @@ void BindTexture(GLenum target, GLuint texture)
     glBindTexture(target, texture);
 }
 
+// -------------------------------------------------------------
+// Samplers
+// --------------------------------------------------------------
 void GenSamplers(GLsizei n, GLuint* samplers)
 {
     glGenSamplers(n, samplers);
@@ -100,6 +107,16 @@ void DeleteSamplers(GLsizei n, const GLuint* samplers)
 void BindSampler(GLuint unit, GLuint sampler)
 {
     glBindSampler(unit, sampler);
+}
+
+void SetSamplerParameter(GLuint sampler, GLenum pname, GLint param)
+{
+    glSamplerParameteri(sampler, pname, param);
+}
+
+void SetSamplerParameter(GLuint sampler, GLenum pname, GLfloat param)
+{
+    glSamplerParameterf(sampler, pname, param);
 }
 
 void GenFramebuffers(GLsizei n, GLuint* framebuffers)

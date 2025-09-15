@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\imgui.cpp">
+      <Filter>Engine\Source\ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\imgui_draw.cpp">
+      <Filter>Engine\Source\ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\imgui_tables.cpp">
+      <Filter>Engine\Source\ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\imgui_widgets.cpp">
+      <Filter>Engine\Source\ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\imgui_demo.cpp">
+      <Filter>Engine\Source\ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\imgui_bezier.cpp">
+      <Filter>Engine\Source\ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\imgui_curve.cpp">
+      <Filter>Engine\Source\ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\imgui_neo_internal.cpp">
+      <Filter>Engine\Source\ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\imgui_neo_sequencer.cpp">
+      <Filter>Engine\Source\ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\imgui_impl_win32.cpp">
+      <Filter>Engine\Source\ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\imgui_impl_dx11.cpp">
+      <Filter>Engine\Source\ThirdParty\imgui</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{3574B217-FCF0-3042-AA58-44B5F3DC057E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Source">
+      <UniqueIdentifier>{1160F0A0-3C7F-3C86-BA0D-79C2171A71BE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Source\ThirdParty">
+      <UniqueIdentifier>{DDBFC117-D06C-3662-87AB-ACCD72001B4B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Source\ThirdParty\imgui">
+      <UniqueIdentifier>{975CD0CB-FA76-3FF3-BB14-D00C1FCD95FC}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
