@@ -1,10 +1,10 @@
 #pragma once
 #include "IRenderPass.h"
-#include "EngineBaseTypes.h"
+#include "Launch/EngineBaseTypes.h"
 #include "Container/Set.h"
 
-#include "Define.h"
-#include "Engine/Classes/Components/Light/PointLightComponent.h"
+#include "Launch/Define.h"
+#include "Classes/Components/Light/PointLightComponent.h"
 
 struct FStaticMeshRenderData;
 class FShadowManager;

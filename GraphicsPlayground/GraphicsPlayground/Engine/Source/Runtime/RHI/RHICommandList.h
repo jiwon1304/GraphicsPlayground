@@ -9,12 +9,12 @@
 #include "RHI/RHIBufferInitializer.h"
 #include "RHI/DynamicRHI.h"
 
-class FRHICommandListExecutor;
-extern FRHICommandListExecutor GRHICommandList;
-
 #ifndef RHI_COMMANDLIST_BYPASS
 #define RHI_COMMANDLIST_BYPASS false
 #endif
+
+class FRHICommandListExecutor;
+extern FRHICommandListExecutor GRHICommandList;
 
 /*
 * Classes which derives from FRHICommand have different class variables thus different sizes.
@@ -31,6 +31,7 @@ extern FRHICommandListExecutor GRHICommandList;
 struct FRHICommandBase
 {
     FRHICommandBase* Next = nullptr;
+    virtual void ExecuteAndDestruct(FRHICommandListBase& CmdList) = 0;
     virtual ~FRHICommandBase() = default;
 };
 
@@ -690,10 +691,7 @@ public:
     }
 
     // Flush to GPU and waits until all commands are executed
-    void ImmediateFlush()
-    {
-        GRHICommandList.Submit();
-    }
+    void ImmediateFlush();
 };
 
 class FRHICommandListExecutor
@@ -712,5 +710,6 @@ public:
     // We now only use FRHICommandListImmediate. No other command lists.
     FRHICommandListImmediate CommandListImmediate;
 };
+
 
 #include "RHICommandListCommandExecutes.inl"

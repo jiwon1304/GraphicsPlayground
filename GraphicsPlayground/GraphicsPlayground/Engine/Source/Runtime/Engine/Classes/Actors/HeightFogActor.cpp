@@ -1,6 +1,6 @@
 #include "HeightFogActor.h"
 
-#include "Engine/Classes/Components/HeightFogComponent.h"
+#include "Classes/Components/HeightFogComponent.h"
 
 AHeightFogActor::AHeightFogActor()
 {

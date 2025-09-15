@@ -2,10 +2,10 @@
 
 #include <array>
 
-#include "Define.h"
+#include "Launch/Define.h"
 #include "RendererHelpers.h"
-#include "UnrealClient.h"
-#include "UnrealEd/EditorViewportClient.h"
+#include "Engine/UnrealClient.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
 
 FCompositingPass::FCompositingPass()
     : BufferManager(nullptr)

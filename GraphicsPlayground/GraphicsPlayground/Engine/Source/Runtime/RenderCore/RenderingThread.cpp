@@ -2,6 +2,15 @@
 #include "Runtime/Core/HAL/Runnable.h"
 #include "Runtime/RHI/DynamicRHI.h"
 #include "Runtime/RHI/RHICommandList.h"
+
+extern class FRenderingThread* GRenderingThread;
+extern uint32 GRenderThreadId;
+static class FRHIThread* GRHIThread = nullptr;
+extern uint32 GRHIThreadId;
+
+static void StartRenderingThread();
+static void RenderingThreadMain();
+
 /**
  * RHI Thread
  */
@@ -34,7 +43,7 @@ class FRHIThread : public FRunnable
         return 0;
     }
 
-} static *GRHIThread = nullptr;
+};
 
 /**
  * Rendering Thread.
@@ -71,17 +80,18 @@ class FRenderingThread : public FRunnable
 
 }; // GRenderingThread is declared in ThreadingBase.cpp
 
+
 FRHICommandListImmediate& GetImmediateCommandList_ForRenderCommand()
 {
     return FRHICommandListExecutor::GetImmediateCommandList();
 }
 
-void InitRenderingThread()
+static void InitRenderingThread()
 {
     StartRenderingThread();
 }
 
-void ShutdownRenderingThread()
+static void ShutdownRenderingThread()
 {
 
 }

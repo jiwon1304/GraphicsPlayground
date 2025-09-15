@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "IRenderPass.h"
-#include "Engine/Classes/Components/HeightFogComponent.h"
+#include "Classes/Components/HeightFogComponent.h"
 
 class FGraphicsDevice;
 class FDXDShaderManager;

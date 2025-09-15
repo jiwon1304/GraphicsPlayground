@@ -2,8 +2,12 @@
 #include "RHIFwd.h"
 #include "RHI.h"
 #include "RHIDefinitions.h"
+#include "RHIAccess.h"
+#include "PixelFormat.h"
 #include "Container/Array.h"
 
+class FRHICommandListBase;
+class IRHICommandContext;
 
 /** Create resources, like device in D3D11 */
 class FDynamicRHI
@@ -16,7 +20,7 @@ public:
     virtual void RHIEndFrame_RenderThread(class FRHICommandListImmediate& RHICmdList);
     virtual void RHIEndFrame(uint64 FrameNumber) = 0;
 
-    virtual void RHITick(float DeltaTime) = 0;
+    // virtual void RHITick(float DeltaTime) = 0;
     virtual void RHIExecuteCommandList(class FRHICommandList* CmdList) = 0;
 
     // -------------------------------------------------------------
@@ -54,10 +58,10 @@ public:
 	* @return The new staging-buffer.
 	*/
 	// FlushType: Thread safe.	
-	virtual FStagingBufferRHIRef RHICreateStagingBuffer()
-	{
-		return new FGenericRHIStagingBuffer();
-	}
+	// virtual FStagingBufferRHIRef RHICreateStagingBuffer()
+	// {
+	// 	return new FGenericRHIStagingBuffer();
+	// }
 
     /** 
      * Map to CPU memory
@@ -70,9 +74,9 @@ public:
 
     virtual void RHIUnlockStagingBuffer(FRHIStagingBuffer* StagingBuffer);
 
-    virtual void* LockStagingBuffer_RenderThread(class FRHICommmandListImmediate& RHICmdList, FRHIStagingBuffer* StagingBuffer, uint32 Offset, uint32 SizeRHI);
+    virtual void* LockStagingBuffer_RenderThread(class FRHICommandListImmediate& RHICmdList, FRHIStagingBuffer* StagingBuffer, uint32 Offset, uint32 SizeRHI);
 
-    virtual void UnlockStagingBuffer_RenderThread(class FRHICommmandListImmediate& RHICmdList, FRHIStagingBuffer* StagingBuffer);
+    virtual void UnlockStagingBuffer_RenderThread(class FRHICommandListImmediate& RHICmdList, FRHIStagingBuffer* StagingBuffer);
 
 	// FlushType: Thread safe, but varies depending on the RHI
 	virtual FBoundShaderStateRHIRef RHICreateBoundShaderState(FRHIVertexDeclaration* VertexDeclaration, FRHIVertexShader* VertexShader, FRHIPixelShader* PixelShader, FRHIGeometryShader* GeometryShader) = 0;
@@ -122,10 +126,7 @@ public:
 class FDynamicRHIPSOFallback : public FDynamicRHI
 {
 public:
-    virtual FGraphicsPipelineStateRHIRef RHICreateGraphicsPipelineState(const FGraphicsPipelineStateInitializer& Initializer) override
-    {
-        return new FRHIGraphicsPipelineStateFallBack(Initializer);
-    }
+    virtual FGraphicsPipelineStateRHIRef RHICreateGraphicsPipelineState(const FGraphicsPipelineStateInitializer& Initializer) override;
 };
 
 extern FDynamicRHI* GDynamicRHI;
@@ -175,10 +176,10 @@ FORCEINLINE FComputeShaderRHIRef RHICreateComputeShader(/*TArrayView<const uint8
     return GDynamicRHI->RHICreateComputeShader(/*Code, Hash*/);
 }
 
-FORCEINLINE FStagingBufferRHIRef RHICreateStagingBuffer()
-{
-    return GDynamicRHI->RHICreateStagingBuffer();
-}
+// FORCEINLINE FStagingBufferRHIRef RHICreateStagingBuffer()
+// {
+//     return GDynamicRHI->RHICreateStagingBuffer();
+// }
 
 FORCEINLINE FBoundShaderStateRHIRef RHICreateBoundShaderState(FRHIVertexDeclaration* VertexDeclaration, FRHIVertexShader* VertexShader, FRHIPixelShader* PixelShader, FRHIGeometryShader* GeometryShader)
 {

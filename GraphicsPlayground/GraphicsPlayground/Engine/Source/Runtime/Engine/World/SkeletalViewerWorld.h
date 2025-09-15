@@ -1,6 +1,6 @@
 #pragma once
-#include "World.h"
-#include "Engine/Classes/Components/SkeletalMeshComponent.h"
+#include "Engine/World/World.h"
+#include "Classes/Components/SkeletalMeshComponent.h"
 
 class USkeletalViewerWorld : public UWorld
 {

@@ -1,7 +1,7 @@
 
 #include "FishTailComponent.h"
 
-#include "Engine/FObjLoader.h"
+#include "Classes/Engine/FObjLoader.h"
 
 UFishTailComponent::UFishTailComponent()
 {

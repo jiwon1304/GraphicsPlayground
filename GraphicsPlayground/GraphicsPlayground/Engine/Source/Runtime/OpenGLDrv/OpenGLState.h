@@ -4,15 +4,15 @@
 #include "Core/Math/Rect.h"
 #include "Core/Container/Map.h"
 
-struct FOpenGLRHIState
-{
-    GLuint VertexArrayId;
-    GLuint FramebufferId;
-    GLuint RenderbufferId;
-    GLuint ProgramId;
-    GLuint TextureId;
-    GLuint SamplerId;
-};
+// struct FOpenGLRHIState
+// {
+//     GLuint VertexArrayId;
+//     GLuint FramebufferId;
+//     GLuint RenderbufferId;
+//     GLuint ProgramId;
+//     GLuint TextureId;
+//     GLuint SamplerId;
+// };
 
 struct FOpenGLSamplerStateData
 {
@@ -199,25 +199,4 @@ struct FOpenGLRHIState final : public FOpenGLCommonState
 	// uint32 UpStride;
 	// void* UpVertexBuffer;
 	// void* UpIndexBuffer;
-};
-
-template<>
-struct TOpenGLResourceTraits<FRHISamplerState>
-{
-    using TConcreteType = FOpenGLSamplerState;
-};
-template<>
-struct TOpenGLResourceTraits<FRHIRasterizerState>
-{
-    using TConcreteType = FOpenGLRasterizerState;
-};
-template<>
-struct TOpenGLResourceTraits<FRHIDepthStencilState>
-{
-    using TConcreteType = FOpenGLDepthStencilState;
-};
-template<>
-struct TOpenGLResourceTraits<FRHIBlendState>
-{
-    using TConcreteType = FOpenGLBlendState;
 };

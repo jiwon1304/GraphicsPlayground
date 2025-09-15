@@ -1,7 +1,7 @@
 #pragma once
-#include "Define.h"
+#include "Launch/Define.h"
 #include "IWindowToggleable.h"
-#include "UnrealEd/EditorViewportClient.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
 
 namespace EEngineShowFlags
 {

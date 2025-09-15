@@ -1,7 +1,7 @@
 #pragma once
 #include "IRenderPass.h"
 #include "Container/Array.h"
-#include "Define.h"
+#include "Launch/Define.h"
 #include "Windows/D3D11RHI/DXDShaderManager.h"
 #include "Windows/D3D11RHI/DXDBufferManager.h"
 #include "Math/Shapes.h"

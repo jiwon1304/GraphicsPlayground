@@ -1,13 +1,13 @@
 #include "ParticleSystemComponent.h"
 
-#include "Particles/ParticleHelper.h"
-#include "Particles/ParticleSystem.h"
-#include "Particles/ParticleEmitter.h"
-#include "Particles/ParticleEmitterInstances.h"
-#include "Particles/ParticleLODLevel.h"
+#include "Classes/Particles/ParticleHelper.h"
+#include "Classes/Particles/ParticleSystem.h"
+#include "Classes/Particles/ParticleEmitter.h"
+#include "Classes/Particles/ParticleEmitterInstances.h"
+#include "Classes/Particles/ParticleLODLevel.h"
 #include "Material/Material.h"
-#include "Particles/ParticleModules/ParticleModuleRequired.h"
-#include <UObject/Casts.h>
+#include "Classes/Particles/ParticleModules/ParticleModuleRequired.h"
+#include "CoreUObject/UObject/Casts.h"
 
 void UParticleSystemComponent::InitializeSystem()
 {

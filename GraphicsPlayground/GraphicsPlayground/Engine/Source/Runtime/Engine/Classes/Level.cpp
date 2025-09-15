@@ -1,5 +1,5 @@
-#include "Level.h"
-#include "Engine/Classes/GameFramework/Actor.h"
+#include "Classes/Level.h"
+#include "Classes/GameFramework/Actor.h"
 #include "CoreUObject/UObject/Casts.h"
 
 

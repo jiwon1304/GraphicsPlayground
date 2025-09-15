@@ -1,13 +1,13 @@
 #include "PhysicsAssetUtils.h"
 
-#include "Animation/Skeleton.h"
-#include "Engine/SkeletalMesh.h"
-#include "PhysicsEngine/PhysicsAsset.h"
+#include "Classes/Animation/Skeleton.h"
+#include "Classes/Engine/SkeletalMesh.h"
+#include "Classes/PhysicsEngine/PhysicsAsset.h"
 #include "CoreUObject/UObject/ObjectFactory.h"
-#include "PhysicsEngine/BodySetup.h"
+#include "Classes/PhysicsEngine/BodySetup.h"
 #include "PhysicalMaterials/Defines.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
-#include "PhysicsEngine/PhysicsConstraintTemplate.h"
+#include "Classes/PhysicsEngine/PhysicsConstraintTemplate.h"
 
 namespace FPhysicsAssetUtils
 {

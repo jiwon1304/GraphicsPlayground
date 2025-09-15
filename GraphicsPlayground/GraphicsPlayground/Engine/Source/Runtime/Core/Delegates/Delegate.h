@@ -2,7 +2,7 @@
 #include <functional>
 #include "Core/Container/Map.h"
 #include "CoreUObject/UObject/WeakObjectPtr.h"
-#include "UserInterface/Console.h"
+#include "Engine/UserInterface/Console.h"
 
 
 #define FUNC_DECLARE_DELEGATE(DelegateName, ReturnType, ...) \

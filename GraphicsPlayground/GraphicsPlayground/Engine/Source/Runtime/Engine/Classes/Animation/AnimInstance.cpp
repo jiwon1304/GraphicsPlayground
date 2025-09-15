@@ -1,7 +1,7 @@
 ﻿#include "AnimInstance.h"
 
-#include "Engine/Classes/Components/SkeletalMeshComponent.h"
-#include "Engine/SkeletalMesh.h"
+#include "Classes/Components/SkeletalMeshComponent.h"
+#include "Classes/Engine/SkeletalMesh.h"
 #include "CoreUObject/UObject/Casts.h"
 
 void UAnimInstance::InitializeAnimation()

@@ -1,5 +1,5 @@
 #include "DirectionalLightComponent.h"
-#include "Engine/Classes/Components/SceneComponent.h"
+#include "Classes/Components/SceneComponent.h"
 #include "Math/JungleMath.h"
 #include "Math/Rotator.h"
 #include "Math/Quat.h"

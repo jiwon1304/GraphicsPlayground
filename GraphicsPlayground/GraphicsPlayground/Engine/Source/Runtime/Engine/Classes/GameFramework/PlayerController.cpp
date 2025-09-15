@@ -1,7 +1,7 @@
 #include "PlayerController.h"
 
-#include "Camera/PlayerCameraManager.h"
-#include "Engine/Classes/Engine/Engine.h"
+#include "Classes/Camera/PlayerCameraManager.h"
+#include "Classes/Engine/Engine.h"
 #include "CoreUObject/UObject/UObjectIterator.h"
 #include "World/World.h"
 

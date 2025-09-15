@@ -1,8 +1,8 @@
 #include "ParticleHelper.h"
-#include "Particles/ParticleModules/ParticleModuleRequired.h"
+#include "Classes/Particles/ParticleModules/ParticleModuleRequired.h"
 #include "ParticleEmitterInstances.h"
-#include "Engine/FObjLoader.h"
-#include "Engine/StaticMesh.h"
+#include "Classes/Engine/FObjLoader.h"
+#include "Classes/Engine/StaticMesh.h"
 
 FDynamicEmitterDataBase::FDynamicEmitterDataBase(const UParticleModuleRequired* RequiredModule)
     :EmitterIndex(INDEX_NONE)

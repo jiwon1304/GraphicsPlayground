@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Core/Container/Map.h"
-#include "Delegates/DelegateCombination.h"
+#include "Core/Delegates/DelegateCombination.h"
 #include "Runtime/InputCore/InputCoreTypes.h"
-#include "Engine/Classes/Components/ActorComponent.h"
+#include "Classes/Components/ActorComponent.h"
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOneFloatDelegate, const float&)
 

@@ -2,9 +2,9 @@
 
 #include <utility>
 
-#include "Engine/Classes/Components/Light/DirectionalLightComponent.h"
+#include "Classes/Components/Light/DirectionalLightComponent.h"
 #include "Math/JungleMath.h"
-#include "UnrealEd/EditorViewportClient.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
 #include "Windows/D3D11RHI/DXDBufferManager.h"
 
 // --- 생성자 및 소멸자 ---

@@ -1,10 +1,10 @@
 ﻿#include "PhysicsAssetWorld.h"
 
-#include "Engine/Classes/Engine/EditorEngine.h"
-#include "Engine/SkeletalMesh.h"
-#include "PhysicsEngine/BodySetup.h"
-#include "PhysicsEngine/PhysicsAsset.h"
-#include "PhysicsEngine/PhysicsConstraintTemplate.h"
+#include "Classes/Engine/EditorEngine.h"
+#include "Classes/Engine/SkeletalMesh.h"
+#include "Classes/PhysicsEngine/BodySetup.h"
+#include "Classes/PhysicsEngine/PhysicsAsset.h"
+#include "Classes/PhysicsEngine/PhysicsConstraintTemplate.h"
 
 UPhysicsAssetWorld* UPhysicsAssetWorld::CreateWorld(UObject* InOuter, const EWorldType InWorldType, const FString& InWorldName)
 {

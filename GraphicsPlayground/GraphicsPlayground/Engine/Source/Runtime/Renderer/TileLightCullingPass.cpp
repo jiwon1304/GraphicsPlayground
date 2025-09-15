@@ -3,14 +3,14 @@
 #include "Windows/D3D11RHI/GraphicDevice.h"
 #include "Windows/D3D11RHI/DXDShaderManager.h"
 
-#include "UnrealClient.h"
-#include "UnrealEd/EditorViewportClient.h"
-#include "LevelEditor/SLevelEditor.h"
+#include "Engine/UnrealClient.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
+#include "Editor/LevelEditor/SLevelEditor.h"
 #include "CoreUObject/UObject/Casts.h"
-#include "Engine/Classes/Engine/EditorEngine.h"
-#include "Engine/Classes/Components/Light/LightComponent.h"
-#include "Engine/Classes/Components/Light/PointLightComponent.h"
-#include "Engine/Classes/Components/Light/SpotLightComponent.h"
+#include "Classes/Engine/EditorEngine.h"
+#include "Classes/Components/Light/LightComponent.h"
+#include "Classes/Components/Light/PointLightComponent.h"
+#include "Classes/Components/Light/SpotLightComponent.h"
 #include "CoreUObject/UObject/UObjectIterator.h"
 
 #define SAFE_RELEASE(p) if (p) { (p)->Release(); (p) = nullptr; }

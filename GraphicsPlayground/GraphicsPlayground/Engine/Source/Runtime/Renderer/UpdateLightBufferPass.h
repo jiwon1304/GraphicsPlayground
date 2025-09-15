@@ -1,9 +1,9 @@
 #pragma once
 
 #include "IRenderPass.h"
-#include "EngineBaseTypes.h"
+#include "Launch/EngineBaseTypes.h"
 #include "Container/Set.h"
-#include "Define.h"
+#include "Launch/Define.h"
 
 #define MAX_POINTLIGHT_PER_TILE 256
 #define MAX_SPOTLIGHT_PER_TILE 256

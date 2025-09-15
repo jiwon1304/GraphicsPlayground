@@ -1,6 +1,6 @@
 #pragma once
 #include "ParticleModuleSizeBase.h"
-#include "Distributions/DistributionVector.h"
+#include "Classes/Distributions/DistributionVector.h"
 
 struct FRandomStream;
 

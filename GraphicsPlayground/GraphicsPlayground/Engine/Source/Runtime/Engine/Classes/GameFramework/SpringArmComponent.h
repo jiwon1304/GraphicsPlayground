@@ -1,11 +1,11 @@
 #pragma once
 
 #include "CoreUObject/UObject/ObjectMacros.h"
-#include "Engine/Classes/Engine/EngineTypes.h"
-#include "Engine/Classes/Components/SceneComponent.h"
+#include "Engine/EngineTypes.h"
+#include "Classes/Components/SceneComponent.h"
 #include "Math/Quat.h"
 #include "Math/Vector.h"
-#include "PropertyEditor/PropertyEditorPanel.h"
+#include "Editor/PropertyEditor/PropertyEditorPanel.h"
 
 
 class USpringArmComponent : public USceneComponent

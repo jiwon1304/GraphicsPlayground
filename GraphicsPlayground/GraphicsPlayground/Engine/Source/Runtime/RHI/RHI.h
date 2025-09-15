@@ -1,6 +1,8 @@
 #pragma once
 
 #include "RHI/RHIDefinitions.h"
+#include "CoreUObject/UObject/NameTypes.h"
+#include "Core/Container/Array.h"
 
 struct FRHIResourceStats
 {

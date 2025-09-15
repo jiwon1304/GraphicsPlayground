@@ -1,6 +1,6 @@
 #pragma once
 #include "ParticleModule.h"
-#include "Distributions/DistributionFloat.h"
+#include "Classes/Distributions/DistributionFloat.h"
 
 // NOTE : UE는 UParticleModuleLifetimeBase클래스의 상속이지만 그냥 바로 쓴다.
 struct FParticleEmitterInstance;

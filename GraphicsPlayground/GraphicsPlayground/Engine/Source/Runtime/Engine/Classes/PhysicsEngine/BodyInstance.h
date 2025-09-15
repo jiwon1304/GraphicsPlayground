@@ -1,9 +1,9 @@
 #pragma once
 #include "CoreUObject/UObject/ObjectMacros.h"
 #include "Engine/PhysxUserData.h"
-#include "EngineTypes.h"
 //#include "ConstraintInstance.h"
-#include "Engine/Classes/Engine/EngineTypes.h"
+#include "Engine/EngineTypes.h"
+#include "Engine/EngineTypes.h"
 
 struct FShapeData;
 

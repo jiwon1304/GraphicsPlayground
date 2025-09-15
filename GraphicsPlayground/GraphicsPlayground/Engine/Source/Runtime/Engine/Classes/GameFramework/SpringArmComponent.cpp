@@ -2,9 +2,9 @@
 
 #include "Actor.h"
 #include "HAL/PlatformType.h"
-#include "Engine/Classes/Components/BoxComponent.h"
-#include "Engine/Classes/Components/SphereComponent.h"
-#include "Engine/OverlapResult.h"
+#include "Classes/Components/BoxComponent.h"
+#include "Classes/Components/SphereComponent.h"
+#include "Classes/Engine/OverlapResult.h"
 #include "CoreUObject/UObject/UObjectIterator.h"
 #include "World/World.h"
 

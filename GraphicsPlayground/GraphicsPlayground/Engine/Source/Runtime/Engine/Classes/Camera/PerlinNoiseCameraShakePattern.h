@@ -1,5 +1,5 @@
 #pragma once
-#include "Camera/Shakes/SimpleCameraShakePattern.h"
+#include "Classes/Camera/Shakes/SimpleCameraShakePattern.h"
 
 struct FPerlinNoiseShaker
 {

@@ -2,41 +2,41 @@
 
 #include "World/World.h"
 
-#include "Actors/Player.h"
-#include "Actors/LightActor.h"
-#include "Actors/FireballActor.h"
+#include "Classes/Actors/Player.h"
+#include "Classes/Actors/LightActor.h"
+#include "Classes/Actors/FireballActor.h"
 
-#include "Engine/Classes/Components/Light/LightComponent.h"
-#include "Engine/Classes/Components/Light/PointLightComponent.h"
-#include "Engine/Classes/Components/Light/SpotLightComponent.h"
-#include "Engine/Classes/Components/SphereComp.h"
-#include "Engine/Classes/Components/ParticleSubUVComponent.h"
-#include "Engine/Classes/Components/TextComponent.h"
-#include "Camera/CameraComponent.h"
-#include "Engine/Classes/Components/ProjectileMovementComponent.h"
+#include "Classes/Components/Light/LightComponent.h"
+#include "Classes/Components/Light/PointLightComponent.h"
+#include "Classes/Components/Light/SpotLightComponent.h"
+#include "Classes/Components/SphereComp.h"
+#include "Classes/Components/ParticleSubUVComponent.h"
+#include "Classes/Components/TextComponent.h"
+#include "Classes/Camera/CameraComponent.h"
+#include "Classes/Components/ProjectileMovementComponent.h"
 
-#include "Engine/FObjLoader.h"
-#include "Engine/StaticMeshActor.h"
-#include "LevelEditor/SLevelEditor.h"
-#include "PropertyEditor/ShowFlags.h"
-#include "UnrealEd/EditorViewportClient.h"
+#include "Classes/Engine/FObjLoader.h"
+#include "Engine/Classes/Engine/StaticMeshActor.h"
+#include "Editor/LevelEditor/SLevelEditor.h"
+#include "Editor/PropertyEditor/ShowFlags.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
 #include "tinyfiledialogs.h"
 
-#include "Actors/Cube.h"
+#include "Classes/Actors/Cube.h"
 
-#include "Engine/Classes/Engine/EditorEngine.h"
-#include <Actors/HeightFogActor.h>
-#include "Actors/PointLightActor.h"
-#include "Actors/DirectionalLightActor.h"
-#include "Actors/SpotLightActor.h"
-#include "Actors/AmbientLightActor.h"
+#include "Classes/Engine/EditorEngine.h"
+#include "Classes/Actors/HeightFogActor.h"
+#include "Classes/Actors/PointLightActor.h"
+#include "Classes/Actors/DirectionalLightActor.h"
+#include "Classes/Actors/SpotLightActor.h"
+#include "Classes/Actors/AmbientLightActor.h"
 
-#include "Actors/CubeActor.h"
-#include "Actors/SphereActor.h"
-#include "Actors/CapsuleActor.h"
-#include "Animation/SkeletalMeshActor.h"
-#include "Engine/Classes/Components/SkeletalMeshComponent.h"
-#include "Engine/Classes/GameFramework/PlayerController.h"
+#include "Classes/Actors/CubeActor.h"
+#include "Classes/Actors/SphereActor.h"
+#include "Classes/Actors/CapsuleActor.h"
+#include "Classes/Animation/SkeletalMeshActor.h"
+#include "Classes/Components/SkeletalMeshComponent.h"
+#include "Classes/GameFramework/PlayerController.h"
 #include "Contents/Actors/Fish.h"
 #include "Contents/Actors/ItemActor.h"
 #include "Contents/Actors/PlatformActor.h"
@@ -44,21 +44,21 @@
 #include "Contents/Actors/SkeletalMeshActorTest.h"
 #include "Contents/Actors/TriggerBox.h"
 #include "Renderer/CompositingPass.h"
-#include <Engine/FbxLoader.h>
+#include "Classes/Engine/FbxLoader.h"
 
 #include "Contents/Actors/ParticleSystemActor.h"
-#include "Engine/Classes/Engine/AssetManager.h"
-#include "Engine/Classes/Components/ParticleSystemComponent.h"
-#include "Particles/ParticleSystem.h"
-#include "Particles/ParticleSpriteEmitter.h"
-#include <Particles/ParticleModules/ParticleModuleLifetime.h>
-#include "Particles/ParticleLODLevel.h"
+#include "Classes/Engine/AssetManager.h"
+#include "Classes/Components/ParticleSystemComponent.h"
+#include "Classes/Particles/ParticleSystem.h"
+#include "Classes/Particles/ParticleSpriteEmitter.h"
+#include "Classes/Particles/ParticleModules/ParticleModuleLifetime.h"
+#include "Classes/Particles/ParticleLODLevel.h"
 
-#include "SubWindow/ParticleSubEngine.h"
-#include <Particles/ParticleModules/ParticleModuleSize.h>
-#include <Particles/ParticleModules/ParticleModuleVelocity.h>
+#include "Windows/SubWindow/ParticleSubEngine.h"
+#include "Classes/Particles/ParticleModules/ParticleModuleSize.h"
+#include "Classes/Particles/ParticleModules/ParticleModuleVelocity.h"
 
-#include "Engine/Classes/PhysicsEngine/Vehicle/WheeledVehiclePawn.h"
+#include "Classes/PhysicsEngine/Vehicle/WheeledVehiclePawn.h"
 ControlEditorPanel::ControlEditorPanel()
 {
     SetSupportedWorldTypes(EWorldTypeBitFlag::Editor | EWorldTypeBitFlag::PIE | EWorldTypeBitFlag::SkeletalViewer | EWorldTypeBitFlag::PhysicsAssetEditor);

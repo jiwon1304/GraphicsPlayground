@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "Container/Map.h"
-#include "Delegates/Delegate.h"
-#include "Delegates/DelegateCombination.h"
+#include "Core/Delegates/Delegate.h"
+#include "Core/Delegates/DelegateCombination.h"
 #include "Math/Vector.h"
 
 DECLARE_MULTICAST_DELEGATE(FVoidDelegate)

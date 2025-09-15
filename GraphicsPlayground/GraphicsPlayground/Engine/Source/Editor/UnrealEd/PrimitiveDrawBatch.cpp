@@ -5,7 +5,7 @@
 #include "PrimitiveDrawBatch.h"
 #include "Launch/EngineLoop.h"
 #include "Windows/D3D11RHI/GraphicDevice.h"
-#include "UnrealEd/EditorViewportClient.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
 
 
 UPrimitiveDrawBatch::~UPrimitiveDrawBatch()

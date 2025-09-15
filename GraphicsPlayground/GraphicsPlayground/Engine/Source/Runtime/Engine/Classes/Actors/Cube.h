@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine/Classes/Engine/StaticMeshActor.h"
+#include "Classes/Engine/StaticMeshActor.h"
 
 class ACube : public AStaticMeshActor
 {

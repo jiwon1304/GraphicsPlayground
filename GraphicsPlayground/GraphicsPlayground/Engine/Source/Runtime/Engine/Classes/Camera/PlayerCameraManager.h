@@ -1,6 +1,6 @@
 #pragma once
 #include "CameraTypes.h"
-#include "Engine/Classes/GameFramework/Actor.h"
+#include "Classes/GameFramework/Actor.h"
 
 class UCameraShakeBase;
 class UCameraComponent;

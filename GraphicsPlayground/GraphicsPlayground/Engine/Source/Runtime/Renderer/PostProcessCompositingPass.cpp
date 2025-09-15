@@ -3,9 +3,9 @@
 #include <array>
 
 #include "RendererHelpers.h"
-#include "UnrealClient.h"
+#include "Engine/UnrealClient.h"
 #include "Windows/D3D11RHI/DXDShaderManager.h"
-#include "UnrealEd/EditorViewportClient.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
 
 FPostProcessCompositingPass::FPostProcessCompositingPass()
     : BufferManager(nullptr)

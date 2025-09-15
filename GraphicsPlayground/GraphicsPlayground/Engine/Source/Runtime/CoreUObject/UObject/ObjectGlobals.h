@@ -2,7 +2,7 @@
 #include "Object.h"      // UObject
 #include "NameTypes.h"   // FName, NAME_None
 #include "Container/Array.h" // TArray
-#include "CoreUObject/UObjectHash.h"   // GetObjectsOfClass 함수 선언
+#include "CoreUObject/UObject/UObjectHash.h"   // GetObjectsOfClass 함수 선언
 #include <cassert>         // assert
 
 /**

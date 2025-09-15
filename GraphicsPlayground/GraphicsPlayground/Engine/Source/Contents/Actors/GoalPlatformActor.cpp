@@ -1,7 +1,7 @@
 
 #include "GoalPlatformActor.h"
 
-#include "Engine/FObjLoader.h"
+#include "Classes/Engine/FObjLoader.h"
 
 AGoalPlatformActor::AGoalPlatformActor()
 {

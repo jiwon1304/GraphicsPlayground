@@ -3,15 +3,15 @@
 
 #include "ParticleEmitterInstances.h"
 #include "ParticleEmitter.h"
-#include "Particles/ParticleModules/ParticleModuleRequired.h"
+#include "Classes/Particles/ParticleModules/ParticleModuleRequired.h"
 #include "ParticleLODLevel.h"
-#include "Engine/Classes/Components/ParticleSystemComponent.h"
-#include "Particles/ParticleHelper.h"
-#include "Particles/ParticleModules/ParticleModuleSpawn.h"
-#include "Engine/Classes/Components/Material/Material.h"
-#include "Engine/Classes/Components/SceneComponent.h"
-#include "Engine/FObjLoader.h"
-#include "Particles/ParticleModules/ParticleModuleTypeDataMesh.h"
+#include "Classes/Components/ParticleSystemComponent.h"
+#include "Classes/Particles/ParticleHelper.h"
+#include "Classes/Particles/ParticleModules/ParticleModuleSpawn.h"
+#include "Classes/Components/Material/Material.h"
+#include "Classes/Components/SceneComponent.h"
+#include "Classes/Engine/FObjLoader.h"
+#include "Classes/Particles/ParticleModules/ParticleModuleTypeDataMesh.h"
 #include "ParticleModules/ParticleModuleSubUV.h"
 
 

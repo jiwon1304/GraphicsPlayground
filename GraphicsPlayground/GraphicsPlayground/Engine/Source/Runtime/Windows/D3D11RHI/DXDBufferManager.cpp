@@ -3,7 +3,7 @@
 #include <codecvt>
 #include <locale>
 
-#include "Particles/ParticleHelper.h"
+#include "Classes/Particles/ParticleHelper.h"
 
 void FDXDBufferManager::Initialize(ID3D11Device* InDXDevice, ID3D11DeviceContext* InDXDeviceContext)
 {

@@ -57,8 +57,6 @@ public:
     template <EAllocationType AllocType>
     static uint64 GetAllocationCount();
 
-    static void* Memcpy(void* Dest, const void* Src, uint64 Length);
-
     static void* Memset(void* Dest, int32 Char, uint64 Length)
     {
         return std::memset(Dest, Char, Length);
@@ -193,9 +191,4 @@ uint64 FPlatformMemory::GetAllocationCount()
         //static_assert(false, "Unknown AllocationType");
         return -1;
     }
-}
-
-void *FPlatformMemory::Memcpy(void *Dest, const void *Src, uint64 Length)
-{
-    return std::memcpy(Dest, Src, Length);
 }

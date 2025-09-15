@@ -1,13 +1,13 @@
 #include "FObjLoader.h"
 
 #include "CoreUObject/UObject/ObjectFactory.h"
-#include "Engine/Classes/Components/Material/Material.h"
-#include "Engine/StaticMesh.h"
-#include "PhysicsEngine/BodySetup.h"
+#include "Classes/Components/Material/Material.h"
+#include "Classes/Engine/StaticMesh.h"
+#include "Classes/PhysicsEngine/BodySetup.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "PhysicalMaterials/Defines.h"
 
-#include "Asset/StaticMeshAsset.h"
+#include "Classes/Engine/Asset/StaticMeshAsset.h"
 
 #include <fstream>
 #include <sstream>

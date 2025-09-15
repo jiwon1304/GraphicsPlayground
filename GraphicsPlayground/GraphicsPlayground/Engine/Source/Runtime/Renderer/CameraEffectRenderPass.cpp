@@ -1,11 +1,11 @@
 #include "CameraEffectRenderPass.h"
-#include "Engine/Classes/Engine/Engine.h"
-#include "UnrealEd/EditorViewportClient.h"
+#include "Classes/Engine/Engine.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
 #include "Engine/World/World.h"
-#include "Engine/Classes/Camera/PlayerCameraManager.h"
+#include "Classes/Camera/PlayerCameraManager.h"
 #include "Renderer/ShaderConstants.h"
 #include "RendererHelpers.h"
-#include "UnrealClient.h"
+#include "Engine/UnrealClient.h"
 
 FCameraEffectRenderPass::FCameraEffectRenderPass() {}
 FCameraEffectRenderPass::~FCameraEffectRenderPass() { ReleaseShader(); }

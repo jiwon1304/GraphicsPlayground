@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Actors/Player.h"
-#include "Engine/Classes/Components/ActorComponent.h"
-#include "Camera/CameraComponent.h"
-#include "Engine/Classes/Components/SceneComponent.h"
-#include "Engine/Classes/GameFramework/Actor.h"
-#include "UnrealEd/EditorPanel.h"
+#include "Classes/Actors/Player.h"
+#include "Classes/Components/ActorComponent.h"
+#include "Classes/Camera/CameraComponent.h"
+#include "Classes/Components/SceneComponent.h"
+#include "Classes/GameFramework/Actor.h"
+#include "Editor/UnrealEd/EditorPanel.h"
 #include "Math/Rotator.h"
 #include "CoreUObject/UObject/Casts.h"
 

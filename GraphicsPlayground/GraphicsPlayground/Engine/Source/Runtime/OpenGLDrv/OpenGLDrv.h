@@ -9,7 +9,6 @@
 class FOpenGLDynamicRHI : public IOpenGLDynamicRHI, public IRHICommandContext
 {
     static inline FOpenGLDynamicRHI* Singleton = nullptr;
-    static inline FOpenGLDynamicRHI* Singleton = nullptr;
 
 public:
     static inline FOpenGLDynamicRHI& Get() { return *Singleton; }
@@ -23,8 +22,6 @@ public:
 
     virtual void RHIEndFrame_RenderThread(class FRHICommandListImmediate& RHICmdList);
     virtual void RHIEndFrame(uint64 FrameNumber);
-
-    virtual void RHITick(float DeltaTime);
 
     // -------------------------------------------------------------
     // Resource Creation
@@ -124,8 +121,6 @@ public:
     virtual void* RHIGetNativeDevice();
 
 	virtual IRHICommandContext* RHIGetDefaultContext();
-
-    virtual FGraphicsPipelineStateRHIRef RHICreateGraphicsPipelineState(const FGraphicsPipelineStateInitializer& Initializer) override;
 
 private:
     GLFWwindow* MainWindow = nullptr;

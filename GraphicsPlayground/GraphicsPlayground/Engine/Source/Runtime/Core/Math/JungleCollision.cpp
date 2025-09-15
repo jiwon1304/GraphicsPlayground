@@ -181,7 +181,7 @@ bool JungleCollision::Intersects(const FOrientedBox& A, const FOrientedBox& B)
         for (int j = 0; j < 3; ++j)
         {
             FVector Cross = FVector::CrossProduct(AxisA[i], AxisB[j]);
-            if (Cross.LengthSquared() > SMALL_NUMBER)
+            if (Cross.SizeSquared() > SMALL_NUMBER)
             {
                 if (!TestAxis(Cross, A, B, D)) return false;
             }
@@ -292,7 +292,7 @@ bool JungleCollision::Intersects(const FOrientedBox& Box, const FSphere& Sphere)
         Distance = FMath::Clamp(Distance, -Extents[i], Extents[i]);
         ClosestPoint += Axes[i] * Distance;
     }
-    return (ClosestPoint - Sphere.Center).LengthSquared() <= Sphere.Radius * Sphere.Radius;
+    return (ClosestPoint - Sphere.Center).SizeSquared() <= Sphere.Radius * Sphere.Radius;
 }
 
 bool JungleCollision::Intersects(const FSphere& Sphere, const FOrientedBox& Box)
@@ -308,7 +308,7 @@ bool JungleCollision::Intersects(const FOrientedBox& Box, const FCapsule& Capsul
     FVector ClosestA = ClosestPointOnOBB(Box, Top);
     FVector ClosestB = ClosestPointOnOBB(Box, Bottom);
     FVector ClosestOnSegment = ClosestPointOnSegment(Top, Bottom, (ClosestA + ClosestB) * 0.5f);
-    float DistSq = (ClosestPointOnOBB(Box, ClosestOnSegment) - ClosestOnSegment).LengthSquared();
+    float DistSq = (ClosestPointOnOBB(Box, ClosestOnSegment) - ClosestOnSegment).SizeSquared();
     return DistSq <= Capsule.Radius * Capsule.Radius;
 }
 
@@ -394,7 +394,7 @@ bool JungleCollision::Intersects(const FOrientedBox& A, const FOrientedBox& B, F
         for (int j = 0; j < 3; ++j)
         {
             FVector axis = FVector::CrossProduct(AxisA[i], AxisB[j]);
-            if (axis.LengthSquared() < KINDA_SMALL_NUMBER) continue;
+            if (axis.SizeSquared() < KINDA_SMALL_NUMBER) continue;
             axis = axis.GetSafeNormal();
             float aProj = A.ExtentX * FMath::Abs(FVector::DotProduct(axis, A.AxisX)) +
                 A.ExtentY * FMath::Abs(FVector::DotProduct(axis, A.AxisY)) +
@@ -733,7 +733,7 @@ inline FVector JungleCollision::ClosestPointOnOBB(const FOrientedBox& Box, const
 inline FVector JungleCollision::ClosestPointOnSegment(const FVector& A, const FVector& B, const FVector& P)
 {
     FVector AB = B - A;
-    float AB_LengthSq = AB.LengthSquared();
+    float AB_LengthSq = AB.SizeSquared();
     if (AB_LengthSq <= SMALL_NUMBER) return A;
     float T = FVector::DotProduct(P - A, AB) / AB_LengthSq;
     T = FMath::Clamp(T, 0.0f, 1.0f);

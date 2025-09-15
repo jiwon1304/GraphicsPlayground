@@ -1,9 +1,9 @@
 ﻿#include "AnimDataController.h"
 
-#include "Animation/AnimSequence.h"
-#include "Animation/AnimTypes.h"
-#include "Animation/Skeleton.h"
-#include "Animation/AnimData/AnimDataModel.h"
+#include "Classes/Animation/AnimSequence.h"
+#include "Classes/Animation/AnimTypes.h"
+#include "Classes/Animation/Skeleton.h"
+#include "Classes/Animation/AnimData/AnimDataModel.h"
 #include "Misc/FrameTime.h"
 #include "Math/MathUtility.h"
 

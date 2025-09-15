@@ -1,6 +1,6 @@
 #include "ParticleModuleSubUV.h"
-#include "Particles/ParticleEmitterInstances.h"
-#include "Particles/ParticleEmitter.h"
+#include "Classes/Particles/ParticleEmitterInstances.h"
+#include "Classes/Particles/ParticleEmitter.h"
 
 void UParticleModuleSubUV::Spawn(FParticleEmitterInstance* Owner, int32 Offset, float SpawnTime, FBaseParticle* ParticleBase)
 {

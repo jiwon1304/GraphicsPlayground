@@ -1,5 +1,8 @@
 #pragma once
 
+#include "Core/HAL/PlatformType.h"
+#include "Core/Serialization/Archive.h"
+
 // rigid body collision에서의 물체의 타입
 enum class ECollisionChannel : uint8
 {

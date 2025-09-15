@@ -100,8 +100,8 @@ public:
             this->Bind();
             FOpenGL::BufferData(this->Type, Size, LocalCopy, GetAccess());
             FPlatformMemory::Free(LocalCopy, Size);
-        }
-
+        };
+        
         if ( RHICmdList )
         {
             RHICmdList->EnqueueLambda(InitLambda);

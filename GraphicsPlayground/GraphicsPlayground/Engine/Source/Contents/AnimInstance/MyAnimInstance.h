@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include "Engine/Classes/Animation/AnimInstance.h"
-#include "Engine/Classes/Animation/AnimStateMachine.h"
+#include "Classes/Animation/AnimInstance.h"
+#include "Classes/Animation/AnimStateMachine.h"
 #include "CoreUObject/UObject/ObjectMacros.h"
 
 class UAnimSequence;

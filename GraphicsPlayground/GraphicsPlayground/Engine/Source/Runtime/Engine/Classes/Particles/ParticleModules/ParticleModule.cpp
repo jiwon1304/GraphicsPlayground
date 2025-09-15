@@ -1,8 +1,8 @@
 #include "ParticleModule.h"
-#include "Particles/ParticleSystem.h"
+#include "Classes/Particles/ParticleSystem.h"
 #include "CoreUObject/UObject/Casts.h"
-#include "Particles/ParticleHelper.h"
-#include "Particles/ParticleEmitterInstances.h"
+#include "Classes/Particles/ParticleHelper.h"
+#include "Classes/Particles/ParticleEmitterInstances.h"
 
 uint32 UParticleModule::RequiredBytes(UParticleModuleTypeDataBase* TypeData) const
 {

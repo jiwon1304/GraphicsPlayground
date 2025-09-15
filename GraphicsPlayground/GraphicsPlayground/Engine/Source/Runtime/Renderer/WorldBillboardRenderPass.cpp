@@ -1,10 +1,10 @@
 
 #include "WorldBillboardRenderPass.h"
 
-#include "UnrealClient.h"
-#include "Engine/Classes/Engine/Engine.h"
+#include "Engine/UnrealClient.h"
+#include "Classes/Engine/Engine.h"
 #include "CoreUObject/UObject/UObjectIterator.h"
-#include "Engine/Classes/Components/BillboardComponent.h"
+#include "Classes/Components/BillboardComponent.h"
 
 FWorldBillboardRenderPass::FWorldBillboardRenderPass()
 {

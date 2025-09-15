@@ -1,4 +1,4 @@
-#include "CoreUObject/UObjectHash.h"
+#include "CoreUObject/UObject/UObjectHash.h"
 #include <cassert>
 #include "Object.h"
 #include "Class.h"

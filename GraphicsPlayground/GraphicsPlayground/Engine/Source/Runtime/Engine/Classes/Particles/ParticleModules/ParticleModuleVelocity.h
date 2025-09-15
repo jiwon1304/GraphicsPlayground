@@ -1,7 +1,7 @@
 #pragma once
 #include "ParticleModuleVelocityBase.h"
-#include "Distributions/DistributionFloat.h"
-#include "Distributions/DistributionVector.h"
+#include "Classes/Distributions/DistributionFloat.h"
+#include "Classes/Distributions/DistributionVector.h"
 
 
 class UParticleModuleVelocity : public UParticleModuleVelocityBase

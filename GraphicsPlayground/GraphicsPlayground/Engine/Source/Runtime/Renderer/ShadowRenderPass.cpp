@@ -1,26 +1,26 @@
 #include "ShadowRenderPass.h"
 
 #include "ShadowManager.h"
-#include "BaseGizmos/GizmoBaseComponent.h"
-#include "Engine/Classes/Components/Light/LightComponent.h"
-#include "Engine/Classes/Components/Light/PointLightComponent.h"
+#include "InteractiveToolsFramework/BaseGizmos/GizmoBaseComponent.h"
+#include "Classes/Components/Light/LightComponent.h"
+#include "Classes/Components/Light/PointLightComponent.h"
 #include "Windows/D3D11RHI/DXDBufferManager.h"
 #include "Windows/D3D11RHI/GraphicDevice.h"
 #include "Windows/D3D11RHI/DXDShaderManager.h"
-#include "Engine/Classes/Components/Light/DirectionalLightComponent.h"
-#include "Engine/Classes/Components/Light/PointLightComponent.h"
-#include "Engine/Classes/Components/Light/SpotLightComponent.h"
-#include "Engine/Classes/Engine/EditorEngine.h"
-#include "Engine/Classes/Engine/Engine.h"
-#include "UnrealEd/EditorViewportClient.h"
+#include "Classes/Components/Light/DirectionalLightComponent.h"
+#include "Classes/Components/Light/PointLightComponent.h"
+#include "Classes/Components/Light/SpotLightComponent.h"
+#include "Classes/Engine/EditorEngine.h"
+#include "Classes/Engine/Engine.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
 #include "CoreUObject/UObject/Casts.h"
 #include "CoreUObject/UObject/UObjectIterator.h"
 #include "Editor/PropertyEditor/ShowFlags.h"
-#include "Engine/AssetManager.h"
+#include "Classes/Engine/AssetManager.h"
 
 class UEditorEngine;
 class UStaticMeshComponent;
-#include "UnrealEd/EditorViewportClient.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
 
 FShadowRenderPass::FShadowRenderPass()
 {

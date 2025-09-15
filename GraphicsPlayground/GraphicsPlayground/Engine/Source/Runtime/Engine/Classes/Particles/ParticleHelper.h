@@ -1,5 +1,5 @@
 #pragma once
-#include "Engine/Classes/Components/Material/Material.h"
+#include "Classes/Components/Material/Material.h"
 #include "Math/Vector.h"
 #include "Math/Color.h"
 #include "Math/RandomStream.h"

@@ -1,8 +1,8 @@
 #include "PlayerCameraManager.h"
 
 #include "CameraModifier.h"
-#include "Engine/Classes/GameFramework/PlayerController.h"
-#include "Camera/CameraModifier_CameraShake.h"
+#include "Classes/GameFramework/PlayerController.h"
+#include "Classes/Camera/CameraModifier_CameraShake.h"
 #include "World/World.h"
 
 bool FTViewTarget::Equal(const FTViewTarget& OtherTarget) const

@@ -1,4 +1,4 @@
-#include "BonePose.h"
+#include "Classes/BonePose.h"
 
 void FCompactPose::ResetToAdditiveIdentity()
 {

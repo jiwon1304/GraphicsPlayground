@@ -1,19 +1,19 @@
 #include "AssetManager.h"
-#include "Engine.h"
+#include "Classes/Engine/Engine.h"
 
 #include <filesystem>
 
 #include "FbxLoader.h"
-#include "Animation/Skeleton.h"
+#include "Classes/Animation/Skeleton.h"
 #include "SkeletalMesh.h"
-#include "Animation/AnimationAsset.h"
-#include "Animation/AnimSequence.h"
-#include "Engine/Classes/Components/Material/Material.h"
-#include "Engine/FObjLoader.h"
+#include "Classes/Animation/AnimationAsset.h"
+#include "Classes/Animation/AnimSequence.h"
+#include "Classes/Components/Material/Material.h"
+#include "Classes/Engine/FObjLoader.h"
 #include "CoreUObject/UObject/Casts.h"
-#include "Asset/SkeletalMeshAsset.h"
-#include "Asset/StaticMeshAsset.h"
-#include "PhysicsEngine/PhysicsAsset.h"
+#include "Classes/Engine/Asset/SkeletalMeshAsset.h"
+#include "Classes/Engine/Asset/StaticMeshAsset.h"
+#include "Classes/PhysicsEngine/PhysicsAsset.h"
 #include "Serialization/MemoryArchive.h"
 #include "CoreUObject/UObject/ObjectFactory.h"
 

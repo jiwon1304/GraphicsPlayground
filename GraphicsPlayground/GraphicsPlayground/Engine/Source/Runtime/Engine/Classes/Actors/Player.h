@@ -1,7 +1,7 @@
 #pragma once
-#include "Engine/Classes/Components/SkeletalMeshComponent.h"
-#include "Engine/Classes/GameFramework/Actor.h"
-#include "PhysicsEngine/ShapeElem.h"
+#include "Classes/Components/SkeletalMeshComponent.h"
+#include "Classes/GameFramework/Actor.h"
+#include "Classes/PhysicsEngine/ShapeElem.h"
 #include "CoreUObject/UObject/ObjectMacros.h"
 #include "CoreUObject/UObject/ObjectTypes.h"
 

@@ -1,9 +1,9 @@
 #include "StaticMesh.h"
-#include "Engine/FObjLoader.h"
+#include "Classes/Engine/FObjLoader.h"
 #include "CoreUObject/UObject/Casts.h"
 #include "CoreUObject/UObject/ObjectFactory.h"
 
-#include "Engine/Asset/StaticMeshAsset.h"
+#include "Classes/Engine/Asset/StaticMeshAsset.h"
 
 UObject* UStaticMesh::Duplicate(UObject* InOuter)
 {

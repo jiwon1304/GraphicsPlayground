@@ -1,11 +1,11 @@
 #include "FireballActor.h"
-#include "Engine/FObjLoader.h"
+#include "Classes/Engine/FObjLoader.h"
 
-#include "Engine/Classes/Components/Light/PointLightComponent.h"
+#include "Classes/Components/Light/PointLightComponent.h"
 
-#include "Engine/Classes/Components/ProjectileMovementComponent.h"
+#include "Classes/Components/ProjectileMovementComponent.h"
 
-#include "Engine/Classes/Components/SphereComp.h"
+#include "Classes/Components/SphereComp.h"
 
 AFireballActor::AFireballActor()
 {

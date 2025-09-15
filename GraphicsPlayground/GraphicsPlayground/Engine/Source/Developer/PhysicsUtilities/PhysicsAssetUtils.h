@@ -1,6 +1,6 @@
 #pragma once
 #include <extensions/PxD6Joint.h>
-#include <PhysicsEngine/ConstraintTypes.h>
+#include "Classes/PhysicsEngine/ConstraintTypes.h"
 
 class USkeletalMesh;
 class UPhysicsAsset;

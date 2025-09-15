@@ -2,8 +2,8 @@
 
 #include "BodySetup.h"
 #include "PhysicsConstraintTemplate.h"
-#include "Engine/AssetManager.h"
-#include "Engine/SkeletalMesh.h"
+#include "Classes/Engine/AssetManager.h"
+#include "Classes/Engine/SkeletalMesh.h"
 #include "CoreUObject/UObject/ObjectFactory.h"
 
 int32 UPhysicsAsset::FindBodyIndex(const FName& BoneName) const

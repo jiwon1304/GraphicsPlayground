@@ -1,14 +1,14 @@
 
 #include "SkeletalMeshActorTest.h"
 
-#include "Animation/AnimSequence.h"
-#include "Animation/Skeleton.h"
-#include "Engine/Classes/Components/SkeletalMeshComponent.h"
-#include "Engine/Classes/Components/StaticMeshComponent.h"
-#include "Engine/AssetManager.h"
-#include "Engine/FObjLoader.h"
-#include "Engine/SkeletalMesh.h"
-#include "Engine/Asset/SkeletalMeshAsset.h"
+#include "Classes/Animation/AnimSequence.h"
+#include "Classes/Animation/Skeleton.h"
+#include "Classes/Components/SkeletalMeshComponent.h"
+#include "Classes/Components/StaticMeshComponent.h"
+#include "Classes/Engine/AssetManager.h"
+#include "Classes/Engine/FObjLoader.h"
+#include "Classes/Engine/SkeletalMesh.h"
+#include "Classes/Engine/Asset/SkeletalMeshAsset.h"
 
 ASkeletalMeshActorTest::ASkeletalMeshActorTest()
 {

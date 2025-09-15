@@ -1749,7 +1749,7 @@ struct FRHIRenderPassInfo
     /** One color, one depth*/
     explicit FRHIRenderPassInfo(
         FRHITexture* ColorRT, ERenderTargetLoadAction ColorLoadAction, ERenderTargetStoreAction ColorStoreAction,
-        FRHITexture* DepthStencilRT = nullptr, EDepthStencilLoadAction DepthLoadAction, EDepthStencilStoreAction DepthStoreAction)
+        FRHITexture* DepthStencilRT, EDepthStencilLoadAction DepthLoadAction, EDepthStencilStoreAction DepthStoreAction)
     {
         ColorRenderTargets[0].RenderTarget = ColorRT;
         ColorRenderTargets[0].LoadAction = ColorLoadAction;

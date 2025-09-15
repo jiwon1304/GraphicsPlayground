@@ -1,8 +1,8 @@
 
 #include "DamageCameraShake.h"
 
-#include "Camera/PerlinNoiseCameraShakePattern.h"
-#include "Camera/Shakes/WaveOscillatorCameraShakePattern.h"
+#include "Classes/Camera/PerlinNoiseCameraShakePattern.h"
+#include "Classes/Camera/Shakes/WaveOscillatorCameraShakePattern.h"
 
 UDamageCameraShake::UDamageCameraShake()
 {

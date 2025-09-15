@@ -1,6 +1,6 @@
 #pragma once
 #include "IRenderPass.h"
-#include "LevelEditor/SlateAppMessageHandler.h"
+#include "Editor/LevelEditor/SlateAppMessageHandler.h"
 
 class FPostProcessCompositingPass : public IRenderPass
 {

@@ -2,10 +2,10 @@
 #include "AnimSequenceBase.h"
 
 #include "CoreUObject/UObject/ObjectFactory.h"
-#include "Animation/AnimData/AnimDataModel.h"
+#include "Classes/Animation/AnimData/AnimDataModel.h"
 #include "Developer/AnimDataController/AnimDataController.h"
-#include "Animation/AnimTypes.h"
-#include "Engine/Classes/Animation/AnimNotifyState.h"
+#include "Classes/Animation/AnimTypes.h"
+#include "Classes/Animation/AnimNotifyState.h"
 
 UAnimSequenceBase::UAnimSequenceBase()
     : RateScale(1.f)

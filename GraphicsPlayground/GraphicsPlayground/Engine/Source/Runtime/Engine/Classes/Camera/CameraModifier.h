@@ -1,7 +1,7 @@
 #pragma once
 #include "CoreUObject/UObject/Object.h"
 #include "CoreUObject/UObject/ObjectMacros.h"
-#include "Camera/CameraTypes.h"
+#include "Classes/Camera/CameraTypes.h"
 
 class APlayerCameraManager;
 

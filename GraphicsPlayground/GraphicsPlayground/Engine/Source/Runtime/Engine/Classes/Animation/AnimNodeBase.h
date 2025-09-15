@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "BonePose.h"
+#include "Classes/BonePose.h"
 
 class UAnimInstance;
 

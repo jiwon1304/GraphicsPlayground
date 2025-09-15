@@ -15,20 +15,20 @@
 
 #include "World/World.h"
 
-#include "Actors/Player.h"
+#include "Classes/Actors/Player.h"
 
-#include "BaseGizmos/GizmoBaseComponent.h"
-#include "BaseGizmos/TransformGizmo.h"
+#include "InteractiveToolsFramework/BaseGizmos/GizmoBaseComponent.h"
+#include "InteractiveToolsFramework/BaseGizmos/TransformGizmo.h"
 
-#include "UnrealEd/EditorViewportClient.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
 
 #include "Launch/EngineLoop.h"
-#include "UnrealClient.h"
+#include "Engine/UnrealClient.h"
 
 #include "CoreUObject/UObject/ObjectTypes.h"
 
-#include "Engine/Classes/Components/StaticMeshComponent.h"
-#include "Engine/Classes/Engine/EditorEngine.h"
+#include "Classes/Components/StaticMeshComponent.h"
+#include "Classes/Engine/EditorEngine.h"
 
 
 FGizmoRenderPass::FGizmoRenderPass()

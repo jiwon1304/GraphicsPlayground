@@ -1,9 +1,9 @@
 #pragma once
 #include "Core/HAL/PlatformType.h"
-#include "Engine/Classes/Engine/ResourceMgr.h"
-#include "LevelEditor/SlateAppMessageHandler.h"
+#include "Classes/Engine/ResourceMgr.h"
+#include "Editor/LevelEditor/SlateAppMessageHandler.h"
 #include "Renderer/Renderer.h"
-#include "UnrealEd/PrimitiveDrawBatch.h"
+#include "Editor/UnrealEd/PrimitiveDrawBatch.h"
 #include "Stats/ProfilerStatsManager.h"
 #include "Stats/GPUTimingManager.h"
 

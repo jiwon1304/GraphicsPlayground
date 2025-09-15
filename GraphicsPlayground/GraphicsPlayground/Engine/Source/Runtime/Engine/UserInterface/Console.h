@@ -4,8 +4,8 @@
 #include "Windows/D3D11RHI/GraphicDevice.h"
 #include "HAL/PlatformType.h"
 #include "CoreUObject/UObject/NameTypes.h"
-#include "ImGui/imgui.h"
-#include "PropertyEditor/IWindowToggleable.h"
+#include "ThirdParty/imgui/imgui.h"
+#include "Editor/PropertyEditor/IWindowToggleable.h"
 
 static consteval std::string_view GetFileName(std::string_view PathView)
 {

@@ -1,5 +1,5 @@
 #pragma once
-#include "Engine/Classes/GameFramework/Actor.h"
+#include "Classes/GameFramework/Actor.h"
 
 class UHeightFogComponent;
 

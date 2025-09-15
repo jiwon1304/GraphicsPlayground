@@ -1,7 +1,7 @@
 #include "OverlayShapeRenderPass.h"
 #include "Windows/D3D11RHI/GraphicDevice.h"
-#include "UnrealEd/EditorViewportClient.h"
-#include "UnrealClient.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
+#include "Engine/UnrealClient.h"
 namespace Constants
 {
     struct alignas(16) Ray

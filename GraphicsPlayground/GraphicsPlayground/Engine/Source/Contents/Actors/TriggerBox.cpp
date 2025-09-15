@@ -1,7 +1,7 @@
 ﻿#include "TriggerBox.h"
-#include "Engine/Classes/Components/StaticMeshComponent.h"
-#include "Engine/Classes/Components/BoxComponent.h"
-#include "Engine/FObjLoader.h"
+#include "Classes/Components/StaticMeshComponent.h"
+#include "Classes/Components/BoxComponent.h"
+#include "Classes/Engine/FObjLoader.h"
 
 ATriggerBox::ATriggerBox()
 {

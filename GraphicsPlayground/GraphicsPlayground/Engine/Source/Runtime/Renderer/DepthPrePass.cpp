@@ -1,11 +1,11 @@
 #include "DepthPrePass.h"
 
 #include "HAL/PlatformType.h"
-#include "UnrealClient.h"
+#include "Engine/UnrealClient.h"
 #include "Windows/D3D11RHI/DXDBufferManager.h"
 #include "Windows/D3D11RHI/GraphicDevice.h"
 #include "Windows/D3D11RHI/DXDShaderManager.h"
-#include "UnrealEd/EditorViewportClient.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
 
 #define SAFE_RELEASE(p) if (p) { p->Release(); p = nullptr; }
 

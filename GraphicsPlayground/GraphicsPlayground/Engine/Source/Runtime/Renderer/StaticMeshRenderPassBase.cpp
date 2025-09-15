@@ -1,12 +1,12 @@
 
 #include "StaticMeshRenderPassBase.h"
 
-#include "Engine/Classes/Engine/Engine.h"
+#include "Classes/Engine/Engine.h"
 #include "CoreUObject/UObject/UObjectIterator.h"
-#include "Engine/Classes/Components/StaticMeshComponent.h"
-#include "BaseGizmos/GizmoBaseComponent.h"
-#include "Engine/Classes/Engine/EditorEngine.h"
-#include "UnrealEd/EditorViewportClient.h"
+#include "Classes/Components/StaticMeshComponent.h"
+#include "InteractiveToolsFramework/BaseGizmos/GizmoBaseComponent.h"
+#include "Classes/Engine/EditorEngine.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
 #include "CoreUObject/UObject/Casts.h"
 #include "Editor/PropertyEditor/ShowFlags.h"
 

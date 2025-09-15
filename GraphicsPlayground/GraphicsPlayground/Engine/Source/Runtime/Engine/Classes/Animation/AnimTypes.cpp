@@ -1,5 +1,5 @@
 #include "AnimTypes.h"
-#include "Animation/AnimNotifyState.h"
+#include "Classes/Animation/AnimNotifyState.h"
 #include "CoreUObject/UObject/UObjectArray.h"
 
 void FAnimNotifyEvent::SetAnimNotify(class UAnimNotify* InNotify)

@@ -1,5 +1,5 @@
 #include "Stats.h"
-#include "WindowsPlatformTime.h"
+#include "Windows/WindowsPlatformTime.h"
 #include "GpuTimingManager.h"
 #include "ProfilerStatsManager.h"
 

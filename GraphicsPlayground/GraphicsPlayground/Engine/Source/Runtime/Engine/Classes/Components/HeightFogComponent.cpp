@@ -1,5 +1,5 @@
 #include "HeightFogComponent.h"
-#include <UObject/Casts.h>
+#include "CoreUObject/UObject/Casts.h"
 
 UHeightFogComponent::UHeightFogComponent(float Density, float HeightFalloff, float StartDist, float EndDist, float DistanceWeight)
     :FogDensity(Density), FogHeightFalloff(HeightFalloff), StartDistance(StartDist), FogDistanceWeight(DistanceWeight), EndDistance(EndDist)

@@ -1,11 +1,11 @@
 #include "BillboardComponent.h"
 #include <DirectXMath.h>
-#include "Define.h"
+#include "Launch/Define.h"
 #include "World/World.h"
-#include "Actors/Player.h"
-#include "LevelEditor/SLevelEditor.h"
+#include "Classes/Actors/Player.h"
+#include "Editor/LevelEditor/SLevelEditor.h"
 #include "Math/MathUtility.h"
-#include "UnrealEd/EditorViewportClient.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
 #include "Launch/EngineLoop.h"
 
 UBillboardComponent::UBillboardComponent()

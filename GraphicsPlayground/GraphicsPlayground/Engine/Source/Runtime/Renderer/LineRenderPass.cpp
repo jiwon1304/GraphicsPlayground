@@ -11,11 +11,11 @@
 #include "Math/JungleMath.h"
 
 #include "Launch/EngineLoop.h"
-#include "UnrealClient.h"
+#include "Engine/UnrealClient.h"
 
 #include "CoreUObject/UObject/UObjectIterator.h"
 
-#include "UnrealEd/EditorViewportClient.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
 
 // 생성자/소멸자
 FLineRenderPass::FLineRenderPass()

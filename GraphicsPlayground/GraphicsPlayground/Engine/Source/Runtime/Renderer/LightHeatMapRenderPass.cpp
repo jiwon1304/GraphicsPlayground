@@ -3,13 +3,13 @@
 #include "Windows/D3D11RHI/GraphicDevice.h"
 #include "Windows/D3D11RHI/DXDShaderManager.h"
 #include "Windows/D3D11RHI/DXDBufferManager.h"
-#include "UnrealEd/EditorViewportClient.h"
-#include "Define.h"
-#include "Engine/Classes/GameFramework/Actor.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
+#include "Launch/Define.h"
+#include "Classes/GameFramework/Actor.h"
 #include <wchar.h>
-#include <UObject/UObjectIterator.h>
-#include <Engine/Engine.h>
-#include "PropertyEditor/ShowFlags.h"
+#include "CoreUObject/UObject/UObjectIterator.h"
+#include "Classes/Engine/Engine.h"
+#include "Editor/PropertyEditor/ShowFlags.h"
 
 FLightHeatMapRenderPass::FLightHeatMapRenderPass()
     : Graphics(nullptr)

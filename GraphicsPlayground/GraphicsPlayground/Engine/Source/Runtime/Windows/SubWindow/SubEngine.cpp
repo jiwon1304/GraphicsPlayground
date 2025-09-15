@@ -1,10 +1,10 @@
 #include "SubEngine.h"
 
-#include "ImGuiManager.h"
+#include "Launch/ImGuiManager.h"
 #include "ImGuiSubWindow.h"
 #include "SubRenderer.h"
-#include "UnrealClient.h"
-#include "UnrealEd/EditorViewportClient.h"
+#include "Engine/UnrealClient.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
 
 USubEngine::USubEngine() :
     Graphics(nullptr),

@@ -4,9 +4,9 @@
 #define _TCHAR_DEFINED
 #include <windowsx.h>
 
-#include "Define.h"
+#include "Launch/Define.h"
 #include "Launch/EngineLoop.h"
-#include "WindowsCursor.h"
+#include "Windows/WindowsCursor.h"
 #include "Math/Vector.h"
 
 extern FEngineLoop GEngineLoop;

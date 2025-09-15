@@ -1,8 +1,8 @@
 #pragma once
-#include "Camera/CameraComponent.h"
-#include "Camera/PlayerCameraManager.h"
-#include "Engine/Classes/GameFramework/Actor.h" 
-#include "Engine/Classes/Components/InputComponent.h"
+#include "Classes/Camera/CameraComponent.h"
+#include "Classes/Camera/PlayerCameraManager.h"
+#include "Classes/GameFramework/Actor.h" 
+#include "Classes/Components/InputComponent.h"
 
 class APlayerCameraManager;
 

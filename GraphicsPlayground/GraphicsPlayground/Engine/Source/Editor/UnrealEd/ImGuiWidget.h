@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
 
-#include "ImGui/imgui.h"
-#include "ImGui/imgui_internal.h"
+#include "ThirdParty/imgui/imgui.h"
+#include "ThirdParty/imgui/imgui_internal.h"
 #include "Math/NumericLimits.h"
 
 struct FVector;

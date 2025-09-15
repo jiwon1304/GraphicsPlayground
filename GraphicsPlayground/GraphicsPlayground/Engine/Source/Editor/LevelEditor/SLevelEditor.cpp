@@ -3,13 +3,13 @@
 #include <ostream>
 #include <sstream>
 #include "Launch/EngineLoop.h"
-#include "UnrealClient.h"
-#include "WindowsCursor.h"
-#include "BaseGizmos/GizmoBaseComponent.h"
-#include "Engine/Classes/Engine/EditorEngine.h"
+#include "Engine/UnrealClient.h"
+#include "Windows/WindowsCursor.h"
+#include "InteractiveToolsFramework/BaseGizmos/GizmoBaseComponent.h"
+#include "Classes/Engine/EditorEngine.h"
 #include "Slate/Widgets/Layout/SSplitter.h"
 #include "SlateCore/Widgets/SWindow.h"
-#include "UnrealEd/EditorViewportClient.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
 
 extern FEngineLoop GEngineLoop;
 

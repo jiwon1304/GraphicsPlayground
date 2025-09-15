@@ -1,9 +1,9 @@
 #include "GizmoBaseComponent.h"
 
 #include "TransformGizmo.h"
-#include "Engine/Classes/GameFramework/Actor.h"
-#include "LevelEditor/SLevelEditor.h"
-#include "UnrealEd/EditorViewportClient.h"
+#include "Classes/GameFramework/Actor.h"
+#include "Editor/LevelEditor/SLevelEditor.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
 
 
 void UGizmoBaseComponent::TickComponent(float DeltaTime)

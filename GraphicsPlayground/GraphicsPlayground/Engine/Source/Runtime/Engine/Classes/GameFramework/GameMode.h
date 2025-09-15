@@ -1,6 +1,6 @@
 #pragma once
 #include "Actor.h"
-#include "Delegates/DelegateCombination.h"
+#include "Core/Delegates/DelegateCombination.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnGameInit);
 DECLARE_MULTICAST_DELEGATE(FOnGameStart);

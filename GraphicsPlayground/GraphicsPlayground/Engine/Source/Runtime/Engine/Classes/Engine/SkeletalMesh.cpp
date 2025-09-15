@@ -1,5 +1,5 @@
 
-#include "Asset/SkeletalMeshAsset.h"
+#include "Classes/Engine/Asset/SkeletalMeshAsset.h"
 #include "SkeletalMesh.h"
 
 void USkeletalMesh::SetRenderData(std::unique_ptr<FSkeletalMeshRenderData> InRenderData)

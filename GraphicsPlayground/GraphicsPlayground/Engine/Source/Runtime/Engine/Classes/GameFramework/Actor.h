@@ -1,7 +1,7 @@
 #pragma once
-#include "Engine/Classes/Components/SceneComponent.h"
+#include "Classes/Components/SceneComponent.h"
 #include "Container/Set.h"
-#include "Engine/Classes/Engine/EngineTypes.h"
+#include "Engine/EngineTypes.h"
 #include "CoreUObject/UObject/Casts.h"
 #include "CoreUObject/UObject/Object.h"
 #include "CoreUObject/UObject/ObjectFactory.h"

@@ -1,8 +1,8 @@
 #include "ParticleModuleLifetime.h"
-#include "Particles/ParticleEmitterInstances.h"
-#include "Particles/ParticleHelper.h"
+#include "Classes/Particles/ParticleEmitterInstances.h"
+#include "Classes/Particles/ParticleHelper.h"
 #include "CoreUObject/UObject/ObjectFactory.h"
-#include <Distributions/DistributionFloatUniform.h>
+#include "Classes/Distributions/DistributionFloatUniform.h"
 
 
 UParticleModuleLifetime::UParticleModuleLifetime()

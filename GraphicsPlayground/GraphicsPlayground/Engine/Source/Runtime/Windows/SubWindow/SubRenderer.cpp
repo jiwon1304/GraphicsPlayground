@@ -1,8 +1,8 @@
 #include "SubRenderer.h"
-#include "UnrealEd/EditorViewportClient.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
 #include "Engine/UnrealClient.h"
 #include "Renderer/ParticleRenderPass.h"
-#include "SubWindow/ParticleSubEngine.h"
+#include "Windows/SubWindow/ParticleSubEngine.h"
 void FSubRenderer::Initialize(FGraphicsDevice* InGraphics, FDXDBufferManager* InBufferManager, USubEngine* InEngine)
 {
     Engine = InEngine;

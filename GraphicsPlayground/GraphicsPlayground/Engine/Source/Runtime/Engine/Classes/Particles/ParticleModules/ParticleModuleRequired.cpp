@@ -1,5 +1,5 @@
 #include "ParticleModuleRequired.h"
-#include "Particles/ParticleEmitterInstances.h"
+#include "Classes/Particles/ParticleEmitterInstances.h"
 #include "CoreUObject/UObject/ObjectFactory.h"
 
 void UParticleModuleRequired::Update(FParticleEmitterInstance* Owner, int32 Offset, float DeltaTime)

@@ -1,10 +1,10 @@
 #pragma once
-#include "WindowsCursor.h"
-#include "BaseGizmos/GizmoBaseComponent.h"
-#include "Engine/Classes/Engine/EditorEngine.h"
-#include "Engine/Classes/GameFramework/Actor.h"
-#include "UnrealEd/EditorViewportClient.h"
-#include "UnrealEd/UnrealEd.h"
+#include "Windows/WindowsCursor.h"
+#include "InteractiveToolsFramework/BaseGizmos/GizmoBaseComponent.h"
+#include "Classes/Engine/EditorEngine.h"
+#include "Classes/GameFramework/Actor.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
+#include "Editor/UnrealEd/UnrealEd.h"
 
 //자신의 꿈을 펼쳐볼 수 있는 서브 엔진입니다.
 class USubEngine : public UEngine

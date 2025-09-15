@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include "World.h"
-#include "PhysicsEngine/ShapeElem.h"
+#include "Engine/World/World.h"
+#include "Classes/PhysicsEngine/ShapeElem.h"
 
 
 struct FSelectedPrimitive

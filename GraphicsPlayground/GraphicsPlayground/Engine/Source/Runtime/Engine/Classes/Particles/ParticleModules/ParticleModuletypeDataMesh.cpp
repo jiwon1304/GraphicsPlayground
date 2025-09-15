@@ -1,8 +1,8 @@
 #include "ParticleModuletypeDataMesh.h"
 
-#include "Engine/FObjLoader.h"
-#include "Particles/ParticleHelper.h"
-#include "Particles/ParticleEmitterInstances.h"
+#include "Classes/Engine/FObjLoader.h"
+#include "Classes/Particles/ParticleHelper.h"
+#include "Classes/Particles/ParticleEmitterInstances.h"
 
 FParticleEmitterInstance* UParticleModuleTypeDataMesh::CreateInstance(UParticleEmitter* InEmitterParent, UParticleSystemComponent* InComponent)
 {

@@ -7,15 +7,15 @@
 #include "CoreUObject/UObject/UObjectIterator.h"
 #include "CoreUObject/UObject/Casts.h"
 
-#include "UnrealEd/EditorViewportClient.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
 
-#include "Engine/Classes/Components/BillboardComponent.h"
-#include "Engine/Classes/Components/ParticleSubUVComponent.h"
-#include "Engine/Classes/Components/TextComponent.h"
-#include "Engine/Classes/Engine/EditorEngine.h"
+#include "Classes/Components/BillboardComponent.h"
+#include "Classes/Components/ParticleSubUVComponent.h"
+#include "Classes/Components/TextComponent.h"
+#include "Classes/Engine/EditorEngine.h"
 
 #include "Launch/EngineLoop.h"
-#include "UnrealClient.h"
+#include "Engine/UnrealClient.h"
 
 #include "World/World.h"
 

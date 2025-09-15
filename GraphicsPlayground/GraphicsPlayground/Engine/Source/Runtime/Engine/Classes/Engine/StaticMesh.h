@@ -1,8 +1,8 @@
 #pragma once
 #include "CoreUObject/UObject/Object.h"
 #include "CoreUObject/UObject/ObjectMacros.h"
-#include "Engine/Classes/Components/Material/Material.h"
-#include "Define.h"
+#include "Classes/Components/Material/Material.h"
+#include "Launch/Define.h"
 
 struct FStaticMeshRenderData;
 class UBodySetup;

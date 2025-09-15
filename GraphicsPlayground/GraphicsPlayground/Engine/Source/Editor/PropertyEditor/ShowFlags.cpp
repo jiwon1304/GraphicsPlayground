@@ -1,4 +1,4 @@
-#include "PropertyEditor/ShowFlags.h"
+#include "Editor/PropertyEditor/ShowFlags.h"
 
 ShowFlags& ShowFlags::GetInstance()
 {

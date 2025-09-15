@@ -4,7 +4,7 @@
 #include "Container/Map.h"
 #include "Container/Set.h"
 #include "Math/Transform.h"
-#include "Template/IsTSubclassOf.h"
+#include "CoreUObject/Template/IsTSubclassOf.h"
 #include "Templates/IsArray.h"
 
 #include "magic_enum/magic_enum.hpp"

@@ -226,6 +226,19 @@ public:
 
     FString ToString() const;
     bool InitFromString(const FString& InSourceString);
+
+    static void SegmentDistToSegmentSafe(
+        const FVector& P1,
+        const FVector& P2,
+        const FVector& Q1,
+        const FVector& Q2,
+        float& S,
+        float& T,
+        FVector& C1,
+        FVector& C2)
+        {
+            assert(false); // TODO
+        }
 };
 
 inline FVector::FVector(const FRotator& InRotator)

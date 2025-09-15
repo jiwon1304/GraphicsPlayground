@@ -1,5 +1,5 @@
 #include "CapsuleActor.h"
-#include "Engine/Classes/Components/CapsuleComponent.h"
+#include "Classes/Components/CapsuleComponent.h"
 
 ACapsuleActor::ACapsuleActor()
 {

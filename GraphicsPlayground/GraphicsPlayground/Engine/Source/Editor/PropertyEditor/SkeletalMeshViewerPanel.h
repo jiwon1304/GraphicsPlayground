@@ -1,7 +1,7 @@
 #pragma once
-#include "Engine/Classes/Engine/EditorEngine.h"
-#include "Engine/Classes/GameFramework/Actor.h"
-#include "UnrealEd/EditorPanel.h"
+#include "Classes/Engine/EditorEngine.h"
+#include "Classes/GameFramework/Actor.h"
+#include "Editor/UnrealEd/EditorPanel.h"
 
 class USkeletalMesh;
 class FReferenceSkeleton;

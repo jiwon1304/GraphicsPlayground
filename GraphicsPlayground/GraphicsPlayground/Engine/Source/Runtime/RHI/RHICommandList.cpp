@@ -22,3 +22,8 @@ inline FRHICommandListImmediate &FRHICommandListImmediate::Get()
 {
     return FRHICommandListExecutor::GetImmediateCommandList();
 }
+
+void FRHICommandListImmediate::ImmediateFlush()
+{
+    GRHICommandList.Submit();
+}

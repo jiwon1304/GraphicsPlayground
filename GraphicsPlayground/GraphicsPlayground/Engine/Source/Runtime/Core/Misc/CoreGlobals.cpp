@@ -5,9 +5,6 @@ int GWindowHeight = 1000;
 const TCHAR* GWindowName = "Graphics Playground";
 
 FString GEditorIni;
-FString GEditorIni;
-
-FString GWindowName;
 
 double GSystemStartTime = 0.0;
 

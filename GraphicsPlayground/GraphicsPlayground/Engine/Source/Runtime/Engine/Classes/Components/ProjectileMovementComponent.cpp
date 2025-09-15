@@ -1,5 +1,5 @@
 #include "ProjectileMovementComponent.h"
-#include "Engine/Classes/GameFramework/Actor.h"
+#include "Classes/GameFramework/Actor.h"
 
 UProjectileMovementComponent::UProjectileMovementComponent()
 {

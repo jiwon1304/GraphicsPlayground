@@ -1,5 +1,5 @@
 ﻿#include "AnimationRuntime.h"
-#include "Animation/AnimationPoseData.h"
+#include "Classes/Animation/AnimationPoseData.h"
 
 template<int32>
 void BlendTransform(const FTransform& Source, FTransform& Dest, const float BlendWeight);

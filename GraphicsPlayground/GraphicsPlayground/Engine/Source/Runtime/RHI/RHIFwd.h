@@ -3,6 +3,13 @@
 #include <memory>
 #include "Core/Templates/RefCounting.h"
 
+// ---------------------------------------------------------------------------
+// Command
+// ---------------------------------------------------------------------------
+// class FRHICommandListBase;
+// class FRHICommandList;
+// class FRHICommandListImmediate;
+// class IRHICommandContext;
 
 // -------------------------------------------------------------------------
 // Base / Core
@@ -95,7 +102,7 @@ class FRHISetRenderTargetsInfo;
 // -------------------------------------------------------------------------
 struct FBoundShaderStateInput;
 class  FGraphicsPipelineStateInitializer;
-class  FGraphicsPipelineState;
+class  FRHIGraphicsPipelineState;
 class  FRHIGraphicsPipelineStateFallBack;
 
 // -------------------------------------------------------------------------

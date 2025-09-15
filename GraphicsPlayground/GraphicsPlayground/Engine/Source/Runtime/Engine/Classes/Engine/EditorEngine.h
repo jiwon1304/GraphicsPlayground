@@ -1,6 +1,6 @@
 #pragma once
-#include "Engine.h"
-#include "Actors/Player.h"
+#include "Classes/Engine/Engine.h"
+#include "Classes/Actors/Player.h"
 #include "World/SkeletalViewerWorld.h"
 
 /*

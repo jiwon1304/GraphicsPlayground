@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "BonePose.h"
+#include "Classes/BonePose.h"
 
 struct FAnimationPoseData;
 

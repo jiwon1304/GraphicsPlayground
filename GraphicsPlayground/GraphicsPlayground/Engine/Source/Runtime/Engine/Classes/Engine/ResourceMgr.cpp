@@ -3,11 +3,11 @@
 #include <ranges>
 #include <unordered_map>
 #include <wincodec.h>
-#include "Define.h"
-#include "Engine/Classes/Components/SkySphereComponent.h"
+#include "Launch/Define.h"
+#include "Classes/Components/SkySphereComponent.h"
 #include "Windows/D3D11RHI/GraphicDevice.h"
 #include "DirectXTK/DDSTextureLoader.h"
-#include "Engine/FObjLoader.h"
+#include "Classes/Engine/FObjLoader.h"
 
 
 void FResourceManager::Initialize(FRenderer* Renderer, FGraphicsDevice* Device)

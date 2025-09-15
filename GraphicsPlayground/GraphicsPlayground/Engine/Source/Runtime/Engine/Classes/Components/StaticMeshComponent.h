@@ -1,8 +1,8 @@
 #pragma once
-#include "Engine/Classes/Components/MeshComponent.h"
-#include "Engine/StaticMesh.h"
+#include "Classes/Components/MeshComponent.h"
+#include "Classes/Engine/StaticMesh.h"
 
-#include "Engine/Asset/StaticMeshAsset.h"
+#include "Classes/Engine/Asset/StaticMeshAsset.h"
 
 class UStaticMeshComponent : public UMeshComponent
 {

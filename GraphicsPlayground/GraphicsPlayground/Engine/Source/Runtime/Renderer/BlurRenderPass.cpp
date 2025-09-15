@@ -1,11 +1,11 @@
 #include "BlurRenderPass.h"
-#include "Engine/Classes/Engine/Engine.h"
+#include "Classes/Engine/Engine.h"
 #include "Engine/World/World.h"
-#include "Engine/Classes/Camera/PlayerCameraManager.h"
-#include "UnrealEd/EditorViewportClient.h"
+#include "Classes/Camera/PlayerCameraManager.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
 #include "Renderer/ShaderConstants.h"
 #include "RendererHelpers.h"
-#include "UnrealClient.h"
+#include "Engine/UnrealClient.h"
 
 
 FBlurRenderPass::FBlurRenderPass()

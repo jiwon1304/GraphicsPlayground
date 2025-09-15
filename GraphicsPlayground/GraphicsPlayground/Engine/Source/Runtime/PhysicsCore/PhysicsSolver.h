@@ -4,7 +4,7 @@
 #include "Math/Vector.h"
 #include "Math/Transform.h"
 #include "CollisionShape.h"
-#include "PhysicsEngine/BodyInstance.h"
+#include "Classes/PhysicsEngine/BodyInstance.h"
 #include "PhysXIntegration.h"
 
 

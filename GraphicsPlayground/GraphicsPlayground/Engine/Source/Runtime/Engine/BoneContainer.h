@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "Container/Array.h"
 #include "HAL/PlatformType.h"
-#include "Animation/Skeleton.h"
+#include "Classes/Animation/Skeleton.h"
 
 
 struct FReferenceSkeleton;

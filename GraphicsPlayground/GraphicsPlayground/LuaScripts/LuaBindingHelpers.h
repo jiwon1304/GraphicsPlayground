@@ -5,7 +5,7 @@
 #include "Runtime/Engine/UserInterface/Console.h"
 #include "Developer/LuaUtils/LuaBindMacros.h"
 
-#include "Engine/Classes/Engine/Engine.h"
+#include "Classes/Engine/Engine.h"
 #include "World/World.h"
 
 namespace LuaBindingHelpers

@@ -1,11 +1,11 @@
 #include "LightGridGenerator.h"
-#include "Actors/PointLightActor.h"
-#include "Actors/SpotLightActor.h"
-#include "World/World.h"
-#include "Engine/Classes/Components/Light/PointLightComponent.h"
-#include "Engine/Classes/Components/Light/SpotLightComponent.h"
-#include "Engine/Classes/Engine/EditorEngine.h"
-#include "Engine/Classes/Engine/Engine.h"
+#include "Classes/Actors/PointLightActor.h"
+#include "Classes/Actors/SpotLightActor.h"
+#include "Engine/World/World.h"
+#include "Classes/Components/Light/PointLightComponent.h"
+#include "Classes/Components/Light/SpotLightComponent.h"
+#include "Classes/Engine/EditorEngine.h"
+#include "Classes/Engine/Engine.h"
 
 FLightGridGenerator::~FLightGridGenerator()
 {

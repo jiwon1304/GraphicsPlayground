@@ -1,7 +1,7 @@
 #include "SkeletalViewerWorld.h"
-#include "Engine/Classes/Animation/SkeletalMeshActor.h"
-#include "Engine/Classes/Engine/AssetManager.h"
-#include "Engine/Classes/Engine/EditorEngine.h"
+#include "Classes/Animation/SkeletalMeshActor.h"
+#include "Classes/Engine/AssetManager.h"
+#include "Classes/Engine/EditorEngine.h"
 
 USkeletalViewerWorld* USkeletalViewerWorld::CreateWorld(UObject* InOuter, const EWorldType InWorldType, const FString& InWorldName)
 {

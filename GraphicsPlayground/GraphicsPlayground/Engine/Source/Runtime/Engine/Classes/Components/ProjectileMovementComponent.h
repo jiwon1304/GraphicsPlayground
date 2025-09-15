@@ -1,5 +1,5 @@
 #pragma once
-#include"Components/SceneComponent.h"
+#include "Classes/Components/SceneComponent.h"
 
 class UProjectileMovementComponent : public USceneComponent
 {

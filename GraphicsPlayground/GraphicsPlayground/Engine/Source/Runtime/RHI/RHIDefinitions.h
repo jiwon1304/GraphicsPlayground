@@ -147,7 +147,24 @@ enum class ERenderTargetLoadAction : uint8
 	Num,
 	NumBits = 2,
 };
-using EDepthStencilLoadAction = ERenderTargetLoadAction;
+
+/**
+ * Action to take when a depth stencil is set.
+ */
+enum class EDepthStencilLoadAction : uint8
+{
+	// Untouched contents of the depth stencil are undefined. Any existing content is not preserved.
+	ENoAction,
+
+	// Existing contents are preserved.
+	ELoad,
+
+	// The render target is cleared to the fast clear value specified on the resource.
+	EClear,
+
+	Num,
+	NumBits = 2,
+};
 
 /**
  * Action to take when a render target is unset or at the end of a pass. 
@@ -166,7 +183,24 @@ enum class ERenderTargetStoreAction : uint8
 	Num,
 	NumBits = 2,
 };
-using EDepthStencilStoreAction = ERenderTargetStoreAction;
+
+/**
+ * Action to take when a depth stencil is unset or at the end of a pass. 
+ */
+enum class EDepthStencilStoreAction : uint8
+{
+	// Contents of the depth stencil emitted during the pass are not stored back to memory.
+	ENoAction,
+
+	// Contents of the depth stencil emitted during the pass are stored back to memory.
+	EStore,
+
+	// Contents of the depth stencil emitted during the pass are resolved using a box filter and stored back to memory.
+	EMultisampleResolve,
+
+	Num,
+	NumBits = 2,
+};
 
 /**
  * Common render target use cases

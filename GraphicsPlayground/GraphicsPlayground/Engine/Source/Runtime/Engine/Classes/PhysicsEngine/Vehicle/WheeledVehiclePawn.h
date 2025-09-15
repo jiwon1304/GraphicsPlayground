@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Engine/Classes/GameFramework/Pawn.h"
-#include "Engine/Classes/Components/SkeletalMeshComponent.h"
-#include "Engine/Classes/Components/StaticMeshComponent.h"
+#include "Classes/GameFramework/Pawn.h"
+#include "Classes/Components/SkeletalMeshComponent.h"
+#include "Classes/Components/StaticMeshComponent.h"
 #include "VehicleMovementComponent.h"
 
 

@@ -1,6 +1,6 @@
 #include "Actor.h"
 
-#include "Engine/Classes/Components/PrimitiveComponent.h"
+#include "Classes/Components/PrimitiveComponent.h"
 #include "World/World.h"
 
 AActor::AActor()

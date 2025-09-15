@@ -1,6 +1,9 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
+// This file is modified from Unreal Engine 5.5
 
+#include <assert.h>
 #include "Core/HAL/PlatformType.h"
+#include "Serialization/Archive.h"
 
 /** 
  * ReferencedType must have its own AddRef() and Release()
@@ -170,7 +173,7 @@ public:
 		if (Reference)
 		{
 			Result = Reference->GetRefCount();
-			check(Result > 0); // you should never have a zero ref count if there is a live ref counted pointer (*this is live)
+			assert(Result > 0); // you should never have a zero ref count if there is a live ref counted pointer (*this is live)
 		}
 		return Result;
 	}

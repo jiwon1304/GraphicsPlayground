@@ -3,10 +3,10 @@
 #include "Launch/EngineLoop.h"
 #include "SoundManager.h"
 #include "InputCore/InputCoreTypes.h"
-#include "Camera/CameraComponent.h"
+#include "Classes/Camera/CameraComponent.h"
 #include "Contents/Actors/Fish.h"
 #include "Contents/Actors/ItemActor.h"
-#include "Engine/Classes/Engine/Engine.h"
+#include "Classes/Engine/Engine.h"
 #include "Engine/World/World.h"
 
 AGameMode::AGameMode()

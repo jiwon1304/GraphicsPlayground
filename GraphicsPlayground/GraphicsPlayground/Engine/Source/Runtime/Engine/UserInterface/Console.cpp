@@ -2,15 +2,15 @@
 #include <cstdarg>
 #include <cstdio>
 
-#include "Actors/PointLightActor.h"
-#include "Actors/SpotLightActor.h"
-#include "Engine/Classes/Components/SkeletalMeshComponent.h"
-#include "Engine/Classes/Components/Light/LightComponent.h"
-#include "Engine/Classes/Engine/Engine.h"
+#include "Classes/Actors/PointLightActor.h"
+#include "Classes/Actors/SpotLightActor.h"
+#include "Classes/Components/SkeletalMeshComponent.h"
+#include "Classes/Components/Light/LightComponent.h"
+#include "Classes/Engine/Engine.h"
 #include "Renderer/UpdateLightBufferPass.h"
 #include "Stats/GPUTimingManager.h"
 #include "Stats/ProfilerStatsManager.h"
-#include "UnrealEd/EditorViewportClient.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
 #include "CoreUObject/UObject/UObjectIterator.h"
 
 

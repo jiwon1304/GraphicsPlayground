@@ -1,6 +1,6 @@
 #include "PointLightActor.h"
-#include "Engine/Classes/Components/Light/PointLightComponent.h"
-#include "Engine/Classes/Components/BillboardComponent.h"
+#include "Classes/Components/Light/PointLightComponent.h"
+#include "Classes/Components/BillboardComponent.h"
 
 APointLight::APointLight()
 {

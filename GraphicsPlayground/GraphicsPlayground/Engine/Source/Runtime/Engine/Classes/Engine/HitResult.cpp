@@ -1,7 +1,7 @@
 
 #include "HitResult.h"
 
-#include "Engine/Classes/Components/PrimitiveComponent.h"
+#include "Classes/Components/PrimitiveComponent.h"
 
 FHitResult::FHitResult(class AActor* InActor, class UPrimitiveComponent* InComponent, FVector const& HitLoc, FVector const& HitNorm)
 {

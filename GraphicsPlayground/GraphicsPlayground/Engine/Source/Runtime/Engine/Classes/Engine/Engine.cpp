@@ -1,8 +1,8 @@
-#include "Engine.h"
+#include "Classes/Engine/Engine.h"
 
 #include "EditorEngine.h"
-#include "WindowsPlatformTime.h"
-#include "UnrealEd/SceneManager.h"
+#include "Windows/WindowsPlatformTime.h"
+#include "Editor/UnrealEd/SceneManager.h"
 #include "CoreUObject/UObject/Casts.h"
 #include "World/World.h"
 #include "PhysicsCore/PhysxSolversModule.h"

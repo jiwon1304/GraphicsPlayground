@@ -1,7 +1,7 @@
 #pragma once
-#include "Engine/Classes/Components/ActorComponent.h"
-#include "UnrealEd/EditorPanel.h"
-#include "UnrealEd/EditorViewportClient.h"
+#include "Classes/Components/ActorComponent.h"
+#include "Editor/UnrealEd/EditorPanel.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
 
 struct FRenderTargetRHI;
 struct FDepthStencilRHI;

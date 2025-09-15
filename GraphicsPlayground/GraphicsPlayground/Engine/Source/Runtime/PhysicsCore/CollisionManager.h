@@ -1,6 +1,6 @@
 #pragma once
-#include "Engine/Classes/Components/PrimitiveComponent.h"
-#include "Engine/Classes/Components/ShapeComponent.h"
+#include "Classes/Components/PrimitiveComponent.h"
+#include "Classes/Components/ShapeComponent.h"
 
 struct FOverlapResult;
 

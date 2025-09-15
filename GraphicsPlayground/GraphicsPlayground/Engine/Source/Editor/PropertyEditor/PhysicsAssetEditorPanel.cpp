@@ -1,12 +1,12 @@
 #include "PhysicsAssetEditorPanel.h"
 
-#include "Engine/Classes/Engine/EditorEngine.h"
-#include "Engine/SkeletalMesh.h"
-#include "PhysicsEngine/BodySetup.h"
-#include "PhysicsEngine/PhysicsAsset.h"
-#include "PhysicsEngine/PhysicsConstraintTemplate.h"
+#include "Classes/Engine/EditorEngine.h"
+#include "Classes/Engine/SkeletalMesh.h"
+#include "Classes/PhysicsEngine/BodySetup.h"
+#include "Classes/PhysicsEngine/PhysicsAsset.h"
+#include "Classes/PhysicsEngine/PhysicsConstraintTemplate.h"
 #include "World/PhysicsAssetWorld.h"
-#include <PhysicalMaterials/PhysicalMaterial.h>
+#include "PhysicalMaterials/PhysicalMaterial.h"
 
 #include "Developer/PhysicsUtilities/PhysicsAssetUtils.h"
 #include "PhysicalMaterials/Defines.h"

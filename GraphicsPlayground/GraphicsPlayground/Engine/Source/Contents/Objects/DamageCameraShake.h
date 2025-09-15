@@ -1,6 +1,6 @@
 
 #pragma once
-#include "Camera/CameraShakeBase.h"
+#include "Classes/Camera/CameraShakeBase.h"
 
 class UDamageCameraShake : public UCameraShakeBase
 {

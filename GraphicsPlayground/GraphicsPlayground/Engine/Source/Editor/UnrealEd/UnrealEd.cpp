@@ -1,12 +1,12 @@
 #include "UnrealEd.h"
 #include "EditorPanel.h"
 
-#include "PropertyEditor/ControlEditorPanel.h"
-#include "PropertyEditor/OutlinerEditorPanel.h"
-#include "PropertyEditor/PhysicsAssetEditorPanel.h"
-#include "PropertyEditor/PropertyEditorPanel.h"
-#include "PropertyEditor/SkeletalMeshViewerPanel.h"
-#include "PropertyEditor/SubEditor/ParticleViewerPanel.h"
+#include "Editor/PropertyEditor/ControlEditorPanel.h"
+#include "Editor/PropertyEditor/OutlinerEditorPanel.h"
+#include "Editor/PropertyEditor/PhysicsAssetEditorPanel.h"
+#include "Editor/PropertyEditor/PropertyEditorPanel.h"
+#include "Editor/PropertyEditor/SkeletalMeshViewerPanel.h"
+#include "Editor/PropertyEditor/SubEditor/ParticleViewerPanel.h"
 #include "World/World.h"
 void UnrealEd::Initialize()
 {

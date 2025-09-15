@@ -1,6 +1,6 @@
 #include "SpotLightActor.h"
-#include "Engine/Classes/Components/Light/SpotLightComponent.h"
-#include "Engine/Classes/Components/BillboardComponent.h"
+#include "Classes/Components/Light/SpotLightComponent.h"
+#include "Classes/Components/BillboardComponent.h"
 ASpotLight::ASpotLight()
 {
     SpotLightComponent = AddComponent<USpotLightComponent>("USpotLightComponent_0");

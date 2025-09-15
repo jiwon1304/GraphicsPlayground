@@ -2,9 +2,9 @@
 #include "Renderer.h"
 
 #include <array>
-#include "World/World.h"
-#include "Engine/Classes/Engine/EditorEngine.h"
-#include "UnrealEd/EditorViewportClient.h"
+#include "Engine/World/World.h"
+#include "Classes/Engine/EditorEngine.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
 #include "Windows/D3D11RHI/DXDShaderManager.h"
 #include "RendererHelpers.h"
 #include "StaticMeshRenderPass.h"
@@ -29,10 +29,10 @@
 #include "ShadowManager.h"
 #include "ShadowRenderPass.h"
 #include "SkeletalMeshRenderPass.h"
-#include "UnrealClient.h"
-#include "Engine/Classes/GameFramework/Actor.h"
+#include "Engine/UnrealClient.h"
+#include "Classes/GameFramework/Actor.h"
 
-#include "PropertyEditor/ShowFlags.h"
+#include "Editor/PropertyEditor/ShowFlags.h"
 #include "Stats/Stats.h"
 #include "Stats/GPUTimingManager.h"
 

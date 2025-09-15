@@ -1,6 +1,6 @@
 #pragma once
-#include "RawInput.h"
-#include "Delegates/DelegateCombination.h"
+#include "Windows/RawInput.h"
+#include "Core/Delegates/DelegateCombination.h"
 #include "HAL/PlatformType.h"
 #include "InputCore/InputCoreTypes.h"
 #include "Math/Vector.h"

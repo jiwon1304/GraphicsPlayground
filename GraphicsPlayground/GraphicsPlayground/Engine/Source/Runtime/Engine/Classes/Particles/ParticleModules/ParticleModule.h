@@ -2,7 +2,7 @@
 #include "CoreUObject/UObject/Object.h"
 #include "CoreUObject/UObject/ObjectMacros.h"
 #include "CoreUObject/UObject/NameTypes.h"
-#include "Particles/ParticleHelper.h"
+#include "Classes/Particles/ParticleHelper.h"
 
 struct FParticleEmitterInstance;
 struct FBaseParticle;

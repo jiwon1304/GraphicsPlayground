@@ -3,12 +3,12 @@
 #include "Class.h"
 #include "PropertyEvent.h"
 #include "ScriptStruct.h"
-#include "CoreUObject/UObjectHash.h"
+#include "CoreUObject/UObject/UObjectHash.h"
 #include "Editor/UnrealEd/ImGuiWidget.h"
 #include "Math/NumericLimits.h"
-#include "Template/SubclassOf.h"
+#include "CoreUObject/Template/SubclassOf.h"
 
-#include "ImGui/imgui.h"
+#include "ThirdParty/imgui/imgui.h"
 #include "Misc/Optional.h"
 
 template <typename Type, typename... Types>

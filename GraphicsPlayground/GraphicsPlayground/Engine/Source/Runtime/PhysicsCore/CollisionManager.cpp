@@ -1,12 +1,12 @@
 #include "CollisionManager.h"
 
-#include "Engine/Classes/Components/PrimitiveComponent.h"
-#include "Engine/Classes/Components/ShapeComponent.h"
-#include "Engine/Classes/Components/BoxComponent.h"
-#include "Engine/Classes/Components/SphereComponent.h"
-#include "Engine/Classes/Components/CapsuleComponent.h"
+#include "Classes/Components/PrimitiveComponent.h"
+#include "Classes/Components/ShapeComponent.h"
+#include "Classes/Components/BoxComponent.h"
+#include "Classes/Components/SphereComponent.h"
+#include "Classes/Components/CapsuleComponent.h"
 
-#include "Engine/OverlapResult.h"
+#include "Classes/Engine/OverlapResult.h"
 #include "Math/Quat.h"
 #include "CoreUObject/UObject/Casts.h"
 #include "CoreUObject/UObject/UObjectIterator.h"

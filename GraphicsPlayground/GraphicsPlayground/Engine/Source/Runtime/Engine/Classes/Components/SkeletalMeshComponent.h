@@ -1,10 +1,10 @@
 #pragma once
 #include "SkinnedMeshComponent.h"
-#include "Actors/Player.h"
-#include "Engine/AssetManager.h"
-#include "Engine/Asset/SkeletalMeshAsset.h"
-#include "Template/SubclassOf.h"
-#include "Animation/AnimNodeBase.h"
+#include "Classes/Actors/Player.h"
+#include "Classes/Engine/AssetManager.h"
+#include "Classes/Engine/Asset/SkeletalMeshAsset.h"
+#include "CoreUObject/Template/SubclassOf.h"
+#include "Classes/Animation/AnimNodeBase.h"
 
 class UAnimSequence;
 class USkeletalMesh;

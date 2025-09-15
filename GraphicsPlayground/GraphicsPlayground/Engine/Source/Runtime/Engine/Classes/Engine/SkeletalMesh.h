@@ -1,7 +1,7 @@
 #pragma once
 #include "SkinnedAsset.h"
-#include "Animation/Skeleton.h"
-#include "Asset/SkeletalMeshAsset.h" 
+#include "Classes/Animation/Skeleton.h"
+#include "Classes/Engine/Asset/SkeletalMeshAsset.h" 
 class UPhysicsAsset;
 class USkeleton;
 //struct FSkeletalMeshRenderData;

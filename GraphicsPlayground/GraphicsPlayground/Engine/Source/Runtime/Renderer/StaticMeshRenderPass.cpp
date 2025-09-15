@@ -8,7 +8,7 @@
 #include "RendererHelpers.h"
 #include "ShadowManager.h"
 #include "ShadowRenderPass.h"
-#include "UnrealClient.h"
+#include "Engine/UnrealClient.h"
 #include "Math/JungleMath.h"
 
 #include "CoreUObject/UObject/UObjectIterator.h"
@@ -18,17 +18,17 @@
 #include "Windows/D3D11RHI/GraphicDevice.h"
 #include "Windows/D3D11RHI/DXDShaderManager.h"
 
-#include "Engine/Classes/Components/StaticMeshComponent.h"
+#include "Classes/Components/StaticMeshComponent.h"
 
-#include "BaseGizmos/GizmoBaseComponent.h"
-#include "Engine/Classes/Engine/EditorEngine.h"
+#include "InteractiveToolsFramework/BaseGizmos/GizmoBaseComponent.h"
+#include "Classes/Engine/EditorEngine.h"
 
-#include "PropertyEditor/ShowFlags.h"
+#include "Editor/PropertyEditor/ShowFlags.h"
 
-#include "UnrealEd/EditorViewportClient.h"
-#include "Engine/Classes/Components/Light/PointLightComponent.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
+#include "Classes/Components/Light/PointLightComponent.h"
 #include "Contents/Actors/Fish.h"
-#include "Engine/AssetManager.h"
+#include "Classes/Engine/AssetManager.h"
 
 
 FStaticMeshRenderPass::FStaticMeshRenderPass()

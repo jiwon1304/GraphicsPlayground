@@ -1,14 +1,14 @@
 #include "PhysicsAssetViewerRenderPass.h"
 #include "Container/Map.h"
-#include "PhysicsEngine/PhysicsAsset.h"
-#include "UnrealEd/EditorViewportClient.h"
+#include "Classes/PhysicsEngine/PhysicsAsset.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
 #include "Engine/World/PhysicsAssetWorld.h"
-#include "Engine/SkeletalMesh.h"
-#include "PhysicsEngine/BodySetup.h"
-#include "PhysicsEngine/PhysicsConstraintTemplate.h"
-#include "Engine/Classes/Engine/EditorEngine.h"
-#include "Engine/Classes/Components/StaticMeshComponent.h"
-#include "Engine/Classes/Components/SkeletalMeshComponent.h"
+#include "Classes/Engine/SkeletalMesh.h"
+#include "Classes/PhysicsEngine/BodySetup.h"
+#include "Classes/PhysicsEngine/PhysicsConstraintTemplate.h"
+#include "Classes/Engine/EditorEngine.h"
+#include "Classes/Components/StaticMeshComponent.h"
+#include "Classes/Components/SkeletalMeshComponent.h"
 FPhysicsAssetViewerRenderPass::FPhysicsAssetViewerRenderPass()
 {
     Super::FOverlayShapeRenderPass();

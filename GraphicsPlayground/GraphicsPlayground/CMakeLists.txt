@@ -10,7 +10,7 @@ cmake_minimum_required(VERSION 3.24)
 
 project(GraphicsPlayground LANGUAGES C CXX)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -173,7 +173,9 @@ target_include_directories(${PROJECT_NAME}
         "${CMAKE_CURRENT_SOURCE_DIR}/Engine/Source"
         "${CMAKE_CURRENT_SOURCE_DIR}/Engine/Source/Runtime/"
         "${CMAKE_CURRENT_SOURCE_DIR}/Engine/Source/Runtime/Core/"
+        "${CMAKE_CURRENT_SOURCE_DIR}/Engine/Source/Runtime/Engine/"
         "${THIRD_PARTY_DIR}/imgui"
+        "${THIRD_PARTY_DIR}/imgui/backends"
         "${THIRD_PARTY_DIR}/Lua/include"
         "${THIRD_PARTY_DIR}/sol2/include"
         "${THIRD_PARTY_DIR}/magic_enum/include"

@@ -2,8 +2,8 @@
 #include "EngineStatics.h"
 #include "Object.h"
 #include "Class.h"
-#include "CoreUObject/UObjectArray.h"
-#include "UserInterface/Console.h"
+#include "CoreUObject/UObject/UObjectArray.h"
+#include "Engine/UserInterface/Console.h"
 
 class FObjectFactory
 {

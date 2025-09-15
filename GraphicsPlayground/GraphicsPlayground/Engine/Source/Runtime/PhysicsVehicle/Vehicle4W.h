@@ -10,7 +10,7 @@
 #include "SnippetVehicleFilterShader.h"
 #include "SnippetVehicleTireFriction.h"
 #include "SnippetVehicleCreate.h"
-#include "Engine/Classes/PhysicsEngine/BodyInstance.h"
+#include "Classes/PhysicsEngine/BodyInstance.h"
 
 using namespace physx;
 using namespace snippetvehicle;

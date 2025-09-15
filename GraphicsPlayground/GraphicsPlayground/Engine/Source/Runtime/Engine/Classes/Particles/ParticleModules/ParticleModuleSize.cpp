@@ -1,11 +1,11 @@
 #include "ParticleModuleSize.h"
 
 #include "ParticleModuleRequired.h"
-#include "Engine/Classes/Components/ParticleSystemComponent.h"
-#include "Distributions/DistributionVectorUniform.h"
-#include "Particles/ParticleEmitterInstances.h"
-#include "Particles/ParticleHelper.h"
-#include "Particles/ParticleLODLevel.h"
+#include "Classes/Components/ParticleSystemComponent.h"
+#include "Classes/Distributions/DistributionVectorUniform.h"
+#include "Classes/Particles/ParticleEmitterInstances.h"
+#include "Classes/Particles/ParticleHelper.h"
+#include "Classes/Particles/ParticleLODLevel.h"
 #include "CoreUObject/UObject/ObjectFactory.h"
 
 

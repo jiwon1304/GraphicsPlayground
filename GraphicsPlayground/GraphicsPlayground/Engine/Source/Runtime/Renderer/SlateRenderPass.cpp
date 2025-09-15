@@ -1,10 +1,10 @@
 ﻿#include "SlateRenderPass.h"
 
 #include "RendererHelpers.h"
-#include "UnrealClient.h"
+#include "Engine/UnrealClient.h"
 #include "Windows/D3D11RHI/DXDBufferManager.h"
 #include "Windows/D3D11RHI/DXDShaderManager.h"
-#include "UnrealEd/EditorViewportClient.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
 #include "CoreUObject/UObject/Object.h"
 
 FSlateRenderPass::FSlateRenderPass()

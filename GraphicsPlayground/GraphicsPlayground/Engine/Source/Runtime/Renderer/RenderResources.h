@@ -4,12 +4,12 @@
 #define _TCHAR_DEFINED
 #include <d3d11.h>
 
-#include "Define.h"
+#include "Launch/Define.h"
 #include "Core/Container/Array.h"
 #include "Core/Container/Map.h"
 
 #include "ShaderConstants.h"
-#include "Engine/Classes/Engine/Texture.h"
+#include "Classes/Engine/Texture.h"
 
 /// <summary>
 /// Shader관련 모음.

@@ -1,11 +1,11 @@
 #pragma once
 #include <sstream>
 
-#include "Define.h"
+#include "Launch/Define.h"
 #include "Container/Map.h"
 #include "ViewportClient.h"
 #include "Launch/EngineLoop.h"
-#include "EngineBaseTypes.h"
+#include "Launch/EngineBaseTypes.h"
 
 #define  MIN_ORTHOZOOM (1.0)  // 2D ortho viewport zoom >= MIN_ORTHOZOOM
 #define MAX_ORTHOZOOM (1e25)

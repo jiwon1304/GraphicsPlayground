@@ -1,5 +1,5 @@
 #pragma once
-#include "Engine/Classes/Components/StaticMeshComponent.h"
+#include "Classes/Components/StaticMeshComponent.h"
 
 
 class UGizmoBaseComponent : public UStaticMeshComponent

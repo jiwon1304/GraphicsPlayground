@@ -1,8 +1,8 @@
 ﻿#pragma once
-#include "Engine/SkeletalMesh.h"
-#include "Engine/Classes/GameFramework/Actor.h"   // TODO - Actor를 상속해야 작동함. 상위 클래스에서 문제 발생함. uint8에 접근 못하는듯
-#include "PhysicsEngine/BodySetup.h"
-#include "UnrealEd/EditorPanel.h"
+#include "Classes/Engine/SkeletalMesh.h"
+#include "Classes/GameFramework/Actor.h"   // TODO - Actor를 상속해야 작동함. 상위 클래스에서 문제 발생함. uint8에 접근 못하는듯
+#include "Classes/PhysicsEngine/BodySetup.h"
+#include "Editor/UnrealEd/EditorPanel.h"
 
 struct FReferenceSkeleton;
 

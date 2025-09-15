@@ -2,7 +2,7 @@
 #pragma once
 
 #include "IRenderPass.h"
-#include "Define.h"
+#include "Launch/Define.h"
 
 struct FParticleMeshEmitterInstance;
 struct FDynamicMeshEmitterReplayDataBase;

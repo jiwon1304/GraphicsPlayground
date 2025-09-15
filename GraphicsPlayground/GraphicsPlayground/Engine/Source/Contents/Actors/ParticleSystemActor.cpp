@@ -1,6 +1,6 @@
 #include "ParticleSystemActor.h"
 
-#include "Engine/Classes/Components/ParticleSystemComponent.h"
+#include "Classes/Components/ParticleSystemComponent.h"
 
 AParticleSystemActor::AParticleSystemActor()
 {

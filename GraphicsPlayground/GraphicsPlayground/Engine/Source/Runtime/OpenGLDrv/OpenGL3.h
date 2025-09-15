@@ -168,10 +168,4 @@ void VertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normal
 {
     glVertexAttribPointer(index, size, type, normalized, stride, pointer);
 }
-
-void BindVertexArray(GLuint array)
-{
-    glBindVertexArray(array);
-}
-
 };

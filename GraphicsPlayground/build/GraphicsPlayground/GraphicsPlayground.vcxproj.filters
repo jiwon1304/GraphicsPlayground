@@ -2765,6 +2765,12 @@
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\OpenGL\glfw\MACOS\include\GLFW\glfw3native.h">
       <Filter>Engine\Source\ThirdParty\OpenGL\glfw\MACOS\include\GLFW</Filter>
     </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\OpenGL\glfw\WIN64\include\GLFW\glfw3.h">
+      <Filter>Engine\Source\ThirdParty\OpenGL\glfw\WIN64\include\GLFW</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\OpenGL\glfw\WIN64\include\GLFW\glfw3native.h">
+      <Filter>Engine\Source\ThirdParty\OpenGL\glfw\WIN64\include\GLFW</Filter>
+    </ClInclude>
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\fmod\inc\fmod.h">
       <Filter>Engine\Source\ThirdParty\fmod\inc</Filter>
     </ClInclude>
@@ -3904,13 +3910,22 @@
       <UniqueIdentifier>{C7D8ED02-6994-37F3-8144-1726EFD08C0A}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Source\ThirdParty\OpenGL\glfw\MACOS">
-      <UniqueIdentifier>{7E810E44-1FC3-3E51-8851-F3FB83CCDE8E}</UniqueIdentifier>
+      <UniqueIdentifier>{81A849E5-29FC-31D7-BEA0-7882FEFEC1E9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Source\ThirdParty\OpenGL\glfw\MACOS\include">
-      <UniqueIdentifier>{60663824-B567-3FCB-A7FC-B7EC8D3F711A}</UniqueIdentifier>
+      <UniqueIdentifier>{9F45A3F2-77EB-32B2-9D2E-3269305F6682}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Source\ThirdParty\OpenGL\glfw\MACOS\include\GLFW">
-      <UniqueIdentifier>{79B65687-6660-3F1B-896A-3C9960EE183E}</UniqueIdentifier>
+      <UniqueIdentifier>{B3FF4CEF-C3F1-3C3F-803F-1218F09E1783}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Source\ThirdParty\OpenGL\glfw\WIN64">
+      <UniqueIdentifier>{21FF07D0-18FA-3065-9F9E-493DB6459A65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Source\ThirdParty\OpenGL\glfw\WIN64\include">
+      <UniqueIdentifier>{E479BE01-A50D-33B6-8C25-88F42E6437E5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Source\ThirdParty\OpenGL\glfw\WIN64\include\GLFW">
+      <UniqueIdentifier>{F4AD20C1-70FB-3FEC-9DD6-AB1740AFBCE7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Source\ThirdParty\fmod">
       <UniqueIdentifier>{0D889990-58BE-3237-8218-A07D375BBE58}</UniqueIdentifier>

@@ -1,5 +1,5 @@
 #pragma once
-#include "Particles/ParticleModules/ParticleModule.h"
+#include "Classes/Particles/ParticleModules/ParticleModule.h"
 #include "Math/Vector.h"
 #include "Math/Quat.h"
 #include "Math/RandomStream.h"

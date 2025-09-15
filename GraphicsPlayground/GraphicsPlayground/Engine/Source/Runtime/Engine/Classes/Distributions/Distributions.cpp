@@ -11,7 +11,7 @@
 #include "DistributionFloatUniform.h"
 #include "DistributionVector.h"
 #include "DistributionVectorUniform.h"
-#include "Particles/ParticleModules/ParticleModule.h"
+#include "Classes/Particles/ParticleModules/ParticleModule.h"
 #include "CoreUObject/UObject/Property.h"
 
 // UDistribution 객체들을 기본 서브 오브젝트가 되지 않도록 PostInitProps로 이동

@@ -2,8 +2,8 @@
 
 #include "World/World.h"
 #include "Engine/Source/Editor/PropertyEditor/ShowFlags.h"
-#include "UnrealEd/EditorViewportClient.h"
-#include "LevelEditor/SLevelEditor.h"
+#include "Editor/UnrealEd/EditorViewportClient.h"
+#include "Editor/LevelEditor/SLevelEditor.h"
 #include "CoreUObject/UObject/Casts.h"
 
 UTextComponent::UTextComponent()
