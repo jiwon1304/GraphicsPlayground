@@ -116,7 +116,7 @@ public:
 
     virtual void* RHIGetNativeDevice() = 0;
 
-	virtual IRHICommandContext* DeRHIGetDefaultContext() = 0;
+	virtual IRHICommandContext* RHIGetDefaultContext() = 0;
 };
 
 class FDynamicRHIPSOFallback : public FDynamicRHI

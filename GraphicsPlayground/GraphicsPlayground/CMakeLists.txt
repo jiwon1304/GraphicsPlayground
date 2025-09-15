@@ -172,6 +172,7 @@ target_include_directories(${PROJECT_NAME}
         "${CMAKE_CURRENT_SOURCE_DIR}"
         "${CMAKE_CURRENT_SOURCE_DIR}/Engine/Source"
         "${CMAKE_CURRENT_SOURCE_DIR}/Engine/Source/Runtime/"
+        "${CMAKE_CURRENT_SOURCE_DIR}/Engine/Source/Runtime/Core/"
         "${THIRD_PARTY_DIR}/imgui"
         "${THIRD_PARTY_DIR}/Lua/include"
         "${THIRD_PARTY_DIR}/sol2/include"

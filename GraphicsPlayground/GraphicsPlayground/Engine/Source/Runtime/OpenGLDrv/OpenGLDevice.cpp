@@ -57,34 +57,349 @@ void FOpenGLDynamicRHI::Shutdown()
     ShutdownGLFW(MainWindow);
 }
 
-void FOpenGLDynamicRHI::RHITick(float DeltaTime)
+FOpenGLDynamicRHI::FOpenGLDynamicRHI()
 {
+    // Adopt as singleton
+    if (!Singleton)
+    {
+        Singleton = this;
+    }
 }
 
-void FOpenGLDynamicRHI::RHIExecuteCommandList(FRHICommandList *CmdList)
+FOpenGLDynamicRHI::~FOpenGLDynamicRHI()
 {
+    if (Singleton == this)
+    {
+        Singleton = nullptr;
+    }
 }
+
+void FOpenGLDynamicRHI::RHIEndFrame_RenderThread(class FRHICommandListImmediate& RHICmdList)
+{
+    Flush();
+}
+
+void FOpenGLDynamicRHI::RHIEndFrame(uint64 /*FrameNumber*/)
+{
+    // or Flush()
+    Finish();
+}
+
+void FOpenGLDynamicRHI::RHITick(float /*DeltaTime*/)
+{
+    // Optional: pump any periodic RHI work here (query fences, deletions, etc.)
+}
+
+// -------------------------------------------------------------
+// Resource Creation
+// -------------------------------------------------------------
+
+FSamplerStateRHIRef FOpenGLDynamicRHI::RHICreateSamplerState(const FSamplerStateInitializerRHI& /*Initializer*/)
+{
+    // TODO: Create and configure a GL sampler (glGenSamplers/glSamplerParameteri)
+    // and wrap it in your FSamplerState* type.
+    ensureMsgf(false, TEXT("RHICreateSamplerState is not implemented."));
+    return FSamplerStateRHIRef();
+    // UE ref for concept: OpenGLSamplerState (search in OpenGLDrv)
+    // https://github.com/EpicGames/UnrealEngine/search?q=OpenGLSamplerState
+}
+
+FRasterizerStateRHIRef FOpenGLDynamicRHI::RHICreateRasterizerState(const FRasterizerStateInitializerRHI& /*Initializer*/)
+{
+    // TODO: Create a rasterizer state object or store descriptor to apply on bind.
+    ensureMsgf(false, TEXT("RHICreateRasterizerState is not implemented."));
+    return FRasterizerStateRHIRef();
+    // UE reference pattern (D3D11-style state object):
+    // https://github.com/EpicGames/UnrealEngine/search?q=CreateRasterizerState
+}
+
+FDepthStencilStateRHIRef FOpenGLDynamicRHI::RHICreateDepthStencilState(const FDepthStencilStateInitializerRHI& /*Initializer*/)
+{
+    // TODO: Store depth/stencil config to be applied when bound.
+    ensureMsgf(false, TEXT("RHICreateDepthStencilState is not implemented."));
+    return FDepthStencilStateRHIRef();
+    // UE reference:
+    // https://github.com/EpicGames/UnrealEngine/search?q=CreateDepthStencilState
+}
+
+FBlendStateRHIRef FOpenGLDynamicRHI::RHICreateBlendState(const FBlendStateInitializerRHI& /*Initializer*/)
+{
+    // TODO: Store blend config to be applied when bound.
+    ensureMsgf(false, TEXT("RHICreateBlendState is not implemented."));
+    return FBlendStateRHIRef();
+    // UE reference:
+    // https://github.com/EpicGames/UnrealEngine/search?q=CreateBlendState
+}
+
+FVertexDeclarationRHIRef FOpenGLDynamicRHI::RHICreateVertexDeclaration(const FVertexDeclarationElementList& /*Elements*/)
+{
+    // TODO: Create VAO or input layout mapping for GL.
+    ensureMsgf(false, TEXT("RHICreateVertexDeclaration is not implemented."));
+    return FVertexDeclarationRHIRef();
+    // UE reference (OpenGL vertex decl handling lives in shader binding / streams):
+    // https://github.com/EpicGames/UnrealEngine/search?q=OpenGL+VertexDeclaration
+}
+
+FPixelShaderRHIRef FOpenGLDynamicRHI::RHICreatePixelShader(/*TArrayView<const uint8> Code, const FSHAHash& Hash*/)
+{
+    // TODO: Create GL fragment shader and wrap.
+    ensureMsgf(false, TEXT("RHICreatePixelShader is not implemented."));
+    return FPixelShaderRHIRef();
+    // UE reference:
+    // https://github.com/EpicGames/UnrealEngine/search?q=OpenGL+CreatePixelShader
+}
+
+FVertexShaderRHIRef FOpenGLDynamicRHI::RHICreateVertexShader(/*TArrayView<const uint8> Code, const FSHAHash& Hash*/)
+{
+    // TODO: Create GL vertex shader and wrap.
+    ensureMsgf(false, TEXT("RHICreateVertexShader is not implemented."));
+    return FVertexShaderRHIRef();
+    // UE reference:
+    // https://github.com/EpicGames/UnrealEngine/search?q=OpenGL+CreateVertexShader
+}
+
+FGeometryShaderRHIRef FOpenGLDynamicRHI::RHICreateGeometryShader(/*TArrayView<const uint8> Code, const FSHAHash& Hash*/)
+{
+    // TODO: Create GL geometry shader and wrap (if supported).
+    ensureMsgf(false, TEXT("RHICreateGeometryShader is not implemented."));
+    return FGeometryShaderRHIRef();
+    // UE reference:
+    // https://github.com/EpicGames/UnrealEngine/search?q=OpenGL+CreateGeometryShader
+}
+
+FComputeShaderRHIRef FOpenGLDynamicRHI::RHICreateComputeShader(/*TArrayView<const uint8> Code, const FSHAHash& Hash*/)
+{
+    // TODO: Create GL compute shader and wrap.
+    ensureMsgf(false, TEXT("RHICreateComputeShader is not implemented."));
+    return FComputeShaderRHIRef();
+    // UE reference:
+    // https://github.com/EpicGames/UnrealEngine/search?q=OpenGL+CreateComputeShader
+}
+
+void* FOpenGLDynamicRHI::RHILockStagingBuffer(FRHIStagingBuffer* /*StagingBuffer*/, uint32 /*Offset*/, uint32 /*SizeRHI*/)
+{
+    // TODO: map CPU-visible staging buffer memory
+    ensureMsgf(false, TEXT("RHILockStagingBuffer is not implemented."));
+    return nullptr;
+    // UE reference:
+    // https://github.com/EpicGames/UnrealEngine/search?q=RHILockStagingBuffer
+}
+
+void FOpenGLDynamicRHI::RHIUnlockStagingBuffer(FRHIStagingBuffer* /*StagingBuffer*/)
+{
+    // TODO: unmap CPU-visible staging buffer memory
+    ensureMsgf(false, TEXT("RHIUnlockStagingBuffer is not implemented."));
+    // UE reference:
+    // https://github.com/EpicGames/UnrealEngine/search?q=RHIUnlockStagingBuffer
+}
+
+void* FOpenGLDynamicRHI::LockStagingBuffer_RenderThread(class FRHICommmandListImmediate& /*RHICmdList*/, FRHIStagingBuffer* /*StagingBuffer*/, uint32 /*Offset*/, uint32 /*SizeRHI*/)
+{
+    ensureMsgf(false, TEXT("LockStagingBuffer_RenderThread is not implemented."));
+    return nullptr;
+}
+
+void FOpenGLDynamicRHI::UnlockStagingBuffer_RenderThread(class FRHICommmandListImmediate& /*RHICmdList*/, FRHIStagingBuffer* /*StagingBuffer*/)
+{
+    ensureMsgf(false, TEXT("UnlockStagingBuffer_RenderThread is not implemented."));
+}
+
+FBoundShaderStateRHIRef FOpenGLDynamicRHI::RHICreateBoundShaderState(FRHIVertexDeclaration* /*VertexDeclaration*/, FRHIVertexShader* /*VertexShader*/, FRHIPixelShader* /*PixelShader*/, FRHIGeometryShader* /*GeometryShader*/)
+{
+    // TODO: Link program / manage program pipeline and return a handle wrapper.
+    ensureMsgf(false, TEXT("RHICreateBoundShaderState is not implemented."));
+    return FBoundShaderStateRHIRef();
+    // UE reference (program linking and binding):
+    // https://github.com/EpicGames/UnrealEngine/search?q=OpenGL+BoundShaderState
+}
+
+FGraphicsPipelineStateRHIRef FOpenGLDynamicRHI::RHICreateGraphicsPipelineState(const FGraphicsPipelineStateInitializer& /*Initializer*/)
+{
+    // TODO: Bake GL program/pipeline + fixed states (blend/raster/depth-stencil) into a PSO wrapper.
+    ensureMsgf(false, TEXT("RHICreateGraphicsPipelineState is not implemented."));
+    return FGraphicsPipelineStateRHIRef();
+    // UE reference (pipeline state setup path):
+    // https://github.com/EpicGames/UnrealEngine/search?q=CreateGraphicsPipelineState+OpenGL
+}
+
+// -------------------------------------------------------------
+// (Uniform) Buffers
+// -------------------------------------------------------------
+
+FUniformBufferRHIRef FOpenGLDynamicRHI::RHICreateUniformBuffer(const void* /*Contents*/, const FRHIUniformBufferLayout* /*Layout*/, EUniformBufferUsage /*Usage*/)
+{
+    // TODO: Create GL uniform buffer (glGenBuffers / GL_UNIFORM_BUFFER) or an emulated UB if needed.
+    ensureMsgf(false, TEXT("RHICreateUniformBuffer is not implemented."));
+    return FUniformBufferRHIRef();
+    // UE reference (OpenGL UBO binding path):
+    // https://github.com/EpicGames/UnrealEngine/blob/5.4/Engine/Source/Runtime/OpenGLDrv/Private/OpenGLShaders.cpp#L1143
+}
+
+void FOpenGLDynamicRHI::RHIUpdateUniformBuffer(FRHICommandListBase& /*RHICmdList*/, FRHIUniformBuffer* /*UniformBuffer*/, const void* /*Contents*/)
+{
+    // TODO: Update GL UBO with glBufferSubData or map/unmap.
+    ensureMsgf(false, TEXT("RHIUpdateUniformBuffer is not implemented."));
+    // UE reference:
+    // https://github.com/EpicGames/UnrealEngine/search?q=RHIUpdateUniformBuffer+OpenGL
+}
+
+// Buffers
+
+FBufferRHIRef FOpenGLDynamicRHI::RHICreateBuffer(FRHICommandListBase& /*RHICmdList*/, FRHIBufferDesc const& /*Desc*/, ERHIAccess /*ResourceState*/, const void* /*InitialData*/)
+{
+    // TODO: Create GL buffer (glGenBuffers, glBindBuffer, glBufferData). Choose target from usage (array/index/uniform/etc.)
+    ensureMsgf(false, TEXT("RHICreateBuffer is not implemented."));
+    return FBufferRHIRef();
+    // UE reference for buffer initializer flow (common path):
+    // https://github.com/EpicGames/UnrealEngine/blob/5.4/Engine/Source/Runtime/RHI/Public/RHICommandList.h#L816
+    // OpenGLDrv creates per-binding at use time.
+}
+
+void* FOpenGLDynamicRHI::RHILockBuffer(FRHICommandListBase& /*RHICmdList*/, FRHIBuffer* /*Buffer*/, uint32 /*Offset*/, uint32 /*Size*/)
+{
+    // TODO: Map buffer range (glMapBufferRange) if the buffer is created with mappable storage.
+    ensureMsgf(false, TEXT("RHILockBuffer is not implemented."));
+    return nullptr;
+    // UE reference (OpenGL lock buffer path):
+    // https://github.com/EpicGames/UnrealEngine/search?q=OpenGL+LockBuffer
+}
+
+void FOpenGLDynamicRHI::RHIUnlockBuffer(FRHICommandListBase& /*RHICmdList*/, FRHIBuffer* /*Buffer*/)
+{
+    // TODO: Unmap buffer
+    ensureMsgf(false, TEXT("RHIUnlockBuffer is not implemented."));
+    // UE reference:
+    // https://github.com/EpicGames/UnrealEngine/search?q=OpenGL+UnlockBuffer
+}
+
+// Textures & Views
+
+FTextureRHIRef FOpenGLDynamicRHI::RHICreateTexture(FRHICommandListBase& /*RHICmdList*/, const FRHITextureCreateDesc& /*CreateDesc*/, const void* /*InitialData*/)
+{
+    // TODO: glGenTextures / glTexImage* / set parameters, wrap as FTextureRHIRef
+    ensureMsgf(false, TEXT("RHICreateTexture is not implemented."));
+    return FTextureRHIRef();
+    // UE reference (OpenGL texture create/update paths):
+    // https://github.com/EpicGames/UnrealEngine/search?q=OpenGL+CreateTexture
+}
+
+void FOpenGLDynamicRHI::RHIUpdateTexture2D(FRHICommandListBase& /*RHICmdList*/, FRHITexture* /*Texture*/, uint32 /*MipIndex*/, const uint8* /*SourceData*/)
+{
+    // TODO: glTexSubImage2D for the given mip level
+    ensureMsgf(false, TEXT("RHIUpdateTexture2D is not implemented."));
+    // UE reference:
+    // https://github.com/EpicGames/UnrealEngine/search?q=OpenGL+UpdateTexture
+}
+
+FShaderResourceViewRHIRef FOpenGLDynamicRHI::RHICreateShaderResourceView(class FRHICommandListBase& /*RHICmdList*/, FRHIViewableResource* /*Resource*/, FRHIViewDesc const& /*ViewDesc*/)
+{
+    // TODO: Create SRV wrapper – in GL this often maps to texture/buffer binding tuples rather than persistent objects.
+    ensureMsgf(false, TEXT("RHICreateShaderResourceView is not implemented."));
+    return FShaderResourceViewRHIRef();
+    // UE reference:
+    // https://github.com/EpicGames/UnrealEngine/search?q=OpenGL+RHICreateShaderResourceView
+}
+
+FUnorderedAccessViewRHIRef FOpenGLDynamicRHI::RHICreateUnorderedAccessView(class FRHICommandListBase& /*RHICmdList*/, FRHIViewableResource* /*Resource*/, FRHIViewDesc const& /*ViewDesc*/)
+{
+    // TODO: Create UAV wrapper (GL shader storage tex/buffer views).
+    ensureMsgf(false, TEXT("RHICreateUnorderedAccessView is not implemented."));
+    return FUnorderedAccessViewRHIRef();
+    // UE reference:
+    // https://github.com/EpicGames/UnrealEngine/search?q=OpenGL+RHICreateUnorderedAccessView
+}
+
+// Viewport
+
+FTextureRHIRef FOpenGLDynamicRHI::RHIGetViewportBackBuffer(FRHIViewport* /*Viewport*/)
+{
+    // TODO: Return backbuffer handle wrapper if you own the surface; for GLFW this could be a default framebuffer proxy.
+    ensureMsgf(false, TEXT("RHIGetViewportBackBuffer is not implemented."));
+    return FTextureRHIRef();
+    // UE reference:
+    // https://github.com/EpicGames/UnrealEngine/search?q=OpenGL+Viewport+BackBuffer
+}
+
+FViewportRHIRef FOpenGLDynamicRHI::RHICreateViewport(void* /*WindowHandle*/, uint32 /*SizeX*/, uint32 /*SizeY*/, bool /*bIsFullscreen*/, EPixelFormat /*PreferredPixelFormat*/)
+{
+    // TODO: Create a viewport/swapchain abstraction backed by your window system (GLFW/SDL)
+    ensureMsgf(false, TEXT("RHICreateViewport is not implemented."));
+    return FViewportRHIRef();
+    // UE reference (platform windowing is separate from OpenGLDrv)
+}
+
+void FOpenGLDynamicRHI::RHIResizeViewport(FRHIViewport* /*Viewport*/, uint32 /*SizeX*/, uint32 /*SizeY*/, bool /*bIsFullscreen*/)
+{
+    // TODO: Resize the drawable; with GLFW call glfwSetWindowSize and reset glViewport accordingly on bind.
+    ensureMsgf(false, TEXT("RHIResizeViewport is not implemented."));
+    // UE reference:
+    // https://github.com/EpicGames/UnrealEngine/search?q=RHIResizeViewport
+}
+
+// Main-thread tick (duplicated declaration in header)
+void FOpenGLDynamicRHI::RHITick(float /*DeltaTime*/)
+{
+    // If you keep both declarations, keep a single out-of-line definition; this duplicates the earlier RHITick signature.
+}
+
+// Suspend/Resume
+
+void* FOpenGLDynamicRHI::RHIGetNativeDevice()
+{
+    // For OpenGL, there isn't a single device pointer; you could return current context or window/system handle.
+    // Return window/context pointer if needed by callers.
+    return static_cast<void*>(MainWindow);
+}
+
+IRHICommandContext* FOpenGLDynamicRHI::RHIGetDefaultContext()
+{
+    // In this simplified design, the RHI object is also the command context.
+    return this;
+}
+
+FGraphicsPipelineStateRHIRef FOpenGLDynamicRHI::RHICreateGraphicsPipelineState(const FGraphicsPipelineStateInitializer& /*Initializer*/)
+{
+    // NOTE: Your header declares this twice; keep one definition. This returns a PSO wrapper for GL.
+    ensureMsgf(false, TEXT("RHICreateGraphicsPipelineState (override) is not implemented."));
+    return FGraphicsPipelineStateRHIRef();
+    // UE reference:
+    // https://github.com/EpicGames/UnrealEngine/search?q=OpenGL+GraphicsPipelineState
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // -----------------------------------------------------------------------------
 // Render Passes
 // -----------------------------------------------------------------------------
-void FOpenGLDynamicRHI::RHIBeginRenderPass(const FRHIRenderPassInfo& InInfo, const TCHAR* InName)
-{
-    // 순수 가상(pure virtual)로 선언되어 있어서 실제 구현 파일 또는 다른 클래스로 분리할 수도 있음.
-    // 여기선 예시. (헤더에 =0 으로 되어있으니, 실제 사용 시 헤더를 수정하거나 파생 클래스로 옮겨야 함)
-    // InInfo에 ClearColor / ClearDepth 플래그 있으면 여기서 glClearBuffer* 호출
-    // InName 은 디버그 마커 (glPushDebugGroup) 사용 가능 (KHR_debug)
-    (void)InInfo;
-    (void)InName;
-    // 예:
-    // if (InInfo.bClearColor) { glClearColor(...); glClear(GL_COLOR_BUFFER_BIT); }
-    // if (InInfo.bClearDepth) { glClearDepth(...); glClear(GL_DEPTH_BUFFER_BIT); }
-}
+// void FOpenGLDynamicRHI::RHIBeginRenderPass(const FRHIRenderPassInfo& InInfo, const TCHAR* InName)
+// {
+//     // 순수 가상(pure virtual)로 선언되어 있어서 실제 구현 파일 또는 다른 클래스로 분리할 수도 있음.
+//     // 여기선 예시. (헤더에 =0 으로 되어있으니, 실제 사용 시 헤더를 수정하거나 파생 클래스로 옮겨야 함)
+//     // InInfo에 ClearColor / ClearDepth 플래그 있으면 여기서 glClearBuffer* 호출
+//     // InName 은 디버그 마커 (glPushDebugGroup) 사용 가능 (KHR_debug)
+//     (void)InInfo;
+//     (void)InName;
+//     // 예:
+//     // if (InInfo.bClearColor) { glClearColor(...); glClear(GL_COLOR_BUFFER_BIT); }
+//     // if (InInfo.bClearDepth) { glClearDepth(...); glClear(GL_DEPTH_BUFFER_BIT); }
+// }
 
-void FOpenGLDynamicRHI::RHIEndRenderPass()
-{
-    // glPopDebugGroup() 등
-}
+// void FOpenGLDynamicRHI::RHIEndRenderPass()
+// {
+//     // glPopDebugGroup() 등
+// }
 
 // -----------------------------------------------------------------------------
 // Input Assembly

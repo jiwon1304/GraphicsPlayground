@@ -5,7 +5,7 @@
 #include "Core/HAL/PlatformType.h"
 // 그냥 사용하기
 
-namespace OpenGL3
+namespace FOpenGL
 {
 int Init()
 {
@@ -45,6 +45,101 @@ void DestroyWindow(GLFWwindow* window)
 void Terminate()
 {
     glfwTerminate();
+}
+
+void Flush()
+{
+    glFlush();
+}
+
+void Finish()
+{
+    glFinish();
+}
+
+void GenBuffers(GLsizei n, GLuint* buffers)
+{
+    glGenBuffers(n, buffers);
+}
+
+void DeleteBuffers(GLsizei n, const GLuint* buffers)
+{
+    glDeleteBuffers(n, buffers);
+}
+
+void BindBuffer(GLenum target, GLuint buffer)
+{
+    glBindBuffer(target, buffer);
+}
+
+void GenTextures(GLsizei n, GLuint* textures)
+{
+    glGenTextures(n, textures);
+}
+
+void DeleteTextures(GLsizei n, const GLuint* textures)
+{
+    glDeleteTextures(n, textures);
+}
+
+void BindTexture(GLenum target, GLuint texture)
+{
+    glBindTexture(target, texture);
+}
+
+void GenSamplers(GLsizei n, GLuint* samplers)
+{
+    glGenSamplers(n, samplers);
+}
+
+void DeleteSamplers(GLsizei n, const GLuint* samplers)
+{
+    glDeleteSamplers(n, samplers);
+}
+
+void BindSampler(GLuint unit, GLuint sampler)
+{
+    glBindSampler(unit, sampler);
+}
+
+void GenFramebuffers(GLsizei n, GLuint* framebuffers)
+{
+    glGenFramebuffers(n, framebuffers);
+}
+
+void DeleteFramebuffers(GLsizei n, const GLuint* framebuffers)
+{
+    glDeleteFramebuffers(n, framebuffers);
+}
+
+void BindFramebuffer(GLenum target, GLuint framebuffer)
+{
+    glBindFramebuffer(target, framebuffer);
+}
+
+void GenVertexArrays(GLsizei n, GLuint* arrays)
+{
+    glGenVertexArrays(n, arrays);
+}
+
+void DeleteVertexArrays(GLsizei n, const GLuint* arrays)
+{
+    glDeleteVertexArrays(n, arrays);
+}
+
+void BindVertexArray(GLuint array)
+{
+    glBindVertexArray(array);
+}
+
+void BufferData(GLenum target, GLsizeiptr size, const void* data, GLenum usage)
+{
+    glBufferData(target, size, data, usage);
+}
+
+void BufferSubData(GLenum target, GLintptr offset, GLsizeiptr size, const void* data)
+{
+    glBufferSubData(target, offset, size, data);
 }
 
 void EnableVertexAttribArray(GLuint index)

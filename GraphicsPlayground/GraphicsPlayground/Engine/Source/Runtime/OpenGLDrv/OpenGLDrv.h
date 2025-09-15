@@ -18,64 +18,119 @@ public:
 
     ~FOpenGLDynamicRHI();
 
-    virtual void Init() override;
+    virtual void Init();
+    virtual void Shutdown();
 
-    virtual void Shutdown() override;
+    virtual void RHIEndFrame_RenderThread(class FRHICommandListImmediate& RHICmdList);
+    virtual void RHIEndFrame(uint64 FrameNumber);
 
-    virtual void RHITick(float DeltaTime) override;
-    
-    virtual void RHIExecuteCommandList(FRHICommandList* CmdList) override;
+    virtual void RHITick(float DeltaTime);
 
-    // Render Passes
-    /** For profiling */
-    virtual void RHIBeginRenderPass(const FRHIRenderPassInfo& InInfo, const TCHAR* InName) = 0;
-    virtual void RHIEndRenderPass() = 0;
+    // -------------------------------------------------------------
+    // Resource Creation
+    // -------------------------------------------------------------
+	// FlushType: Thread safe
+	virtual FSamplerStateRHIRef RHICreateSamplerState(const FSamplerStateInitializerRHI& Initializer);
 
-    // Input Assembly
-    virtual void RHISetPrimitiveTopology(EPrimitiveType PrimitiveType);
-    virtual void RHISetInputLayout(FRHIVertexDeclaration* InputLayout);
-    virtual void RHISetVertexBuffer(uint32 Slot, FRHIBuffer* VertexBuffer, uint32 Stride, uint32 Offset);
-    virtual void RHISetIndexBuffer(uint32 Slot, FRHIBuffer* IndexBuffer, uint32 Offset); // Index buffer uses uint32
+	// FlushType: Thread safe
+	virtual FRasterizerStateRHIRef RHICreateRasterizerState(const FRasterizerStateInitializerRHI& Initializer);
 
-    // Shaders
-    virtual void RHISetVertexShader(FRHIVertexShader* VertexShader);
-    virtual void RHISetPixelShader(FRHIPixelShader* PixelShader);
-    virtual void RHISetComputeShader(FRHIComputeShader* ComputeShader);
-    virtual void RHISetGeometryShader(FRHIGeometryShader* GeometryShader);
+	// FlushType: Thread safe
+	virtual FDepthStencilStateRHIRef RHICreateDepthStencilState(const FDepthStencilStateInitializerRHI& Initializer);
 
-    virtual void RHISetStaticUniformBuffer(EShaderType TargetShader, FUniformBufferStaticSlot Slot, FRHIUniformBuffer* UniformBuffer);
-    virtual void RHISetDynamicUniformBuffer(EShaderType TargetShader, FUniformBufferStaticSlot Slot, FRHIUniformBuffer* UniformBuffer);
-    virtual void RHISetShaderResourceView(EShaderType TargetShader, FShaderResourceStaticSlot Slot, FRHIView* SRV);
-    virtual void RHISetSampler(EShaderType TargetShader, FSamplerStaticSlot Slot, FRHISamplerState* SamplerState);
+	// FlushType: Thread safe
+	virtual FBlendStateRHIRef RHICreateBlendState(const FBlendStateInitializerRHI& Initializer);
 
-    // Rasterizer
-    virtual void RHISetRasterizerState(FRHIRasterizerState* RasterizerState);
-    virtual void RHISetBlendState(FRHIBlendState* BlendState, const FLinearColor& BlendFactor, uint32 SampleMask);
-    virtual void RHISetDepthStencilState(FRHIDepthStencilState* DepthStencilState, uint32 StencilRef);
-    virtual void RHISetViewport(FRHIViewport* Viewport);
+	// FlushType: Wait RHI Thread
+	virtual FVertexDeclarationRHIRef RHICreateVertexDeclaration(const FVertexDeclarationElementList& Elements);
 
-    // Output Merger
-    virtual void RHISetRenderTargets(uint32 NumRTVs, FRHIView* const* RTVs, FRHIView* DSV);
+	// FlushType: Wait RHI Thread
+	virtual FPixelShaderRHIRef RHICreatePixelShader(/*TArrayView<const uint8> Code, const FSHAHash& Hash*/);
 
-    // Updates
-    virtual void RHIUpdateBuffer(FRHIBuffer* Buffer, const void* Data, uint32 Size);
-    virtual void RHIUpdateUniformBuffer(FRHIUniformBuffer* UniformBuffer, const void* Data, uint32 Size);
-    virtual void RHIUpdateTexture(FRHITexture* Texture, const void* Data, uint32 Size);
-    virtual void RHIUpdateViewport(FRHIViewport* Viewport, const FRHIViewportDesc& Desc);
+	// FlushType: Wait RHI Thread
+	virtual FVertexShaderRHIRef RHICreateVertexShader(/*TArrayView<const uint8> Code, const FSHAHash& Hash*/);
 
-    // Clear
-    /*
-    * Note that BeginRenderPass() clears the render targets if specified in FRHIRenderPassInfo.
-    */
-    virtual void RHIClearColorTexture(FRHITexture* Texture, const FLinearColor& ClearColor);
-    virtual void RHIClearDepthTexture(FRHITexture* Texture, float Depth, uint8 Stencil);
+	// FlushType: Wait RHI Thread
+	virtual FGeometryShaderRHIRef RHICreateGeometryShader(/*TArrayView<const uint8> Code, const FSHAHash& Hash*/);
 
-    // Draw
-    virtual void RHIDrawPrimitive(uint32 BaseVertexIndex, uint32 NumVertices, uint32 NumInstances) = 0;
-    virtual void RHIDrawIndexedPrimitive(uint32 BaseVertexIndex, uint32 StartIndex, uint32 NumIndices, uint32 NumInstances) = 0;
+	// FlushType: Wait RHI Thread
+	virtual FComputeShaderRHIRef RHICreateComputeShader(/*TArrayView<const uint8> Code, const FSHAHash& Hash*/);
+
+	/**
+	* Creates a staging buffer, which is memory visible to the cpu without any locking.
+	* @return The new staging-buffer.
+	*/
+	// FlushType: Thread safe.	
+	virtual FStagingBufferRHIRef RHICreateStagingBuffer()
+	{
+		return new FGenericRHIStagingBuffer();
+	}
+
+    /** 
+     * Map to CPU memory
+     * @param StagingBuffer : The staging buffer to lock
+     * @param Offset : Offset into the staging buffer to lock
+     * @param SizeRHI : Size of the region to lock
+     * @return : Pointer to the locked region
+     */
+	virtual void* RHILockStagingBuffer(FRHIStagingBuffer* StagingBuffer, uint32 Offset, uint32 SizeRHI);
+
+    virtual void RHIUnlockStagingBuffer(FRHIStagingBuffer* StagingBuffer);
+
+    virtual void* LockStagingBuffer_RenderThread(class FRHICommmandListImmediate& RHICmdList, FRHIStagingBuffer* StagingBuffer, uint32 Offset, uint32 SizeRHI);
+
+    virtual void UnlockStagingBuffer_RenderThread(class FRHICommmandListImmediate& RHICmdList, FRHIStagingBuffer* StagingBuffer);
+
+	// FlushType: Thread safe, but varies depending on the RHI
+	virtual FBoundShaderStateRHIRef RHICreateBoundShaderState(FRHIVertexDeclaration* VertexDeclaration, FRHIVertexShader* VertexShader, FRHIPixelShader* PixelShader, FRHIGeometryShader* GeometryShader);
+
+    virtual FGraphicsPipelineStateRHIRef RHICreateGraphicsPipelineState(const FGraphicsPipelineStateInitializer& Initializer);
+
+    // -------------------------------------------------------------
+    // (Uniform) Buffers
+    // -------------------------------------------------------------
+    virtual FUniformBufferRHIRef RHICreateUniformBuffer(const void* Contents, const FRHIUniformBufferLayout* Layout, EUniformBufferUsage Usage);
+
+    virtual void RHIUpdateUniformBuffer(FRHICommandListBase& RHICmdList, FRHIUniformBuffer* UniformBuffer, const void* Contents);
+
+    // virtual FRHIBufferInitializer RHICreateBufferInitializer(FRHICommandListBase& RHICmdList, const FRHIBufferCreateDesc& CreateDesc);
+
+	virtual FBufferRHIRef RHICreateBuffer(FRHICommandListBase& RHICmdList, FRHIBufferDesc const& Desc, ERHIAccess ResourceState, const void* InitialData);
+
+    virtual void* RHILockBuffer(FRHICommandListBase& RHICmdList, FRHIBuffer* Buffer, uint32 Offset, uint32 Size);
+
+	virtual void RHIUnlockBuffer(FRHICommandListBase& RHICmdList, FRHIBuffer* Buffer);
+
+    virtual FTextureRHIRef RHICreateTexture(FRHICommandListBase& RHICmdList, const FRHITextureCreateDesc& CreateDesc, const void* InitialData);
+
+    virtual void RHIUpdateTexture2D(FRHICommandListBase& RHICmdList, FRHITexture* Texture, uint32 MipIndex, const uint8* SourceData);
+
+    virtual FShaderResourceViewRHIRef  RHICreateShaderResourceView (class FRHICommandListBase& RHICmdList, FRHIViewableResource* Resource, FRHIViewDesc const& ViewDesc);
+	virtual FUnorderedAccessViewRHIRef RHICreateUnorderedAccessView(class FRHICommandListBase& RHICmdList, FRHIViewableResource* Resource, FRHIViewDesc const& ViewDesc);
+
+    virtual FTextureRHIRef RHIGetViewportBackBuffer(FRHIViewport* Viewport);
+
+	virtual FViewportRHIRef RHICreateViewport(void* WindowHandle, uint32 SizeX, uint32 SizeY, bool bIsFullscreen, EPixelFormat PreferredPixelFormat);
+
+	virtual void RHIResizeViewport(FRHIViewport* Viewport, uint32 SizeX, uint32 SizeY, bool bIsFullscreen);
+
+    // must be called from the main thread
+    virtual void RHITick(float DeltaTime);
+
+    virtual void RHISuspendRendering() {};
+
+	virtual void RHIResumeRendering() {};
+
+    virtual void* RHIGetNativeDevice();
+
+	virtual IRHICommandContext* RHIGetDefaultContext();
+
+    virtual FGraphicsPipelineStateRHIRef RHICreateGraphicsPipelineState(const FGraphicsPipelineStateInitializer& Initializer) override;
 
 private:
     GLFWwindow* MainWindow = nullptr;
 
     FOpenGLRHIState CurrentState;
+
+    EPrimitiveType PrimitiveType = PT_TriangleList;
 };

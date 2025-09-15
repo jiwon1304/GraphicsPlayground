@@ -2,7 +2,7 @@
 
 #include "RHI/DynamicRHI.h"
 
-class IOpenGLDynamicRHI : public FDynamicRHI
+class IOpenGLDynamicRHI : public FDynamicRHIPSOFallback
 {
     // some loading functions
 };

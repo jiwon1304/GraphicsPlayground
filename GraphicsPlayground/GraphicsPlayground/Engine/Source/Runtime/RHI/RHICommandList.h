@@ -31,7 +31,6 @@ extern FRHICommandListExecutor GRHICommandList;
 struct FRHICommandBase
 {
     FRHICommandBase* Next = nullptr;
-    virtual void ExecuteAndDestruct(FRHICommandListBase& CmdList) = 0;
     virtual ~FRHICommandBase() = default;
 };
 
@@ -603,6 +602,9 @@ protected:
     FRHICommandBase** CommandLink = nullptr;
     uint32_t           NumCommands = 0;
 
+    /**
+     * @todo : make Allocator fits into page size
+     */
     FLinearAllocator   Allocator;
 };
 
@@ -710,6 +712,5 @@ public:
     // We now only use FRHICommandListImmediate. No other command lists.
     FRHICommandListImmediate CommandListImmediate;
 };
-
 
 #include "RHICommandListCommandExecutes.inl"

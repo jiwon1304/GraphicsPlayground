@@ -424,12 +424,6 @@ struct FRHIComputeShader : public FRHIGraphicsShader
     FRHIComputeShader() : FRHIGraphicsShader(RRT_ComputeShader, EShaderType::Compute) {}
 };
 
-/** For latest graphics APIs only. */
-// struct FRHIGraphicsPipelineState : public FRHIResource
-// {
-//     FRHIGraphicsPipelineState() : FRHIResource(RRT_GraphicsPipelineState) {}
-// };
-
 // -----------------------------------------------------------------------------
 // Uniform Buffer
 // -----------------------------------------------------------------------------
@@ -442,6 +436,9 @@ struct FRHIUniformBufferResource
 
 	/** Type of the member that allow (). */
 	EUniformBufferBaseType MemberType;
+
+	/** String to identify the member */
+	FString MemberName;
 };
 
 struct FRHIUniformBufferResourceInitializer
@@ -481,9 +478,11 @@ struct FRHIUniformBuffer : public FRHIResource
     {
     }
 
-    TArray<std::shared_ptr<FRHIResource>> ResourceTable; // ???
+	// Textures, Samplers, ...
+    TArray<TRefCountPtr<FRHIResource>> ResourceTable;
 
-    std::shared_ptr<const FRHIUniformBufferLayout> Layout;
+	// uniform or constant buffer data
+    TRefCountPtr<const FRHIUniformBufferLayout> Layout;
 };
 
 // -----------------------------------------------------------------------------

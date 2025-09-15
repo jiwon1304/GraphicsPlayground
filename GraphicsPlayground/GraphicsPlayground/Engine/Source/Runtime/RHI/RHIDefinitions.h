@@ -194,7 +194,7 @@ enum class EClearDepthStencil
 	DepthStencil,
 };
 
-enum class EPrimitiveType : uint8
+enum EPrimitiveType : uint8
 {
     PT_TriangleList,
     PT_TriangleStrip,
