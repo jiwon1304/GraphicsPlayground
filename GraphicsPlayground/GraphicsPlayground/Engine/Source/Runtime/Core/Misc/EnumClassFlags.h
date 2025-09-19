@@ -16,27 +16,27 @@
 template<typename Enum>
 constexpr bool EnumHasAllFlags(Enum Flags, Enum Contains)
 {
-	using UnderlyingType = std::underlying_type_t(Enum);
+	using UnderlyingType = std::underlying_type_t<Enum>;
 	return ((UnderlyingType)Flags & (UnderlyingType)Contains) == (UnderlyingType)Contains;
 }
 
 template<typename Enum>
 constexpr bool EnumHasAnyFlags(Enum Flags, Enum Contains)
 {
-	using UnderlyingType = std::underlying_type_t(Enum);
+	using UnderlyingType = std::underlying_type_t<Enum>;
 	return ((UnderlyingType)Flags & (UnderlyingType)Contains) != 0;
 }
 
 template<typename Enum>
 void EnumAddFlags(Enum& Flags, Enum FlagsToAdd)
 {
-	using UnderlyingType = std::underlying_type_t(Enum);
+	using UnderlyingType = std::underlying_type_t<Enum>;
 	Flags = (Enum)((UnderlyingType)Flags | (UnderlyingType)FlagsToAdd);
 }
 
 template<typename Enum>
 void EnumRemoveFlags(Enum& Flags, Enum FlagsToRemove)
 {
-	using UnderlyingType = std::underlying_type_t(Enum);
+	using UnderlyingType = std::underlying_type_t<Enum>;
 	Flags = (Enum)((UnderlyingType)Flags & ~(UnderlyingType)FlagsToRemove);
 }

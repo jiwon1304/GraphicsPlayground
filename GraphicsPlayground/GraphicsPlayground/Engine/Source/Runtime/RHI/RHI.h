@@ -49,6 +49,20 @@ struct FSamplerStateInitializerRHI
     float MaxLOD = FLT_MAX;
     uint32 BorderColor = 0x00000000; // white
     bool bUseComparison = false;
+
+    bool operator==(const FSamplerStateInitializerRHI& Rhs) const
+    {
+        return Filter == Rhs.Filter
+            && AddressU == Rhs.AddressU
+            && AddressV == Rhs.AddressV
+            && AddressW == Rhs.AddressW
+            && MipLODBias == Rhs.MipLODBias
+            && MaxAnisotropy == Rhs.MaxAnisotropy
+            && MinLOD == Rhs.MinLOD
+            && MaxLOD == Rhs.MaxLOD
+            && BorderColor == Rhs.BorderColor
+            && bUseComparison == Rhs.bUseComparison;
+    }
 };
 
 struct FRasterizerStateInitializerRHI
@@ -103,3 +117,14 @@ struct FDepthStencilStateInitializerRHI
     EStencilOp BackFaceStencilDepthFailOp = EStencilOp::Decr;
     EStencilOp BackFaceStencilPassOp = EStencilOp::Keep;
 };
+
+// std::hash 특수화 필요
+namespace std {
+    template<>
+    struct hash<FSamplerStateInitializerRHI> {
+        size_t operator()(const FSamplerStateInitializerRHI& k) const {
+            // 간단한 해시 예시 (실전에서는 더 좋은 해시 조합 필요)
+            return 1;
+        }
+    };
+}

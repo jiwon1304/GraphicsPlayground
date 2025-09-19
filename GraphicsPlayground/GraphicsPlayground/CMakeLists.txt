@@ -10,6 +10,9 @@ cmake_minimum_required(VERSION 3.24)
 
 project(GraphicsPlayground LANGUAGES C CXX)
 
+option(USE_OPENGL "Use OpenGL backend" ON)
+option(USE_DIRECTX11 "Use DirectX 11 backend" OFF)
+
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -176,6 +179,7 @@ target_include_directories(${PROJECT_NAME}
         "${CMAKE_CURRENT_SOURCE_DIR}/Engine/Source/Runtime/Engine/"
         "${THIRD_PARTY_DIR}/imgui"
         "${THIRD_PARTY_DIR}/imgui/backends"
+        "${THIRD_PARTY_DIR}/freetype/include"
         "${THIRD_PARTY_DIR}/Lua/include"
         "${THIRD_PARTY_DIR}/sol2/include"
         "${THIRD_PARTY_DIR}/magic_enum/include"
@@ -261,10 +265,13 @@ if (WIN32)
         "${THIRD_PARTY_DIR}/fmod/lib/x64"
         "${THIRD_PARTY_DIR}/FBX/lib/x64/$<CONFIG>"
         "${THIRD_PARTY_DIR}/physx/bin/$<CONFIG>"
+        "${THIRD_PARTY_DIR}/OpenGL/glfw/WIN64/lib-vc2022"
+        "${THIRD_PARTY_DIR}/freetype/WIN64/lib"
     )
     target_link_directories(${PROJECT_NAME} PRIVATE ${THIRD_PARTY_LIB_DIRS})
 
     set(WINDOWS_LIBS
+        freetype
         DirectXTK
         lua
         fmod_vc
@@ -279,7 +286,9 @@ if (WIN32)
         PhysXVehicle_static_64
         PhysXCooking_64
         $<$<CONFIG:Debug>:PhysXPvdSDK_static_64>
-    )
+        # opengl용 나중에 빼기
+        glfw3
+        )
     target_link_libraries(${PROJECT_NAME} PRIVATE ${WINDOWS_LIBS})
 elseif(APPLE)
     # macOS / 기타 (필요시 세분화)
@@ -351,3 +360,6 @@ source_group(TREE "${ROOT_SRC_DIR}" FILES ${ALL_FILES})
 # (선택) 프리컴파일 헤더
 # target_precompile_headers(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/pch.h")
 # --------------------------------------------------------------------------------------------------
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/${PROJECT_NAME}"
+)

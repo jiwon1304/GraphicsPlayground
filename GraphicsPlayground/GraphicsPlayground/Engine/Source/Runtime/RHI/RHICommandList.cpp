@@ -18,7 +18,7 @@ void FRHICommandListExecutor::Submit()
     CommandListImmediate.ExecuteAndReset();
 }
 
-inline FRHICommandListImmediate &FRHICommandListImmediate::Get()
+FRHICommandListImmediate &FRHICommandListImmediate::Get()
 {
     return FRHICommandListExecutor::GetImmediateCommandList();
 }

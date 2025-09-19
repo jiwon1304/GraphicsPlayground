@@ -13,8 +13,8 @@ project(GraphicsPlaygroundProj LANGUAGES C CXX)
 # 구성 타입(Visual Studio 등 멀티-컨피그 제너레이터용)
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "" FORCE)
 
-# C++ 표준 (요구: C++20)
-set(CMAKE_CXX_STANDARD 20)
+# C++ 표준 (요구: C++23)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 

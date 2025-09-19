@@ -62,7 +62,7 @@ struct FImGuiWidget
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{0, 0});
         ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0.0f);
 
-        const float LineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+        const float LineHeight = GImGui->Font->LegacySize + GImGui->Style.FramePadding.y * 2.0f;
         const ImVec2 ButtonSize = {
             // BoldFont->CalcTextSizeA(BoldFont->FontSize, FLT_MAX, 0, "III").x + GImGui->Style.FramePadding.x * 2.0f,
             5,

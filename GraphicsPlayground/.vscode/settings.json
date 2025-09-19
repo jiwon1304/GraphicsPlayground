@@ -123,18 +123,5 @@
         "xstring": "cpp",
         "xtr1common": "cpp",
         "xtree": "cpp",
-        "opengl3.h": "c",
-        "platformtype.h": "c",
-        "openglthirdparty.h": "c",
-        "rhi.h": "c",
-        "dynamicrhi.h": "c",
-        "d3d11.h": "c",
-        "rhiaccess.h": "c",
-        "array.h": "c",
-        "pixelformat.h": "c",
-        "rhidefinitions.h": "c",
-        "enumclassflags.h": "c",
-        "imgui_internal.h": "c",
-        "rhifwd.h": "c"
     }
 }

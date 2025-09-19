@@ -104,7 +104,9 @@ public:
     static CharType* Strncpy(CharType* dest, const CharType* src, std::size_t count)
     {
         if (!dest || !src || count == 0) return dest; // Null/Zero 체크
+        #pragma warning(disable : 4996) // strncpy 경고 무시
         if constexpr (std::is_same_v<CharType, char>) { return std::strncpy(dest, src, count); }
+        #pragma warning(default : 4996)
         else if constexpr (std::is_same_v<CharType, wchar_t>) { return std::wcsncpy(dest, src, count); }
         else
         {

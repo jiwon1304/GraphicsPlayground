@@ -4,7 +4,7 @@
 #include "RHI/RHI.h"
 #include "RHI/RHIContext.h"
 #include "IOpenGLDynamicRHI.h"
-#include "OpenGLState.h"
+// #include "OpenGLState.h"
 
 class FOpenGLDynamicRHI : public IOpenGLDynamicRHI, public IRHICommandContext
 {

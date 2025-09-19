@@ -472,7 +472,7 @@ struct FRHIUniformBufferLayout : public FRHIResource
 struct FRHIUniformBuffer : public FRHIResource
 {
     /** To avoid duplicated layouts, we take pointer */
-    FRHIUniformBuffer(const FRHIUniformBufferLayout* InLayout)
+    FRHIUniformBuffer(FRHIUniformBufferLayout* InLayout)
         : FRHIResource(RRT_UniformBuffer)
         , Layout(InLayout)
     {
@@ -482,7 +482,12 @@ struct FRHIUniformBuffer : public FRHIResource
     TArray<TRefCountPtr<FRHIResource>> ResourceTable;
 
 	// uniform or constant buffer data
-    TRefCountPtr<const FRHIUniformBufferLayout> Layout;
+    TRefCountPtr<FRHIUniformBufferLayout> Layout;
+
+	~FRHIUniformBuffer()
+	{
+		ResourceTable.Empty();
+	}
 };
 
 // -----------------------------------------------------------------------------
@@ -1694,7 +1699,7 @@ class FRHIGraphicsPipelineState : public FRHIResource
 public:
     FRHIGraphicsPipelineState() : FRHIResource(RRT_PipelineState) {}
 
-    virtual FRHIGraphicsShader* GetShader(EShaderType InShaderType) const {}
+    virtual FRHIGraphicsShader* GetShader(EShaderType InShaderType) const { return nullptr; }
 };
 
 class FRHIGraphicsPipelineStateFallBack : public FRHIGraphicsPipelineState

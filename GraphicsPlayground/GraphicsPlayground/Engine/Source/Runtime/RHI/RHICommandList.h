@@ -53,7 +53,19 @@ struct TRHILambdaCommand final : public FRHICommandBase
 
     void ExecuteAndDestruct(FRHICommandListBase& CmdList) override final
     {
-        Lambda(static_cast<RHICmdListType&>(CmdList));
+        if constexpr (std::is_invocable_v<LAMBDA&, RHICmdListType&>)
+        {
+            Lambda(static_cast<RHICmdListType&>(CmdList));
+        }
+        else if constexpr (std::is_invocable_v<LAMBDA&>)
+        {
+            Lambda();
+        }
+        else
+        {
+            static_assert(std::is_invocable_v<LAMBDA&, RHICmdListType&> || std::is_invocable_v<LAMBDA&>,
+                "LAMBDA must be callable with RHICmdListType& or with no parameters");
+        }
         Lambda.~LAMBDA();
     }
 };
@@ -68,7 +80,7 @@ struct FRHICommand : public FRHICommandBase
     void ExecuteAndDestruct(FRHICommandListBase& CmdList) override final
     {
         static_cast<TCmd*>(this)->Execute(CmdList);
-        this->~TCmd(); // destruct the command object
+        static_cast<TCmd*>(this)->~TCmd(); // destruct the command object
     }
 };
 
@@ -88,13 +100,13 @@ FRHICOMMAND_MACRO(FRHICommandBeginRenderPass)
     : Info(InInfo), Name(InName)
     {
     }
-    void Execute(FRHICommandListBase& CmdList);
+    FORCEINLINE_DEBUGGABLE void Execute(FRHICommandListBase& CmdList);
 };
 
 FRHICOMMAND_MACRO(FRHICommandEndRenderPass)
 {
     FORCEINLINE_DEBUGGABLE FRHICommandEndRenderPass() {}
-    void Execute(FRHICommandListBase& CmdList);
+    FORCEINLINE_DEBUGGABLE void Execute(FRHICommandListBase& CmdList);
 };
 
 FRHICOMMAND_MACRO(FRHICommandBeginDrawingViewport)
@@ -107,7 +119,7 @@ FRHICOMMAND_MACRO(FRHICommandBeginDrawingViewport)
 		, RenderTargetRHI(InRenderTargetRHI)
 	{
 	}
-	void Execute(FRHICommandListBase& CmdList);
+	FORCEINLINE_DEBUGGABLE void Execute(FRHICommandListBase& CmdList);
 };
 
 FRHICOMMAND_MACRO(FRHICommandEndDrawingViewport)
@@ -121,7 +133,7 @@ FRHICOMMAND_MACRO(FRHICommandEndDrawingViewport)
         , bLockToVsync(InLockToVsync)
     {
     }
-    void Execute(FRHICommandListBase& CmdList);
+    FORCEINLINE_DEBUGGABLE void Execute(FRHICommandListBase& CmdList);
 };
 
 FRHICOMMAND_MACRO(FRHICommandSetStreamSource)
@@ -136,7 +148,7 @@ FRHICOMMAND_MACRO(FRHICommandSetStreamSource)
         , Offset(InOffset)
     {
     }
-    void Execute(FRHICommandListBase& CmdList);
+    FORCEINLINE_DEBUGGABLE void Execute(FRHICommandListBase& CmdList);
 };
 
 FRHICOMMAND_MACRO(FRHICommandSetViewport)
@@ -157,7 +169,7 @@ FRHICOMMAND_MACRO(FRHICommandSetViewport)
         , MaxZ(InMaxZ)
     {
     }
-    void Execute(FRHICommandListBase& CmdList);
+    FORCEINLINE_DEBUGGABLE void Execute(FRHICommandListBase& CmdList);
 };
 
 FRHICOMMAND_MACRO(FRHICommandSetGraphicsPipelineState)
@@ -169,7 +181,7 @@ FRHICOMMAND_MACRO(FRHICommandSetGraphicsPipelineState)
         , StencilRef(InStencilRef)
     {
     }
-    void Execute(FRHICommandListBase& CmdList);
+    FORCEINLINE_DEBUGGABLE void Execute(FRHICommandListBase& CmdList);
 };
 
 FRHICOMMAND_MACRO(FRHICommandDrawPrimitive)
@@ -183,7 +195,7 @@ FRHICOMMAND_MACRO(FRHICommandDrawPrimitive)
         , NumInstances(InNumInstances)
     {
     }
-    void Execute(FRHICommandListBase& CmdList);
+    FORCEINLINE_DEBUGGABLE void Execute(FRHICommandListBase& CmdList);
 };
 
 FRHICOMMAND_MACRO(FRHICommandDrawIndexedPrimitive)
@@ -199,7 +211,7 @@ FRHICOMMAND_MACRO(FRHICommandDrawIndexedPrimitive)
         , NumInstances(InNumInstances)
     {
     }
-    void Execute(FRHICommandListBase& CmdList);
+    FORCEINLINE_DEBUGGABLE void Execute(FRHICommandListBase& CmdList);
 };
 
 FRHICOMMAND_MACRO(FRHICommandSetStaticUniformBuffers)
@@ -209,7 +221,7 @@ FRHICOMMAND_MACRO(FRHICommandSetStaticUniformBuffers)
         : UniformBuffers(InUniformBuffers)
     {
     }
-    void Execute(FRHICommandListBase& CmdList);
+    FORCEINLINE_DEBUGGABLE void Execute(FRHICommandListBase& CmdList);
 };
 
 FRHICOMMAND_MACRO(FRHICommandSetStaticUniformBuffer)
@@ -221,7 +233,7 @@ FRHICOMMAND_MACRO(FRHICommandSetStaticUniformBuffer)
         , Slot(InSlot)
     {
     }
-    void Execute(FRHICommandListBase& CmdList);
+    FORCEINLINE_DEBUGGABLE void Execute(FRHICommandListBase& CmdList);
 };
 
 FRHICOMMAND_MACRO(FRHICommandSetUniformBufferDynamicOffset)
@@ -233,7 +245,7 @@ FRHICOMMAND_MACRO(FRHICommandSetUniformBufferDynamicOffset)
         , Offset(InOffset)
     {
     }
-    void Execute(FRHICommandListBase& CmdList);
+    FORCEINLINE_DEBUGGABLE void Execute(FRHICommandListBase& CmdList);
 };
 
 
@@ -522,7 +534,7 @@ public:
      */
     FORCEINLINE void UpdateStreamSourceSlot(FRHIStreamSourceSlot* StreamSourceSlotRHI, FRHIBuffer* BufferRHI)
     {
-        EnqueueLambda([=]
+        EnqueueLambda([=](FRHICommandListBase& CmdList)
         {
             StreamSourceSlotRHI->Buffer = BufferRHI;
         });
@@ -665,7 +677,7 @@ public:
         ALLOC_COMMAND(TRHILambdaCommand<FRHICommandListImmediate, LAMBDA>)(std::forward<LAMBDA>(Fn));
     }
 
-    static inline FRHICommandListImmediate& Get();
+    static FRHICommandListImmediate& Get();
 
     void BeginDrawingViewport(FRHIViewport* Viewport, FRHITexture* RenderTargetRHI)
     {

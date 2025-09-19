@@ -2795,6 +2795,171 @@
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\fmod\inc\fmod_output.h">
       <Filter>Engine\Source\ThirdParty\fmod\inc</Filter>
     </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\config\ftconfig.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype\config</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\config\ftheader.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype\config</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\config\ftmodule.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype\config</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\config\ftoption.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype\config</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\config\ftstdlib.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype\config</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\config\integer-types.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype\config</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\config\mac-support.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype\config</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\config\public-macros.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype\config</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\freetype.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftadvanc.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftbbox.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftbdf.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftbitmap.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftbzip2.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftcache.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftchapters.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftcid.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftcolor.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftdriver.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\fterrdef.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\fterrors.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftfntfmt.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftgasp.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftglyph.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftgxval.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftgzip.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftimage.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftincrem.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftlcdfil.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftlist.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftlogging.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftlzw.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftmac.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftmm.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftmodapi.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftmoderr.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftotval.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftoutln.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftparams.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftpfr.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftrender.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftsizes.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftsnames.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftstroke.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftsynth.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftsystem.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\fttrigon.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\fttypes.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ftwinfnt.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\otsvg.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\t1tables.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\ttnameid.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\tttables.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\freetype\tttags.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include\ft2build.h">
+      <Filter>Engine\Source\ThirdParty\freetype\include</Filter>
+    </ClInclude>
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\backends\imgui_impl_allegro5.h">
       <Filter>Engine\Source\ThirdParty\imgui\backends</Filter>
     </ClInclude>
@@ -3932,6 +4097,18 @@
     </Filter>
     <Filter Include="Engine\Source\ThirdParty\fmod\inc">
       <UniqueIdentifier>{1F81C3D8-FBCD-3DF9-9150-E1B9A670A725}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Source\ThirdParty\freetype">
+      <UniqueIdentifier>{B68521A0-F6E1-3143-84B4-75EB12E428AD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Source\ThirdParty\freetype\include">
+      <UniqueIdentifier>{7A8C012E-3FA9-3417-827E-1475135CE828}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Source\ThirdParty\freetype\include\freetype">
+      <UniqueIdentifier>{496000E4-16F8-3F39-AE72-6F51F07EEE20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Source\ThirdParty\freetype\include\freetype\config">
+      <UniqueIdentifier>{8807733E-FDE5-361B-B8B1-100199E54D72}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Source\ThirdParty\imgui">
       <UniqueIdentifier>{975CD0CB-FA76-3FF3-BB14-D00C1FCD95FC}</UniqueIdentifier>

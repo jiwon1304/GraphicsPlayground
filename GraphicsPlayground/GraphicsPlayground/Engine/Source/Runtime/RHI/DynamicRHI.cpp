@@ -12,6 +12,7 @@ FDynamicRHI* PlatformCreateDynamicRHI()
 {
 #ifdef WIN32
     // return new FD3D11DynamicRHI();
+    return nullptr;
 #else
     return new FOpenGLDynamicRHI();
 #endif

@@ -1,0 +1,15 @@
+{
+    "configurations": [
+        {
+            "name": "Debug GraphicsPlayground",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/Binaries/x64/Debug/GraphicsPlayground.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/GraphicsPlayground",
+            "environment": [],
+            "console": "externalTerminal"
+        }
+    ]
+}

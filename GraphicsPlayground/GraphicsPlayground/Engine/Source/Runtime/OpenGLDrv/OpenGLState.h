@@ -1,5 +1,5 @@
 #pragma once
-#include "ThirdParty/OpenGL/glad/include/glad/glad.h"
+#include "OpenGLThirdParty.h"
 #include "OpenGLResources.h"
 #include "Core/Math/Rect.h"
 #include "Core/Container/Map.h"
