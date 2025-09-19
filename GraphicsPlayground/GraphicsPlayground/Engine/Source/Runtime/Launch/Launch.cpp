@@ -3,7 +3,7 @@
 
 FEngineLoop GEngineLoop;
 
-
+#if defined(BUILD_PLATFORM_WINDOWS)
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
     // 사용 안하는 파라미터들
@@ -17,3 +17,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     return 0;
 }
+#elif defined(BUILD_PLATFORM_MAC)
+int main(int argc, char** argv)
+{
+    GEngineLoop.Init
+}
+#else
+
+static_assert(false, "Unsupported platform for entry point");
+
+#endif

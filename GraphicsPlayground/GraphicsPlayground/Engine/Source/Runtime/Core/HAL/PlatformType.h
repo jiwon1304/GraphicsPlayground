@@ -6,8 +6,16 @@
 // OS별 분기
 //-----------------------------------------
 #if defined(_WIN32) || defined(_WIN64)
+#define BUILD_PLATFORM_WINDOWS
+#elif defined(__APPLE__)
+#define BUILD_PLATFORM_MAC
+#else
+static_assert(false, "Unsupported platform");
+#endif
+
 
 // ---------------- Windows ----------------
+#ifdef BUILD_PLATFORM_WINDOWS
 #define _TCHAR_DEFINED
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
@@ -23,10 +31,11 @@
 #define FORCEINLINE __forceinline
 #define FORCENOINLINE __declspec(noinline)
 #define RESTRICT __restrict
+#endif
 
-#else 
 
 // ---------------- macOS / Linux ----------------
+#ifdef BUILD_PLATFORM_MAC
 #include <unistd.h>   // 필요시 POSIX API
 #include <sys/types.h>
 

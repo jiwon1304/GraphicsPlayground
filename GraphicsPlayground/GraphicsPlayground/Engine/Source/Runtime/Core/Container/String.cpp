@@ -459,7 +459,7 @@ FString FString::Printf(const ElementType* Format, ...)
 
         va_start(ArgPtr, Format); // 각 시도마다 va_list 재시작 필요
 #if USE_WIDECHAR
-    #ifdef _WIN32
+    #ifdef BUILD_PLATFORM_WINDOWS
         // _vsnwprintf는 널 종료를 보장하지 않을 수 있으며, 성공 시 문자 수(널 제외) 또는 버퍼가 작으면 -1 반환
         // _TRUNCATE 플래그를 사용하면 버퍼에 맞게 잘라주고 널 종료를 보장하며 성공 시 문자 수(널 미포함), 잘렸으면 -1 반환
         Result = _vsnwprintf_s(Buffer.data(), Buffer.size(), _TRUNCATE, Format, ArgPtr);
