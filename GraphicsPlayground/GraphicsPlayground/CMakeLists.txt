@@ -1,43 +1,50 @@
 # --------------------------------------------------------------------------------------------------
-# GraphicsPlayground/CMakeLists.txt (플랫폼/그래픽스 API 선택 완전판)
-# - Windows: DirectX11 또는 OpenGL (사용자 선택, 둘 중 하나만)
-# - macOS  : OpenGL만 선택 가능 (DirectX11 불가)
+# GraphicsPlayground/CMakeLists.txt
+# - Windows: DirectX11 또는 OpenGL (둘 중 하나)
+# - macOS  : OpenGL만
 # --------------------------------------------------------------------------------------------------
 
 cmake_minimum_required(VERSION 3.24)
 
 project(GraphicsPlayground LANGUAGES C CXX)
 
-option(USE_OPENGL "Use OpenGL backend" ON)
-option(USE_DIRECTX11 "Use DirectX 11 backend" OFF)
-
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Graphics API Settings
+option(USE_OPENGL "Use OpenGL backend" OFF)
+option(USE_DIRECTX11 "Use DirectX 11 backend" ON)
+
+# Project Settings
 set(PROJECT_NAME GraphicsPlayground)
 set(ROOT_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+set(THIRD_PARTY_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Engine/Source/ThirdParty")
+
+# ImGui root (외부에서 -DIMGUI_ROOT=...로 오버라이드 가능)
+if (NOT DEFINED IMGUI_ROOT)
+    set(IMGUI_ROOT "${THIRD_PARTY_DIR}/imgui")
+endif()
 
 # -----------------------------------------------------------------------------------------------
 # 그래픽스 API 옵션 및 플랫폼 분기
 # -----------------------------------------------------------------------------------------------
-if (WIN32)
-    option(USE_OPENGL    "Use OpenGL backend on Windows" OFF)
-    option(USE_DIRECTX11 "Use DirectX 11 backend on Windows" ON)
-    # 상호 배타적 선택
-    if(USE_OPENGL AND USE_DIRECTX11)
-        message(FATAL_ERROR "Windows에서는 OpenGL과 DirectX11을 동시에 활성화할 수 없습니다. 하나만 ON으로 하세요.")
-    elseif(NOT USE_OPENGL AND NOT USE_DIRECTX11)
-        message(FATAL_ERROR "Windows에서는 OpenGL 또는 DirectX11 중 하나를 반드시 선택해야 합니다.")
-    endif()
-elseif(APPLE)
-    option(USE_OPENGL "Use OpenGL backend on macOS" ON)
-    set(USE_DIRECTX11 OFF CACHE BOOL "DirectX11은 macOS에서 지원되지 않습니다." FORCE)
-    if(USE_DIRECTX11)
-        message(FATAL_ERROR "macOS에서는 DirectX11을 사용할 수 없습니다. USE_DIRECTX11=OFF로 설정하세요.")
-    endif()
-else()
-    message(FATAL_ERROR "지원하지 않는 플랫폼입니다.")
+if(USE_OPENGL AND USE_DIRECTX11)
+    message(FATAL_ERROR "OpenGL과 DirectX11은 동시에 사용할 수 없습니다. 둘 중 하나만 선택하세요.")
+elseif(NOT USE_OPENGL AND NOT USE_DIRECTX11)
+    message(FATAL_ERROR "OpenGL 또는 DirectX11 중 하나를 반드시 선택해야 합니다.")
+endif()
+
+if (APPLE AND USE_DIRECTX11)
+    message(FATAL_ERROR "macOS에서는 DirectX11을 사용할 수 없습니다. USE_DIRECTX11=OFF로 설정하세요.")
+endif()
+
+if (USE_OPENGL)
+    message(STATUS "그래픽스 API: OpenGL 선택됨")
+    set(BUILD_RENDER_BACKEND_STR "OPENGL3")
+elseif(USE_DIRECTX11)
+    message(STATUS "그래픽스 API: DirectX11 선택됨")
+    set(BUILD_RENDER_BACKEND_STR "DX11")
 endif()
 
 # -----------------------------------------------------------------------------------------------
@@ -55,15 +62,59 @@ file(GLOB_RECURSE PROJECT_HEADER_FILES
     "${ROOT_SRC_DIR}/*.inl"
 )
 
-# ImGui 경로 및 코어/백엔드 구분
-set(IMGUI_ROOT "${ROOT_SRC_DIR}/Engine/Source/ThirdParty/imgui")
-list(FILTER PROJECT_SOURCE_FILES EXCLUDE REGEX "imgui_impl_.*\\.(cpp|mm)$")
-foreach(_core IN ITEMS
-        imgui.cpp imgui_demo.cpp imgui_draw.cpp imgui_tables.cpp imgui_widgets.cpp
-        imgui_bezier.cpp imgui_curve.cpp imgui_neo_internal.cpp imgui_neo_sequencer.cpp)
-    list(FILTER PROJECT_SOURCE_FILES EXCLUDE REGEX "${_core}$")
-endforeach()
+# ThirdParty / PCH 제외
+list(FILTER PROJECT_SOURCE_FILES EXCLUDE REGEX "(/|\\\\)ThirdParty(/|\\\\)")
+list(FILTER PROJECT_HEADER_FILES EXCLUDE REGEX "(/|\\\\)ThirdParty(/|\\\\)")
+list(FILTER PROJECT_SOURCE_FILES EXCLUDE REGEX "pch\\.cpp$")
+list(FILTER PROJECT_HEADER_FILES EXCLUDE REGEX "pch\\.h$")
 
+# 백엔드별 소스 필터링(필요 시 경로 패턴 조정)
+if (NOT USE_OPENGL)
+    list(FILTER PROJECT_SOURCE_FILES EXCLUDE REGEX "(/|\\\\)(OpenGLDrv||OpenGL|GL)(/|\\\\)")
+    list(FILTER PROJECT_HEADER_FILES EXCLUDE REGEX "(/|\\\\)(OpenGLDrv||OpenGL|GL)(/|\\\\)")
+endif()
+if (NOT USE_DIRECTX11)
+    list(FILTER PROJECT_SOURCE_FILES EXCLUDE REGEX "(/|\\\\)(DX11|DirectX11)(/|\\\\)")
+    list(FILTER PROJECT_HEADER_FILES EXCLUDE REGEX "(/|\\\\)(DX11|DirectX11)(/|\\\\)")
+endif()
+
+# -----------------------------------------------------------------------------------------------
+# Graphics API 의존성
+# -----------------------------------------------------------------------------------------------
+if (USE_OPENGL)
+    find_package(OpenGL REQUIRED)
+    # 사전 배포 GLFW (Windows: glfw3, macOS: glfw)
+    if (WIN32)
+        set(_GLFW_LIB_NAME glfw3)
+        set(_GLFW_INCLUDE_DIR "${THIRD_PARTY_DIR}/OpenGL/glfw/WIN64/include")
+        set(_GLFW_DLL_PATH     "${THIRD_PARTY_DIR}/OpenGL/glfw/WIN64/lib-vc2022/glfw3.dll")
+        set(_GLFW_LIB_DIR      "${THIRD_PARTY_DIR}/OpenGL/glfw/WIN64/lib-vc2022")
+    elseif(APPLE)
+        set(_GLFW_LIB_NAME glfw)
+        set(_GLFW_INCLUDE_DIR "${THIRD_PARTY_DIR}/OpenGL/glfw/MACOS/include")
+        set(_GLFW_DYLIB_PATH  "${THIRD_PARTY_DIR}/OpenGL/glfw/MACOS/lib-universal/libglfw.3.dylib")
+        set(_GLFW_LIB_DIR     "${THIRD_PARTY_DIR}/OpenGL/glfw/MACOS/lib-universal")
+    endif()
+    set(_GLAD_INCLUDE_DIR "${THIRD_PARTY_DIR}/OpenGL/glad/include")
+    set(_GLAD_SOURCE      "${THIRD_PARTY_DIR}/OpenGL/glad/src/glad.c")
+endif()
+
+# -----------------------------------------------------------------------------------------------
+# tinyfiledialogs (단일 C 파일) 추가
+# -----------------------------------------------------------------------------------------------
+set(TINYFD_HEADER "${THIRD_PARTY_DIR}/tinyfiledialogs/include/tinyfiledialogs.h")
+set(TINYFD_SOURCE "${THIRD_PARTY_DIR}/tinyfiledialogs/include/tinyfiledialogs.cpp")
+if (EXISTS "${TINYFD_SOURCE}")
+    list(APPEND PROJECT_SOURCE_FILES "${TINYFD_SOURCE}")
+else()
+    message(WARNING "tinyfiledialogs.c를 찾을 수 없습니다: ${TINYFD_SOURCE}
+tinyfd_* 링커 에러가 나면 tinyfiledialogs.c를 해당 경로에 추가하세요.
+공식 배포에서 tinyfiledialogs.c/.h를 함께 가져오면 됩니다: https://sourceforge.net/projects/tinyfiledialogs/")
+endif()
+
+# -----------------------------------------------------------------------------------------------
+# ImGui 설정
+# -----------------------------------------------------------------------------------------------
 set(IMGUI_CORE_SOURCES
     "${IMGUI_ROOT}/imgui.cpp"
     "${IMGUI_ROOT}/imgui_draw.cpp"
@@ -79,78 +130,53 @@ set(IMGUI_CORE_SOURCES
 set(IMGUI_BACKEND_SOURCES "")
 set(IMGUI_BACKEND_LIBS "")
 
-# -----------------------------------------------------------------------------------------------
-# ImGui 백엔드 및 그래픽스 API 분기
-# -----------------------------------------------------------------------------------------------
-if (WIN32)
-    if(USE_DIRECTX11)
-        list(APPEND IMGUI_BACKEND_SOURCES
-            "${IMGUI_ROOT}/imgui_impl_win32.cpp"
-            "${IMGUI_ROOT}/imgui_impl_dx11.cpp"
-        )
-        list(APPEND IMGUI_BACKEND_LIBS d3d11 dxgi d3dcompiler)
-        set(BUILD_RENDER_BACKEND_STR "DX11")
-    elseif(USE_OPENGL)
-        find_package(OpenGL REQUIRED)
-        list(APPEND IMGUI_BACKEND_SOURCES
-            "${IMGUI_ROOT}/imgui_impl_win32.cpp"
-            "${IMGUI_ROOT}/imgui_impl_opengl3.cpp"
-        )
-        list(APPEND IMGUI_BACKEND_LIBS OpenGL::GL)
-        set(BUILD_RENDER_BACKEND_STR "OPENGL3")
-    else()
-        message(FATAL_ERROR "Windows에서는 반드시 OpenGL 또는 DirectX11 중 하나를 선택해야 합니다.")
+if (USE_DIRECTX11)
+    if (NOT WIN32)
+        message(FATAL_ERROR "DirectX11은 Windows에서만 사용할 수 있습니다.")
     endif()
-elseif(APPLE)
-    # macOS: 오직 OpenGL만 가능
-    find_package(OpenGL REQUIRED)
-    find_package(glfw3 QUIET)
-    if (NOT glfw3_FOUND)
-        find_package(PkgConfig REQUIRED)
-        pkg_check_modules(GLFW3 REQUIRED glfw3)
-        add_library(glfw3 INTERFACE)
-        target_include_directories(glfw3 INTERFACE ${GLFW3_INCLUDE_DIRS})
-        target_link_libraries(glfw3 INTERFACE ${GLFW3_LIBRARIES})
-        set(_GLFW_LINK glfw3)
+    list(APPEND IMGUI_BACKEND_LIBS d3d11 dxgi d3dcompiler)
+    list(APPEND IMGUI_BACKEND_SOURCES
+        "${IMGUI_ROOT}/backends/imgui_impl_win32.cpp"
+        "${IMGUI_ROOT}/backends/imgui_impl_dx11.cpp"
+    )
+elseif(USE_OPENGL)
+    list(APPEND IMGUI_BACKEND_LIBS OpenGL::GL)
+    list(APPEND PROJECT_SOURCE_FILES "${_GLAD_SOURCE}")
+    if (WIN32)
+        list(APPEND IMGUI_BACKEND_LIBS ${_GLFW_LIB_NAME} "${CMAKE_DL_LIBS}")
     else()
-        set(_GLFW_LINK glfw)
+        list(APPEND IMGUI_BACKEND_LIBS ${_GLFW_LIB_NAME})
     endif()
     list(APPEND IMGUI_BACKEND_SOURCES
-        "${IMGUI_ROOT}/imgui_impl_glfw.cpp"
-        "${IMGUI_ROOT}/imgui_impl_opengl3.cpp"
+        "${IMGUI_ROOT}/backends/imgui_impl_glfw.cpp"
+        "${IMGUI_ROOT}/backends/imgui_impl_opengl3.cpp"
     )
-    list(APPEND IMGUI_BACKEND_LIBS
-        ${_GLFW_LINK}
-        OpenGL::GL
-        "-framework Cocoa" "-framework IOKit" "-framework CoreVideo"
-    )
-    set(BUILD_RENDER_BACKEND_STR "OPENGL3")
 endif()
 
-# -----------------------------------------------------------------------------------------------
-# ImGui 정적 라이브러리
-# -----------------------------------------------------------------------------------------------
 add_library(imgui STATIC
     ${IMGUI_CORE_SOURCES}
     ${IMGUI_BACKEND_SOURCES}
 )
 target_include_directories(imgui PUBLIC
     "${IMGUI_ROOT}"
-    "${IMGUI_ROOT}/include"
+    "${IMGUI_ROOT}/backends"
 )
+if (USE_OPENGL)
+    target_include_directories(imgui PUBLIC "${_GLAD_INCLUDE_DIR}")
+    if (DEFINED _GLFW_INCLUDE_DIR)
+        target_include_directories(imgui PUBLIC "${_GLFW_INCLUDE_DIR}")
+    endif()
+    target_compile_definitions(imgui PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLAD GP_GFX_BACKEND_GL3)
+endif()
+if (USE_DIRECTX11 AND WIN32)
+    target_compile_definitions(imgui PUBLIC IMGUI_IMPL_WIN32_DISABLE_GAMEPAD GP_GFX_BACKEND_DX11)
+elseif(APPLE)
+    target_compile_definitions(imgui PUBLIC GP_GFX_BACKEND_GL3)
+endif()
 if (MSVC)
     target_compile_options(imgui PRIVATE /W3 /utf-8)
 else()
     target_compile_options(imgui PRIVATE -Wall -Wextra -Wno-unused-parameter)
-endif()
-if (WIN32)
-    if(USE_DIRECTX11)
-        target_compile_definitions(imgui PUBLIC IMGUI_IMPL_WIN32_DISABLE_GAMEPAD GP_GFX_BACKEND_DX11)
-    elseif(USE_OPENGL)
-        target_compile_definitions(imgui PUBLIC IMGUI_IMPL_WIN32_DISABLE_GAMEPAD GP_GFX_BACKEND_GL3)
-    endif()
-elseif(APPLE)
-    target_compile_definitions(imgui PUBLIC GP_GFX_BACKEND_GL3)
 endif()
 target_link_libraries(imgui PUBLIC ${IMGUI_BACKEND_LIBS})
 
@@ -184,8 +210,6 @@ endif()
 # -----------------------------------------------------------------------------------------------
 # Include 디렉터리
 # -----------------------------------------------------------------------------------------------
-set(THIRD_PARTY_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Engine/Source/ThirdParty")
-
 target_include_directories(${PROJECT_NAME}
     PUBLIC
         "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -202,33 +226,32 @@ target_include_directories(${PROJECT_NAME}
         "${THIRD_PARTY_DIR}/Json/include"
         "${THIRD_PARTY_DIR}/tinyfiledialogs/include"
         "${THIRD_PARTY_DIR}/FBX/include"
-        )
+        "${THIRD_PARTY_DIR}/stbimage"
+)
 if (WIN32)
     target_include_directories(${PROJECT_NAME} PUBLIC
-    "${THIRD_PARTY_DIR}/fmod/inc"
-    "${THIRD_PARTY_DIR}/physx/include"
+        "${THIRD_PARTY_DIR}/fmod/inc"
+        "${THIRD_PARTY_DIR}/physx/include"
     )
     if (USE_DIRECTX11)
-    target_include_directories(${PROJECT_NAME} PUBLIC
-    "${THIRD_PARTY_DIR}/DirectXTK/Include"
-    )
+        target_include_directories(${PROJECT_NAME} PUBLIC
+            "${THIRD_PARTY_DIR}/DirectXTK/Include"
+        )
     elseif(USE_OPENGL)
-    target_include_directories(${PROJECT_NAME} PUBLIC
-    "${THIRD_PARTY_DIR}/OpenGL/glad/include"
-    "${THIRD_PARTY_DIR}/OpenGL/glfw/WIN64/include"
-    "${THIRD_PARTY_DIR}/stb/stb_image.h"
-    )
+        target_include_directories(${PROJECT_NAME} PUBLIC
+            "${_GLAD_INCLUDE_DIR}"
+            "${_GLFW_INCLUDE_DIR}"
+        )
     endif()
 elseif(APPLE)
     target_include_directories(${PROJECT_NAME} PUBLIC
-        "${THIRD_PARTY_DIR}/OpenGL/glad/include"
-        "${THIRD_PARTY_DIR}/OpenGL/glfw/MACOS/include"
-        "${THIRD_PARTY_DIR}/stb/stb_image.h"
+        "${_GLAD_INCLUDE_DIR}"
+        "${_GLFW_INCLUDE_DIR}"
     )
 endif()
 
 # -----------------------------------------------------------------------------------------------
-# 컴파일 정의(그래픽스 API/플랫폼/출력 등)
+# 컴파일 정의
 # -----------------------------------------------------------------------------------------------
 target_compile_definitions(${PROJECT_NAME}
     PRIVATE
@@ -239,6 +262,11 @@ target_compile_definitions(${PROJECT_NAME}
         _CONSOLE
         BUILD_RENDER_BACKEND=\"${BUILD_RENDER_BACKEND_STR}\"
 )
+if (USE_OPENGL)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE GP_GFX_BACKEND_GL3 IMGUI_IMPL_OPENGL_LOADER_GLAD)
+elseif (USE_DIRECTX11)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE GP_GFX_BACKEND_DX11)
+endif()
 if (WIN32)
     target_compile_definitions(${PROJECT_NAME} PRIVATE FBXSDK_SHARED)
 endif()
@@ -258,11 +286,8 @@ if (MSVC)
         $<$<CONFIG:Release>:/Oi>
         $<$<CONFIG:Release>:/Gy>
     )
-    target_link_options(${PROJECT_NAME} PRIVATE
-        $<$<CONFIG:Release>:/OPT:REF>
-        $<$<CONFIG:Release>:/OPT:ICF>
-        /SUBSYSTEM:WINDOWS
-    )
+    # WinMain을 사용한다면 WINDOWS 서브시스템이 필요
+    target_link_options(${PROJECT_NAME} PRIVATE /SUBSYSTEM:WINDOWS)
 else()
     target_compile_options(${PROJECT_NAME} PRIVATE
         -Wall -Wextra -Wno-unused-parameter
@@ -280,94 +305,130 @@ if (WIN32)
         "${THIRD_PARTY_DIR}/Lua/bin/$<CONFIG>"
         "${THIRD_PARTY_DIR}/fmod/lib/x64"
         "${THIRD_PARTY_DIR}/FBX/lib/x64/$<CONFIG>"
-        "${THIRD_PARTY_DIR}/physx/bin/$<CONFIG>"
+        "$<IF:$<CONFIG:Debug>,${THIRD_PARTY_DIR}/physx/bin/debug,${THIRD_PARTY_DIR}/physx/bin/release>"
         "${THIRD_PARTY_DIR}/freetype/WIN64/lib"
-        )
-
+    )
     if (USE_OPENGL)
-        list(APPEND THIRD_PARTY_LIB_DIRS
-        "${THIRD_PARTY_DIR}/OpenGL/glad/lib/WIN64"
-        "${THIRD_PARTY_DIR}/OpenGL/glfw/WIN64/lib-vc2022"
-        )
+        list(APPEND THIRD_PARTY_LIB_DIRS "${_GLFW_LIB_DIR}")
     endif()
-
     target_link_directories(${PROJECT_NAME} PRIVATE ${THIRD_PARTY_LIB_DIRS})
 
     set(WINDOWS_LIBS
         freetype
         DirectXTK
         lua
-        fmod_vc
-        fmodL_vc
-        alembic
+        $<$<CONFIG:Debug>:fmodL_vc>
+        $<$<NOT:$<CONFIG:Debug>>:fmod_vc>
         libfbxsdk
         libxml2
         zlib
         PhysX_64
         PhysXFoundation_64
-        PhysXExtensions_static_64
         PhysXVehicle_static_64
         PhysXCooking_64
-        $<$<CONFIG:Debug>:PhysXPvdSDK_static_64>
-        # opengl용 나중에 빼기
-        )
-
+        PhysXExtensions_static_64
+        PhysXPvdSDK_static_64         # PVD SDK 추가
+        # tinyfiledialogs가 Win32 API를 쓰므로 시스템 라이브러리 추가
+        comdlg32 ole32 shell32 uuid user32
+    )
     if (USE_OPENGL)
-        list(APPEND WINDOWS_LIBS
-            # glad
-            glfw3
-        )
+        list(APPEND WINDOWS_LIBS ${_GLFW_LIB_NAME})
+    endif()
     target_link_libraries(${PROJECT_NAME} PRIVATE ${WINDOWS_LIBS})
-elseif(APPLE)
-    set(THIRD_PARTY_LIB_DIRS
-        "${THIRD_PARTY_DIR}/OpenGL/glfw/MACOS/lib-universal"
-    )
-    target_link_directories(${PROJECT_NAME} PRIVATE ${THIRD_PARTY_LIB_DIRS})
 
-    set(MACOS_LIBS
-        glad
-        glfw3
-        "-framework Cocoa" "-framework IOKit" "-framework CoreVideo"
-    )
-    target_link_libraries(${PROJECT_NAME} PRIVATE ${MACOS_LIBS})
+elseif(APPLE)
+    if (USE_OPENGL)
+        target_link_directories(${PROJECT_NAME} PRIVATE "${_GLFW_LIB_DIR}")
+        target_link_libraries(${PROJECT_NAME} PRIVATE
+            ${_GLFW_LIB_NAME}
+            "-framework Cocoa" "-framework IOKit" "-framework CoreVideo"
+            OpenGL::GL
+        )
+    endif()
 endif()
 
-# imgui 라이브러리 링크 (공통)
+# imgui 링크 (공통)
 target_link_libraries(${PROJECT_NAME} PRIVATE imgui)
 
 # -----------------------------------------------------------------------------------------------
-# DLL/dylib 복사 (플랫폼별)
+# DLL/dylib 복사
 # -----------------------------------------------------------------------------------------------
 if (WIN32)
+    # 헬퍼 스크립트 생성: 단일 파일 복사(존재하면), 디렉터리 내 *.dll 일괄 복사
+    file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/CopyIfExists.cmake" "
+if(NOT DEFINED SRC OR NOT DEFINED DST_DIR)
+  message(FATAL_ERROR \"CopyIfExists: SRC, DST_DIR가 필요합니다.\")
+endif()
+if(EXISTS \"${SRC}\")
+  file(COPY \"${SRC}\" DESTINATION \"${DST_DIR}\")
+  message(STATUS \"[PostBuild] Copied: ${SRC} -> ${DST_DIR}\")
+else()
+  message(STATUS \"[PostBuild] Skip (not found): ${SRC}\")
+endif()
+")
+
+    file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/CopyDirDllsIfExists.cmake" "
+if(NOT DEFINED SRC_DIR OR NOT DEFINED DST_DIR)
+  message(FATAL_ERROR \"CopyDirDllsIfExists: SRC_DIR, DST_DIR가 필요합니다.\")
+endif()
+if(EXISTS \"${SRC_DIR}\")
+  file(GLOB DLLS \"${SRC_DIR}/*.dll\")
+  foreach(f IN LISTS DLLS)
+    file(COPY \"${f}\" DESTINATION \"${DST_DIR}\")
+    message(STATUS \"[PostBuild] Copied: ${f} -> ${DST_DIR}\")
+  endforeach()
+else()
+  message(STATUS \"[PostBuild] Skip dir (not found): ${SRC_DIR}\")
+endif()
+")
+
+    # 구성별 PhysX bin 폴더 선택
+    set(_PHYSX_BIN_DIR "$<IF:$<CONFIG:Debug>,${THIRD_PARTY_DIR}/physx/bin/debug,${THIRD_PARTY_DIR}/physx/bin/release>")
+
     add_custom_command(
         TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E echo "[PostBuild] Copy runtime DLLs (Windows)"
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            "${THIRD_PARTY_DIR}/Lua/bin/$<CONFIG>/lua.dll"
-            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/lua.dll"
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            "${THIRD_PARTY_DIR}/fmod/lib/x64/fmod.dll"
-            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/fmod.dll"
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            "${THIRD_PARTY_DIR}/fmod/lib/x64/fmodL.dll"
-            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/fmodL.dll"
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            "${THIRD_PARTY_DIR}/FBX/lib/x64/$<CONFIG>/libfbxsdk.dll"
-            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libfbxsdk.dll"
-        ################################################
-        # @todo : opengl이랑 imgui freetype관련해서 옮기기
+
+        # Lua
+        COMMAND ${CMAKE_COMMAND} -DSRC="${THIRD_PARTY_DIR}/Lua/bin/$<CONFIG>/lua.dll" -DDST_DIR="$<TARGET_FILE_DIR:${PROJECT_NAME}>" -P "${CMAKE_CURRENT_BINARY_DIR}/CopyIfExists.cmake"
+
+        # fmod
+        COMMAND ${CMAKE_COMMAND} -DSRC="${THIRD_PARTY_DIR}/fmod/lib/x64/fmod.dll"  -DDST_DIR="$<TARGET_FILE_DIR:${PROJECT_NAME}>" -P "${CMAKE_CURRENT_BINARY_DIR}/CopyIfExists.cmake"
+        COMMAND ${CMAKE_COMMAND} -DSRC="${THIRD_PARTY_DIR}/fmod/lib/x64/fmodL.dll" -DDST_DIR="$<TARGET_FILE_DIR:${PROJECT_NAME}>" -P "${CMAKE_CURRENT_BINARY_DIR}/CopyIfExists.cmake"
+
+        # FBX
+        COMMAND ${CMAKE_COMMAND} -DSRC="${THIRD_PARTY_DIR}/FBX/lib/x64/$<CONFIG>/libfbxsdk.dll" -DDST_DIR="$<TARGET_FILE_DIR:${PROJECT_NAME}>" -P "${CMAKE_CURRENT_BINARY_DIR}/CopyIfExists.cmake"
+
+        # PhysX: bin/<cfg>의 모든 dll 일괄 복사(없으면 통과)
+        COMMAND ${CMAKE_COMMAND} -DSRC_DIR="${_PHYSX_BIN_DIR}" -DDST_DIR="$<TARGET_FILE_DIR:${PROJECT_NAME}>" -P "${CMAKE_CURRENT_BINARY_DIR}/CopyDirDllsIfExists.cmake"
+
+        # FreeType
+        COMMAND ${CMAKE_COMMAND} -DSRC="${THIRD_PARTY_DIR}/freetype/WIN64/bin/freetype.dll" -DDST_DIR="$<TARGET_FILE_DIR:${PROJECT_NAME}>" -P "${CMAKE_CURRENT_BINARY_DIR}/CopyIfExists.cmake"
     )
+
+    # OpenGL일 때에만 GLFW DLL 복사(존재 시)
+    if (USE_OPENGL)
+        add_custom_command(
+            TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E echo "[PostBuild] (Windows) Copy GLFW DLL"
+            COMMAND ${CMAKE_COMMAND} -DSRC="${_GLFW_DLL_PATH}" -DDST_DIR="$<TARGET_FILE_DIR:${PROJECT_NAME}>" -P "${CMAKE_CURRENT_BINARY_DIR}/CopyIfExists.cmake"
+        )
+    endif()
+
 elseif(APPLE)
-    add_custom_command(
-        TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E echo "[PostBuild] (macOS) dylib 복사 예시"
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different 
-            "${THIRD_PARTY_DIR}/OpenGL/glfw/MACOS/lib-universal/libglfw.3.dylib" "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libglfw.3.dylib"
-    )
+    if (USE_OPENGL)
+        add_custom_command(
+            TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E echo "[PostBuild] (macOS) Copy GLFW dylib"
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different 
+                "${_GLFW_DYLIB_PATH}"
+                "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libglfw.3.dylib"
+        )
+    endif()
 endif()
 
 # -----------------------------------------------------------------------------------------------
-# 소스 그룹 (IDE 보기 개선)
+# 소스 그룹
 # -----------------------------------------------------------------------------------------------
 set(ALL_FILES
     ${PROJECT_SOURCE_FILES}
@@ -379,6 +440,5 @@ source_group("ImGui\\Core"    FILES ${IMGUI_CORE_SOURCES})
 source_group("ImGui\\Backend" FILES ${IMGUI_BACKEND_SOURCES})
 source_group(TREE "${ROOT_SRC_DIR}" FILES ${ALL_FILES})
 
-# (선택) 프리컴파일 헤더
 # target_precompile_headers(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/pch.h")
 # --------------------------------------------------------------------------------------------------

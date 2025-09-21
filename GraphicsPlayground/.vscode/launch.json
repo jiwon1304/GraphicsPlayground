@@ -9,7 +9,7 @@
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/GraphicsPlayground",
             "environment": [],
-            "console": "externalTerminal"
+            // "console": "externalTerminal"
         }
     ]
 }

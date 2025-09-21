@@ -6,7 +6,7 @@
 #include "Launch/Define.h"
 #include "Classes/Components/SkySphereComponent.h"
 #include "Windows/D3D11RHI/GraphicDevice.h"
-#include "DirectXTK/DDSTextureLoader.h"
+#include "ThirdParty/DirectXTK/Include/DirectXTK/DDSTextureLoader.h"
 #include "Classes/Engine/FObjLoader.h"
 
 

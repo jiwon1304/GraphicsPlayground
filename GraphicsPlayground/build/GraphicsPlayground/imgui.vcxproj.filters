@@ -28,11 +28,11 @@
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\imgui_neo_sequencer.cpp">
       <Filter>Engine\Source\ThirdParty\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\imgui_impl_win32.cpp">
-      <Filter>Engine\Source\ThirdParty\imgui</Filter>
+    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\backends\imgui_impl_win32.cpp">
+      <Filter>Engine\Source\ThirdParty\imgui\backends</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\imgui_impl_dx11.cpp">
-      <Filter>Engine\Source\ThirdParty\imgui</Filter>
+    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\backends\imgui_impl_dx11.cpp">
+      <Filter>Engine\Source\ThirdParty\imgui\backends</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -50,6 +50,9 @@
     </Filter>
     <Filter Include="Engine\Source\ThirdParty\imgui">
       <UniqueIdentifier>{975CD0CB-FA76-3FF3-BB14-D00C1FCD95FC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Source\ThirdParty\imgui\backends">
+      <UniqueIdentifier>{299EB5F4-2DE3-3AC0-9EF8-DA8C34346152}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
