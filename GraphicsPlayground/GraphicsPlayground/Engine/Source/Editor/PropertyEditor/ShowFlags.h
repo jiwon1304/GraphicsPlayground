@@ -1,5 +1,4 @@
 #pragma once
-#include "Launch/Define.h"
 #include "IWindowToggleable.h"
 #include "Editor/UnrealEd/EditorViewportClient.h"
 

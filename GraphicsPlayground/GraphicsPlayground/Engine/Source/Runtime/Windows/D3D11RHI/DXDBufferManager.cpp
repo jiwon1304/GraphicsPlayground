@@ -196,7 +196,7 @@ void FDXDBufferManager::CreateQuadBuffer()
     };
 
     FVertexInfo VertexInfo;
-    CreateVertexBuffer(TEXT("QuadBuffer"), Vertices, VertexInfo);
+    CreateVertexBuffer(FString("QuadBuffer"), Vertices, VertexInfo);
 
     const TArray<short> Indices =
     {
@@ -205,7 +205,7 @@ void FDXDBufferManager::CreateQuadBuffer()
     };
 
     FIndexInfo IndexInfo;
-    CreateIndexBuffer(TEXT("QuadBuffer"), Indices, IndexInfo);
+    CreateIndexBuffer(FString("QuadBuffer"), Indices, IndexInfo);
 }
 HRESULT FDXDBufferManager::CreateDynamicVertexBuffer(const FString& KeyName, UINT ByteSize, FVertexInfo& OutVertexInfo)
 {

@@ -264,7 +264,7 @@ void FStrProperty::DisplayRawDataInImGui_Implement(const char* PropertyLabel, vo
     FString* Data = static_cast<FString*>(DataPtr);
 
     char Buffer[IMGUI_FSTRING_BUFFER_SIZE];
-    FCStringAnsi::Strncpy(Buffer, Data->ToAnsiString().c_str(), IMGUI_FSTRING_BUFFER_SIZE);
+    FCStringAnsi::Strncpy(Buffer, Data->ToUTF8String().c_str(), IMGUI_FSTRING_BUFFER_SIZE);
     Buffer[IMGUI_FSTRING_BUFFER_SIZE - 1] = '\0'; // 항상 널 종료 보장
 
     bool bChanged = false;
@@ -302,7 +302,7 @@ void FNameProperty::DisplayRawDataInImGui_Implement(const char* PropertyLabel, v
     FProperty::DisplayRawDataInImGui_Implement(PropertyLabel, DataPtr, OwnerObject);
 
     const FName* Data = static_cast<FName*>(DataPtr);
-    std::string NameStr = Data->ToString().ToAnsiString();
+    std::string NameStr = Data->ToString().ToUTF8String();
 
     // ReadOnly Mode
     ImGui::BeginDisabled(true);
@@ -598,7 +598,7 @@ void FSubclassOfProperty::DisplayRawDataInImGui_Implement(const char* PropertyLa
     GetChildOfClass(CurrentClass, ChildClasses);
 
     bool bChanged = false;
-    const std::string CurrentClassName = (*Data) ? (*Data)->GetName().ToAnsiString() : "None";
+    const std::string CurrentClassName = (*Data) ? (*Data)->GetName().ToUTF8String() : "None";
     ImGui::Text("%s", PropertyLabel);
     ImGui::SameLine();
     if (ImGui::BeginCombo(std::format("##{}", PropertyLabel).c_str(), CurrentClassName.c_str()))
@@ -611,7 +611,7 @@ void FSubclassOfProperty::DisplayRawDataInImGui_Implement(const char* PropertyLa
 
         for (UClass* ChildClass : ChildClasses)
         {
-            const std::string ChildClassName = ChildClass->GetName().ToAnsiString();
+            const std::string ChildClassName = ChildClass->GetName().ToUTF8String();
             const bool bIsSelected = (*Data) && (*Data) == ChildClass;
             if (ImGui::Selectable(ChildClassName.c_str(), bIsSelected))
             {
@@ -657,14 +657,14 @@ void FObjectProperty::DisplayRawDataInImGui_Implement(const char* PropertyLabel,
             std::string PreviewName = "None";
             if (IsValid(*Object))
             {
-                PreviewName = (*Object)->GetName().ToAnsiString();
+                PreviewName = (*Object)->GetName().ToUTF8String();
             }
 
             if (ImGui::BeginCombo(std::format("##{}", PropertyLabel).c_str(), PreviewName.c_str()))
             {
                 for (UObject* ChildObject : ChildObjects)
                 {
-                    const std::string ObjectName = ChildObject->GetName().ToAnsiString();
+                    const std::string ObjectName = ChildObject->GetName().ToUTF8String();
                     const bool bIsSelected = ChildObject == *Object;
                     if (ImGui::Selectable(ObjectName.c_str(), bIsSelected))
                     {

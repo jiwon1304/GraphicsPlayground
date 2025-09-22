@@ -1,6 +1,5 @@
 #include "SWindow.h"
 
-
 SWindow::SWindow(FRect InRect)
     : Rect(InRect)
 {}

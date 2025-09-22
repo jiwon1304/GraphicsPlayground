@@ -6,6 +6,7 @@
 #include "Launch/EngineLoop.h"
 #include "Windows/D3D11RHI/GraphicDevice.h"
 #include "Editor/UnrealEd/EditorViewportClient.h"
+#include "Math/Primitive.h"
 
 
 UPrimitiveDrawBatch::~UPrimitiveDrawBatch()
@@ -274,7 +275,7 @@ void UPrimitiveDrawBatch::AddOBBToBatch(const FBoundingBox& LocalAABB, const FVe
     FOBB OBB;
     for (int i = 0; i < 8; ++i)
     {
-        OBB.corners[i] = Center + FMatrix::TransformVector(LocalVertices[i], ModelMatrix);
+        OBB.Corners[i] = Center + FMatrix::TransformVector(LocalVertices[i], ModelMatrix);
     }
     OrientedBoundingBoxes.Add(OBB);
 }

@@ -599,9 +599,9 @@ void ControlEditorPanel::CreateFlagButton()
 
     const char* ViewTypeNames[] = { "Perspective", "Top", "Bottom", "Left", "Right", "Front", "Back" };
     const ELevelViewportType ActiveViewType = ActiveViewport->GetViewportType();
-    FString TextViewType = ViewTypeNames[ActiveViewType];
+    const char* TextViewType = ViewTypeNames[ActiveViewType];
 
-    if (ImGui::Button(GetData(TextViewType), ImVec2(120, 32)))
+    if (ImGui::Button(TextViewType, ImVec2(120, 32)))
     {
         // toggleViewState = !toggleViewState;
         ImGui::OpenPopup("ViewControl");
@@ -634,10 +634,10 @@ void ControlEditorPanel::CreateFlagButton()
 
     const int RawViewMode = static_cast<int>(ActiveViewport->GetViewMode());
     const int SafeIndex = (RawViewMode >= 0) ? (RawViewMode % ViewModeCount) : 0;
-    FString ViewModeControl = ViewModeNames[SafeIndex];
+    const char* ViewModeControl = ViewModeNames[SafeIndex];
 
-    const ImVec2 ViewModeTextSize = ImGui::CalcTextSize(GetData(ViewModeControl));
-    if (ImGui::Button(GetData(ViewModeControl), ImVec2(30 + ViewModeTextSize.x, 32)))
+    const ImVec2 ViewModeTextSize = ImGui::CalcTextSize(ViewModeControl);
+    if (ImGui::Button(ViewModeControl, ImVec2(30 + ViewModeTextSize.x, 32)))
     {
         ImGui::OpenPopup("ViewModeControl");
     }

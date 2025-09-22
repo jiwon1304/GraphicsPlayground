@@ -1,7 +1,8 @@
 #pragma once
 #include <sstream>
-#include "Launch/Define.h"
 #include "Container/Map.h"
+#include "Container/Array.h"
+#include "Core/Math/Vector.h"
 
 class SSplitterH;
 class SSplitterV;
@@ -78,7 +79,7 @@ private:
     T GetValueFromConfig(const TMap<FString, FString>& Config, const FString& Key, T DefaultValue) {
         if (const FString* Value = Config.Find(Key))
         {
-            std::istringstream iss(**Value);
+            std::wistringstream iss(**Value);
             T ConfigValue;
             if (iss >> ConfigValue)
             {

@@ -57,7 +57,7 @@ static_assert(false, "Unsupported platform");
 //-----------------------------------------
 // 문자열 관련 매크로
 //-----------------------------------------
-#define USE_WIDECHAR 0
+#define USE_WIDECHAR 1
 
 #if USE_WIDECHAR 
     #define TEXT(x) L##x

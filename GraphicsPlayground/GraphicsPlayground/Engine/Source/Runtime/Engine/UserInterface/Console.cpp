@@ -140,19 +140,19 @@ void FEngineProfiler::Render(ID3D11DeviceContext* Context, UINT Width, UINT Heig
 
             // Scope 열
             ImGui::TableSetColumnIndex(0);
-            ImGui::Text("%s", *DisplayName);
+            ImGui::Text("%s", DisplayName.c_str());
 
             // CPU (ms) 열 - 우측 정렬
             ImGui::TableSetColumnIndex(1);
-            float CPUTextWidth = ImGui::CalcTextSize(*CPUText).x;
+            float CPUTextWidth = ImGui::CalcTextSize(CPUText.ToUTF8String().c_str()).x;
             ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x - CPUTextWidth);
-            ImGui::TextUnformatted(*CPUText);
+            ImGui::TextUnformatted(CPUText.ToUTF8String().c_str());
 
             // GPU (ms) 열 - 우측 정렬
             ImGui::TableSetColumnIndex(2);
-            float GPUTextWidth = ImGui::CalcTextSize(*GPUText).x;
+            float GPUTextWidth = ImGui::CalcTextSize(GPUText.ToUTF8String().c_str()).x;
             ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x - GPUTextWidth);
-            ImGui::TextUnformatted(*GPUText);
+            ImGui::TextUnformatted(GPUText.ToUTF8String().c_str());
         }
 
         ImGui::EndTable();
@@ -165,7 +165,7 @@ void FEngineProfiler::Render(ID3D11DeviceContext* Context, UINT Width, UINT Heig
 
 void FEngineProfiler::RegisterStatScope(const FString& DisplayName, const FName& CPUStatName, const FName& GPUStatName)
 {
-    TrackedScopes.Add({ DisplayName, CPUStatName, GPUStatName });
+    TrackedScopes.Add({ DisplayName.ToUTF8String(), CPUStatName, GPUStatName });
 }
 
 // 싱글톤 인스턴스 반환
@@ -184,35 +184,37 @@ void FConsole::AddLog(ELogLevel Level, const ANSICHAR* Fmt, ...)
 {
     va_list Args;
     va_start(Args, Fmt);
-    // AddLog(Level, Fmt, Args);
 
     char Buf[1024];
     vsnprintf_s(Buf, sizeof(Buf), _TRUNCATE, Fmt, Args);
 
-    Items.Emplace(Level, std::string(Buf));
+    Items.Add({Level, std::string(Buf)});
     va_end(Args);
 
     ScrollToBottom = true;
 }
 
-void FConsole::AddLog(ELogLevel Level, const WIDECHAR* Fmt, ...)
-{
-    va_list Args;
-    va_start(Args, Fmt);
-    // AddLog(Level, Fmt, Args);
+void FConsole::AddLog(ELogLevel Level, const WIDECHAR* Fmt, ...)  
+{  
+   va_list Args;  
+   va_start(Args, Fmt);  
 
-    wchar_t Buf[1024];
-    _vsnwprintf_s(Buf, sizeof(Buf), _TRUNCATE, Fmt, Args);
+   wchar_t Buf[1024];  
+   // Fix: Use _countof to ensure the correct size is passed  
+   _vsnwprintf_s(Buf, _countof(Buf), _TRUNCATE, Fmt, Args);  
 
-    Items.Emplace(Level, FString(Buf).ToAnsiString());
-    va_end(Args);
+   FString Str(Buf);  
+   std::string str = Str.ToUTF8String();  
 
-    ScrollToBottom = true;
+   Items.Add({Level, str});  
+   va_end(Args);  
+
+   ScrollToBottom = true;  
 }
 
 void FConsole::AddLog(ELogLevel Level, const FString& Message)
 {
-    Items.Emplace(Level, Message);
+    Items.Add({Level, Message.ToUTF8String()});
     ScrollToBottom = true;
 }
 
@@ -281,7 +283,7 @@ void FConsole::Draw() {
     ImGui::BeginChild("ScrollingRegion", ImVec2(0, -ImGui::GetTextLineHeightWithSpacing()), false, ImGuiWindowFlags_HorizontalScrollbar);
     for (const auto& [Level, Message] : Items)
     {
-        if (!Filter.PassFilter(*Message))
+        if (!Filter.PassFilter(Message.c_str()))
         {
             continue;
         }
@@ -309,7 +311,7 @@ void FConsole::Draw() {
             break;
         }
 
-        ImGui::TextColored(Color, "%s", *Message);
+        ImGui::TextColored(Color, "%s", Message.c_str());
     }
 
     if (ScrollToBottom)

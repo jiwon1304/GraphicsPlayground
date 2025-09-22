@@ -1,7 +1,7 @@
 #pragma once
 #include <sstream>
 
-#include "Launch/Define.h"
+#include "Core/Math/Vector.h"
 #include "Container/Map.h"
 #include "ViewportClient.h"
 #include "Launch/EngineLoop.h"
@@ -221,7 +221,7 @@ private:
     {
         if (const FString* Value = config.Find(key))
         {
-            std::istringstream iss(**Value);
+            std::istringstream iss(Value->ToUTF8String());
             T value;
             if (iss >> value)
             {

@@ -2,7 +2,7 @@
 
 int GWindowWidth = 1400;
 int GWindowHeight = 1000;
-const TCHAR* GWindowName = "Graphics Playground";
+const char* GWindowName = "Graphics Playground";
 
 FString GEditorIni;
 

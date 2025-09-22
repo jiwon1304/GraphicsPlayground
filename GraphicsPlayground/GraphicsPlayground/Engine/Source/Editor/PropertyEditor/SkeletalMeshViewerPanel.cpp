@@ -243,7 +243,7 @@ void SkeletalMeshViewerPanel::RenderBoneTree(const FReferenceSkeleton& RefSkelet
     // ImGui::TreeNodeEx (본 이름, 플래그)
     // 이름 부분만 클릭 가능하도록 하려면 ImGui::Selectable을 함께 사용하거나 커스텀 로직 필요
     // 여기서는 TreeNodeEx 자체의 클릭 이벤트를 사용
-    bool bNodeOpen = ImGui::TreeNodeEx(*ShortBoneName, NodeFlags);
+    bool bNodeOpen = ImGui::TreeNodeEx(ShortBoneName.ToUTF8String().c_str(), NodeFlags);
 
     // --- 클릭 이벤트 처리 ---
     if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) // 왼쪽 마우스 버튼 클릭 시
@@ -425,7 +425,7 @@ void SkeletalMeshViewerPanel::RenderAnimationSequence(const FReferenceSkeleton& 
             {
                 bool bOpen = true;
                 bool bRenamePopup = false;
-                std::string TrackLabel = *Tracks[TrackIdx].TrackName.ToString();
+                std::string TrackLabel = Tracks[TrackIdx].TrackName.ToString().ToUTF8String();
                 FAnimNotifyTrack& CurrentTrack = AnimSeq->AnimNotifyTracks[TrackIdx];
                 ImGui::PushID(TrackIdx); 
                 if (ImGui::BeginNeoGroup(TrackLabel.c_str(), &bOpen))
@@ -434,8 +434,8 @@ void SkeletalMeshViewerPanel::RenderAnimationSequence(const FReferenceSkeleton& 
                     if (ImGui::BeginPopupContextItem(trackCtxId)) { 
                         if (ImGui::MenuItem("Rename Track")) {
                             SelectedTrackIndex_ForRename = TrackIdx;
-                            FCString::Strncpy(RenameTrackBuffer, *CurrentTrack.TrackName.ToString(), sizeof(RenameTrackBuffer) / sizeof(TCHAR) -1 );
-                            RenameTrackBuffer[sizeof(RenameTrackBuffer) / sizeof(TCHAR) -1] = 0; 
+                            FCStringAnsi::Strncpy(RenameTrackBuffer, CurrentTrack.TrackName.ToString().ToUTF8String().c_str(), sizeof(RenameTrackBuffer) / sizeof(char) - 1);
+                            RenameTrackBuffer[sizeof(RenameTrackBuffer) / sizeof(char) - 1] = 0; // null-terminate
                             bRenamePopup = true;
                         }
                         if (ImGui::MenuItem("Remove Track")) {
@@ -457,7 +457,7 @@ void SkeletalMeshViewerPanel::RenderAnimationSequence(const FReferenceSkeleton& 
                     }
                     if (ImGui::BeginPopupModal("RenameTrackPopupModal", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
                         ImGui::Text("Rename Track to:");
-                        ImGui::InputText("##NewTrackNameInput", RenameTrackBuffer, sizeof(RenameTrackBuffer) / sizeof(TCHAR));
+                        ImGui::InputText("##NewTrackNameInput", RenameTrackBuffer, sizeof(RenameTrackBuffer));
                         if (ImGui::Button("OK", ImVec2(120, 0))) {
                             if (AnimSeq->AnimNotifyTracks.IsValidIndex(SelectedTrackIndex_ForRename)) {
                                 FName NewName(RenameTrackBuffer);
@@ -499,7 +499,7 @@ void SkeletalMeshViewerPanel::RenderAnimationSequence(const FReferenceSkeleton& 
                             if (ImGui::IsNeoKeyframeRightClicked())
                             {
                                 SelectedNotifyGlobalIndex_ForRename = Index;
-                                FCString::Strncpy(RenameNotifyBuffer, *Notify.NotifyName.ToString(), sizeof(RenameNotifyBuffer) / sizeof(TCHAR) - 1);
+                                FCStringAnsi::Strncpy(RenameNotifyBuffer, Notify.NotifyName.ToString().ToUTF8String().c_str(), sizeof(RenameNotifyBuffer) / sizeof(char) - 1);
                                 RenameNotifyDuration = Notify.Duration;
                                 ImGui::OpenPopup("Edit Notify");
                             }
@@ -526,7 +526,7 @@ void SkeletalMeshViewerPanel::RenderAnimationSequence(const FReferenceSkeleton& 
                         static int SoundDropdownIndex = 0;
                         
                         ImGui::Text("Rename Notify and Duration");
-                        ImGui::InputText("Name", RenameNotifyBuffer, sizeof(RenameNotifyBuffer) / sizeof(TCHAR));
+                        ImGui::InputText("Name", RenameNotifyBuffer, sizeof(RenameNotifyBuffer));
                         ImGui::InputFloat("Duration", &RenameNotifyDuration, 0.1f);
 
                         if (UAnimSoundNotify* Notify = Cast<UAnimSoundNotify>(AnimSeq->GetNotifyEvent(SelectedNotifyGlobalIndex_ForRename)->GetNotify()))
@@ -641,7 +641,7 @@ void SkeletalMeshViewerPanel::RenderAnimationPanel(float PanelPosX, float PanelP
     if (ImGui::Begin("Anim Settings", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
     {
         // Animation Mode 선택
-        if (ImGui::BeginCombo("Animation Mode", GetData(AnimModeStr)))
+        if (ImGui::BeginCombo("Animation Mode", AnimModeStr.ToUTF8String().c_str()))
         {
             if (ImGui::Selectable("Animation Instance", CurrentAnimationMode == EAnimationMode::AnimationBlueprint))
             {
@@ -671,7 +671,7 @@ void SkeletalMeshViewerPanel::RenderAnimationPanel(float PanelPosX, float PanelP
                 // AnimInstance 목록 텍스트
                 ImGui::Text("AnimInstance List");
                 ImGui::SameLine();
-                if (ImGui::BeginCombo("##AnimInstance List Combo", *CompClasses[SelectedIndex]->GetName()))
+                if (ImGui::BeginCombo("##AnimInstance List Combo", CompClasses[SelectedIndex]->GetName().ToUTF8String().c_str()))
                 {
                     for (int i = 0; i < CompClasses.Num(); ++i)
                     {
@@ -680,7 +680,7 @@ void SkeletalMeshViewerPanel::RenderAnimationPanel(float PanelPosX, float PanelP
                             continue;
                         }
                         bool bIsSelected = (SelectedIndex == i);
-                        if (ImGui::Selectable(*CompClasses[i]->GetName(), bIsSelected))
+                        if (ImGui::Selectable(CompClasses[i]->GetName().ToUTF8String().c_str(), bIsSelected))
                         {
                             SelectedIndex = i;
                         }
@@ -742,7 +742,7 @@ void SkeletalMeshViewerPanel::RenderAnimationPanel(float PanelPosX, float PanelP
 
             ImGui::Text("Anim To Play");
             ImGui::SameLine();
-            if (ImGui::BeginCombo("##AnimAsset", *SelectedAnimationName))
+            if (ImGui::BeginCombo("##AnimAsset", SelectedAnimationName.ToUTF8String().c_str()))
             {
                 if (ImGui::Selectable("None"))
                     RefSkeletalMeshComponent->SetAnimation(nullptr);
@@ -756,7 +756,7 @@ void SkeletalMeshViewerPanel::RenderAnimationPanel(float PanelPosX, float PanelP
                     bool bIsSelected = RefSkeletalMeshComponent->GetAnimation()
                         && RefSkeletalMeshComponent->GetAnimation()->GetName() == Pair.Value.AssetName.ToString();
 
-                    if (ImGui::Selectable(*Pair.Value.AssetName.ToString(), bIsSelected))
+                    if (ImGui::Selectable(Pair.Value.AssetName.ToString().ToUTF8String().c_str(), bIsSelected))
                     {
                         UAnimationAsset* AnimAsset = UAssetManager::Get().GetAnimation(FName(*FullPath));
                         RefSkeletalMeshComponent->SetAnimation(Cast<UAnimSequence>(AnimAsset));

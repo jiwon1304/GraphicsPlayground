@@ -104,8 +104,8 @@ void FEditorRenderPass::CreateBuffers()
     };
 
 
-    BufferManager->CreateVertexBuffer<FVector>(TEXT("CubeVertexBuffer"), CubeFrameVertices, OutVertexInfo, D3D11_USAGE_IMMUTABLE, 0);
-    BufferManager->CreateIndexBuffer<uint32>(TEXT("CubeIndexBuffer"), CubeFrameIndices, OutIndexInfo, D3D11_USAGE_IMMUTABLE, 0);
+    BufferManager->CreateVertexBuffer<FVector>(FString("CubeVertexBuffer"), CubeFrameVertices, OutVertexInfo, D3D11_USAGE_IMMUTABLE, 0);
+    BufferManager->CreateIndexBuffer<uint32>(FString("CubeIndexBuffer"), CubeFrameIndices, OutIndexInfo, D3D11_USAGE_IMMUTABLE, 0);
 
     Resources.Primitives.Box.VertexInfo = OutVertexInfo;
     Resources.Primitives.Box.IndexInfo = OutIndexInfo;
@@ -226,8 +226,8 @@ void FEditorRenderPass::CreateBuffers()
         91, 91, 92, 92, 93, 93, 94, 94, 95
     };
     
-    BufferManager->CreateVertexBuffer<FVector>(TEXT("SphereVertexBuffer"), SphereFrameVertices, OutVertexInfo, D3D11_USAGE_IMMUTABLE, 0);
-    BufferManager->CreateIndexBuffer<uint32>(TEXT("SphereIndexBuffer"), SphereFrameIndices, OutIndexInfo);
+    BufferManager->CreateVertexBuffer<FVector>(FString("SphereVertexBuffer"), SphereFrameVertices, OutVertexInfo, D3D11_USAGE_IMMUTABLE, 0);
+    BufferManager->CreateIndexBuffer<uint32>(FString("SphereIndexBuffer"), SphereFrameIndices, OutIndexInfo);
 
     Resources.Primitives.Sphere.VertexInfo = OutVertexInfo;
     Resources.Primitives.Sphere.IndexInfo = OutIndexInfo;

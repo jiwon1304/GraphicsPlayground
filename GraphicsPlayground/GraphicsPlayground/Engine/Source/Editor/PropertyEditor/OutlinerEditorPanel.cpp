@@ -61,7 +61,8 @@ void OutlinerEditorPanel::Render()
             }
             
             ImGui::SetNextItemOpen(true, ImGuiCond_Always);
-            bool NodeOpen = ImGui::TreeNodeEx(*Name, Flags);
+            TO_UTF8_CHAR(Name, NameUTF8);
+            bool NodeOpen = ImGui::TreeNodeEx(NameUTF8, Flags);
 
             if (ImGui::IsItemClicked())
             {
@@ -85,7 +86,8 @@ void OutlinerEditorPanel::Render()
 
         ImGui::SetNextItemOpen(true, ImGuiCond_Always);
 
-        bool NodeOpen = ImGui::TreeNodeEx(*Actor->GetName(), Flags);
+        TO_UTF8_CHAR(Actor->GetName(), ActorNameUTF8);
+        bool NodeOpen = ImGui::TreeNodeEx(ActorNameUTF8, Flags);
 
         if (ImGui::IsItemClicked())
         {

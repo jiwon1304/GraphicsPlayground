@@ -1,6 +1,6 @@
 #pragma once
-#include "Launch/Define.h" 
 #include <d3d11.h>
+#include "Math/Primitive.h"
 
 #include "Container/Map.h"
 

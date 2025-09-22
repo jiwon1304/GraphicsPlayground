@@ -3,6 +3,7 @@
 #include "sstream"
 #include "ostream"
 #include "Math/JungleMath.h"
+#include "Math/Primitive.h"
 #include "Engine/UnrealClient.h"
 #include "Windows/WindowsCursor.h"
 #include "World/World.h"
@@ -785,7 +786,7 @@ auto FEditorViewportClient::WriteIniFile(const FString& FilePath, const TMap<FSt
     std::ofstream File(*FilePath);
     for (const auto& Pair : Config)
     {
-        File << *Pair.Key << "=" << *Pair.Value << "\n";
+        File << Pair.Key.ToUTF8String() << "=" << Pair.Value.ToUTF8String() << "\n";
     }
 }
 

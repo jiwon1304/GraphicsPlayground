@@ -115,17 +115,17 @@ void SceneManager::LoadSceneFromJsonFile(const std::filesystem::path& FilePath, 
         return;
     }
 
-    FString JsonString;
+    std::string JsonStringUTF8;
     JsonFile.seekg(0, std::ios::end);
     const int64 Size = JsonFile.tellg();
-    JsonString.Resize(static_cast<int32>(Size));
+    JsonStringUTF8.resize(static_cast<int32>(Size));
 
     JsonFile.seekg(0, std::ios::beg);
-    JsonFile.read(&JsonString[0], Size);
+    JsonFile.read(&JsonStringUTF8[0], Size);
     JsonFile.close();
 
     FSceneData SceneData;
-    bool Result = JsonToSceneData(JsonString,SceneData);
+    bool Result = JsonToSceneData(JsonStringUTF8,SceneData);
     if (!Result)
     {
         UE_LOG(ELogLevel::Error, "Failed to parse scene data from file: %s", FilePath.c_str());
@@ -148,7 +148,8 @@ bool SceneManager::SaveSceneToJsonFile(const std::filesystem::path& FilePath, co
 
     FString JsonData;
     SceneDataToJson(SceneData, JsonData);
-    outFile << JsonData.GetContainerPrivate();
+
+    outFile << JsonData.ToUTF8String();
     outFile.close();
 
     return true;

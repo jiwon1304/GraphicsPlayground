@@ -25,7 +25,7 @@ void FUObjectArray::ProcessPendingDestroyObjects()
     for (UObject* Object : PendingDestroyObjects)
     {
         const UClass* Class = Object->GetClass();
-        std::string ObjectName = Object->GetName().ToAnsiString();
+        std::string ObjectName = Object->GetName().ToUTF8String();
         const uint32 ObjectSize = Class->GetStructSize();
 
         std::destroy_at(Object);

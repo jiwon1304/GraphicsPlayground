@@ -114,7 +114,7 @@ void ULuaScriptComponent::InitializeLuaState()
     BindEngineAPI();
 
     try {
-        LuaState.script_file((*ScriptPath));
+        LuaState.script_file((ScriptPath.ToUTF8String()));
         bScriptValid = true;
         const std::wstring FilePath = ScriptPath.ToWideString();
         LastWriteTime = std::filesystem::last_write_time(FilePath);

@@ -288,7 +288,7 @@ void SLevelEditor::WriteIniFile(const FString& FilePath, const TMap<FString, FSt
     std::ofstream file(*FilePath);
     for (const auto& pair : Config)
     {
-        file << *pair.Key << "=" << *pair.Value << "\n";
+        file << pair.Key.ToUTF8String() << "=" << pair.Value.ToUTF8String() << "\n";
     }
 }
 

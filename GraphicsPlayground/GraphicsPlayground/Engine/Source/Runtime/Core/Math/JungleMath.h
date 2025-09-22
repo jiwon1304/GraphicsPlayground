@@ -1,5 +1,7 @@
 #pragma once
-#include "Launch/Define.h"
+#include "Matrix.h"
+#include "Vector.h"
+#include "Vector4.h"
 #include "Rotator.h"
 #include "Quat.h"
 

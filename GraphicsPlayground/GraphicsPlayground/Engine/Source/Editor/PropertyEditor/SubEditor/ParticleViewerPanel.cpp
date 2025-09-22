@@ -167,7 +167,7 @@ void ParticleViewerPanel::RenderEmitterPanel()
         // 헤더 텍스트
         ImGui::SetCursorScreenPos(blockMin);
         ImGui::Text("%s",
-            Emitter->EmitterName.ToString().ToAnsiString().c_str());
+            Emitter->EmitterName.ToString().ToUTF8String().c_str());
 
         ImGui::Spacing();
         ImGui::Separator();
@@ -194,7 +194,7 @@ void ParticleViewerPanel::RenderEmitterPanel()
             );
 
             ImGui::SetCursorScreenPos(moduleMin);
-            ImGui::Text("%s", Module->GetModuleName().ToString().ToAnsiString().c_str());
+            ImGui::Text("%s", Module->GetModuleName().ToString().ToUTF8String().c_str());
 
             ImGui::Spacing();
             ModuleIndex++;
@@ -224,7 +224,7 @@ void ParticleViewerPanel::RenderDetailPanel()
         const TArray<FProperty*>& Properties = Class->GetProperties();
         if (!Properties.IsEmpty())
         {
-            ImGui::SeparatorText(*Class->GetName());
+            ImGui::SeparatorText(Class->GetName().ToUTF8String().c_str());
         }
 
         for (const FProperty* Prop : Properties)
@@ -251,7 +251,7 @@ void ParticleViewerPanel::RenderEmitterModulePopup(int EmitterIndex)
     GetChildOfClass(UParticleModule::StaticClass(), ChildModule);
     for (UClass* Child : ChildModule) {
         if (Child->GetName().EndsWith(TEXT("Base"))) continue; // Base로 끝나는 클래스는 제외
-        if (ImGui::MenuItem(Child->GetName().ToAnsiString().c_str())) {
+        if (ImGui::MenuItem(Child->GetName().ToUTF8String().c_str())) {
             UParticleEmitter* Emitter = ParticleSystem->Emitters[EmitterIndex];
             UParticleModule* SpawnModule = FObjectFactory::ConstructObject<UParticleModule>(Child, Emitter->LODLevels[0]);
             Emitter->LODLevels[0]->Modules.Add(SpawnModule);
@@ -372,11 +372,11 @@ void ParticleViewerPanel::RenderParticleSystemList()
     // 이름 배열로 ComboBox 표시
     if (ImGui::BeginCombo("Particle Systems",
         CurrentParticleSystemIndex >= 0 && CurrentParticleSystemIndex < ParticleNames.Num() ?
-        ParticleNames[CurrentParticleSystemIndex].ToString().ToAnsiString().c_str() : "Select Particle System"))
+        ParticleNames[CurrentParticleSystemIndex].ToString().ToUTF8String().c_str() : "Select Particle System"))
     {
         for (int i = 0; i < ParticleNames.Num(); ++i) {
             const bool isSelected = (CurrentParticleSystemIndex == i);
-            if (ImGui::Selectable(ParticleNames[i].ToString().ToAnsiString().c_str(), isSelected)) {
+            if (ImGui::Selectable(ParticleNames[i].ToString().ToUTF8String().c_str(), isSelected)) {
                 CurrentParticleSystemIndex = i;
                 // 선택된 파티클 시스템을 가져오기
                 ParticleSystem = ParticleSystemMap[ParticleNames[i]];

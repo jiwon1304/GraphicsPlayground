@@ -195,159 +195,142 @@ struct FSimpleVertex
     float padding[11];
 };
 
-struct FOBB {
-    FVector4 corners[8];
-};
+// struct FOBB {
+//     FVector4 corners[8];
+// };
 
-struct FRect
-{
-    FRect() : TopLeftX(0), TopLeftY(0), Width(0), Height(0) {}
-    FRect(float x, float y, float w, float h) : TopLeftX(x), TopLeftY(y), Width(w), Height(h) {}
-    float TopLeftX, TopLeftY, Width, Height;
-};
-
-struct FPoint
-{
-    FPoint() : x(0), y(0) {}
-    FPoint(float _x, float _y) : x(_x), y(_y) {}
-    FPoint(long _x, long _y) : x(_x), y(_y) {}
-    FPoint(int _x, int _y) : x(_x), y(_y) {}
-
-    float x, y;
-};
-
-struct FBoundingBox
-{
-    FBoundingBox() = default;
-    FBoundingBox(FVector InMin, FVector InMax) : MinLocation(InMin), MaxLocation(InMax) {}
+// struct FBoundingBox
+// {
+//     FBoundingBox() = default;
+//     FBoundingBox(FVector InMin, FVector InMax) : MinLocation(InMin), MaxLocation(InMax) {}
     
-    FVector MinLocation; // Minimum extents
-    float pad;
+//     FVector MinLocation; // Minimum extents
+//     float pad;
     
-    FVector MaxLocation; // Maximum extents
-    float pad1;
+//     FVector MaxLocation; // Maximum extents
+//     float pad1;
 
-    bool IsValidBox() const
-    {
-        return MinLocation.X <= MaxLocation.X && MinLocation.Y <= MaxLocation.Y && MinLocation.Z <= MaxLocation.Z;
-    }
+//     bool IsValidBox() const
+//     {
+//         return MinLocation.X <= MaxLocation.X && MinLocation.Y <= MaxLocation.Y && MinLocation.Z <= MaxLocation.Z;
+//     }
 
-    static bool CheckOverlap(const FBoundingBox& A, const FBoundingBox& B)
-    {
-        if (A.MaxLocation.X < B.MinLocation.X || A.MinLocation.X > B.MaxLocation.X)
-        {
-            return false;
-        }
-        if (A.MaxLocation.Y < B.MinLocation.Y || A.MinLocation.Y > B.MaxLocation.Y)
-        {
-            return false;
-        }
-        if (A.MaxLocation.Z < B.MinLocation.Z || A.MinLocation.Z > B.MaxLocation.Z)
-        {
-            return false;
-        }
-        return true;
-    }
+//     static bool CheckOverlap(const FBoundingBox& A, const FBoundingBox& B)
+//     {
+//         if (A.MaxLocation.X < B.MinLocation.X || A.MinLocation.X > B.MaxLocation.X)
+//         {
+//             return false;
+//         }
+//         if (A.MaxLocation.Y < B.MinLocation.Y || A.MinLocation.Y > B.MaxLocation.Y)
+//         {
+//             return false;
+//         }
+//         if (A.MaxLocation.Z < B.MinLocation.Z || A.MinLocation.Z > B.MaxLocation.Z)
+//         {
+//             return false;
+//         }
+//         return true;
+//     }
     
-    bool Intersect(const FVector& RayOrigin, const FVector& RayDir, float& OutDistance) const
-    {
-        float TMin = -FLT_MAX;
-        float TMax = FLT_MAX;
-        constexpr float epsilon = 1e-6f;
+//     bool Intersect(const FVector& RayOrigin, const FVector& RayDir, float& OutDistance) const
+//     {
+//         float TMin = -FLT_MAX;
+//         float TMax = FLT_MAX;
+//         constexpr float epsilon = 1e-6f;
 
-        // X축 처리
-        if (FMath::Abs(RayDir.X) < epsilon)
-        {
-            // 레이가 X축 방향으로 거의 평행한 경우,
-            // 원점의 x가 박스 [min.X, max.X] 범위 밖이면 교차 없음
-            if (RayOrigin.X < MinLocation.X || RayOrigin.X > MaxLocation.X)
-            {
-                return false;
-            }
-        }
-        else
-        {
-            float T1 = (MinLocation.X - RayOrigin.X) / RayDir.X;
-            float T2 = (MaxLocation.X - RayOrigin.X) / RayDir.X;
-            if (T1 > T2)
-            {
-                std::swap(T1, T2);
-            }
+//         // X축 처리
+//         if (FMath::Abs(RayDir.X) < epsilon)
+//         {
+//             // 레이가 X축 방향으로 거의 평행한 경우,
+//             // 원점의 x가 박스 [min.X, max.X] 범위 밖이면 교차 없음
+//             if (RayOrigin.X < MinLocation.X || RayOrigin.X > MaxLocation.X)
+//             {
+//                 return false;
+//             }
+//         }
+//         else
+//         {
+//             float T1 = (MinLocation.X - RayOrigin.X) / RayDir.X;
+//             float T2 = (MaxLocation.X - RayOrigin.X) / RayDir.X;
+//             if (T1 > T2)
+//             {
+//                 std::swap(T1, T2);
+//             }
 
-            // tmin은 "현재까지의 교차 구간 중 가장 큰 min"
-            TMin = (T1 > TMin) ? T1 : TMin;
-            // tmax는 "현재까지의 교차 구간 중 가장 작은 max"
-            TMax = (T2 < TMax) ? T2 : TMax;
-            if (TMin > TMax)
-            {
-                return false;
-            }
-        }
+//             // tmin은 "현재까지의 교차 구간 중 가장 큰 min"
+//             TMin = (T1 > TMin) ? T1 : TMin;
+//             // tmax는 "현재까지의 교차 구간 중 가장 작은 max"
+//             TMax = (T2 < TMax) ? T2 : TMax;
+//             if (TMin > TMax)
+//             {
+//                 return false;
+//             }
+//         }
 
-        // Y축 처리
-        if (FMath::Abs(RayDir.Y) < epsilon)
-        {
-            if (RayOrigin.Y < MinLocation.Y || RayOrigin.Y > MaxLocation.Y)
-            {
-                return false;
-            }
-        }
-        else
-        {
-            float T1 = (MinLocation.Y - RayOrigin.Y) / RayDir.Y;
-            float T2 = (MaxLocation.Y - RayOrigin.Y) / RayDir.Y;
-            if (T1 > T2)
-            {
-                std::swap(T1, T2);
-            }
+//         // Y축 처리
+//         if (FMath::Abs(RayDir.Y) < epsilon)
+//         {
+//             if (RayOrigin.Y < MinLocation.Y || RayOrigin.Y > MaxLocation.Y)
+//             {
+//                 return false;
+//             }
+//         }
+//         else
+//         {
+//             float T1 = (MinLocation.Y - RayOrigin.Y) / RayDir.Y;
+//             float T2 = (MaxLocation.Y - RayOrigin.Y) / RayDir.Y;
+//             if (T1 > T2)
+//             {
+//                 std::swap(T1, T2);
+//             }
 
-            TMin = (T1 > TMin) ? T1 : TMin;
-            TMax = (T2 < TMax) ? T2 : TMax;
-            if (TMin > TMax)
-            {
-                return false;
-            }
-        }
+//             TMin = (T1 > TMin) ? T1 : TMin;
+//             TMax = (T2 < TMax) ? T2 : TMax;
+//             if (TMin > TMax)
+//             {
+//                 return false;
+//             }
+//         }
 
-        // Z축 처리
-        if (FMath::Abs(RayDir.Z) < epsilon)
-        {
-            if (RayOrigin.Z < MinLocation.Z || RayOrigin.Z > MaxLocation.Z)
-            {
-                return false;
-            }
-        }
-        else
-        {
-            float T1 = (MinLocation.Z - RayOrigin.Z) / RayDir.Z;
-            float T2 = (MaxLocation.Z - RayOrigin.Z) / RayDir.Z;
-            if (T1 > T2)
-            {
-                std::swap(T1, T2);
-            }
+//         // Z축 처리
+//         if (FMath::Abs(RayDir.Z) < epsilon)
+//         {
+//             if (RayOrigin.Z < MinLocation.Z || RayOrigin.Z > MaxLocation.Z)
+//             {
+//                 return false;
+//             }
+//         }
+//         else
+//         {
+//             float T1 = (MinLocation.Z - RayOrigin.Z) / RayDir.Z;
+//             float T2 = (MaxLocation.Z - RayOrigin.Z) / RayDir.Z;
+//             if (T1 > T2)
+//             {
+//                 std::swap(T1, T2);
+//             }
 
-            TMin = (T1 > TMin) ? T1 : TMin;
-            TMax = (T2 < TMax) ? T2 : TMax;
-            if (TMin > TMax)
-            {
-                return false;
-            }
-        }
+//             TMin = (T1 > TMin) ? T1 : TMin;
+//             TMax = (T2 < TMax) ? T2 : TMax;
+//             if (TMin > TMax)
+//             {
+//                 return false;
+//             }
+//         }
 
-        // 여기까지 왔으면 교차 구간 [tmin, tmax]가 유효하다.
-        // tmax < 0 이면, 레이가 박스 뒤쪽에서 교차하므로 화면상 보기엔 교차 안 한다고 볼 수 있음
-        if (TMax < 0.0f)
-        {
-            return false;
-        }
+//         // 여기까지 왔으면 교차 구간 [tmin, tmax]가 유효하다.
+//         // tmax < 0 이면, 레이가 박스 뒤쪽에서 교차하므로 화면상 보기엔 교차 안 한다고 볼 수 있음
+//         if (TMax < 0.0f)
+//         {
+//             return false;
+//         }
 
-        // outDistance = tmin이 0보다 크면 그게 레이가 처음으로 박스를 만나는 지점
-        // 만약 tmin < 0 이면, 레이의 시작점이 박스 내부에 있다는 의미이므로, 거리를 0으로 처리해도 됨.
-        OutDistance = (TMin >= 0.0f) ? TMin : 0.0f;
+//         // outDistance = tmin이 0보다 크면 그게 레이가 처음으로 박스를 만나는 지점
+//         // 만약 tmin < 0 이면, 레이의 시작점이 박스 내부에 있다는 의미이므로, 거리를 0으로 처리해도 됨.
+//         OutDistance = (TMin >= 0.0f) ? TMin : 0.0f;
 
-        return true;
-    }
-};
+//         return true;
+//     }
+// };
 
 struct FCone
 {

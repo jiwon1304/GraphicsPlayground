@@ -105,17 +105,20 @@ void PropertyEditorPanel::Render()
 
         if (ASequencerPlayer* SP = Cast<ASequencerPlayer>(SelectedActor))
         {
-            FString Label = SP->Socket.ToString();
-            if (ImGui::InputText("##Socket", GetData(Label), 256))
+            constexpr size_t BufferSize = 256;
+            char Buffer[BufferSize];
+            strcpy_s(Buffer, BufferSize, SP->Socket.ToString().ToUTF8String().c_str()); // might be error in compiler other than msvc?
+            //FString Label = SP->Socket.ToString();
+            if (ImGui::InputText("##Socket", Buffer, BufferSize))
             {
-                SP->Socket = Label;
+                SP->Socket = Buffer;
             }
 
             if (ImGui::BeginCombo("##Parent", "Parent", ImGuiComboFlags_None))
             {
                 for (auto It : TObjectRange<USkeletalMeshComponent>())
                 {
-                    if (ImGui::Selectable(GetData(It->GetName()), false))
+                    if (ImGui::Selectable(It->GetName().ToUTF8String().c_str(), false))
                     {
                         SP->SkeletalMeshComponent = It;
                     }
@@ -188,7 +191,7 @@ void PropertyEditorPanel::Render()
             const TArray<FProperty*>& Properties = Class->GetProperties();
             if (!Properties.IsEmpty())
             {
-                ImGui::SeparatorText(*Class->GetName());
+                ImGui::SeparatorText(Class->GetName().ToUTF8String().c_str());
             }
 
             for (const FProperty* Prop : Properties)
@@ -209,7 +212,7 @@ void PropertyEditorPanel::Render()
                     const TArray<FProperty*>& Properties = TempClass->GetProperties();
                     if (!Properties.IsEmpty())
                     {
-                        ImGui::SeparatorText(*TempClass->GetName());
+                        ImGui::SeparatorText(TempClass->GetName().ToUTF8String().c_str());
                     }
 
                     for (const FProperty* Prop : Properties)
@@ -231,7 +234,7 @@ void PropertyEditorPanel::Render()
             const TArray<FProperty*>& Properties = Class->GetProperties();
             if (!Properties.IsEmpty())
             {
-                ImGui::SeparatorText(*Class->GetName());
+                ImGui::SeparatorText(Class->GetName().ToUTF8String().c_str());
             }
 
             for (const FProperty* Prop : Properties)
@@ -425,9 +428,10 @@ void PropertyEditorPanel::RenderForActor(AActor* SelectedActor, USceneComponent*
             LuaDisplayPath = NewScript->GetDisplayName();
         }
     }
-    ImGui::InputText("Script File", GetData(LuaDisplayPath), IM_ARRAYSIZE(*LuaDisplayPath),
-        ImGuiInputTextFlags_ReadOnly);
-
+    std::string LuaDisplayPathStr = LuaDisplayPath.ToUTF8String();
+    // we use const_cast to convert the const char* to char*
+    // this is valid since we are not modifying the string
+    ImGui::InputText("Script File", const_cast<char*>(LuaDisplayPathStr.c_str()), LuaDisplayPathStr.size() + 1, ImGuiInputTextFlags_ReadOnly);
     if (ImGui::TreeNodeEx("Component", ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen)) // 트리 노드 생성
     {
         ImGui::Text("Add");
@@ -440,7 +444,7 @@ void PropertyEditorPanel::RenderForActor(AActor* SelectedActor, USceneComponent*
         {
             for (UClass* Class : CompClasses)
             {
-                if (ImGui::Selectable(GetData(Class->GetName()), false))
+                if (ImGui::Selectable(Class->GetName().ToUTF8String().c_str(), false))
                 {
                     USceneComponent* NewComp = Cast<USceneComponent>(SelectedActor->AddComponent(Class));
                     if (NewComp != nullptr && TargetComponent != nullptr)
@@ -475,7 +479,7 @@ void PropertyEditorPanel::RenderForStaticMesh(UStaticMeshComponent* StaticMeshCo
         
         const TMap<FName, FAssetInfo> Assets = UAssetManager::Get().GetAssetRegistry();
 
-        if (ImGui::BeginCombo("##StaticMesh", GetData(PreviewName), ImGuiComboFlags_None))
+        if (ImGui::BeginCombo("##StaticMesh", PreviewName.ToUTF8String().c_str(), ImGuiComboFlags_None))
         {
             for (const auto& Asset : Assets)
             {
@@ -484,7 +488,7 @@ void PropertyEditorPanel::RenderForStaticMesh(UStaticMeshComponent* StaticMeshCo
                     continue;
                 }
                 
-                if (ImGui::Selectable(GetData(Asset.Value.AssetName.ToString()), false))
+                if (ImGui::Selectable(Asset.Value.AssetName.ToString().ToUTF8String().c_str(), false))
                 {
                     FString MeshName = Asset.Value.PackagePath.ToString() + "/" + Asset.Value.AssetName.ToString();
                     UStaticMesh* StaticMesh = FObjManager::GetStaticMesh(MeshName.ToWideString());
@@ -540,7 +544,7 @@ void PropertyEditorPanel::RenderForSkeletalMesh(USkeletalMeshComponent* Skeletal
         
         const TMap<FName, FAssetInfo> SkeletalMeshAssets = UAssetManager::Get().GetAssetRegistry();
 
-        if (ImGui::BeginCombo("##SkeletalMesh", GetData(SelectedSkeletalMeshName), ImGuiComboFlags_None))
+        if (ImGui::BeginCombo("##SkeletalMesh", SelectedSkeletalMeshName.ToUTF8String().c_str(), ImGuiComboFlags_None))
         {
             for (const auto& Asset : SkeletalMeshAssets)
             {
@@ -549,7 +553,7 @@ void PropertyEditorPanel::RenderForSkeletalMesh(USkeletalMeshComponent* Skeletal
                     continue;
                 }
                 
-                if (ImGui::Selectable(GetData(Asset.Value.AssetName.ToString()), false))
+                if (ImGui::Selectable(Asset.Value.AssetName.ToString().ToUTF8String().c_str(), false))
                 {
                     FString AssetName = Asset.Value.PackagePath.ToString() + "/" + Asset.Value.AssetName.ToString();
                     USkeletalMesh* SkeletalMesh = UAssetManager::Get().GetSkeletalMesh(FName(AssetName));
@@ -567,7 +571,7 @@ void PropertyEditorPanel::RenderForSkeletalMesh(USkeletalMeshComponent* Skeletal
         ImGui::SameLine();
         EAnimationMode CurrentAnimationMode = SkeletalMeshComp->GetAnimationMode();
         FString AnimModeStr = CurrentAnimationMode == EAnimationMode::AnimationBlueprint ? "Animation Instance" : "Animation Asset";
-        if (ImGui::BeginCombo("##AnimationMode", GetData(AnimModeStr), ImGuiComboFlags_None))
+        if (ImGui::BeginCombo("##AnimationMode", AnimModeStr.ToUTF8String().c_str(), ImGuiComboFlags_None))
         {
             if (ImGui::Selectable("Animation Instance", CurrentAnimationMode == EAnimationMode::AnimationBlueprint))
             {
@@ -592,7 +596,7 @@ void PropertyEditorPanel::RenderForSkeletalMesh(USkeletalMeshComponent* Skeletal
             // AnimInstance 목록 텍스트
             ImGui::Text("AnimInstance List");
             ImGui::SameLine();
-            if (ImGui::BeginCombo("##AnimInstance List Combo", *CompClasses[SelectedIndex]->GetName()))
+            if (ImGui::BeginCombo("##AnimInstance List Combo", CompClasses[SelectedIndex]->GetName().ToUTF8String().c_str()))
             {
                 for (int i = 0; i < CompClasses.Num(); ++i)
                 {
@@ -601,7 +605,7 @@ void PropertyEditorPanel::RenderForSkeletalMesh(USkeletalMeshComponent* Skeletal
                         continue;
                     }
                     bool bIsSelected = (SelectedIndex == i);
-                    if (ImGui::Selectable(*CompClasses[i]->GetName(), bIsSelected))
+                    if (ImGui::Selectable(CompClasses[i]->GetName().ToUTF8String().c_str(), bIsSelected))
                     {
                         SelectedIndex = i;
                     }
@@ -667,7 +671,7 @@ void PropertyEditorPanel::RenderForSkeletalMesh(USkeletalMeshComponent* Skeletal
 
             ImGui::Text("Anim To Play");
             ImGui::SameLine();
-            if (ImGui::BeginCombo("##Animation", GetData(SelectedAnimationName), ImGuiComboFlags_None))
+            if (ImGui::BeginCombo("##Animation", SelectedAnimationName.ToUTF8String().c_str(), ImGuiComboFlags_None))
             {
                 if (ImGui::Selectable("None", false))
                 {
@@ -681,7 +685,7 @@ void PropertyEditorPanel::RenderForSkeletalMesh(USkeletalMeshComponent* Skeletal
                         continue;
                     }
                 
-                    if (ImGui::Selectable(GetData(Asset.Value.AssetName.ToString()), false))
+                    if (ImGui::Selectable(Asset.Value.AssetName.ToString().ToUTF8String().c_str(), false))
                     {
                         FString AssetName = Asset.Value.PackagePath.ToString() + "/" + Asset.Value.AssetName.ToString();
 
@@ -1317,11 +1321,11 @@ void PropertyEditorPanel::RenderForMaterial(UStaticMeshComponent* StaticMeshComp
     {
         for (uint32 i = 0; i < StaticMeshComp->GetNumMaterials(); ++i)
         {
-            if (ImGui::Selectable(GetData(StaticMeshComp->GetMaterialSlotNames()[i].ToString()), false, ImGuiSelectableFlags_AllowDoubleClick))
+            if (ImGui::Selectable(StaticMeshComp->GetMaterialSlotNames()[i].ToString().ToUTF8String().c_str(), false, ImGuiSelectableFlags_AllowDoubleClick))
             {
                 if (ImGui::IsMouseDoubleClicked(0))
                 {
-                    std::cout << GetData(StaticMeshComp->GetMaterialSlotNames()[i].ToString()) << std::endl;
+                    std::cout << StaticMeshComp->GetMaterialSlotNames()[i].ToString().ToUTF8String().c_str() << std::endl;
                     SelectedMaterialIndex = i;
                     SelectedStaticMeshComp = StaticMeshComp;
                 }
@@ -1391,7 +1395,7 @@ void PropertyEditorPanel::RenderMaterialView(UMaterial* Material)
 
     ImGui::Text("Material Name |");
     ImGui::SameLine();
-    ImGui::Text(*Material->GetMaterialInfo().MaterialName);
+    ImGui::Text(Material->GetMaterialInfo().MaterialName.ToUTF8String().c_str());
     ImGui::Separator();
 
     ImGui::Text("  Diffuse Color");
@@ -1452,7 +1456,7 @@ void PropertyEditorPanel::RenderMaterialView(UMaterial* Material)
 
     ImGui::Text("Material Slot Name |");
     ImGui::SameLine();
-    ImGui::Text(GetData(SelectedStaticMeshComp->GetMaterialSlotNames()[SelectedMaterialIndex].ToString()));
+    ImGui::Text(SelectedStaticMeshComp->GetMaterialSlotNames()[SelectedMaterialIndex].ToString().ToUTF8String().c_str());
 
     ImGui::Text("Override Material |");
     ImGui::SameLine();
@@ -1460,7 +1464,7 @@ void PropertyEditorPanel::RenderMaterialView(UMaterial* Material)
     // 메테리얼 이름 목록을 const char* 배열로 변환
     std::vector<const char*> MaterialChars;
     for (const auto& Material : FObjManager::GetMaterials()) {
-        MaterialChars.push_back(*Material.Value->GetMaterialInfo().MaterialName);
+        MaterialChars.push_back(Material.Value->GetMaterialInfo().MaterialName.ToUTF8String().c_str());
     }
 
     //// 드롭다운 표시 (currentMaterialIndex가 범위를 벗어나지 않도록 확인)

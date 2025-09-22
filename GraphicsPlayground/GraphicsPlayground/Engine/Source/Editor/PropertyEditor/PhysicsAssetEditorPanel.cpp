@@ -524,7 +524,8 @@ void FPhysicsAssetEditorPanel::RenderDetailPanel()
             const TArray<FProperty*>& Properties = Class->GetProperties();
             if (!Properties.IsEmpty())
             {
-                ImGui::SeparatorText(*Class->GetName());
+                TO_UTF8_CHAR(Class->GetName(), ClassNameUTF8);
+                ImGui::SeparatorText(ClassNameUTF8);
             }
 
             for (const FProperty* Prop : Properties)
@@ -543,7 +544,8 @@ void FPhysicsAssetEditorPanel::RenderDetailPanel()
             const TArray<FProperty*>& Properties = Class->GetProperties();
             if (!Properties.IsEmpty())
             {
-                ImGui::SeparatorText(*Class->GetName());
+                TO_UTF8_CHAR(Class->GetName(), ClassNameUTF8);
+                ImGui::SeparatorText(ClassNameUTF8);
             }
 
             for (const FProperty* Prop : Properties)
@@ -615,7 +617,8 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
             NodeFlags &= ~ImGuiTreeNodeFlags_OpenOnArrow; // 리프 노드는 화살표로 열 필요 없음
         }
 
-        bBoneNodeOpen = ImGui::TreeNodeEx(*ShortBoneName, NodeFlags);
+        TO_UTF8_CHAR(ShortBoneName, ShortBoneNameUTF8);
+        bBoneNodeOpen = ImGui::TreeNodeEx(ShortBoneNameUTF8, NodeFlags);
 
         if (bBoneNodeOpen)
         {
@@ -682,7 +685,8 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
                     NodeFlags &= ~ImGuiTreeNodeFlags_OpenOnArrow; // 리프 노드는 화살표로 열 필요 없음
                 }
 
-                bBodySetupNodeOpen = ImGui::TreeNodeEx(GetData(GetCleanBoneName(TargetBodySetup->BoneName.ToString())), NodeFlags);
+                TO_UTF8_CHAR(GetCleanBoneName(TargetBodySetup->BoneName.ToString()), BodySetupNameUTF8);
+                bBodySetupNodeOpen = ImGui::TreeNodeEx(BodySetupNameUTF8, NodeFlags);
                 bool bIsDelete = false;
                 if (bBodySetupNodeOpen)
                 {
@@ -719,7 +723,8 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
         
                         ImGuiTreeNodeFlags NodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Leaf;
 
-                        if (ImGui::TreeNodeEx(GetData(GetCleanBoneName(ShapeElem.Name.ToString())), NodeFlags))
+                        TO_UTF8_CHAR(GetCleanBoneName(ShapeElem.Name.ToString()), ShapeElemNameUTF8);
+                        if (ImGui::TreeNodeEx(ShapeElemNameUTF8, NodeFlags))
                         {
                             bool bIsDelete = false; 
                             DrawPopupPrimitive(InPhysicsAsset, TargetBodySetup, PrimitiveType, PrimitiveIndex, InBoneIndex, bIsDelete);
@@ -745,7 +750,8 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
         
                         ImGuiTreeNodeFlags NodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Leaf;
 
-                        if (ImGui::TreeNodeEx(GetData(GetCleanBoneName(ShapeElem.Name.ToString())), NodeFlags))
+                        TO_UTF8_CHAR(GetCleanBoneName(ShapeElem.Name.ToString()), ShapeElemNameUTF8);
+                        if (ImGui::TreeNodeEx(ShapeElemNameUTF8, NodeFlags))
                         {
                             bool bIsDelete = false;
                             DrawPopupPrimitive(InPhysicsAsset, TargetBodySetup, PrimitiveType, PrimitiveIndex, InBoneIndex, bIsDelete);
@@ -771,7 +777,8 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
         
                         ImGuiTreeNodeFlags NodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Leaf;
 
-                        if (ImGui::TreeNodeEx(GetData(GetCleanBoneName(ShapeElem.Name.ToString())), NodeFlags))
+                        TO_UTF8_CHAR(GetCleanBoneName(ShapeElem.Name.ToString()), ShapeElemNameUTF8);
+                        if (ImGui::TreeNodeEx(ShapeElemNameUTF8, NodeFlags))
                         {
                             bool bIsDelete;
                             DrawPopupPrimitive(InPhysicsAsset, TargetBodySetup, PrimitiveType, PrimitiveIndex, InBoneIndex, bIsDelete);
@@ -806,7 +813,10 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
                         ImGui::Image((ImTextureID)ConstraintIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
                         ImGui::SameLine();
 
-                        if (ImGui::TreeNodeEx(GetData(FString::Printf("[%s->%s] Constraint", GetData(GetCleanBoneName(ConstraintTemplate->DefaultInstance.ConstraintBone1.ToString())), GetData(GetCleanBoneName(ConstraintTemplate->DefaultInstance.ConstraintBone2.ToString())))), NodeFlags))
+                        TO_UTF8_CHAR(GetCleanBoneName(ConstraintTemplate->DefaultInstance.ConstraintBone1.ToString()), ConstraintBone1NameUTF8);
+                        TO_UTF8_CHAR(GetCleanBoneName(ConstraintTemplate->DefaultInstance.ConstraintBone2.ToString()), ConstraintBone2NameUTF8);
+                        TO_UTF8_CHAR(FString::Printf(TEXT("[%s->%s] Constraint"), ConstraintBone1NameUTF8, ConstraintBone2NameUTF8), FullConstraintNameUTF8);
+                        if (ImGui::TreeNodeEx(FullConstraintNameUTF8, NodeFlags))
                         {
                             bool bIsDelete = false;
                             DrawPopupConstraint(InPhysicsAsset, ConstraintIndex, bIsDelete);
@@ -929,7 +939,8 @@ void FPhysicsAssetEditorPanel::DrawPopupBodySetup(UPhysicsAsset* InPhysicsAsset,
 
                     ImGui::Image((ImTextureID)ConstraintIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
                     ImGui::SameLine();
-                    if (ImGui::MenuItem(GetData(GetCleanBoneName(TempBodySetup->BoneName.ToString()))))
+                    TO_UTF8_CHAR(GetCleanBoneName(TempBodySetup->BoneName.ToString()), TempBoneNameUTF8);
+                    if (ImGui::MenuItem(TempBoneNameUTF8))
                     {
                         const FMeshBoneInfo& MeshBoneInfo = InPhysicsAsset->PreviewSkeletalMesh->GetRefSkeleton()->GetRawRefBoneInfo()[InBoneIndex];
                         int32 OtherBoneIndex = InPhysicsAsset->PreviewSkeletalMesh->GetRefSkeleton()->FindBoneIndex(TempBodySetup->BoneName);
@@ -1142,7 +1153,7 @@ FString FPhysicsAssetEditorPanel::GetCleanBoneName(const FMeshBoneInfo& BoneInfo
 
     if (bShowBoneIndices)
     {
-        name += FString::Printf(" <%d>", BoneIndex);
+        name += FString::Printf(L" <%d>", BoneIndex);
     }
     
     return name;

@@ -3,6 +3,7 @@
 #include "Launch/Define.h"
 #include "Hal/PlatformType.h"
 #include "Container/Array.h"
+#include "Core/Math/Vector.h"
 
 struct FSkeletalMeshVertex
 {

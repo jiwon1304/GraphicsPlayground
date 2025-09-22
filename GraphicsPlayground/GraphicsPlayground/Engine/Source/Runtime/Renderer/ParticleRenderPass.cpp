@@ -79,7 +79,7 @@ void FParticleRenderPass::Initialize(FDXDBufferManager* InBufferManager, FGraphi
         { {-0.5f, -0.5f} }, { {0.5f, -0.5f} }, { {0.5f, 0.5f} },
         { {-0.5f, -0.5f} }, { {0.5f, 0.5f} }, { {-0.5f, 0.5f} },
     };
-    BufferManager->CreateVertexBuffer(TEXT("QuadSpriteVertex"), QuadVertices, QuadVertexInfo);
+    BufferManager->CreateVertexBuffer(FString("QuadSpriteVertex"), QuadVertices, QuadVertexInfo);
 
     BufferManager->CreateDynamicVertexBuffer(
         TEXT("Global_SpriteInstance"), 

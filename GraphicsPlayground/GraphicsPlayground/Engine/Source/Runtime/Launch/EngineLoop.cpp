@@ -359,13 +359,7 @@ LRESULT CALLBACK FEngineLoop::AppWndProc(HWND hWnd, uint32 Msg, WPARAM wParam, L
             return DefWindowProc(hWnd, Msg, wParam, lParam);
         }
     }
-
-
-    //if (ImGui_ImplWin32_WndProcHandler(hWnd, Msg, wParam, lParam))
-    //{
-    //    return true;
-    //}
-
+    
     switch (Msg)
     {
     case WM_DESTROY:

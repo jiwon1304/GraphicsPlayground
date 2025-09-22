@@ -54,7 +54,7 @@ public:
 
 struct FProfiledScope
 {
-    FString DisplayName;
+    std::string DisplayName; // imgui uses utf8
     FName CPUStatName;
     FName GPUStatName;
 };
@@ -102,7 +102,7 @@ public:
     void AddLogFmt(ELogLevel Level, std::string_view Fmt, Args&&... Arguments)
     {
         // 1. 인자들을 변환하여 튜플에 저장
-        //    FString인 경우 ToAnsiString()의 결과(std::string)가 저장됨
+        //    FString인 경우 ToUTF8String()의 결과(std::string)가 저장됨
         //    변환된 std::string 객체들은 이 튜플 내에 실제 값으로 존재하게 되어 수명 문제 방지
         std::tuple TransformedArgsTuple(ConvertIfFString(std::forward<Args>(Arguments))...);
 
@@ -141,7 +141,7 @@ private:
      * 그 외의 경우에는 인자를 그대로 전달합니다.
      *
      * 이 메서드는 컴파일 타임에 인자의 타입이 FString과 일치하는지 검사합니다.
-     * 일치하는 경우 FString의 ToAnsiString 메서드를 호출하고,
+     * 일치하는 경우 FString의 ToUTF8String 메서드를 호출하고,
      * 그렇지 않은 경우 원본 인자를 수정 없이 전달합니다.
      *
      * @tparam T 전달되어 처리될 인자의 타입
@@ -154,7 +154,7 @@ private:
     {
         if constexpr (std::same_as<std::decay_t<T>, FString>)
         {
-            return Arg.ToAnsiString();
+            return Arg.ToUTF8String();
         }
         else
         {
@@ -166,11 +166,11 @@ public:
     struct LogEntry
     {
         ELogLevel Level;
-        FString Message;
+        std::string Message;
     };
 
     TArray<LogEntry> Items;
-    TArray<FString> History;
+    TArray<std::string> History;
     int32 HistoryPos = -1;
     char InputBuf[256] = "";
     bool ScrollToBottom = false;

@@ -99,7 +99,7 @@ public:
     FString(const WIDECHAR* InString) : FString(WStringToString(InString)) {}
 #endif
 
-    FORCEINLINE std::string ToAnsiString() const
+    FORCEINLINE std::string ToUTF8String() const
     {
 #if USE_WIDECHAR
         return WStringToString(std::wstring(PrivateString));
@@ -108,9 +108,18 @@ public:
 #endif
     }
 
+    // returns a temporary pointer, so be careful when using it.
+    // It will be invalidated if the FString is modified or destroyed.
+    // FORCEINLINE const char* ToUTF8String().c_str() const
+    // {
+    //     std::string utf8 = ToUTF8String();
+    //     return utf8.c_str();
+    // }
+
     FORCEINLINE std::wstring ToWideString() const
     {
 #if USE_WIDECHAR
+        // @todo : deprecate when use widechar
         return std::wstring(PrivateString);
 #else
         return StringToWString(std::string(PrivateString));

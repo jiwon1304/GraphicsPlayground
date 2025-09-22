@@ -46,7 +46,7 @@ public:
     T GetValueFromConfig(const TMap<FString, FString>& Config, const FString& Key, T DefaultValue) {
         if (const FString* Value = Config.Find(Key))
         {
-            std::istringstream Stream(**Value);
+            std::istringstream Stream(Value->ToUTF8String());
             T ConfigValue;
             if (Stream >> ConfigValue)
             {

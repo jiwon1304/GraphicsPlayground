@@ -120,7 +120,8 @@ physx::PxActor* FPhysicsSolver::RegisterObject(FPhysScene* InScene, const FBodyI
     }
 
     NewRigidActor->setActorFlag(PxActorFlag::eVISUALIZATION, true); // 디버그 렌더링 활성화
-    NewRigidActor->setName(*NewInstance->OwnerComponent->GetName()); // 이름 설정
+
+    NewRigidActor->setName(NewInstance->OwnerComponent->GetName().ToUTF8String().c_str()); // 이름 설정
 
     NewRigidActor->userData = (void*)NewInstance; // 사용자 정의 데이터로 FBodyInstance를 설정
 

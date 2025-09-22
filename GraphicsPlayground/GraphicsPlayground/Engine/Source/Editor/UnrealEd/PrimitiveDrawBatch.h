@@ -3,6 +3,8 @@
 // ============================================================================
 
 #pragma once
+#include "Core/Container/Array.h"
+#include "Math/Primitive.h"
 #include "Launch/Define.h"
 #include <d3d11.h>
 

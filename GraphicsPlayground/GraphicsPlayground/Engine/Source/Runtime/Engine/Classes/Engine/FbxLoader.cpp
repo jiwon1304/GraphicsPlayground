@@ -266,7 +266,7 @@ void PrintNodeAttribute(FbxNode* Node, int32 Depth)
 FAssetLoadResult FFbxLoader::LoadFBX(const FString& InFilePath)
 {
     bool bSuccess = false;
-    if (Importer->Initialize(*InFilePath, -1, Manager->GetIOSettings()))
+    if (Importer->Initialize(InFilePath.ToUTF8String().c_str(), -1, Manager->GetIOSettings()))
     {
         bSuccess = Importer->Import(Scene);
     }

@@ -1,8 +1,10 @@
 #pragma once
-#include "Launch/Define.h"
+
+#include "Container/Array.h"
+#include "Math/Vector.h"
+
 class UWorld;
 class AActor;
-
 
 namespace ELightGridGenerator
 {

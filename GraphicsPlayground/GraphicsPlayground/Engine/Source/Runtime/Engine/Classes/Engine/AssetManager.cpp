@@ -198,7 +198,7 @@ bool UAssetManager::SavePhysicsAssetBinary(UPhysicsAsset* PhysicsAsset)
 {
     FString BaseName = PhysicsAsset->GetName();
     
-    FWString FilePath = FString::Printf("Contents/PhysicsAsset/%s.siu", GetData(BaseName)).ToWideString();
+    FWString FilePath = FString::Printf(L"Contents/PhysicsAsset/%s.siu", GetData(BaseName)).ToWideString();
     FWString FolderPath = FilePath.substr(0, FilePath.find_last_of(L"\\/") + 1);
     FWString FileName = FilePath.substr(FilePath.find_last_of(L"\\/") + 1);
         

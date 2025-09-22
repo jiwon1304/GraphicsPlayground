@@ -19,7 +19,7 @@ void UEngine::Init()
         FMath::RandInit(static_cast<int32>(Seed1));
         FMath::SRandInit(static_cast<int32>(Seed2));
 
-        UE_LOG(ELogLevel::Display, TEXT("RandInit(%d) SRandInit(%d)."), Seed1, Seed2);
+        UE_LOG(ELogLevel::Display, "RandInit(%d) SRandInit(%d).", Seed1, Seed2);
     }
 
     // PhysX 초기화
