@@ -72,7 +72,7 @@ public:
     {
         if (InName != NAME_None)
         {
-            InitialSeed = std::hash<FString>()(InName.ToString());
+            InitialSeed = static_cast<uint32>(std::hash<FString>()(InName.ToString()));
         }
         else
         {

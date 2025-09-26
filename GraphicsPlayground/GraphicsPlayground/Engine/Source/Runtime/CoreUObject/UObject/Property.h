@@ -1155,7 +1155,7 @@ template <typename T, EPropertyFlags InFlags>
 FProperty* MakeProperty(
     UStruct* InOwnerStruct,
     const char* InPropertyName,
-    int32 InOffset
+    int64 InOffset
 )
 {
     // 각 타입에 맞는 Property 생성

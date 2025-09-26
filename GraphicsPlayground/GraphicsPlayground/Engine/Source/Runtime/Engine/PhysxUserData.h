@@ -21,7 +21,7 @@ namespace EPhysxUserDataType
 
 struct FBodyInstance;
 class UPhysicalMaterial;
-class FPhysScene;
+struct FPhysScene;
 struct FConstraintInstance;
 class UPrimitiveComponent;
 struct FKShapeElem;

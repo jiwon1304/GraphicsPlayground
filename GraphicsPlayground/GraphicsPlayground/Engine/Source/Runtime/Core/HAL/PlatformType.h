@@ -91,7 +91,7 @@ typedef ANSICHAR TCHAR;
 // 임시로 사용
 //-----------------------------------------
 #include <string>
-#if USE_WIDECHAR
-[[deprecated("Use FString instead")]]
-#endif
+// #if USE_WIDECHAR
+// [[deprecated("Use FString instead")]]
+// #endif
 typedef std::wstring FWString;

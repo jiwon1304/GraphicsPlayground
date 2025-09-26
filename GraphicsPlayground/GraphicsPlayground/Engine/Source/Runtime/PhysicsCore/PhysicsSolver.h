@@ -11,7 +11,7 @@
 class AActor;
 struct FHitResult;
 struct FPhysicsBody;
-class FPhysScene;
+struct FPhysScene;
 class FKShapeElem;
 class UVehicleMovementComponent;
 class FVehicle4W;

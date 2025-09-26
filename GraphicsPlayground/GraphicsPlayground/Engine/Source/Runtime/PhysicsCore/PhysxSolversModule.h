@@ -5,7 +5,7 @@
 #include "PhysicsCore/PhysXIntegration.h"
 
 class FPhysicsSolver;
-class FPhysScene;
+struct FPhysScene;
 
 class FPhysxSolversModule
 {

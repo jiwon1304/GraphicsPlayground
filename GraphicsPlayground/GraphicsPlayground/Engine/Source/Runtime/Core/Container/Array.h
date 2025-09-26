@@ -232,7 +232,7 @@ public:
         requires std::is_invocable_r_v<bool, Compare, const T&, const T&>
     void Sort(const Compare& CompFn);
 
-    bool IsValidIndex(uint32 ElementIndex) const;
+    bool IsValidIndex(SizeType ElementIndex) const;
 
     ElementType Pop();
 };
@@ -476,7 +476,7 @@ bool TArray<T, AllocatorType>::RemoveSingle(const T& Item)
 template <typename T, typename AllocatorType>
 void TArray<T, AllocatorType>::RemoveAt(SizeType Index)
 {
-    if (Index >= 0 && static_cast<SizeType>(Index) < ContainerPrivate.size())
+    if (Index >= 0 && Index < static_cast<SizeType>(ContainerPrivate.size()))
     {
         ContainerPrivate.erase(ContainerPrivate.begin() + Index);
     }
@@ -697,7 +697,7 @@ void TArray<T, AllocatorType>::Sort(const Compare& CompFn)
 }
 
 template <typename T, typename AllocatorType>
-bool TArray<T, AllocatorType>::IsValidIndex(uint32 ElementIndex) const
+bool TArray<T, AllocatorType>::IsValidIndex(SizeType ElementIndex) const
 {
     // uint32라서 0미만은 검사 안함
     return ElementIndex < Num();

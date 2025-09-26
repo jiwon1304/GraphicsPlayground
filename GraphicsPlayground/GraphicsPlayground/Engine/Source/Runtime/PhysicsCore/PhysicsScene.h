@@ -7,7 +7,7 @@
 #include "Classes/PhysicsEngine/BodyInstance.h"
 
 class UShapeComponent;
-struct FPhysicsSolver;
+class FPhysicsSolver;
 class AWheeledVehiclePawn;
 
 namespace physx

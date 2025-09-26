@@ -19,9 +19,9 @@ enum ENameCase : uint8
 struct FNameStringView
 {
     FNameStringView() : Data(nullptr), Len(0), bIsWide(false) {}
-    FNameStringView(const ANSICHAR* Str, uint32 InLen) : Ansi(Str), Len(InLen), bIsWide(false) {}
-    FNameStringView(const WIDECHAR* Str, uint32 InLen) : Wide(Str), Len(InLen), bIsWide(true) {}
-	FNameStringView(const void* InData, uint32 InLen, bool bInIsWide) : Data(InData), Len(InLen), bIsWide(bInIsWide) {}
+    FNameStringView(const ANSICHAR* Str, size_t InLen) : Ansi(Str), Len(InLen), bIsWide(false) {}
+    FNameStringView(const WIDECHAR* Str, size_t InLen) : Wide(Str), Len(InLen), bIsWide(true) {}
+	FNameStringView(const void* InData, size_t InLen, bool bInIsWide) : Data(InData), Len(InLen), bIsWide(bInIsWide) {}
 
 	union
 	{
@@ -30,7 +30,7 @@ struct FNameStringView
 		const WIDECHAR* Wide;
 	};
 
-	uint32 Len;
+	size_t Len;
 	bool bIsWide;
 
 	bool IsAnsi() const { return !bIsWide; }
@@ -79,13 +79,13 @@ struct FNameEntry
 		WIDECHAR WideName[NAME_SIZE];
 	};
 
-	void StoreName(const ANSICHAR* InName, uint32 Len)
+	void StoreName(const ANSICHAR* InName, size_t Len)
 	{
 		memcpy(AnsiName, InName, sizeof(ANSICHAR) * Len);
 		AnsiName[Len] = '\0';
 	}
 
-	void StoreName(const WIDECHAR* InName, uint32 Len)
+	void StoreName(const WIDECHAR* InName, size_t Len)
 	{
 		memcpy(WideName, InName, sizeof(WIDECHAR) * Len);
 		WideName[Len] = '\0';
@@ -108,12 +108,12 @@ uint32 HashString(const CharType* Str)
 }
 
 template <typename CharType>
-uint32 HashStringLower(const CharType* Str, uint32 InLen)
+uint32 HashStringLower(const CharType* Str, size_t InLen)
 {
 	CharType LowerStr[NAME_SIZE];
 	if constexpr (std::is_same_v<CharType, wchar_t>)
 	{
-		for (uint32 i = 0; i < InLen; i++)
+		for (size_t i = 0; i < InLen; i++)
 		{
 			LowerStr[i] = towlower(Str[i]);
 		}
@@ -121,7 +121,7 @@ uint32 HashStringLower(const CharType* Str, uint32 InLen)
 	}
 	else
 	{
-		for (uint32 i = 0; i < InLen; ++i)
+		for (size_t i = 0; i < InLen; ++i)
 		{
 			LowerStr[i] = static_cast<CharType>(tolower(Str[i]));
 		}
@@ -371,11 +371,11 @@ struct FNameHelper
 	{
 		if constexpr (std::is_same_v<CharType, char>)
 		{
-			return MakeFName(Str, static_cast<uint32>(strlen(Str)));
+			return MakeFName(Str, static_cast<size_t>(strlen(Str)));
 		}
 		else if constexpr (std::is_same_v<CharType, wchar_t>)
 		{
-			return MakeFName(Str, static_cast<uint32>(wcslen(Str)));
+			return MakeFName(Str, static_cast<size_t>(wcslen(Str)));
 		}
 		else
 		{
@@ -385,7 +385,7 @@ struct FNameHelper
 	}
 
 	template <typename CharType>
-	static FName MakeFName(const CharType* Char, uint32 Len)
+	static FName MakeFName(const CharType* Char, size_t Len)
 	{
 		// 문자열의 길이가 NAME_SIZE를 초과하면 None 반환
 		if (Len >= NAME_SIZE)
@@ -422,7 +422,7 @@ FName::FName(const WIDECHAR* Name)
 {
 }
 
-FName::FName(const WIDECHAR* Name, uint32 Len)
+FName::FName(const WIDECHAR* Name, size_t Len)
 	: FName(FNameHelper::MakeFName(Name, Len))
 {
 }
@@ -432,7 +432,7 @@ FName::FName(const ANSICHAR* Name)
 {
 }
 
-FName::FName(const ANSICHAR* Name, uint32 Len)
+FName::FName(const ANSICHAR* Name, size_t Len)
 	: FName(FNameHelper::MakeFName(Name, Len))
 {
 }

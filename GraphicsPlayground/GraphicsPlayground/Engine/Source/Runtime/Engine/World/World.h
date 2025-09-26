@@ -23,7 +23,7 @@ class USceneComponent;
 class FCollisionManager;
 class AGameMode;
 class UTextComponent;
-class FPhysScene;
+struct FPhysScene;
 
 class UWorld : public UObject
 {
