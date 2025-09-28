@@ -313,6 +313,11 @@ enum class EVertexElementType : uint8
     LongLong,   // 64-bit long long
 };
 
+enum
+{
+    MaxVertexElementCount = 8,
+};
+
 // only use slot
 // enum class EAttributeUsage : uint8
 // {

@@ -5,6 +5,7 @@
 #include "RHI/RHICommandList.h"
 #include "Core/HAL/PlatformMemory.h"
 
+#pragma region OpenGL Buffer
 class FOpenGLBufferBase
 {
 protected:
@@ -170,6 +171,217 @@ public:
     // void SetGLUniformBufferParams()  
 
 };
+#pragma endregion OpenGL Buffer
+
+#pragma region OpenGL VertexDeclaration
+class FOpenGLVertexElement
+{
+    GLenum Type; // Primitive Type
+    GLuint StreamIndex; // ???
+    GLuint Offset; // offset in bytes within VAO
+    GLuint Size; // size in bytes
+    uint8 bNormalized; // normalized or not
+    uint8 AttributeIndex; // attribute index in shader
+    uint16 Padding;
+};
+
+using FOpenGLVertexElements = TArray<
+    FOpenGLVertexElement, 
+    TSizedInlineAllocator<FOpenGLVertexElement, MaxVertexElementCount>
+    >;
+
+/**
+ * A set of vertex elements.
+ */
+class FOpenGLVertexDeclaration : public FRHIVertexDeclaration
+{
+public:
+    FOpenGLVertexElements VertexElements;
+
+    FOpenGLVertexDeclaration(const FOpenGLVertexElements& InElements)
+        : FRHIVertexDeclaration()
+        , VertexElements(InElements)
+    {
+    }
+
+    virtual bool GetInitializer(const FVertexDeclarationElementList& Init) override;
+};
+#pragma endregion OpenGL VertexDeclaration
+
+#pragma region OpenGL Shader
+/**
+ * Contains vertex elements and shaders.
+ * Other buffers are not specified here.
+ */
+class FOpenGLShaderState : public FRHIBoundShaderState
+{
+    static FOpenGLLinkedProgram FindOrCreateLinkedProgram(
+        FOpenGLVertexShader* VertexShader, 
+        FOpenGLPixelShader* PixelShader, 
+        FOpenGLGeometryShader* GeometryShader
+    );
+
+public:
+    const FOpenGLLinkedProgram* LinkedProgram;
+    TRefCountPtr<FOpenGLVertexDeclaration> VertexDeclaration;
+    TRefCountPtr<FOpenGLVertexShader> VertexShader;
+    TRefCountPtr<FOpenGLPixelShader> PixelShader;
+    TRefCountPtr<FOpenGLGeometryShader> GeometryShader;
+};
+#pragma endregion OpenGL Shader
+
+#pragma region OpenGL Texture
+class FOpenGLTextureDesc
+{
+public:
+    FOpenGLTextureDesc(FRHITextureDesc const& InDesc);
+
+    uint32 MemorySize = 0;
+};
+
+class FOpenGLTextureCreateDesc : public FRHITextureCreateDesc, public FOpenGLTextureDesc
+{
+public:
+	FOpenGLTextureCreateDesc(FRHITextureCreateDesc const& CreateDesc)
+		: FRHITextureCreateDesc(CreateDesc)
+		, FOpenGLTextureDesc(CreateDesc)
+	{
+	}
+};
+
+class FOpenGLTexture : public FRHITexture, public FOpenGLViewableResource
+{
+	// Copy and assignment are disabled
+	FOpenGLTexture(FOpenGLTexture const&) = delete;
+	FOpenGLTexture& operator = (FOpenGLTexture const&) = delete;
+
+public:
+	// Standard constructor
+	explicit FOpenGLTexture(FRHICommandListBase& RHICmdList, FOpenGLTextureCreateDesc const& CreateDesc);
+
+	virtual ~FOpenGLTexture();
+
+    // OpenGL does not use pointer
+	virtual void* GetTextureBaseRHI() override final
+	{
+		return this;
+	}
+
+	/** FRHITexture override.  See FRHITexture::GetNativeResource() */
+	virtual void* GetNativeResource() const override
+	{
+		// this must become a full GL resource here, calling the non-const GetResourceRef ensures this.
+		return const_cast<void*>(reinterpret_cast<const void*>(&const_cast<FOpenGLTexture*>(this)->GetResourceRef()));
+	}
+
+	void DeleteGLResource();
+
+private:
+	/** The OpenGL texture resource. */
+	GLuint Resource = GL_NONE;
+
+public:
+    // The texture target (GL_TEXTURE_2D, etc)
+	GLenum const Target = 0;
+
+    // The attachment point for this texture when used as a render target.
+	GLenum const Attachment = 0;
+
+	// Pointer to current sampler state in this unit
+	class FOpenGLSamplerState* SamplerState = nullptr;
+
+public:
+	uint32 const MemorySize; // in case of memory tracking
+};
+#pragma endregion OpenGL Texture
+
+#pragma region OpenGL UAV SRV
+class FOpenGLUnorderedAccessView final : public FRHIUnorderedAccessView, public FOpenGLView
+{
+public:
+	FOpenGLUnorderedAccessView(FRHICommandListBase& RHICmdList, FRHIViewableResource* Resource, FRHIViewDesc const& ViewDesc);
+	virtual ~FOpenGLUnorderedAccessView();
+
+	FOpenGLViewableResource* GetBaseResource() const;
+
+	void UpdateView() override;
+
+    // Actual GL resource
+	GLuint Resource = 0;
+	GLuint BufferResource = 0;
+	GLenum Format = 0;
+
+	uint32 GetBufferSize() const
+	{
+		return IsBuffer() ? GetBuffer()->GetSize() : 0;
+	}
+};
+
+class FOpenGLShaderResourceView final : public FRHIShaderResourceView, public FOpenGLView
+{
+public:
+	FOpenGLShaderResourceView(FRHICommandListBase& RHICmdList, FRHIViewableResource* Resource, FRHIViewDesc const& ViewDesc);
+	virtual ~FOpenGLShaderResourceView();
+
+	FOpenGLViewableResource* GetBaseResource() const;
+
+	void UpdateView() override;
+
+	/** OpenGL texture the buffer is bound with */
+	GLuint Resource = GL_NONE;
+	GLenum Target = GL_TEXTURE_BUFFER;
+
+	int32 LimitMip = -1;
+
+private:
+	void Invalidate();
+	bool OwnsResource = false;
+};
+
+#pragma endregion OpenGL UAV SRV
+
+#pragma region OpenGL Viewport
+class FOpenGLViewport : public FRHIViewport
+{
+public:
+
+	FOpenGLViewport(class FOpenGLDynamicRHI* InOpenGLRHI,
+        void* InWindowHandle,
+        uint32 InSizeX, uint32 InSizeY,
+        bool bInIsFullscreen, EPixelFormat PreferredPixelFormat);
+	~FOpenGLViewport();
+
+	void Resize(uint32 InSizeX,uint32 InSizeY,bool bInIsFullscreen);
+
+	// Accessors.
+	FIntPoint GetSizeXY() const { return FIntPoint(SizeX, SizeY); }
+	FOpenGLTexture* GetBackBuffer() const { return BackBuffer; }
+	bool IsFullscreen() const { return bIsFullscreen; }
+
+	virtual void WaitForFrameEventCompletion() override;
+	virtual void IssueFrameEvent() override;
+
+	virtual void* GetNativeWindow() const override;
+
+	struct FPlatformOpenGLContext* GetGLContext() const { return OpenGLContext; }
+	FOpenGLDynamicRHI* GetOpenGLRHI() const { return OpenGLRHI; }
+
+private:
+	friend class FOpenGLDynamicRHI;
+
+	FOpenGLDynamicRHI* OpenGLRHI;
+	struct FPlatformOpenGLContext* OpenGLContext;
+	uint32 SizeX;
+	uint32 SizeY;
+	bool bIsFullscreen;
+	EPixelFormat PixelFormat;
+	bool bIsValid;
+	TRefCountPtr<FOpenGLTexture> BackBuffer;
+};
+
+#pragma endregion OpenGL Viewport
+
+
 /**
  * We use template (traits) to map RHI resource types to OpenGL resource types.
  * With traits, we can cast FRHI* to FOpenGL* in compile time.

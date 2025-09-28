@@ -1,5 +1,6 @@
 #pragma once
 #include "OpenGLDrv/OpenGLThirdParty.h"
+#include "OpenGLDrv/OpenGLFwd.h"
 
 #include "Core/HAL/PlatformType.h"
 
@@ -10,22 +11,27 @@ int Init()
     return glfwInit();
 }
 
+void SetErrorCallback(GLFWerrorfun callback)
+{
+    glfwSetErrorCallback(callback);
+}
+
 void WindowHint(int hint, int value)
 {
     glfwWindowHint(hint, value);
 }
 
-GLFWwindow* CreateWindowGLFW(int width, int height, const char* title)
+Window* CreateWindowGLFW(int width, int height, const char* title)
 {
     return glfwCreateWindow(width, height, title, NULL, NULL);
 }
 
-void MakeContextCurrent(GLFWwindow* window)
+void MakeContextCurrent(Window* window)
 {
     glfwMakeContextCurrent(window);
 }
 
-void SetInputMode(GLFWwindow* window, int mode, int value)
+void SetInputMode(Window* window, int mode, int value)
 {
     glfwSetInputMode(window, mode, value);
 }
@@ -35,7 +41,7 @@ int LoadGLLoader()
     return gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 }
 
-void DestroyWindow(GLFWwindow* window)
+void DestroyWindow(Window* window)
 {
     glfwDestroyWindow(window);
 }
@@ -71,6 +77,16 @@ void DeleteBuffers(GLsizei n, const GLuint* buffers)
 void BindBuffer(GLenum target, GLuint buffer)
 {
     glBindBuffer(target, buffer);
+}
+
+void BufferData(GLenum target, GLsizeiptr size, const void* data, GLenum usage)
+{
+    glBufferData(target, size, data, usage);
+}
+
+void BufferSubData(GLenum target, GLintptr offset, GLsizeiptr size, const void* data)
+{
+    glBufferSubData(target, offset, size, data);
 }
 
 // -------------------------------------------------------------
@@ -119,6 +135,9 @@ void SetSamplerParameter(GLuint sampler, GLenum pname, GLfloat param)
     glSamplerParameterf(sampler, pname, param);
 }
 
+// -------------------------------------------------------------
+// Framebuffers
+// --------------------------------------------------------------
 void GenFramebuffers(GLsizei n, GLuint* framebuffers)
 {
     glGenFramebuffers(n, framebuffers);
@@ -134,6 +153,17 @@ void BindFramebuffer(GLenum target, GLuint framebuffer)
     glBindFramebuffer(target, framebuffer);
 }
 
+// -------------------------------------------------------------
+// Viewports
+// --------------------------------------------------------------
+void Viewport(GLint x, GLint y, GLsizei width, GLsizei height)
+{
+    glViewport(x, y, width, height);
+}
+
+// -------------------------------------------------------------
+// Vertex Elements
+// --------------------------------------------------------------
 void GenVertexArrays(GLsizei n, GLuint* arrays)
 {
     glGenVertexArrays(n, arrays);
@@ -147,16 +177,6 @@ void DeleteVertexArrays(GLsizei n, const GLuint* arrays)
 void BindVertexArray(GLuint array)
 {
     glBindVertexArray(array);
-}
-
-void BufferData(GLenum target, GLsizeiptr size, const void* data, GLenum usage)
-{
-    glBufferData(target, size, data, usage);
-}
-
-void BufferSubData(GLenum target, GLintptr offset, GLsizeiptr size, const void* data)
-{
-    glBufferSubData(target, offset, size, data);
 }
 
 void EnableVertexAttribArray(GLuint index)

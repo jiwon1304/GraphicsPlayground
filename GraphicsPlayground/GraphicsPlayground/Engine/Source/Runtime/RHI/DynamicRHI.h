@@ -20,9 +20,6 @@ public:
     virtual void RHIEndFrame_RenderThread(class FRHICommandListImmediate& RHICmdList);
     virtual void RHIEndFrame(uint64 FrameNumber) = 0;
 
-    // virtual void RHITick(float DeltaTime) = 0;
-    virtual void RHIExecuteCommandList(class FRHICommandList* CmdList) = 0;
-
     // -------------------------------------------------------------
     // Resource Creation
     // -------------------------------------------------------------

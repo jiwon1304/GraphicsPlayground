@@ -144,59 +144,28 @@ struct FOpenGLCommonState
     TArray<FOpenGLSamplerState*> SamplerStates;
 };
 
-struct FOpenGLRHIState final : public FOpenGLCommonState
+struct FOpenGLContextState final : public FOpenGLCommonState
 {
-	// FOpenGLRasterizerStateData		RasterizerState;
-	// FOpenGLDepthStencilStateData	DepthStencilState;
-	// uint32							StencilRef;
-	// FOpenGLBlendStateData			BlendState;
-	// GLuint							Framebuffer;
-	// bool							bScissorEnabled;
-	// FIntRect						Scissor;
-	// FIntRect						Viewport;
-	// float							DepthMinZ;
-	// float							DepthMaxZ;
-	// GLuint							ZeroFilledDummyUniformBuffer;
-	// uint32							RenderTargetWidth;
-	// uint32							RenderTargetHeight;
-	// bool							bAlphaToCoverageEnabled;
+	FOpenGLRasterizerStateData		RasterizerState;
+	FOpenGLDepthStencilStateData	DepthStencilState;
+	uint32							StencilRef;
+	FOpenGLBlendStateData			BlendState;
+	GLuint							Framebuffer;
+	FIntRect						Viewport;
+	float							DepthMinZ;
+	float							DepthMaxZ;
+	uint32							RenderTargetWidth;
+	uint32							RenderTargetHeight;
+	bool							bAlphaToCoverageEnabled;
 
-	// // Pending framebuffer setup
-	// int32							NumRenderingSamples;// Only used with GL_EXT_multisampled_render_to_texture
-	// int32							FirstNonzeroRenderTarget;
-	// FOpenGLTexture*					RenderTargets[MaxSimultaneousRenderTargets];
-	// uint32							RenderTargetMipmapLevels[MaxSimultaneousRenderTargets];
-	// uint32							RenderTargetArrayIndex[MaxSimultaneousRenderTargets];
-	// FOpenGLTexture*					DepthStencil;
-	// ERenderTargetStoreAction		StencilStoreAction;
-	// uint32							DepthTargetWidth;
-	// uint32							DepthTargetHeight;
-	// bool							bFramebufferSetupInvalid;
+	// Pending framebuffer setup
+	FOpenGLTexture*					RenderTargets[MaxSimultaneousRenderTargets];
+	FOpenGLTexture*					DepthStencil;
+	ERenderTargetStoreAction		StencilStoreAction;
+	uint32							DepthTargetWidth;
+	uint32							DepthTargetHeight;
+	bool							bFramebufferSetupInvalid;
 
-	// // we null this when the we dirty PackedGlobalUniformDirty. Thus we can skip all of CommitNonComputeShaderConstants if it matches the current program
-	// FOpenGLLinkedProgram* LinkedProgramAndDirtyFlag;
-	// FOpenGLShaderParameterCache*	ShaderParameters;
-
-	// TRefCountPtr<FOpenGLBoundShaderState>	BoundShaderState;
-	// TRefCountPtr<FOpenGLComputeShader>		CurrentComputeShader;
-
-	// /** The RHI does not allow more than 14 constant buffers per shader stage due to D3D11 limits. */
-	// enum { MAX_UNIFORM_BUFFERS_PER_SHADER_STAGE = 14 };
-
-	// /** Track the currently bound uniform buffers. */
-	// FRHIUniformBuffer* BoundUniformBuffers[SF_NumStandardFrequencies][MAX_UNIFORM_BUFFERS_PER_SHADER_STAGE];
-	// uint32 BoundUniformBuffersDynamicOffset[SF_NumStandardFrequencies][MAX_UNIFORM_BUFFERS_PER_SHADER_STAGE];
-
-	// /** Array to track if any real (not emulated) uniform buffers have been bound since the last draw call */
-	// bool bAnyDirtyRealUniformBuffers[SF_NumStandardFrequencies];
-	// /** Bit array to track which uniform buffers have changed since the last draw call. */
-	// bool bAnyDirtyGraphicsUniformBuffers;
-	// uint16 DirtyUniformBuffers[SF_NumStandardFrequencies];
-
-	// // Used for if(!FOpenGL::SupportsFastBufferData())
-	// uint32 UpVertexBufferBytes;
-	// uint32 UpIndexBufferBytes;
-	// uint32 UpStride;
-	// void* UpVertexBuffer;
-	// void* UpIndexBuffer;
+	TRefCountPtr<FOpenGLBoundShaderState>	BoundShaderState;
+	TRefCountPtr<FOpenGLComputeShader>		CurrentComputeShader;
 };

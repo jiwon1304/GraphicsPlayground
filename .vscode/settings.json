@@ -24,6 +24,26 @@
         "string": "cpp",
         "unordered_map": "cpp",
         "unordered_set": "cpp",
-        "initializer_list": "cpp"
+        "initializer_list": "cpp",
+        "__bit_reference": "cpp",
+        "__hash_table": "cpp",
+        "ios": "cpp",
+        "limits": "cpp",
+        "locale": "cpp",
+        "mutex": "cpp",
+        "new": "cpp",
+        "optional": "cpp",
+        "ratio": "cpp",
+        "stack": "cpp",
+        "stdexcept": "cpp",
+        "streambuf": "cpp",
+        "string_view": "cpp",
+        "typeinfo": "cpp",
+        "variant": "cpp",
+        "__tree": "cpp",
+        "complex": "cpp",
+        "iterator": "cpp",
+        "map": "cpp",
+        "execution": "cpp"
     }
 }

@@ -913,9 +913,10 @@ public:
     FRHIViewport() : FRHIResource(RRT_Viewport) {}
 
     /** Ticks the viewport on the game thread */
-    virtual void Tick(float DeltaTime) {}
+    // virtual void Tick(float DeltaTime) {}
     virtual void WaitForFrameEventCompletion() {}
     virtual void IssueFrameEvent() {}
+	virtual void* GetNativeWindow() = 0;
 };
 
 // -----------------------------------------------------------------------------

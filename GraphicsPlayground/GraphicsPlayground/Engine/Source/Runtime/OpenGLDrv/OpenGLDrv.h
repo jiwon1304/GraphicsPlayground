@@ -6,13 +6,16 @@
 #include "IOpenGLDynamicRHI.h"
 // #include "OpenGLState.h"
 
-class FOpenGLDynamicRHI : public IOpenGLDynamicRHI, public IRHICommandContext
+class FOpenGLDynamicRHI : public IOpenGLDynamicRHI, public IRHICommandContextPSOFallback
 {
     static inline FOpenGLDynamicRHI* Singleton = nullptr;
 
 public:
     static inline FOpenGLDynamicRHI& Get() { return *Singleton; }
 
+    /**
+     * FDyanmicRHI overrides
+     */
     FOpenGLDynamicRHI();
 
     ~FOpenGLDynamicRHI();
@@ -79,9 +82,10 @@ public:
     virtual void UnlockStagingBuffer_RenderThread(class FRHICommmandListImmediate& RHICmdList, FRHIStagingBuffer* StagingBuffer);
 
 	// FlushType: Thread safe, but varies depending on the RHI
-	virtual FBoundShaderStateRHIRef RHICreateBoundShaderState(FRHIVertexDeclaration* VertexDeclaration, FRHIVertexShader* VertexShader, FRHIPixelShader* PixelShader, FRHIGeometryShader* GeometryShader);
-
-    virtual FGraphicsPipelineStateRHIRef RHICreateGraphicsPipelineState(const FGraphicsPipelineStateInitializer& Initializer);
+	virtual FBoundShaderStateRHIRef RHICreateBoundShaderState(FRHIVertexDeclaration* VertexDeclaration, FRHIVertexShader* VertexShader, FRHIPixelShader* PixelShader, FRHIGeometryShader* GeometryShader)
+    {
+        return nullptr;
+    }
 
     // -------------------------------------------------------------
     // (Uniform) Buffers
@@ -122,10 +126,49 @@ public:
 
 	virtual IRHICommandContext* RHIGetDefaultContext();
 
-private:
-    GLFWwindow* MainWindow = nullptr;
+    /**
+     * FDynamicRHIPSOFallback overrides
+     */
+    // virtual FGraphicsPipelineStateRHIRef RHICreateGraphicsPipelineState(const FGraphicsPipelineStateInitializer& Initializer);
 
-    FOpenGLRHIState CurrentState;
+    /**
+     * IRHICommandContextPSOFallback overrides
+     */
+    virtual void RHISetBoundShaderState(FRHIBoundShaderState* BoundShaderState) override;
+    virtual void RHISetDepthStencilState(FRHIDepthStencilState* NewState, uint32 StencilRef) override;
+    virtual void RHISetBlendState(FRHIBlendState* NewState, const FLinearColor& BlendFactor) override;
+	virtual void RHISetRasterizerState(FRHIRasterizerState* NewState) override;
+	virtual void RHISetBlendState(FRHIBlendState* NewState, const FLinearColor& BlendFactor) override;
+	virtual void RHIEnableDepthBoundsTest(bool bEnable) override;
+	virtual void RHISetComputeShader(FRHIComputeShader* ComputeShader) override;
+
+    /**
+     * IRHIComputeContext overrides
+     */
+    virtual void RHISetStaticUniformBuffers(const FUniformBufferStaticBindings& InUniformBuffers) override;
+	virtual void RHISetStaticUniformBuffer(FUniformBufferStaticSlot Slot, FRHIUniformBuffer* UniformBuffer) override;
+	virtual void RHISetUniformBufferDynamicOffset(FUniformBufferStaticSlot Slot, uint32 Offset) override;
+
+    /**
+     * IRHICommandContext overrides
+     */
+    virtual void RHIBeginRenderPass(const FRHIRenderPassInfo& InInfo, const TCHAR* InName) override;
+    virtual void RHIEndRenderPass() override;
+	virtual void RHIBeginDrawingViewport(FRHIViewport* Viewport, FRHITexture* RenderTargetRHI) override;
+    virtual void RHIEndDrawingViewport(FRHIViewport* Viewport, bool bPresent, bool bLockToVsync) override;
+
+    virtual void RHISetStreamSource(uint32 StreamIndex, FRHIBuffer* VertexBuffer, uint32 Offset) override;
+	virtual void RHISetViewport(float MinX, float MinY, float MinZ, float MaxX, float MaxY, float MaxZ) override;
+    virtual void RHISetGraphicsPipelineState(FRHIGraphicsPipelineState* GraphicsState, uint32 StencilRef) override;
+    virtual void RHIDrawPrimitive(uint32 BaseVertexIndex, uint32 NumVertices, uint32 NumInstances) override;
+    virtual void RHIDrawIndexedPrimitive(uint32 BaseVertexIndex, uint32 StartIndex, uint32 NumIndices, uint32 NumInstances) override;
+
+private:
+    FOpenGL::Window* MainWindow = nullptr;
+
+    struct FPlatformOpenGLDevice* PlatformDevice = nullptr;
 
     EPrimitiveType PrimitiveType = PT_TriangleList;
+
+    void InitializeStateResource();
 };
