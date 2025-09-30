@@ -45,7 +45,7 @@ void PlatformDestroyOpenGLContext(FPlatformOpenGLContext* Context);
 /**
  * Recreate the backbuffer then call this function
  */
-void PlatformResizeOpenGLContext(FPlatformOpenGLDevice* Device, FPlatformOpenGLContext* Context,
+void PlatformResizeOpenGLContext(FPlatformOpenGLContext* Context,
     int32 SizeX, int32 SizeY, bool bIsFullscreen,
     GLenum BackBufferTarget, GLuint BackBufferResource);
 

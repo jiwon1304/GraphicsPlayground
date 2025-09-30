@@ -350,7 +350,7 @@ public:
 struct FRHIVertexDeclaration : public FRHIResource
 {
     FRHIVertexDeclaration() : FRHIResource(RRT_VertexDeclaration) {}
-    virtual bool GetInitializer(const FVertexDeclarationElementList& Init) { return false; }
+    virtual bool GetInitializer(FVertexDeclarationElementList& Init) { return false; }
 };
 
 /** 
@@ -886,7 +886,7 @@ public:
 		return nullptr;
 	}
 
-    /** Returns API specific base class */
+    /** @todo : remove this if not needed */
 	virtual void* GetTextureBaseRHI()
 	{
 		return nullptr;
@@ -916,7 +916,7 @@ public:
     // virtual void Tick(float DeltaTime) {}
     virtual void WaitForFrameEventCompletion() {}
     virtual void IssueFrameEvent() {}
-	virtual void* GetNativeWindow() = 0;
+	virtual void* GetNativeWindow() const = 0;
 };
 
 // -----------------------------------------------------------------------------

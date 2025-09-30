@@ -13,8 +13,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Graphics API Settings
-option(USE_OPENGL "Use OpenGL backend" OFF)
-option(USE_DIRECTX11 "Use DirectX 11 backend" ON)
+option(USE_OPENGL "Use OpenGL backend" ON)
+option(USE_DIRECTX11 "Use DirectX 11 backend" OFF)
 
 # Project Settings
 set(PROJECT_NAME GraphicsPlayground)

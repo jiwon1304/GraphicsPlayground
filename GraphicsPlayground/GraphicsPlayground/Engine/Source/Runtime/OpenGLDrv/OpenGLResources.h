@@ -4,6 +4,12 @@
 #include "OpenGL3.h"
 #include "RHI/RHICommandList.h"
 #include "Core/HAL/PlatformMemory.h"
+#include "Core/Math/Rect.h"
+
+class FOpenGLLinkedProgram;
+class FOpenGLVertexShader;
+class FOpenGLPixelShader;
+class FOpenGLGeometryShader;
 
 #pragma region OpenGL Buffer
 class FOpenGLBufferBase
@@ -174,12 +180,13 @@ public:
 #pragma endregion OpenGL Buffer
 
 #pragma region OpenGL VertexDeclaration
-class FOpenGLVertexElement
+struct FOpenGLVertexElement
 {
+public:
     GLenum Type; // Primitive Type
-    GLuint StreamIndex; // ???
+    GLuint StreamIndex; // ??? same with FVertexElement::StreamIndex
     GLuint Offset; // offset in bytes within VAO
-    GLuint Size; // size in bytes
+    GLuint Size; // Number of components
     uint8 bNormalized; // normalized or not
     uint8 AttributeIndex; // attribute index in shader
     uint16 Padding;
@@ -204,7 +211,7 @@ public:
     {
     }
 
-    virtual bool GetInitializer(const FVertexDeclarationElementList& Init) override;
+    virtual bool GetInitializer(FVertexDeclarationElementList& Init) override;
 };
 #pragma endregion OpenGL VertexDeclaration
 
@@ -213,15 +220,31 @@ public:
  * Contains vertex elements and shaders.
  * Other buffers are not specified here.
  */
-class FOpenGLShaderState : public FRHIBoundShaderState
+class FOpenGLBoundShaderState : public FRHIBoundShaderState
 {
-    static FOpenGLLinkedProgram FindOrCreateLinkedProgram(
+    static FOpenGLLinkedProgram* FindOrCreateLinkedProgram(
         FOpenGLVertexShader* VertexShader, 
         FOpenGLPixelShader* PixelShader, 
         FOpenGLGeometryShader* GeometryShader
     );
 
 public:
+    FOpenGLBoundShaderState(
+        FOpenGLVertexDeclaration* InVertexDeclaration,
+        FOpenGLVertexShader* InVertexShader,
+        FOpenGLPixelShader* InPixelShader,
+        FOpenGLGeometryShader* InGeometryShader
+    )
+        : FRHIBoundShaderState()
+        , VertexDeclaration(InVertexDeclaration)
+        , VertexShader(InVertexShader)
+        , PixelShader(InPixelShader)
+        , GeometryShader(InGeometryShader)
+    {
+        assert(VertexDeclaration && VertexShader && PixelShader);
+        LinkedProgram = FindOrCreateLinkedProgram(VertexShader, PixelShader, GeometryShader);
+    }
+
     const FOpenGLLinkedProgram* LinkedProgram;
     TRefCountPtr<FOpenGLVertexDeclaration> VertexDeclaration;
     TRefCountPtr<FOpenGLVertexShader> VertexShader;
@@ -261,17 +284,15 @@ public:
 
 	virtual ~FOpenGLTexture();
 
-    // OpenGL does not use pointer
 	virtual void* GetTextureBaseRHI() override final
 	{
 		return this;
 	}
 
-	/** FRHITexture override.  See FRHITexture::GetNativeResource() */
+    // OpenGL does not use pointer
 	virtual void* GetNativeResource() const override
 	{
-		// this must become a full GL resource here, calling the non-const GetResourceRef ensures this.
-		return const_cast<void*>(reinterpret_cast<const void*>(&const_cast<FOpenGLTexture*>(this)->GetResourceRef()));
+        return nullptr;
 	}
 
 	void DeleteGLResource();
@@ -304,7 +325,7 @@ public:
 
 	FOpenGLViewableResource* GetBaseResource() const;
 
-	void UpdateView() override;
+	// void UpdateView() override;
 
     // Actual GL resource
 	GLuint Resource = 0;
@@ -325,7 +346,7 @@ public:
 
 	FOpenGLViewableResource* GetBaseResource() const;
 
-	void UpdateView() override;
+	// void UpdateView() override;
 
 	/** OpenGL texture the buffer is bound with */
 	GLuint Resource = GL_NONE;
@@ -344,7 +365,6 @@ private:
 class FOpenGLViewport : public FRHIViewport
 {
 public:
-
 	FOpenGLViewport(class FOpenGLDynamicRHI* InOpenGLRHI,
         void* InWindowHandle,
         uint32 InSizeX, uint32 InSizeY,
@@ -361,7 +381,7 @@ public:
 	virtual void WaitForFrameEventCompletion() override;
 	virtual void IssueFrameEvent() override;
 
-	virtual void* GetNativeWindow() const override;
+	virtual void* GetNativeWindow() const override { return nullptr; } // @todo : implement
 
 	struct FPlatformOpenGLContext* GetGLContext() const { return OpenGLContext; }
 	FOpenGLDynamicRHI* GetOpenGLRHI() const { return OpenGLRHI; }
@@ -448,7 +468,7 @@ struct TOpenGLResourceTraits<FRHIUniformBuffer>
 template<>
 struct TOpenGLResourceTraits<FRHIBuffer>
 {
-    using TConcreteType = class FOpenGLBuffer;
+    using TConcreteType = FOpenGLBuffer;
 };
 template<>
 struct TOpenGLResourceTraits<FRHIViewport>

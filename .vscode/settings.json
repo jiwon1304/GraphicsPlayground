@@ -44,6 +44,8 @@
         "complex": "cpp",
         "iterator": "cpp",
         "map": "cpp",
-        "execution": "cpp"
+        "execution": "cpp",
+        "system_error": "cpp",
+        "filesystem": "cpp"
     }
 }

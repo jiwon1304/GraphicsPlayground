@@ -18,39 +18,25 @@ FOpenGLDynamicRHI::FOpenGLDynamicRHI()
         assert(false && "Failed to create OpenGL device");
         return;
     }
+}
 
+FOpenGLDynamicRHI::~FOpenGLDynamicRHI()
+{
 }
 
 void FOpenGLDynamicRHI::Init()
 {
-    // // Create the main context (window)
-    // PlatformCreateOpenGLContext(PlatformDevice, nullptr, 1280, 720, PF_B8G8R8A8, false, "Graphics Playground - OpenGL");
-    // if (!PlatformContext) {
-    //     assert(false && "Failed to create OpenGL context");
-    //     return;
-    // }
 
-    // MainWindow = PlatformGetWindow(PlatformContext);
-    // if (!MainWindow) {
-    //     assert(false && "Failed to get native window handle");
-    //     return;
-    // }
+}
 
-    // // Make the context current
-    // FOpenGL::MakeContextCurrent(MainWindow);
+void FOpenGLDynamicRHI::Shutdown()
+{
+}
 
-    // // Load OpenGL functions using GLAD
-    // if (!FOpenGL::LoadGLLoader()) {
-    //     assert(false && "Failed to load OpenGL functions");
-    //     return;
-    // }
+void FOpenGLDynamicRHI::RHIEndFrame_RenderThread(FRHICommandListImmediate &RHICmdList)
+{
+}
 
-    // // Set initial viewport
-    // FOpenGL::Viewport(0, 0, 1280, 720);
-
-    // // Enable V-Sync
-    // glfwSwapInterval(1);
-
-    // // Initialize any other OpenGL state here
-    // InitializeStateResource();
+void FOpenGLDynamicRHI::RHIEndFrame(uint64 FrameNumber)
+{
 }

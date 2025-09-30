@@ -1,4 +1,4 @@
-#include "OpenGLDrv/Private/OpenGLDrvPrivate.h"
+#include "OpenGLDrv/Platform/OpenGLDrvPrivate.h"
 #include "OpenGLDrv/OpenGLThirdParty.h"
 #include "OpenGLDrv/OpenGL3.h"
 
@@ -11,11 +11,15 @@ static void ErrorCallback(int Error, const char* Description)
     fprintf(stderr, "GLFW Error %d: %s\n", Error, Description);
 }
 
-// ???
-static void framebufferSizeCallback(FOpenGL::Window* /*win*/, int width, int height) {
-    if (width > 0 && height > 0) {
-        FOpenGL::Viewport(0, 0, width, height);
-    }
+/**
+ * Create a dummy window to initialize OpenGL context
+ * This is needed to load OpenGL functions using GLAD
+ */
+static void PlatformCreateDummyOpenGLWindow(FPlatformOpenGLContext* OutContext)
+{
+    OutContext->Window = FOpenGL::CreateWindowGLFW(1, 1, "Dummy");
+    FOpenGL::MakeContextCurrent(OutContext->Window);
+    FOpenGL::LoadGLLoader();
 }
 
 /**
@@ -33,6 +37,8 @@ struct FPlatformOpenGLContext
 struct FPlatformOpenGLDevice
 {
     FPlatformOpenGLContext MainContext;
+     // For initialization, it does not represent any real window or rendering context
+    FPlatformOpenGLContext DummyContext;
 };
 
 bool PlatformInitOpenGL()
@@ -61,14 +67,22 @@ FPlatformOpenGLDevice* PlatformCreateOpenGLDevice()
         return nullptr;
     }
 
+    PlatformCreateDummyOpenGLWindow(&Device->DummyContext);
+
     return Device;
 }
 
 void PlatformDestroyOpenGLDevice(FPlatformOpenGLDevice* Device)
 {
     assert(Device);
+    assert(Device->MainContext.Window == nullptr); // Main context should be destroyed before device
 
-    assert(Device->MainContext.Window == nullptr);
+    PlatformDestroyOpenGLContext(&Device->DummyContext);
+    Device->DummyContext.Window = nullptr;
+
+    // PlatformDestroyOpenGLContext(&Device->MainContext);
+    // Device->MainContext.Window = nullptr;
+
     FPlatformMemory::Free<EAT_RHI>(Device, sizeof(FPlatformOpenGLDevice));
     FOpenGL::Terminate();
 }
@@ -85,13 +99,6 @@ FPlatformOpenGLContext* PlatformCreateOpenGLContext(FPlatformOpenGLDevice* Devic
     }
 
     FOpenGL::MakeContextCurrent(Device->MainContext.Window);
-    
-    if(!FOpenGL::LoadGLLoader()) {
-        std::fprintf(stderr, "Failed to initialize OpenGL context\n");
-        FOpenGL::DestroyWindow(Device->MainContext.Window);
-        Device->MainContext.Window = nullptr;
-        return nullptr;
-    }
 }
 
 void PlatformDestroyOpenGLContext(FPlatformOpenGLContext* Context)
@@ -100,7 +107,7 @@ void PlatformDestroyOpenGLContext(FPlatformOpenGLContext* Context)
     Context->Window = nullptr;
 }
 
-void PlatformResizeOpenGLContext(FPlatformOpenGLDevice* Device, FPlatformOpenGLContext* Context,
+void PlatformResizeOpenGLContext(FPlatformOpenGLContext* Context,
     int32 SizeX, int32 SizeY, bool bIsFullscreen,
     GLenum BackBufferTarget, GLuint BackBufferResource)
 {

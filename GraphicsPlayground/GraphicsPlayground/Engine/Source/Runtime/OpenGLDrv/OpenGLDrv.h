@@ -23,44 +23,56 @@ public:
     virtual void Init();
     virtual void Shutdown();
 
+    template<typename TRHIType>
+	static auto* ResourceCast(TRHIType* Resource)
+	{
+		return static_cast<typename TOpenGLResourceTraits<TRHIType>::TConcreteType*>(Resource);
+	}
+
+	static FOpenGLTexture* ResourceCast(FRHITexture* TextureRHI)
+	{
+		if (!TextureRHI)
+		{
+			return nullptr;
+		}
+		else
+		{
+			return static_cast<FOpenGLTexture*>(TextureRHI->GetTextureBaseRHI());
+		}
+	}
+
+    /**
+     * Large and common data for overall render passes
+     */
+	void BindUniformBuffer(EShaderType ShaderType, uint32 BufferIndex, FRHIUniformBuffer* BufferRHI);
+
+    /**
+     * small and specific data for one render pass
+     * NOT USED
+     */
+	// void SetShaderParametersCommon(EShaderType ShaderType, const TArray<uint8>& InParametersData, TConstArrayView<FRHIShaderParameter> InParameters, TConstArrayView<FRHIShaderParameterResource> InResourceParameters);
+	// void SetShaderUnbindsCommon(EShaderType ShaderType, TConstArrayView<FRHIShaderParameterUnbind> InUnbinds);
+
     virtual void RHIEndFrame_RenderThread(class FRHICommandListImmediate& RHICmdList);
     virtual void RHIEndFrame(uint64 FrameNumber);
 
     // -------------------------------------------------------------
     // Resource Creation
     // -------------------------------------------------------------
-	// FlushType: Thread safe
 	virtual FSamplerStateRHIRef RHICreateSamplerState(const FSamplerStateInitializerRHI& Initializer);
-
-	// FlushType: Thread safe
 	virtual FRasterizerStateRHIRef RHICreateRasterizerState(const FRasterizerStateInitializerRHI& Initializer);
-
-	// FlushType: Thread safe
 	virtual FDepthStencilStateRHIRef RHICreateDepthStencilState(const FDepthStencilStateInitializerRHI& Initializer);
-
-	// FlushType: Thread safe
 	virtual FBlendStateRHIRef RHICreateBlendState(const FBlendStateInitializerRHI& Initializer);
-
-	// FlushType: Wait RHI Thread
 	virtual FVertexDeclarationRHIRef RHICreateVertexDeclaration(const FVertexDeclarationElementList& Elements);
-
-	// FlushType: Wait RHI Thread
-	virtual FPixelShaderRHIRef RHICreatePixelShader(/*TArrayView<const uint8> Code, const FSHAHash& Hash*/);
-
-	// FlushType: Wait RHI Thread
-	virtual FVertexShaderRHIRef RHICreateVertexShader(/*TArrayView<const uint8> Code, const FSHAHash& Hash*/);
-
-	// FlushType: Wait RHI Thread
-	virtual FGeometryShaderRHIRef RHICreateGeometryShader(/*TArrayView<const uint8> Code, const FSHAHash& Hash*/);
-
-	// FlushType: Wait RHI Thread
-	virtual FComputeShaderRHIRef RHICreateComputeShader(/*TArrayView<const uint8> Code, const FSHAHash& Hash*/);
+	virtual FPixelShaderRHIRef RHICreatePixelShader(const TArray<const uint8>& Code, const uint16 Hash);
+	virtual FVertexShaderRHIRef RHICreateVertexShader(const TArray<const uint8>& Code, const uint16 Hash);
+	virtual FGeometryShaderRHIRef RHICreateGeometryShader(const TArray<const uint8>& Code, const uint16 Hash);
+	// virtual FComputeShaderRHIRef RHICreateComputeShader(const TArray<const uint8>& Code, const uint16 Hash);
 
 	/**
 	* Creates a staging buffer, which is memory visible to the cpu without any locking.
 	* @return The new staging-buffer.
 	*/
-	// FlushType: Thread safe.	
 	virtual FStagingBufferRHIRef RHICreateStagingBuffer()
 	{
 		return new FGenericRHIStagingBuffer();
@@ -81,11 +93,7 @@ public:
 
     virtual void UnlockStagingBuffer_RenderThread(class FRHICommmandListImmediate& RHICmdList, FRHIStagingBuffer* StagingBuffer);
 
-	// FlushType: Thread safe, but varies depending on the RHI
-	virtual FBoundShaderStateRHIRef RHICreateBoundShaderState(FRHIVertexDeclaration* VertexDeclaration, FRHIVertexShader* VertexShader, FRHIPixelShader* PixelShader, FRHIGeometryShader* GeometryShader)
-    {
-        return nullptr;
-    }
+	virtual FBoundShaderStateRHIRef RHICreateBoundShaderState(FRHIVertexDeclaration* VertexDeclarationRHI, FRHIVertexShader* VertexShaderRHI, FRHIPixelShader* PixelShaderRHI, FRHIGeometryShader* GeometryShaderRHI);
 
     // -------------------------------------------------------------
     // (Uniform) Buffers

@@ -39,16 +39,16 @@ public:
 	virtual FVertexDeclarationRHIRef RHICreateVertexDeclaration(const FVertexDeclarationElementList& Elements) = 0;
 
 	// FlushType: Wait RHI Thread
-	virtual FPixelShaderRHIRef RHICreatePixelShader(/*TArrayView<const uint8> Code, const FSHAHash& Hash*/) = 0;
+	virtual FPixelShaderRHIRef RHICreatePixelShader(const TArray<const uint8>& Code) = 0;
 
 	// FlushType: Wait RHI Thread
-	virtual FVertexShaderRHIRef RHICreateVertexShader(/*TArrayView<const uint8> Code, const FSHAHash& Hash*/) = 0;
+	virtual FVertexShaderRHIRef RHICreateVertexShader(const TArray<const uint8>& Code) = 0;
 
 	// FlushType: Wait RHI Thread
-	virtual FGeometryShaderRHIRef RHICreateGeometryShader(/*TArrayView<const uint8> Code, const FSHAHash& Hash*/) = 0;
+	virtual FGeometryShaderRHIRef RHICreateGeometryShader(const TArray<const uint8>& Code) = 0;
 
 	// FlushType: Wait RHI Thread
-	virtual FComputeShaderRHIRef RHICreateComputeShader(/*TArrayView<const uint8> Code, const FSHAHash& Hash*/) = 0;
+	virtual FComputeShaderRHIRef RHICreateComputeShader(const TArray<const uint8>& Code) = 0;
 
 	/**
 	* Creates a staging buffer, which is memory visible to the cpu without any locking.

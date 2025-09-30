@@ -188,4 +188,78 @@ void VertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normal
 {
     glVertexAttribPointer(index, size, type, normalized, stride, pointer);
 }
+
+// -------------------------------------------------------------
+// Shaders
+// --------------------------------------------------------------
+GLuint CreateShader(GLenum ShaderType, const char* Code)
+{
+    GLuint Shader = glCreateShader(ShaderType);
+    glShaderSource(Shader, 1, &Code, NULL);
+    glCompileShader(Shader);
+    
+    // Check compilation status
+    GLint Success;
+    glGetShaderiv(Shader, GL_COMPILE_STATUS, &Success);
+    if (!Success)
+    {
+        GLchar InfoLog[1024];
+        glGetShaderInfoLog(Shader, 1024, NULL, InfoLog);
+        std::fprintf(stderr, "Error compiling shader: %s\n", InfoLog);
+        glDeleteShader(Shader);
+        return 0;
+    }
+
+    return Shader;
+}
+
+GLuint CreateProgram(GLuint VertexShader, GLuint FragmentShader, GLuint GeometryShader = 0)
+{
+    GLuint Program = glCreateProgram();
+    glAttachShader(Program, VertexShader);
+    glAttachShader(Program, FragmentShader);
+    if (GeometryShader != 0)
+    {
+        glAttachShader(Program, GeometryShader);
+    }
+    glLinkProgram(Program);
+
+    // Check linking status
+    GLint Success;
+    glGetProgramiv(Program, GL_LINK_STATUS, &Success);
+    if (!Success)
+    {
+        GLchar InfoLog[1024];
+        glGetProgramInfoLog(Program, 1024, NULL, InfoLog);
+        std::fprintf(stderr, "Error linking program: %s\n", InfoLog);
+        glDeleteProgram(Program);
+        return 0;
+    }
+
+    // Detach shaders after successful link
+    glDetachShader(Program, VertexShader);
+    glDetachShader(Program, FragmentShader);
+    if (GeometryShader != 0)
+    {
+        glDetachShader(Program, GeometryShader);
+    }
+
+    return Program;
 };
+
+void DeleteShader(GLuint Shader)
+{
+    glDeleteShader(Shader);
+}
+
+void DeleteProgram(GLuint Program)
+{
+    glDeleteProgram(Program);
+}
+
+void UseProgram(GLuint Program)
+{
+    glUseProgram(Program);
+}
+
+}
