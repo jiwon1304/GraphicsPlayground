@@ -1,6 +1,8 @@
 ﻿#pragma once
-#include <immintrin.h>
 #include "HAL/PlatformType.h"
+
+#if defined(__SSE__) || defined(_M_IX86) || defined(_M_X64)
+#include <immintrin.h>
 
 /**
  * @param A0    Selects which element (0-3) from 'A' into 1st slot in the result
@@ -133,3 +135,133 @@ FORCEINLINE double CeilToDouble(double F)
     return _mm_cvtsd_f64(_mm_ceil_pd(_mm_set_sd(F)));
 }
 }
+
+namespace SIMD = SSE;
+#elif defined(__ARM_NEON__)
+#include <arm_neon.h>
+
+// 4 floats
+typedef float32x4_t VectorRegister4Float;
+
+namespace NEON
+{
+
+/**
+ * Vector의 특정 인덱스를 복제합니다.
+ * @tparam Index 복제할 Index (0 ~ 3)
+ * @param Vector 복제할 대상
+ * @return 복제된 레지스터
+ */
+template <int Index>
+FORCEINLINE VectorRegister4Float VectorReplicateTemplate(const VectorRegister4Float& Vector)
+{
+    // NEON에서 특정 요소 복제: vdupq_lane_f32
+    return vdupq_n_f32(vgetq_lane_f32(Vector, Index));
+}
+
+FORCEINLINE VectorRegister4Float VectorMultiply(const VectorRegister4Float& Vec1, const VectorRegister4Float& Vec2)
+{
+    return vmulq_f32(Vec1, Vec2);
+}
+
+FORCEINLINE VectorRegister4Float VectorAdd(const VectorRegister4Float& Vec1, const VectorRegister4Float& Vec2)
+{
+    return vaddq_f32(Vec1, Vec2);
+}
+
+FORCEINLINE VectorRegister4Float VectorMultiplyAdd(
+    const VectorRegister4Float& Vec1,
+    const VectorRegister4Float& Vec2,
+    const VectorRegister4Float& Vec3
+)
+{
+    // Vec1 * Vec2 + Vec3
+    return vaddq_f32(vmulq_f32(Vec1, Vec2), Vec3);
+}
+
+inline void VectorMatrixMultiply(FMatrix* Result, const FMatrix* Matrix1, const FMatrix* Matrix2)
+{
+    const VectorRegister4Float* Matrix1Ptr = reinterpret_cast<const VectorRegister4Float*>(Matrix1);
+    const VectorRegister4Float* Matrix2Ptr = reinterpret_cast<const VectorRegister4Float*>(Matrix2);
+    VectorRegister4Float* Ret = reinterpret_cast<VectorRegister4Float*>(Result);
+
+    VectorRegister4Float Temp, R0, R1, R2;
+
+    // 첫번째 행 계산
+    Temp = VectorMultiply(VectorReplicateTemplate<0>(Matrix1Ptr[0]), Matrix2Ptr[0]);
+    Temp = VectorMultiplyAdd(VectorReplicateTemplate<1>(Matrix1Ptr[0]), Matrix2Ptr[1], Temp);
+    Temp = VectorMultiplyAdd(VectorReplicateTemplate<2>(Matrix1Ptr[0]), Matrix2Ptr[2], Temp);
+    R0  = VectorMultiplyAdd(VectorReplicateTemplate<3>(Matrix1Ptr[0]), Matrix2Ptr[3], Temp);
+
+    // 두번째 행 계산
+    Temp = VectorMultiply(VectorReplicateTemplate<0>(Matrix1Ptr[1]), Matrix2Ptr[0]);
+    Temp = VectorMultiplyAdd(VectorReplicateTemplate<1>(Matrix1Ptr[1]), Matrix2Ptr[1], Temp);
+    Temp = VectorMultiplyAdd(VectorReplicateTemplate<2>(Matrix1Ptr[1]), Matrix2Ptr[2], Temp);
+    R1  = VectorMultiplyAdd(VectorReplicateTemplate<3>(Matrix1Ptr[1]), Matrix2Ptr[3], Temp);
+
+    // 세번째 행 계산
+    Temp = VectorMultiply(VectorReplicateTemplate<0>(Matrix1Ptr[2]), Matrix2Ptr[0]);
+    Temp = VectorMultiplyAdd(VectorReplicateTemplate<1>(Matrix1Ptr[2]), Matrix2Ptr[1], Temp);
+    Temp = VectorMultiplyAdd(VectorReplicateTemplate<2>(Matrix1Ptr[2]), Matrix2Ptr[2], Temp);
+    R2  = VectorMultiplyAdd(VectorReplicateTemplate<3>(Matrix1Ptr[2]), Matrix2Ptr[3], Temp);
+
+    // 네번째 행 계산
+    Temp = VectorMultiply(VectorReplicateTemplate<0>(Matrix1Ptr[3]), Matrix2Ptr[0]);
+    Temp = VectorMultiplyAdd(VectorReplicateTemplate<1>(Matrix1Ptr[3]), Matrix2Ptr[1], Temp);
+    Temp = VectorMultiplyAdd(VectorReplicateTemplate<2>(Matrix1Ptr[3]), Matrix2Ptr[2], Temp);
+    Temp = VectorMultiplyAdd(VectorReplicateTemplate<3>(Matrix1Ptr[3]), Matrix2Ptr[3], Temp);
+
+    Ret[0] = R0;
+    Ret[1] = R1;
+    Ret[2] = R2;
+    Ret[3] = Temp;
+}
+
+// 아래 함수들은 NEON에서 round, floor, ceil을 바로 지원하지 않으므로 대체 구현 필요
+FORCEINLINE float TruncToFloat(float F)
+{
+    // NEON에서 trunc은 없음, 그냥 캐스팅
+    return static_cast<float>(static_cast<int>(F));
+}
+
+FORCEINLINE double TruncToDouble(double F)
+{
+    return static_cast<double>(static_cast<int>(F));
+}
+
+FORCEINLINE float FloorToFloat(float F)
+{
+    return std::floor(F); // NEON에서 vfloorq_f32는 없음
+}
+
+FORCEINLINE double FloorToDouble(double F)
+{
+    return std::floor(F);
+}
+
+FORCEINLINE float RoundToFloat(float F)
+{
+    return std::round(F); // NEON에서 vroundq_f32는 없음
+}
+
+FORCEINLINE double RoundToDouble(double F)
+{
+    return std::round(F);
+}
+
+FORCEINLINE float CeilToFloat(float F)
+{
+    return std::ceil(F);
+}
+
+FORCEINLINE double CeilToDouble(double F)
+{
+    return std::ceil(F);
+}
+
+}
+
+namespace SIMD = NEON;
+#else
+static_assert(false, "SSE is not supported on this platform.");
+#endif

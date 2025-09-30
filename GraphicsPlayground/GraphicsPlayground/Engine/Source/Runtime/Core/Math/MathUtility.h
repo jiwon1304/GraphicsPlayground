@@ -525,17 +525,17 @@ struct FMath
     template <typename T>
     [[nodiscard]] static FORCEINLINE int32 CeilToInt(T Value) { return static_cast<int32>(ceil(Value)); }
 
-    [[nodiscard]] static FORCEINLINE float TruncToFloat(float F) { return SSE::TruncToFloat(F); }
-    [[nodiscard]] static FORCEINLINE double TruncToDouble(double F) { return SSE::TruncToDouble(F); }
+    [[nodiscard]] static FORCEINLINE float TruncToFloat(float F) { return SIMD::TruncToFloat(F); }
+    [[nodiscard]] static FORCEINLINE double TruncToDouble(double F) { return SIMD::TruncToDouble(F); }
 
-    [[nodiscard]] static FORCEINLINE float FloorToFloat(float F) { return SSE::FloorToFloat(F); }
-    [[nodiscard]] static FORCEINLINE double FloorToDouble(double F) { return SSE::FloorToDouble(F); }
+    [[nodiscard]] static FORCEINLINE float FloorToFloat(float F) { return SIMD::FloorToFloat(F); }
+    [[nodiscard]] static FORCEINLINE double FloorToDouble(double F) { return SIMD::FloorToDouble(F); }
 
     [[nodiscard]] static FORCEINLINE float RoundToFloat(float F) { return FloorToFloat(F + 0.5f); }
     [[nodiscard]] static FORCEINLINE double RoundToDouble(double F) { return FloorToDouble(F + 0.5); }
 
-    [[nodiscard]] static FORCEINLINE float CeilToFloat(float F) { return SSE::CeilToFloat(F); }
-    [[nodiscard]] static FORCEINLINE double CeilToDouble(double F) { return SSE::CeilToDouble(F); }
+    [[nodiscard]] static FORCEINLINE float CeilToFloat(float F) { return SIMD::CeilToFloat(F); }
+    [[nodiscard]] static FORCEINLINE double CeilToDouble(double F) { return SIMD::CeilToDouble(F); }
 
     [[nodiscard]] static FORCEINLINE float UnwindDegrees(float A)
     {
@@ -607,9 +607,9 @@ struct FMath
         return FMath::Min(A, FMath::Min(B, C));
     }
 
-    static FORCEINLINE bool IsFinite(float x) { return _finite(x); }
-    static FORCEINLINE bool IsInf(float x) { return !_finite(x); }
-    static FORCEINLINE bool IsNaN(float A) { return _isnan(A); }
+    static FORCEINLINE bool IsFinite(float x) { return std::isfinite(x); }
+    static FORCEINLINE bool IsInf(float x) { return !std::isfinite(x); }
+    static FORCEINLINE bool IsNaN(float A) { return std::isnan(A); }
 
     static FORCEINLINE int32 TruncToInt(float F) { return static_cast<int32>(std::trunc(F)); }
     static FORCEINLINE int64 TruncToInt(double F) { return static_cast<int64>(std::trunc(F)); }
