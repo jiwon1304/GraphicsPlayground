@@ -17,7 +17,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     return 0;
 }
-#elif defined(BUILD_PLATFORM_MAC)
+#elif defined(BUILD_PLATFORM_MACOS)
 int main(int argc, char** argv)
 {
     GEngineLoop.Init

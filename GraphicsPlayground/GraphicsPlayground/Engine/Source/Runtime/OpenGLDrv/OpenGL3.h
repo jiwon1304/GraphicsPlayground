@@ -31,9 +31,9 @@ void MakeContextCurrent(Window* window)
     glfwMakeContextCurrent(window);
 }
 
-void SetInputMode(Window* window, int mode, int value)
+void SetInputMode(Window* Window, int mode, int value)
 {
-    glfwSetInputMode(window, mode, value);
+    glfwSetInputMode(Window, mode, value);
 }
 
 int LoadGLLoader()
@@ -260,6 +260,54 @@ void DeleteProgram(GLuint Program)
 void UseProgram(GLuint Program)
 {
     glUseProgram(Program);
+}
+
+// -------------------------------------------------------------
+// Input
+// --------------------------------------------------------------
+void PollEvents()
+{
+    glfwPollEvents();
+}
+
+void SetWindowUserPointer(Window* Window, void* Pointer)
+{
+    glfwSetWindowUserPointer(Window, Pointer);
+}
+
+void SetKeyCallback(Window* Window, GLFWkeyfun Callback)
+{
+    glfwSetKeyCallback(Window, Callback);
+}
+
+void SetCharCallback(Window* Window, GLFWcharfun Callback)
+{
+    glfwSetCharCallback(Window, Callback);
+}
+
+void SetMouseButtonCallback(Window* Window, GLFWmousebuttonfun Callback)
+{
+    glfwSetMouseButtonCallback(Window, Callback);
+}
+
+void SetCursorPosCallback(Window* Window, GLFWcursorposfun Callback)
+{
+    glfwSetCursorPosCallback(Window, Callback);
+}
+
+void SetScrollCallback(Window* Window, GLFWscrollfun Callback)
+{
+    glfwSetScrollCallback(Window, Callback);
+}
+
+int RawMouseMotionSupported()
+{
+    return glfwRawMouseMotionSupported();
+}
+
+void SetInputMode(Window* Window, int mode, int value)
+{
+    glfwSetInputMode(Window, mode, value);
 }
 
 }

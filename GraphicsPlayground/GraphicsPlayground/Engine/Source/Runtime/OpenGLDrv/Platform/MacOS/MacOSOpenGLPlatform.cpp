@@ -2,7 +2,7 @@
 #include "OpenGLDrv/OpenGLThirdParty.h"
 #include "OpenGLDrv/OpenGL3.h"
 
-#ifndef BUILD_PLATFORM_MAC
+#ifndef BUILD_PLATFORM_MACOS
 static_assert(false, "This file is only for MacOS");
 #endif
 

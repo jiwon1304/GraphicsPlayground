@@ -381,7 +381,8 @@ public:
 	virtual void WaitForFrameEventCompletion() override;
 	virtual void IssueFrameEvent() override;
 
-	virtual void* GetNativeWindow() const override { return nullptr; } // @todo : implement
+    // returns GLFWwindow*
+	virtual void* GetNativeWindow() const override {}
 
 	struct FPlatformOpenGLContext* GetGLContext() const { return OpenGLContext; }
 	FOpenGLDynamicRHI* GetOpenGLRHI() const { return OpenGLRHI; }

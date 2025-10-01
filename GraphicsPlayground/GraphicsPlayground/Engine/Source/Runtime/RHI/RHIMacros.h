@@ -17,7 +17,7 @@ static_assert(false, "BUILD_RENDER_BACKEND is not defined");
 #define BUILD_RHI_DX11
 #endif
 
-#elif defined(BUILD_PLATFORM_MAC)
+#elif defined(BUILD_PLATFORM_MACOS)
 
 #if BUILD_RENDER_BACKEND == OPENGL3
 #define BUILD_RHI_OPENGL

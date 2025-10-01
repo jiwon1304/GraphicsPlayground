@@ -8,7 +8,7 @@
 #if defined(_WIN32) || defined(_WIN64)
 #define BUILD_PLATFORM_WINDOWS
 #elif defined(__APPLE__)
-#define BUILD_PLATFORM_MAC
+#define BUILD_PLATFORM_MACOS
 #else
 static_assert(false, "Unsupported platform");
 #endif
@@ -35,7 +35,7 @@ static_assert(false, "Unsupported platform");
 
 
 // ---------------- macOS / Linux ----------------
-#ifdef BUILD_PLATFORM_MAC
+#ifdef BUILD_PLATFORM_MACOS
 #include <unistd.h>   // 필요시 POSIX API
 #include <sys/types.h>
 

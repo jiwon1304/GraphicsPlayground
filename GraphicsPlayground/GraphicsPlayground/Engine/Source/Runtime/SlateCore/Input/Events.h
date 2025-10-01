@@ -155,7 +155,7 @@ struct FKeyEvent : public FInputEvent
         : FInputEvent(FModifierKeysState{}, IE_None)
         , Key(EKeys::Invalid)
         , CharacterCode(0)
-        , KeyCode(0)
+        // , KeyCode(0)
     {
     }
 
@@ -163,13 +163,13 @@ struct FKeyEvent : public FInputEvent
         const EKeys::Type InKey,
         const FModifierKeysState& InModifierKeys,
         EInputEvent InInputEvent,
-        const uint32 InCharacterCode,
-        const uint32 InKeyCode
+        const uint32 InCharacterCode
+        // const uint32 InKeyCode
     )
         : FInputEvent(InModifierKeys, InInputEvent)
         , Key(InKey)
         , CharacterCode(InCharacterCode)
-        , KeyCode(InKeyCode)
+        // , KeyCode(InKeyCode)
     {
     }
 
@@ -186,7 +186,8 @@ public:
 
     uint32 GetKeyCode() const
     {
-        return KeyCode;
+        static_assert(false && "Keys로 바꾸기");
+        // return KeyCode;
     }
 
     virtual bool IsKeyEvent() const override { return true; }
@@ -194,7 +195,7 @@ public:
 private:
     EKeys::Type Key;
     uint32 CharacterCode;
-    uint32 KeyCode;
+    // uint32 KeyCode;
 };
 
 /**
