@@ -1,18 +1,18 @@
 #pragma once
-#pragma comment(lib, "user32")
-#pragma comment(lib, "d3d11")
-#pragma comment(lib, "d3dcompiler")
+// #pragma comment(lib, "user32")
+// #pragma comment(lib, "d3d11")
+// #pragma comment(lib, "d3dcompiler")
 
-#define _TCHAR_DEFINED
-#include <d3d11.h>
-#include <d3dcompiler.h>
+// #define _TCHAR_DEFINED
+// #include <d3d11.h>
+// #include <d3dcompiler.h>
 
 #include "Launch/EngineBaseTypes.h"
 #include "Launch/Define.h"
 #include "Container/Set.h"
 
-#include "Windows/D3D11RHI/GraphicDevice.h"
-#include "Windows/D3D11RHI/DXDBufferManager.h"
+// #include "Windows/D3D11RHI/GraphicDevice.h"
+// #include "Windows/D3D11RHI/DXDBufferManager.h"
 
 
 class FParticleRenderPass;
@@ -20,6 +20,8 @@ class IRenderPass;
 class FSkeletalMeshRenderPass;
 class FLightHeatMapRenderPass;
 class FPostProcessCompositingPass;
+class FDXDBufferManager;
+class FGPUTimingManager;
 enum class EResourceType : uint8;
 
 class FSceneRenderPass;
@@ -81,11 +83,6 @@ protected:
     // 버퍼 생성/해제 함수 (템플릿 포함)
     //==========================================================================
 public:
-    template<typename T>
-    ID3D11Buffer* CreateImmutableVertexBuffer(const FString& Key, const TArray<T>& Vertices);
-
-    ID3D11Buffer* CreateImmutableIndexBuffer(const FString& Key, const TArray<uint32>& Indices);
-    
     // 상수 버퍼 생성/해제
     void CreateConstantBuffers();
     void ReleaseConstantBuffer() const;
@@ -140,19 +137,4 @@ RenderPassType* FRenderer::AddRenderPass()
     RenderPassType* RenderPass = new RenderPassType();
     RenderPasses.Add(RenderPass);
     return RenderPass;
-}
-
-template<typename T>
-inline ID3D11Buffer* FRenderer::CreateImmutableVertexBuffer(const FString& Key, const TArray<T>& Vertices)
-{
-    FVertexInfo VertexBufferInfo;
-    BufferManager->CreateVertexBuffer(Key, Vertices, VertexBufferInfo);
-    return VertexBufferInfo.VertexBuffer;
-}
-
-inline ID3D11Buffer* FRenderer::CreateImmutableIndexBuffer(const FString& Key, const TArray<uint32>& Indices)
-{
-    FIndexInfo IndexInfo;
-    BufferManager->CreateIndexBuffer(Key, Indices, IndexInfo);
-    return IndexInfo.IndexBuffer;
 }

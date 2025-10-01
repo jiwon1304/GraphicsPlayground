@@ -68,6 +68,23 @@ list(FILTER PROJECT_HEADER_FILES EXCLUDE REGEX "(/|\\\\)ThirdParty(/|\\\\)")
 list(FILTER PROJECT_SOURCE_FILES EXCLUDE REGEX "pch\\.cpp$")
 list(FILTER PROJECT_HEADER_FILES EXCLUDE REGEX "pch\\.h$")
 
+# -----------------------------------------------------------------------------------------------
+# 임시로 renderer 디렉토리 제외
+# Renderer/ 전체 제외
+list(FILTER PROJECT_SOURCE_FILES EXCLUDE REGEX "(/|\\\\)Renderer(/|\\\\)")
+list(FILTER PROJECT_HEADER_FILES EXCLUDE REGEX "(/|\\\\)Renderer(/|\\\\)")
+list(FILTER PROJECT_SOURCE_FILES EXCLUDE REGEX "(/|\\\\)Windows(/|\\\\)")
+list(FILTER PROJECT_HEADER_FILES EXCLUDE REGEX "(/|\\\\)Windows(/|\\\\)")
+
+
+# 대신 Renderer/Renderer.cpp만 다시 추가
+if(EXISTS "${ROOT_SRC_DIR}/Renderer/Renderer.cpp")
+    list(APPEND PROJECT_SOURCE_FILES "${ROOT_SRC_DIR}/Renderer/Renderer.cpp")
+endif()
+
+
+
+
 # 백엔드별 소스 필터링(필요 시 경로 패턴 조정)
 if (NOT USE_OPENGL)
     list(FILTER PROJECT_SOURCE_FILES EXCLUDE REGEX "(/|\\\\)(OpenGLDrv||OpenGL|GL)(/|\\\\)")

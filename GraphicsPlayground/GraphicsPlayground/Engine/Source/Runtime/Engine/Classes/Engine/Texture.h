@@ -1,5 +1,12 @@
 #pragma once
-#include "Windows/D3D11RHI/GraphicDevice.h"
+#include "Core/HAL/PlatformType.h"
+// #include "Windows/D3D11RHI/GraphicDevice.h"
+
+// @todo : remove dependency on D3D11
+
+class ID3D11ShaderResourceView;
+class ID3D11Texture2D;
+class ID3D11SamplerState;
 
 struct FTexture
 {
@@ -10,21 +17,21 @@ struct FTexture
 
     void Release()
     {
-        if (TextureSRV)
-        {
-            TextureSRV->Release();
-            TextureSRV = nullptr;
-        }
-        if (Texture)
-        {
-            Texture->Release();
-            Texture = nullptr;
-        }
-        if (SamplerState)
-        {
-            SamplerState->Release();
-            SamplerState = nullptr;
-        }
+        // if (TextureSRV)
+        // {
+        //     TextureSRV->Release();
+        //     TextureSRV = nullptr;
+        // }
+        // if (Texture)
+        // {
+        //     Texture->Release();
+        //     Texture = nullptr;
+        // }
+        // if (SamplerState)
+        // {
+        //     SamplerState->Release();
+        //     SamplerState = nullptr;
+        // }
     }
     FWString Name;
     ID3D11ShaderResourceView* TextureSRV = nullptr;

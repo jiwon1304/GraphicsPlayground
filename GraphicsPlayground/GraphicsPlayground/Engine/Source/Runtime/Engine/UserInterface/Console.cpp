@@ -42,7 +42,7 @@ void FStatOverlay::ToggleStat(const std::string& Command)
     }
 }
 
-void FStatOverlay::Render(ID3D11DeviceContext* Context, UINT Width, UINT Height) const
+void FStatOverlay::Render() const
 {
     if (!bShowRender)
     {

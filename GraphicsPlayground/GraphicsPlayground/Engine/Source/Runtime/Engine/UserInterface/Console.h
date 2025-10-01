@@ -1,7 +1,7 @@
 #pragma once
 #include <format>
 #include "Container/Array.h"
-#include "Windows/D3D11RHI/GraphicDevice.h"
+// #include "Windows/D3D11RHI/GraphicDevice.h"
 #include "HAL/PlatformType.h"
 #include "CoreUObject/UObject/NameTypes.h"
 #include "ThirdParty/imgui/imgui.h"
@@ -49,7 +49,7 @@ public:
     };
 
     void ToggleStat(const std::string& Command);
-    void Render(ID3D11DeviceContext* Context, UINT Width, UINT Height) const;
+    void Render() const;
 };
 
 struct FProfiledScope
@@ -68,7 +68,7 @@ public:
     ~FEngineProfiler() = default;
 
     void SetGPUTimingManager(FGPUTimingManager* InGPUTimingManager);
-    void Render(ID3D11DeviceContext* Context, UINT Width, UINT Height);
+    void Render();
     void RegisterStatScope(const FString& DisplayName, const FName& CPUStatName, const FName& GPUStatName);
 
 private:

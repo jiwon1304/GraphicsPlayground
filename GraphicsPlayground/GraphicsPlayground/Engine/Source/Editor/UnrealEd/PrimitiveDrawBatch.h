@@ -6,7 +6,9 @@
 #include "Core/Container/Array.h"
 #include "Math/Primitive.h"
 #include "Launch/Define.h"
-#include <d3d11.h>
+
+class ID3D11Buffer;
+class ID3D11ShaderResourceView;
 
 class FGraphicsDevice;
 

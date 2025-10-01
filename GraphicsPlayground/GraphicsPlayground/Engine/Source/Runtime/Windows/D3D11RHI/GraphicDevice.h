@@ -1,10 +1,10 @@
 #pragma once
-#pragma comment(lib, "user32")
-#pragma comment(lib, "d3d11")
-#pragma comment(lib, "d3dcompiler")
+// #pragma comment(lib, "user32")
+// #pragma comment(lib, "d3d11")
+// #pragma comment(lib, "d3dcompiler")
 
-#define _TCHAR_DEFINED
-#include <d3d11.h>
+// #define _TCHAR_DEFINED
+// #include <d3d11.h>
 
 #include "Launch/EngineBaseTypes.h"
 

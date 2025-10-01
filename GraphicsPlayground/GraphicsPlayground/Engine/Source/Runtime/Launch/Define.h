@@ -10,8 +10,8 @@
 #include "Math/Vector4.h"
 #include "Math/Matrix.h"
 
-#define _TCHAR_DEFINED
-#include <d3d11.h>
+// #define _TCHAR_DEFINED
+// #include <d3d11.h>
 
 #include "Engine/UserInterface/Console.h"
 #include <Math/Color.h>
@@ -195,6 +195,8 @@ struct FSimpleVertex
     float padding[11];
 };
 
+#pragma region commented out
+// struct FSphere
 // struct FOBB {
 //     FVector4 corners[8];
 // };
@@ -331,154 +333,155 @@ struct FSimpleVertex
 //         return true;
 //     }
 // };
+#pragma endregion
 
-struct FCone
-{
-    FVector ConeApex; // 원뿔의 꼭짓점
-    float ConeRadius; // 원뿔 밑면 반지름
+// struct FCone
+// {
+//     FVector ConeApex; // 원뿔의 꼭짓점
+//     float ConeRadius; // 원뿔 밑면 반지름
 
-    FVector ConeBaseCenter; // 원뿔 밑면 중심
-    float ConeHeight; // 원뿔 높이 (Apex와 BaseCenter 간 차이)
+//     FVector ConeBaseCenter; // 원뿔 밑면 중심
+//     float ConeHeight; // 원뿔 높이 (Apex와 BaseCenter 간 차이)
     
-    FVector4 Color;
+//     FVector4 Color;
 
-    int ConeSegmentCount; // 원뿔 밑면 분할 수
-    float pad[3];
-};
+//     int ConeSegmentCount; // 원뿔 밑면 분할 수
+//     float pad[3];
+// };
 
-struct FPrimitiveCounts
-{
-    int BoundingBoxCount;
-    int pad;
-    int ConeCount;
-    int pad1;
-};
+// struct FPrimitiveCounts
+// {
+//     int BoundingBoxCount;
+//     int pad;
+//     int ConeCount;
+//     int pad1;
+// };
 
-#define MAX_LIGHTS 16
-#define NUM_FACES 6
-#define MAX_CASCADE_NUM 5
+// #define MAX_LIGHTS 16
+// #define NUM_FACES 6
+// #define MAX_CASCADE_NUM 5
 
-enum ELightType {
-    POINT_LIGHT = 1,
-    SPOT_LIGHT = 2,
-    DIRECTIONAL_LIGHT = 3,
-    AMBIENT_LIGHT = 4,
-    NUM_LIGHT_TYPES = 5
-};
+// enum ELightType {
+//     POINT_LIGHT = 1,
+//     SPOT_LIGHT = 2,
+//     DIRECTIONAL_LIGHT = 3,
+//     AMBIENT_LIGHT = 4,
+//     NUM_LIGHT_TYPES = 5
+// };
 
-struct FMaterialConstants
-{
-    uint32 TextureFlag;
-    FVector DiffuseColor;
+// struct FMaterialConstants
+// {
+//     uint32 TextureFlag;
+//     FVector DiffuseColor;
 
-    FVector SpecularColor;
-    float Shininess;
+//     FVector SpecularColor;
+//     float Shininess;
 
-    FVector EmissiveColor;
-    float Transparency;
+//     FVector EmissiveColor;
+//     float Transparency;
 
-    float Metallic;
-    float Roughness;
-    FVector2D MaterialPadding;
-};
+//     float Metallic;
+//     float Roughness;
+//     FVector2D MaterialPadding;
+// };
 
-struct FPointLightGSBuffer
-{
-    FMatrix World;
-    FMatrix ViewProj[NUM_FACES]; // 6 : NUM_FACES
-};
+// struct FPointLightGSBuffer
+// {
+//     FMatrix World;
+//     FMatrix ViewProj[NUM_FACES]; // 6 : NUM_FACES
+// };
 
-struct FCascadeConstantBuffer
-{
-    FMatrix World;
-    FMatrix ViewProj[MAX_CASCADE_NUM];
-    FMatrix InvViewProj[MAX_CASCADE_NUM];
-    FMatrix InvProj[MAX_CASCADE_NUM];
-    FVector4 CascadeSplit;
+// struct FCascadeConstantBuffer
+// {
+//     FMatrix World;
+//     FMatrix ViewProj[MAX_CASCADE_NUM];
+//     FMatrix InvViewProj[MAX_CASCADE_NUM];
+//     FMatrix InvProj[MAX_CASCADE_NUM];
+//     FVector4 CascadeSplit;
 
-    float pad1;
-    float pad2;
-};
+//     float pad1;
+//     float pad2;
+// };
 
-struct FShadowConstantBuffer
-{
-    FMatrix ShadowViewProj; // Light 광원 입장에서의 ViewProj
-};
+// struct FShadowConstantBuffer
+// {
+//     FMatrix ShadowViewProj; // Light 광원 입장에서의 ViewProj
+// };
 
-struct FObjectConstantBuffer
-{
-    FMatrix WorldMatrix;
-    FMatrix InverseTransposedWorld;
+// struct FObjectConstantBuffer
+// {
+//     FMatrix WorldMatrix;
+//     FMatrix InverseTransposedWorld;
     
-    FVector4 UUIDColor;
+//     FVector4 UUIDColor;
     
-    int bIsSelected;
-    FVector pad;
-};
+//     int bIsSelected;
+//     FVector pad;
+// };
 
-struct FCameraConstantBuffer
-{
-    FMatrix ViewMatrix;
-    FMatrix InvViewMatrix;
+// struct FCameraConstantBuffer
+// {
+//     FMatrix ViewMatrix;
+//     FMatrix InvViewMatrix;
     
-    FMatrix ProjectionMatrix;
-    FMatrix InvProjectionMatrix;
+//     FMatrix ProjectionMatrix;
+//     FMatrix InvProjectionMatrix;
     
-    FVector ViewLocation;
-    float Padding1;
+//     FVector ViewLocation;
+//     float Padding1;
 
-    float NearClip;
-    float FarClip;
-    FVector2D Padding2;
-};
+//     float NearClip;
+//     float FarClip;
+//     FVector2D Padding2;
+// };
 
-struct FSubUVConstant
-{
-    FVector2D uvOffset;
-    FVector2D uvScale;
-};
+// struct FSubUVConstant
+// {
+//     FVector2D uvOffset;
+//     FVector2D uvScale;
+// };
 
-struct FLitUnlitConstants
-{
-    int bIsLit; // 1 = Lit, 0 = Unlit 
-    FVector pad;
-};
+// struct FLitUnlitConstants
+// {
+//     int bIsLit; // 1 = Lit, 0 = Unlit 
+//     FVector pad;
+// };
 
-struct FIsShadowConstants
-{
-    int bIsShadow;
-    FVector pad;
-};
+// struct FIsShadowConstants
+// {
+//     int bIsShadow;
+//     FVector pad;
+// };
 
-struct FViewModeConstants
-{
-    uint32 ViewMode;
-    FVector pad;
-};
+// struct FViewModeConstants
+// {
+//     uint32 ViewMode;
+//     FVector pad;
+// };
 
-struct FSubMeshConstants
-{
-    float bIsSelectedSubMesh;
-    FVector pad;
-};
+// struct FSubMeshConstants
+// {
+//     float bIsSelectedSubMesh;
+//     FVector pad;
+// };
 
-struct FTextureUVConstants
-{
-    float UOffset;
-    float VOffset;
-    float pad0;
-    float pad1;
-};
+// struct FTextureUVConstants
+// {
+//     float UOffset;
+//     float VOffset;
+//     float pad0;
+//     float pad1;
+// };
 
-struct FLinePrimitiveBatchArgs
-{
-    FGridParameters GridParam;
-    ID3D11Buffer* VertexBuffer;
-    int BoundingBoxCount;
-    int ConeCount;
-    int ConeSegmentCount;
-    int OBBCount;
-};
+// struct FLinePrimitiveBatchArgs
+// {
+//     FGridParameters GridParam;
+//     ID3D11Buffer* VertexBuffer;
+//     int BoundingBoxCount;
+//     int ConeCount;
+//     int ConeSegmentCount;
+//     int OBBCount;
+// };
 
 struct FViewportSize
 {
@@ -486,24 +489,24 @@ struct FViewportSize
     FVector2D Padding;
 };
 
-struct FVertexInfo
-{
-    uint32_t NumVertices;
-    uint32_t Stride;
-    ID3D11Buffer* VertexBuffer;
-};
+// struct FVertexInfo
+// {
+//     uint32_t NumVertices;
+//     uint32_t Stride;
+//     ID3D11Buffer* VertexBuffer;
+// };
 
-struct FIndexInfo
-{
-    uint32_t NumIndices;
-    ID3D11Buffer* IndexBuffer;
-};
+// struct FIndexInfo
+// {
+//     uint32_t NumIndices;
+//     ID3D11Buffer* IndexBuffer;
+// };
 
-struct FBufferInfo
-{
-    FVertexInfo VertexInfo;
-    FIndexInfo IndexInfo;
-};
+// struct FBufferInfo
+// {
+//     FVertexInfo VertexInfo;
+//     FIndexInfo IndexInfo;
+// };
 
 struct FScreenConstants
 {

@@ -3,6 +3,10 @@
 #include "Texture.h"
 #include "Container/Map.h"
 
+class ID3D11Device;
+class ID3D11DeviceContext;
+typedef int HRESULT;
+
 class FRenderer;
 class FGraphicsDevice;
 class FResourceManager

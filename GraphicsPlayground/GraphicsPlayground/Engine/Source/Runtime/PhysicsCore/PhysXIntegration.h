@@ -2,19 +2,18 @@
 #pragma once
 
 #include <PxPhysicsAPI.h>
-#include <d3d11.h>
-#include <DirectXMath.h>
+// #include <DirectXMath.h>
 #include <vector>
 
 using namespace physx;
-using namespace DirectX;
+// using namespace DirectX;
 
 #define SCOPED_READ_LOCK(scene) PxSceneReadLock scopedReadLock(scene);
 
 // 게임 오브젝트
 struct GameObject {
     PxRigidDynamic* rigidBody = nullptr;
-    XMMATRIX worldMatrix = XMMatrixIdentity();
+    // XMMATRIX worldMatrix = XMMatrixIdentity();
 
     void UpdateFromPhysics();
 };
