@@ -21,7 +21,7 @@ class FSkeletalMeshRenderPass;
 class FLightHeatMapRenderPass;
 class FPostProcessCompositingPass;
 class FDXDBufferManager;
-class FGPUTimingManager;
+class IGPUTimingManager;
 enum class EResourceType : uint8;
 
 class FSceneRenderPass;
@@ -50,7 +50,7 @@ class FPhysicsAssetViewerRenderPass;
 class FEditorRenderPass;
 class FDepthPrePass;
 class FTileLightCullingPass;
-class FGPUTimingManager;
+class IGPUTimingManager;
 
 class FRenderer
 {
@@ -58,7 +58,7 @@ public:
     //==========================================================================
     // 초기화/해제 관련 함수
     //==========================================================================
-    void Initialize(FGraphicsDevice* InGraphics, FDXDBufferManager* InBufferManager, FGPUTimingManager* InGPUTimingManager);
+    void Initialize(FGraphicsDevice* InGraphics, FDXDBufferManager* InBufferManager, IGPUTimingManager* InGPUTimingManager);
     void Release();
 
     //==========================================================================
@@ -94,7 +94,7 @@ public:
     FDXDBufferManager* BufferManager;
     FDXDShaderManager* ShaderManager = nullptr;
     class FShadowManager* ShadowManager = nullptr;
-    FGPUTimingManager* GPUTimingManager = nullptr;
+    IGPUTimingManager* GPUTimingManager = nullptr;
     
     class FShadowRenderPass* ShadowRenderPass;
 

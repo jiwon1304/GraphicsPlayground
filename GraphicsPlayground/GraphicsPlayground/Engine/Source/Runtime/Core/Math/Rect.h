@@ -41,3 +41,5 @@ using FIntPoint = TPoint<int32>;
 using FIntRect = TRect<int32>;
 using FFloatPoint = TPoint<float>;
 using FFloatRect = TRect<float>;
+using FDoublePoint = TPoint<double>;
+using FDoubleRect = TRect<double>;

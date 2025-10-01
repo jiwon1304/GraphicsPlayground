@@ -4,7 +4,7 @@
 #include "HAL/PlatformType.h"
 #include "CoreUObject/UObject/NameTypes.h"
 
-class FGPUTimingManager; // Forward declaration
+class IGPUTimingManager; // Forward declaration
 
 class FScopeCycleCounter
 {
@@ -31,13 +31,13 @@ private:
     static TStatId FStat_##Stat(TEXT(#Stat)); \
     FScopeCycleCounter CycleCount_##Stat(FStat_##Stat);
 
-// RAII class for timing GPU operations using FGpuTimingManager.
+// RAII class for timing GPU operations using IGPUTimingManager.
 // Constructor calls StartTimestamp, Destructor calls StopTimestamp.
 class FGPUScopeCycleCounter
 {
 public:
     // Constructor: Starts the GPU timestamp. Requires the manager instance.
-    FGPUScopeCycleCounter(const TStatId& StatId, FGPUTimingManager& GPUTimingManager);
+    FGPUScopeCycleCounter(const TStatId& StatId, IGPUTimingManager& GPUTimingManager);
 
     // Destructor: Stops the GPU timestamp.
     ~FGPUScopeCycleCounter();
@@ -49,13 +49,13 @@ public:
     FGPUScopeCycleCounter& operator=(FGPUScopeCycleCounter&&) = delete;
 
 private:
-    FGPUTimingManager& GPUTimingManager;
+    IGPUTimingManager& GPUTimingManager;
     TStatId StatId;
     bool bStarted; // Track if Start was successfully called
 };
 
 // Macro similar to QUICK_SCOPE_CYCLE_COUNTER for convenience
-// Requires a pointer or reference to your FGpuTimingManager instance (e.g., gGpuTimingManager)
+// Requires a pointer or reference to your IGPUTimingManager instance (e.g., gGpuTimingManager)
 #define QUICK_GPU_SCOPE_CYCLE_COUNTER(Stat, GPUTimerMgr) \
     static TStatId FStat_GPU_##Stat(TEXT(#Stat));        \
     FGPUScopeCycleCounter GpuCycleCount_##Stat(FStat_GPU_##Stat, GPUTimerMgr);

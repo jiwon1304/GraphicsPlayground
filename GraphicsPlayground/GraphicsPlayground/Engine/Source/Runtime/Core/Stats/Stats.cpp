@@ -25,7 +25,7 @@ uint64 FScopeCycleCounter::Finish()
     return CycleDiff;
 }
 
-FGPUScopeCycleCounter::FGPUScopeCycleCounter(const TStatId& StatId, FGPUTimingManager& GPUTimingManager)
+FGPUScopeCycleCounter::FGPUScopeCycleCounter(const TStatId& StatId, IGPUTimingManager& GPUTimingManager)
     : GPUTimingManager(GPUTimingManager),
     StatId(StatId),
     bStarted(false)

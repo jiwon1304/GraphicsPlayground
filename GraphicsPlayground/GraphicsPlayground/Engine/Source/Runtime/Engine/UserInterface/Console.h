@@ -59,7 +59,7 @@ struct FProfiledScope
     FName GPUStatName;
 };
 
-class FGPUTimingManager;
+class IGPUTimingManager;
 
 class FEngineProfiler
 {
@@ -67,12 +67,12 @@ public:
     FEngineProfiler() = default;
     ~FEngineProfiler() = default;
 
-    void SetGPUTimingManager(FGPUTimingManager* InGPUTimingManager);
+    void SetGPUTimingManager(IGPUTimingManager* InGPUTimingManager);
     void Render();
     void RegisterStatScope(const FString& DisplayName, const FName& CPUStatName, const FName& GPUStatName);
 
 private:
-    FGPUTimingManager* GPUTimingManager = nullptr;
+    IGPUTimingManager* GPUTimingManager = nullptr;
     TArray<FProfiledScope> TrackedScopes;
     bool bShowWindow = true;
 };

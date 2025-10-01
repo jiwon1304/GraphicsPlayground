@@ -39,7 +39,7 @@
 //------------------------------------------------------------------------------
 // 초기화 및 해제 관련 함수
 //------------------------------------------------------------------------------
-void FRenderer::Initialize(FGraphicsDevice* InGraphics, FDXDBufferManager* InBufferManager, FGPUTimingManager* InGPUTimingManager)
+void FRenderer::Initialize(FGraphicsDevice* InGraphics, FDXDBufferManager* InBufferManager, IGPUTimingManager* InGPUTimingManager)
 {
     Graphics = InGraphics;
     BufferManager = InBufferManager;

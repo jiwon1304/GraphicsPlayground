@@ -4,7 +4,7 @@
 #include "Renderer/Renderer.h"
 // #include "Editor/UnrealEd/PrimitiveDrawBatch.h"
 #include "Stats/ProfilerStatsManager.h"
-#include "Stats/GPUTimingManager.h"
+// #include "Stats/GPUTimingManager.h"
 
 class FSlateAppMessageHandler;
 class UnrealEd;
@@ -17,6 +17,8 @@ class FGraphicDevice;
 class SLevelEditor;
 class FDXDBufferManager;
 class USubEngine;
+class IGPUTimingManager;
+class FEngineProfiler;
 
 class FEngineLoop
 {
@@ -50,8 +52,8 @@ public:
 
     HWND AppWnd;
 
-    FGPUTimingManager GPUTimingManager;
-    FEngineProfiler EngineProfiler;
+    IGPUTimingManager* GPUTimingManager;
+    FEngineProfiler* EngineProfiler;
 
     static FGraphicsDevice ParticleViewerGD;
     HWND ParticleViewerWnd;

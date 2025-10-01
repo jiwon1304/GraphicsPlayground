@@ -13,10 +13,10 @@
 
 #include "Classes/Engine/EditorEngine.h"
 #include "Renderer/DepthPrePass.h"
-#include "Renderer/TileLightCullingPass.h"
 #include "Windows/SubWindow/ParticleSubEngine.h"
 #include "Windows/SubWindow/ImGuiSubWindow.h"
 #include "SoundManager.h"
+#include "Stats/GPUTimingManager.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 
@@ -54,38 +54,40 @@ int32 FEngineLoop::Init(HINSTANCE hInstance)
     UIManager = new UImGuiManager;
     AppMessageHandler = std::make_unique<FSlateAppMessageHandler>();
     LevelEditor = new SLevelEditor();
-
+    EngineProfiler = new FEngineProfiler();
+    
     UnrealEditor->Initialize();
     GraphicDevice.Initialize(AppWnd);
-
-    if (!GPUTimingManager.Initialize(GraphicDevice.Device, GraphicDevice.DeviceContext))
+    
+    GPUTimingManager = CreateGPUTimingManager(FGPUTimingInitParams{ 3, GraphicDevice.Device, GraphicDevice.DeviceContext });
+    if (!GPUTimingManager)
     {
         UE_LOG(ELogLevel::Error, TEXT("Failed to initialize GPU Timing Manager!"));
     }
-    EngineProfiler.SetGPUTimingManager(&GPUTimingManager);
+    EngineProfiler->SetGPUTimingManager(GPUTimingManager);
 
     // @todo Table에 Tree 구조로 넣을 수 있도록 수정
-    EngineProfiler.RegisterStatScope(TEXT("Renderer_Render"), FName(TEXT("Renderer_Render_CPU")), FName(TEXT("Renderer_Render_GPU")));
-    EngineProfiler.RegisterStatScope(TEXT("|- DepthPrePass"), FName(TEXT("DepthPrePass_CPU")), FName(TEXT("DepthPrePass_GPU")));
-    EngineProfiler.RegisterStatScope(TEXT("|- TileLightCulling"), FName(TEXT("TileLightCulling_CPU")), FName(TEXT("TileLightCulling_GPU")));
-    EngineProfiler.RegisterStatScope(TEXT("|- ShadowPass"), FName(TEXT("ShadowPass_CPU")), FName(TEXT("ShadowPass_GPU")));
-    EngineProfiler.RegisterStatScope(TEXT("|- StaticMeshPass"), FName(TEXT("StaticMeshPass_CPU")), FName(TEXT("StaticMeshPass_GPU")));
-    EngineProfiler.RegisterStatScope(TEXT("|- WorldBillboardPass"), FName(TEXT("WorldBillboardPass_CPU")), FName(TEXT("WorldBillboardPass_GPU")));
-    EngineProfiler.RegisterStatScope(TEXT("|- UpdateLightBufferPass"), FName(TEXT("UpdateLightBufferPass_CPU")), FName(TEXT("UpdateLightBufferPass_GPU")));
-    EngineProfiler.RegisterStatScope(TEXT("|- FogPass"), FName(TEXT("FogPass_CPU")), FName(TEXT("FogPass_GPU")));
-    EngineProfiler.RegisterStatScope(TEXT("|- PostProcessCompositing"), FName(TEXT("PostProcessCompositing_CPU")), FName(TEXT("PostProcessCompositing_GPU")));
-    EngineProfiler.RegisterStatScope(TEXT("|- EditorBillboardPass"), FName(TEXT("EditorBillboardPass_CPU")), FName(TEXT("EditorBillboardPass_GPU")));
-    EngineProfiler.RegisterStatScope(TEXT("|- EditorRenderPass"), FName(TEXT("EditorRenderPass_CPU")), FName(TEXT("EditorRenderPass_GPU")));
-    EngineProfiler.RegisterStatScope(TEXT("|- LinePass"), FName(TEXT("LinePass_CPU")), FName(TEXT("LinePass_GPU")));
-    EngineProfiler.RegisterStatScope(TEXT("|- GizmoPass"), FName(TEXT("GizmoPass_CPU")), FName(TEXT("GizmoPass_GPU")));
-    EngineProfiler.RegisterStatScope(TEXT("|- CompositingPass"), FName(TEXT("CompositingPass_CPU")), FName(TEXT("CompositingPass_GPU")));
-    EngineProfiler.RegisterStatScope(TEXT("|- SkinningPass"), FName(TEXT("SkinningPass_CPU")), FName(TEXT("SkinningPass_GPU")));
-    EngineProfiler.RegisterStatScope(TEXT("|- ParticlePass"), FName(TEXT("ParticlePass_CPU")), FName(TEXT("ParticlePass_GPU")));
-    EngineProfiler.RegisterStatScope(TEXT("SlatePass"), FName(TEXT("SlatePass_CPU")), FName(TEXT("SlatePass_GPU")));
-    EngineProfiler.RegisterStatScope(TEXT("Physics"), FName(TEXT("PhysicsSceneUpdate")), FName(TEXT("")));
+    EngineProfiler->RegisterStatScope(TEXT("Renderer_Render"), FName(TEXT("Renderer_Render_CPU")), FName(TEXT("Renderer_Render_GPU")));
+    EngineProfiler->RegisterStatScope(TEXT("|- DepthPrePass"), FName(TEXT("DepthPrePass_CPU")), FName(TEXT("DepthPrePass_GPU")));
+    EngineProfiler->RegisterStatScope(TEXT("|- TileLightCulling"), FName(TEXT("TileLightCulling_CPU")), FName(TEXT("TileLightCulling_GPU")));
+    EngineProfiler->RegisterStatScope(TEXT("|- ShadowPass"), FName(TEXT("ShadowPass_CPU")), FName(TEXT("ShadowPass_GPU")));
+    EngineProfiler->RegisterStatScope(TEXT("|- StaticMeshPass"), FName(TEXT("StaticMeshPass_CPU")), FName(TEXT("StaticMeshPass_GPU")));
+    EngineProfiler->RegisterStatScope(TEXT("|- WorldBillboardPass"), FName(TEXT("WorldBillboardPass_CPU")), FName(TEXT("WorldBillboardPass_GPU")));
+    EngineProfiler->RegisterStatScope(TEXT("|- UpdateLightBufferPass"), FName(TEXT("UpdateLightBufferPass_CPU")), FName(TEXT("UpdateLightBufferPass_GPU")));
+    EngineProfiler->RegisterStatScope(TEXT("|- FogPass"), FName(TEXT("FogPass_CPU")), FName(TEXT("FogPass_GPU")));
+    EngineProfiler->RegisterStatScope(TEXT("|- PostProcessCompositing"), FName(TEXT("PostProcessCompositing_CPU")), FName(TEXT("PostProcessCompositing_GPU")));
+    EngineProfiler->RegisterStatScope(TEXT("|- EditorBillboardPass"), FName(TEXT("EditorBillboardPass_CPU")), FName(TEXT("EditorBillboardPass_GPU")));
+    EngineProfiler->RegisterStatScope(TEXT("|- EditorRenderPass"), FName(TEXT("EditorRenderPass_CPU")), FName(TEXT("EditorRenderPass_GPU")));
+    EngineProfiler->RegisterStatScope(TEXT("|- LinePass"), FName(TEXT("LinePass_CPU")), FName(TEXT("LinePass_GPU")));
+    EngineProfiler->RegisterStatScope(TEXT("|- GizmoPass"), FName(TEXT("GizmoPass_CPU")), FName(TEXT("GizmoPass_GPU")));
+    EngineProfiler->RegisterStatScope(TEXT("|- CompositingPass"), FName(TEXT("CompositingPass_CPU")), FName(TEXT("CompositingPass_GPU")));
+    EngineProfiler->RegisterStatScope(TEXT("|- SkinningPass"), FName(TEXT("SkinningPass_CPU")), FName(TEXT("SkinningPass_GPU")));
+    EngineProfiler->RegisterStatScope(TEXT("|- ParticlePass"), FName(TEXT("ParticlePass_CPU")), FName(TEXT("ParticlePass_GPU")));
+    EngineProfiler->RegisterStatScope(TEXT("SlatePass"), FName(TEXT("SlatePass_CPU")), FName(TEXT("SlatePass_GPU")));
+    EngineProfiler->RegisterStatScope(TEXT("Physics"), FName(TEXT("PhysicsSceneUpdate")), FName(TEXT("")));
 
     BufferManager->Initialize(GraphicDevice.Device, GraphicDevice.DeviceContext);
-    Renderer.Initialize(&GraphicDevice, BufferManager, &GPUTimingManager);
+    Renderer.Initialize(&GraphicDevice, BufferManager, GPUTimingManager);
     // PrimitiveDrawBatch.Initialize(&GraphicDevice);
     UIManager->Initialize(AppWnd, GraphicDevice.Device, GraphicDevice.DeviceContext);
     ResourceManager.Initialize(&Renderer, &GraphicDevice);
@@ -163,9 +165,9 @@ void FEngineLoop::Tick()
     while (bIsExit == false)
     {
         FProfilerStatsManager::BeginFrame();    // Clear previous frame stats
-        if (GPUTimingManager.IsInitialized())
+        if (GPUTimingManager->IsInitialized())
         {
-            GPUTimingManager.BeginFrame();      // Start GPU frame timing
+            GPUTimingManager->BeginFrame();      // Start GPU frame timing
         }
 
         QueryPerformanceCounter(&StartTime);
@@ -205,7 +207,7 @@ void FEngineLoop::Tick()
         UnrealEditor->Render();
 
         FConsole::GetInstance().Draw();
-        EngineProfiler.Render(GraphicDevice.DeviceContext, GraphicDevice.ScreenWidth, GraphicDevice.ScreenHeight);
+        EngineProfiler->Render(GraphicDevice.DeviceContext, GraphicDevice.ScreenWidth, GraphicDevice.ScreenHeight);
 
         UIManager->EndFrame();
 
@@ -220,9 +222,9 @@ void FEngineLoop::Tick()
         // Pending 처리된 오브젝트 제거
         GUObjectArray.ProcessPendingDestroyObjects();
 
-        if (GPUTimingManager.IsInitialized())
+        if (GPUTimingManager->IsInitialized())
         {
-            GPUTimingManager.EndFrame();        // End GPU frame timing
+            GPUTimingManager->EndFrame();        // End GPU frame timing
         }
 
         GraphicDevice.SwapBuffer();

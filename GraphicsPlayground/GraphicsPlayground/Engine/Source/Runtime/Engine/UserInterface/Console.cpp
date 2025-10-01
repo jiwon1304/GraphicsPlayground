@@ -97,7 +97,7 @@ void FStatOverlay::Render() const
     ImGui::End();
 }
 
-void FEngineProfiler::SetGPUTimingManager(FGPUTimingManager* InGPUTimingManager)
+void FEngineProfiler::SetGPUTimingManager(IGPUTimingManager* InGPUTimingManager)
 {
     GPUTimingManager = InGPUTimingManager;
 }
