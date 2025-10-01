@@ -1,6 +1,7 @@
 #pragma once
 #include <atomic>
 #include <iostream>
+#include <cstdlib>
 
 #include "Core/HAL/PlatformType.h"
 
@@ -129,7 +130,7 @@ void* FPlatformMemory::Malloc(size_t Size)
 template <EAllocationType AllocType>
 void* FPlatformMemory::AlignedMalloc(size_t Size, size_t Alignment)
 {
-    void* Ptr = _aligned_malloc(Size, Alignment);
+    void* Ptr = std::aligned_alloc(Alignment, Size);
     if (Ptr)
     {
         IncrementStats<AllocType>(Size);
@@ -153,7 +154,7 @@ void FPlatformMemory::AlignedFree(void* Address, size_t Size)
     if (Address)
     {
         DecrementStats<AllocType>(Size);
-        _aligned_free(Address);
+        std::free(Address);
     }
 }
 

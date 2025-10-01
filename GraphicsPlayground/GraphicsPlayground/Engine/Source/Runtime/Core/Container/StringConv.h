@@ -1,32 +1,28 @@
 ﻿#pragma once
 #include <string>
-#include "HAL/PlatformType.h"
+#include <locale>
+#include <codecvt>
 
-
+// variable length -> fixed length (16bit)
 inline std::wstring StringToWString(const std::string& String)
 {
     if (String.empty())
     {
         return std::wstring{};
     }
-
-    const int32 Size = ::MultiByteToWideChar(CP_UTF8, 0, String.c_str(), static_cast<int32>(String.size()), nullptr, 0);
-    std::wstring WString(Size, 0);
-    ::MultiByteToWideChar(CP_UTF8, 0, String.c_str(), static_cast<int32>(String.size()), WString.data(), Size);
-    return WString;
+    std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+    return converter.from_bytes(String);
 }
 
+// fixed length (16bit) -> variable length
 inline std::string WStringToString(const std::wstring& WString)
 {
     if (WString.empty())
     {
         return std::string{};
     }
-
-    const int32 Size = ::WideCharToMultiByte(CP_UTF8, 0, WString.c_str(), static_cast<int32>(WString.size()), nullptr, 0, nullptr, nullptr);
-    std::string String(Size, 0);
-    ::WideCharToMultiByte(CP_UTF8, 0, WString.c_str(), static_cast<int32>(WString.size()), String.data(), Size, nullptr, nullptr);
-    return String;
+    std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+    return converter.to_bytes(WString);
 }
 
 /**
