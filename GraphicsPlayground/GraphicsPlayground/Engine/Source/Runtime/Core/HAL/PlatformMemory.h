@@ -130,7 +130,11 @@ void* FPlatformMemory::Malloc(size_t Size)
 template <EAllocationType AllocType>
 void* FPlatformMemory::AlignedMalloc(size_t Size, size_t Alignment)
 {
+#ifdef _MSC_VER
+    void* Ptr = _aligned_malloc(Size, Alignment);
+#else
     void* Ptr = std::aligned_alloc(Alignment, Size);
+#endif
     if (Ptr)
     {
         IncrementStats<AllocType>(Size);
