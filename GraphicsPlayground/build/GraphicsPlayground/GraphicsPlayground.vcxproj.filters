@@ -655,6 +655,18 @@
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\RawInput.cpp">
       <Filter>Engine\Source\Runtime\Windows</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\SubWindow\ImGuiSubWindow.cpp">
+      <Filter>Engine\Source\Runtime\Windows\SubWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\SubWindow\ParticleSubEngine.cpp">
+      <Filter>Engine\Source\Runtime\Windows\SubWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\SubWindow\SubEngine.cpp">
+      <Filter>Engine\Source\Runtime\Windows\SubWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\SubWindow\SubRenderer.cpp">
+      <Filter>Engine\Source\Runtime\Windows\SubWindow</Filter>
+    </ClCompile>
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\WindowsCursor.cpp">
       <Filter>Engine\Source\Runtime\Windows</Filter>
     </ClCompile>
@@ -1610,6 +1622,18 @@
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\RawInput.h">
       <Filter>Engine\Source\Runtime\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\SubWindow\ImGuiSubWindow.h">
+      <Filter>Engine\Source\Runtime\Windows\SubWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\SubWindow\ParticleSubEngine.h">
+      <Filter>Engine\Source\Runtime\Windows\SubWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\SubWindow\SubEngine.h">
+      <Filter>Engine\Source\Runtime\Windows\SubWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\SubWindow\SubRenderer.h">
+      <Filter>Engine\Source\Runtime\Windows\SubWindow</Filter>
+    </ClInclude>
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\WindowsCursor.h">
       <Filter>Engine\Source\Runtime\Windows</Filter>
     </ClInclude>
@@ -1859,6 +1883,9 @@
     </Filter>
     <Filter Include="Engine\Source\Runtime\Windows\D3D11RHI">
       <UniqueIdentifier>{AE55C938-9CB3-3D8D-A218-F1C9580580B5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Source\Runtime\Windows\SubWindow">
+      <UniqueIdentifier>{CE798F19-A603-3819-B902-EC70ADC50FD8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Source\ThirdParty">
       <UniqueIdentifier>{DDBFC117-D06C-3662-87AB-ACCD72001B4B}</UniqueIdentifier>

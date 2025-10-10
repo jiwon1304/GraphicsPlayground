@@ -744,7 +744,7 @@ bool UAssetManager::SerializeAssetLoadResult(FArchive& Ar, FAssetLoadResult& Res
             // 텍스처 렌더 리소스 생성
             for (const FTextureInfo& Info : Material->GetMaterialInfo().TextureInfos)
             {
-                GEngineLoop.ResourceManager->LoadTextureFromFile(GEngineLoop.GraphicDevice->Device, Info.TexturePath.c_str(), Info.bIsSRGB);
+                GEngineLoop.ResourceManager->LoadTextureFromFile(/* GEngineLoop.GraphicDevice->Device,  */Info.TexturePath.c_str(), Info.bIsSRGB);
             }
         }
     }

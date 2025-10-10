@@ -1685,7 +1685,7 @@ bool FFbxLoader::CreateTextureFromFile(const FWString& Filename, bool bIsSRGB)
         return true;
     }
 
-    HRESULT hr = GEngineLoop.ResourceManager->LoadTextureFromFile(GEngineLoop.GraphicDevice->Device, Filename.c_str(), bIsSRGB);
+    HRESULT hr = GEngineLoop.ResourceManager->LoadTextureFromFile(/* GEngineLoop.GraphicDevice->Device,  */Filename.c_str(), bIsSRGB);
 
     if (FAILED(hr))
     {
