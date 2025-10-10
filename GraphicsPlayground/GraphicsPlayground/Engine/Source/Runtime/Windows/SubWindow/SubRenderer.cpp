@@ -6,19 +6,20 @@
 #include "Windows/D3D11RHI/GraphicDevice.h"
 #include "Windows/D3D11RHI/DXDBufferManager.h"
 #include "Renderer/RenderMisc.h"
+#include "Renderer/Renderer.h"
 
 void FSubRenderer::Initialize(FGraphicsDevice* InGraphics, FDXDBufferManager* InBufferManager, USubEngine* InEngine)
 {
     Engine = InEngine;
     Graphics = InGraphics;
     BufferManager = InBufferManager;
-    ParticleRenderPass = new FParticleRenderPass();
-    ParticleRenderPass->Initialize(BufferManager, Graphics, GEngineLoop.Renderer.ShaderManager);
+    // ParticleRenderPass = new FParticleRenderPass();
+    // ParticleRenderPass->Initialize(BufferManager, Graphics, GEngineLoop.Renderer->ShaderManager);
 }
 
 void FSubRenderer::PrepareRender(const std::shared_ptr<FEditorViewportClient>& Viewport)
 {
-    ParticleRenderPass->AddParticleComponent(((UParticleSubEngine*)Engine)->GetParticleSystemComponent());
+    // ParticleRenderPass->AddParticleComponent(((UParticleSubEngine*)Engine)->GetParticleSystemComponent());
    
     UpdateViewCamera(Viewport);
     
@@ -30,21 +31,21 @@ void FSubRenderer::PrepareRender(const std::shared_ptr<FEditorViewportClient>& V
 
 void FSubRenderer::Render(const std::shared_ptr<FEditorViewportClient>& Viewport)
 {
-    ParticleRenderPass->Render(Viewport);
+    // ParticleRenderPass->Render(Viewport);
 }
 
 void FSubRenderer::ClearRender()
 {
-    ParticleRenderPass->ClearRenderArr();
+    // ParticleRenderPass->ClearRenderArr();
 }
 
 void FSubRenderer::Release()
 {
-    if (ParticleRenderPass)
-    {
-        delete ParticleRenderPass;
-        ParticleRenderPass = nullptr;
-    }
+    // if (ParticleRenderPass)
+    // {
+    //     delete ParticleRenderPass;
+    //     ParticleRenderPass = nullptr;
+    // }
 }
 
 void FSubRenderer::UpdateViewCamera(const std::shared_ptr<FEditorViewportClient>& Viewport)

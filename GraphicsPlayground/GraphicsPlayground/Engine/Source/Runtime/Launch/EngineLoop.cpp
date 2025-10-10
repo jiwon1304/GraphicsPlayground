@@ -109,7 +109,7 @@ int32 FEngineLoop::Init(HINSTANCE hInstance)
 
 
     ParticleSubWindowInit(hInstance);
-    if (ParticleViewerWnd)
+    if (ParticleViewerGD && ParticleViewerWnd)
     {
         ParticleViewerGD->Initialize(ParticleViewerWnd, GraphicDevice->Device);
         ParticleViewerGD->ClearColor[0] = 0.03f;

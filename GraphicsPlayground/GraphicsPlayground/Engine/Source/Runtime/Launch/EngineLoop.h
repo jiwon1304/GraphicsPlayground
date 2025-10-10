@@ -1,14 +1,8 @@
 #pragma once
 #include "Core/HAL/PlatformType.h"
-#include "Classes/Engine/ResourceMgr.h"
-// #include "Renderer/Renderer.h"
-// #include "Editor/UnrealEd/PrimitiveDrawBatch.h"
-#include "Stats/ProfilerStatsManager.h"
-// #include "Stats/GPUTimingManager.h"
-#include "Editor/LevelEditor/SlateAppMessageHandlerBase.h"
 #include <memory>
 
-// class FSlateAppMessageHandlerBase;
+class FSlateAppMessageHandlerBase;
 class UnrealEd;
 class UImGuiManager;
 class UWorld;
@@ -21,6 +15,7 @@ class FDXDBufferManager;
 class USubEngine;
 class IGPUTimingManager;
 class FEngineProfiler;
+class FResourceManager;
 
 class FEngineLoop
 {
