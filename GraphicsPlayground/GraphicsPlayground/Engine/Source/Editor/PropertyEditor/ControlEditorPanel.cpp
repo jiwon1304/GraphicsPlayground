@@ -21,6 +21,7 @@
 #include "Editor/PropertyEditor/ShowFlags.h"
 #include "Editor/UnrealEd/EditorViewportClient.h"
 #include "tinyfiledialogs.h"
+#include "Renderer/Renderer.h"
 
 #include "Classes/Actors/Cube.h"
 
@@ -54,7 +55,7 @@
 #include "Classes/Particles/ParticleModules/ParticleModuleLifetime.h"
 #include "Classes/Particles/ParticleLODLevel.h"
 
-#include "Windows/SubWindow/ParticleSubEngine.h"
+// #include "Windows/SubWindow/ParticleSubEngine.h"
 #include "Classes/Particles/ParticleModules/ParticleModuleSize.h"
 #include "Classes/Particles/ParticleModules/ParticleModuleVelocity.h"
 
@@ -120,7 +121,8 @@ void ControlEditorPanel::Render()
         {
             if (ImGui::MenuItem("Particle Viewer"))
             {
-                GEngineLoop.ParticleSubEngine->RequestShowWindow(true);
+                UE_LOG(ELogLevel::Error, "Particle subwindow is currently disabled."); // @todo: windows dependency 해결하면 다시 풀기
+                // GEngineLoop.ParticleSubEngine->RequestShowWindow(true);
             }
             ImGui::EndMenu();
         }
@@ -343,11 +345,11 @@ void ControlEditorPanel::CreateModifyButton(const ImVec2 ButtonSize, ImFont* Ico
         ImGui::Separator();
 
         ImGui::Text("Gamma");
-        float Gamma = FEngineLoop::Renderer.CompositingPass->GammaValue;
+        float Gamma = GEngineLoop.Renderer->CompositingPass->GammaValue;
         ImGui::SetNextItemWidth(120.0f);
         if (ImGui::DragFloat("##Gamma", &Gamma, 0.01f, 0.01f, 4.0f, "%.1f"))
         {
-            FEngineLoop::Renderer.CompositingPass->GammaValue = Gamma;
+            GEngineLoop.Renderer->CompositingPass->GammaValue = Gamma;
         }
 
         ImGui::EndPopup();

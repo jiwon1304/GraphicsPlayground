@@ -11,6 +11,8 @@
 #include "Classes/Particles/ParticleEmitter.h"
 #include "Classes/Particles/ParticleModules/ParticleModuleRequired.h"
 #include "Classes/Components/ParticleSystemComponent.h"
+#include "Windows/D3D11RHI/GraphicDevice.h"
+
 UParticleSubEngine::UParticleSubEngine()
 {
 }

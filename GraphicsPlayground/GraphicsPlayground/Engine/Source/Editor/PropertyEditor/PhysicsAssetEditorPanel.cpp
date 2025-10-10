@@ -1183,17 +1183,17 @@ FString FPhysicsAssetEditorPanel::GetCleanBoneName(const FString& InFullName) co
 
 void FPhysicsAssetEditorPanel::LoadBoneIcon()
 {
-    BoneIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/Bone_16x.png")->TextureSRV;
-    NonWeightBoneIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/BoneNonWeighted_16x.png")->TextureSRV;
-    BodySetupIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/Body_16x.png")->TextureSRV;
-    BoxIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/box_16px.png")->TextureSRV;
-    SphereIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/Sphere_16px.png")->TextureSRV;
-    SphylIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/Sphyl_16x.png")->TextureSRV;
-    ConstraintIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/Constraint_16x.png")->TextureSRV;
+    BoneIconSRV = GEngineLoop.ResourceManager->GetTexture(L"Assets/Viewer/Bone_16x.png")->TextureSRV;
+    NonWeightBoneIconSRV = GEngineLoop.ResourceManager->GetTexture(L"Assets/Viewer/BoneNonWeighted_16x.png")->TextureSRV;
+    BodySetupIconSRV = GEngineLoop.ResourceManager->GetTexture(L"Assets/Viewer/Body_16x.png")->TextureSRV;
+    BoxIconSRV = GEngineLoop.ResourceManager->GetTexture(L"Assets/Viewer/box_16px.png")->TextureSRV;
+    SphereIconSRV = GEngineLoop.ResourceManager->GetTexture(L"Assets/Viewer/Sphere_16px.png")->TextureSRV;
+    SphylIconSRV = GEngineLoop.ResourceManager->GetTexture(L"Assets/Viewer/Sphyl_16x.png")->TextureSRV;
+    ConstraintIconSRV = GEngineLoop.ResourceManager->GetTexture(L"Assets/Viewer/Constraint_16x.png")->TextureSRV;
 
-    SpherePhATIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/icon_PhAT_Sphere_40x.png")->TextureSRV;
-    BoxPhATIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/icon_PhAT_Box_40x.png")->TextureSRV;
-    SphylPhATIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/icon_PhAT_Sphyl_40x.png")->TextureSRV;
+    SpherePhATIconSRV = GEngineLoop.ResourceManager->GetTexture(L"Assets/Viewer/icon_PhAT_Sphere_40x.png")->TextureSRV;
+    BoxPhATIconSRV = GEngineLoop.ResourceManager->GetTexture(L"Assets/Viewer/icon_PhAT_Box_40x.png")->TextureSRV;
+    SphylPhATIconSRV = GEngineLoop.ResourceManager->GetTexture(L"Assets/Viewer/icon_PhAT_Sphyl_40x.png")->TextureSRV;
 }
 
 void FPhysicsAssetEditorPanel::AddShape(UPhysicsAsset* InPhysicsAsset, UBodySetup* TargetBodySetup, int32 BoneIndex, EAggCollisionShape::Type InShapeType) const

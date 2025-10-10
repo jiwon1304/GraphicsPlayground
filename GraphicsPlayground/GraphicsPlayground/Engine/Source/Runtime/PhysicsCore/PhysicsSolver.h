@@ -6,13 +6,13 @@
 #include "CollisionShape.h"
 #include "Classes/PhysicsEngine/BodyInstance.h"
 #include "PhysXIntegration.h"
-
+#include "Core/Delegates/DelegateCombination.h"
 
 class AActor;
 struct FHitResult;
 struct FPhysicsBody;
 struct FPhysScene;
-class FKShapeElem;
+struct FKShapeElem;
 class UVehicleMovementComponent;
 class FVehicle4W;
 

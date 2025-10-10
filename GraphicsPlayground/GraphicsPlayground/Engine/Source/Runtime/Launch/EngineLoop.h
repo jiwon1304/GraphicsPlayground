@@ -1,12 +1,14 @@
 #pragma once
 #include "Core/HAL/PlatformType.h"
 #include "Classes/Engine/ResourceMgr.h"
-#include "Renderer/Renderer.h"
+// #include "Renderer/Renderer.h"
 // #include "Editor/UnrealEd/PrimitiveDrawBatch.h"
 #include "Stats/ProfilerStatsManager.h"
 // #include "Stats/GPUTimingManager.h"
+#include "Editor/LevelEditor/SlateAppMessageHandlerBase.h"
+#include <memory>
 
-class FSlateAppMessageHandler;
+// class FSlateAppMessageHandlerBase;
 class UnrealEd;
 class UImGuiManager;
 class UWorld;
@@ -43,42 +45,44 @@ private:
     void UpdateUI();
 
 public:
-    static FGraphicsDevice GraphicDevice;
-    static FRenderer Renderer;
+    FGraphicsDevice* GraphicDevice = nullptr;
+    FRenderer* Renderer = nullptr;
     // static UPrimitiveDrawBatch PrimitiveDrawBatch;
-    static FResourceManager ResourceManager;
+    FResourceManager* ResourceManager = nullptr;
     static uint32 TotalAllocationBytes;
     static uint32 TotalAllocationCount;
 
     HWND AppWnd;
 
-    IGPUTimingManager* GPUTimingManager;
-    FEngineProfiler* EngineProfiler;
+    IGPUTimingManager* GPUTimingManager = nullptr;
+    FEngineProfiler* EngineProfiler = nullptr;
 
-    static FGraphicsDevice ParticleViewerGD;
+    FGraphicsDevice* ParticleViewerGD = nullptr;
     HWND ParticleViewerWnd;
     void ParticleSubWindowInit(HINSTANCE hInstance);
     void CleanupSubWindow();
 
-    USubEngine *ParticleSubEngine;
+    USubEngine* ParticleSubEngine = nullptr;
 
 private:
-    UImGuiManager *UIManager;
+    UImGuiManager* UIManager;
     ImGuiContext *CurrentImGuiContext;
     // TODO: GWorld 제거, Editor들 EditorEngine으로 넣기
 
-    std::unique_ptr<FSlateAppMessageHandler> AppMessageHandler;
-    SLevelEditor *LevelEditor;
-    UnrealEd *UnrealEditor;
-    FDXDBufferManager *BufferManager; // TODO: UEngine으로 옮겨야함.
+    FSlateAppMessageHandlerBase* AppMessageHandler = nullptr;
+    SLevelEditor* LevelEditor = nullptr;
+    UnrealEd* UnrealEditor = nullptr;
+    FDXDBufferManager* BufferManager = nullptr; // TODO: UEngine으로 옮겨야함.
 
     bool bIsExit = false;
     // @todo Option으로 선택 가능하도록
     int32 TargetFPS = 999;
 
 public:
-    SLevelEditor *GetLevelEditor() const { return LevelEditor; }
-    UnrealEd *GetUnrealEditor() const { return UnrealEditor; }
+    SLevelEditor* GetLevelEditor() const { return LevelEditor; }
+    UnrealEd* GetUnrealEditor() const { return UnrealEditor; }
 
-    FSlateAppMessageHandler *GetAppMessageHandler() const { return AppMessageHandler.get(); }
+    FSlateAppMessageHandlerBase *GetAppMessageHandler() const { return AppMessageHandler; }
 };
+
+extern FEngineLoop GEngineLoop;

@@ -3,6 +3,8 @@
 #include "Class.h"
 #include "PropertyEvent.h"
 #include "ScriptStruct.h"
+#include "Core/Math/Matrix.h"
+#include "Core/Math/Color.h"
 #include "CoreUObject/UObject/UObjectHash.h"
 #include "Editor/UnrealEd/ImGuiWidget.h"
 #include "Math/NumericLimits.h"

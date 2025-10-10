@@ -1,6 +1,8 @@
 #include "SlateAppMessageHandlerBase.h"
 
 FSlateAppMessageHandlerBase::FSlateAppMessageHandlerBase()
+    : CurrentPosition(FVector2D::ZeroVector)
+    , PreviousPosition(FVector2D::ZeroVector)
 {
     for (bool& KeyState : ModifierKeyState)
     {

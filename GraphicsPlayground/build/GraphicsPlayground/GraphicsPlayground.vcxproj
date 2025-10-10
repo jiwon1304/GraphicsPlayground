@@ -78,12 +78,12 @@
       <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
       <UseFullPaths>false</UseFullPaths>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;_DEBUG;UNICODE;_UNICODE;_CONSOLE;BUILD_RENDER_BACKEND="DX11";GP_GFX_BACKEND_DX11;FBXSDK_SHARED;IMGUI_IMPL_WIN32_DISABLE_GAMEPAD;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;_DEBUG;UNICODE;_UNICODE;_CONSOLE;GP_GFX_BACKEND_DX11;USE_DIRECTX11;FBXSDK_SHARED;IMGUI_IMPL_WIN32_DISABLE_GAMEPAD;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;UNICODE;_UNICODE;_CONSOLE;BUILD_RENDER_BACKEND=\"DX11\";GP_GFX_BACKEND_DX11;FBXSDK_SHARED;IMGUI_IMPL_WIN32_DISABLE_GAMEPAD;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;UNICODE;_UNICODE;_CONSOLE;GP_GFX_BACKEND_DX11;USE_DIRECTX11;FBXSDK_SHARED;IMGUI_IMPL_WIN32_DISABLE_GAMEPAD;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Engine;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\backends;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\Lua\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\sol2\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\magic_enum\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\Json\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\tinyfiledialogs\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\FBX\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\stbimage;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\fmod\inc;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\physx\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\DirectXTK\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
@@ -160,14 +160,14 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
       <UseFullPaths>false</UseFullPaths>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UNICODE;_UNICODE;_CONSOLE;BUILD_RENDER_BACKEND="DX11";GP_GFX_BACKEND_DX11;FBXSDK_SHARED;IMGUI_IMPL_WIN32_DISABLE_GAMEPAD;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UNICODE;_UNICODE;_CONSOLE;GP_GFX_BACKEND_DX11;USE_DIRECTX11;FBXSDK_SHARED;IMGUI_IMPL_WIN32_DISABLE_GAMEPAD;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <DebugInformationFormat>
       </DebugInformationFormat>
       <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UNICODE;_UNICODE;_CONSOLE;BUILD_RENDER_BACKEND=\"DX11\";GP_GFX_BACKEND_DX11;FBXSDK_SHARED;IMGUI_IMPL_WIN32_DISABLE_GAMEPAD;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UNICODE;_UNICODE;_CONSOLE;GP_GFX_BACKEND_DX11;USE_DIRECTX11;FBXSDK_SHARED;IMGUI_IMPL_WIN32_DISABLE_GAMEPAD;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Engine;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\backends;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\Lua\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\sol2\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\magic_enum\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\Json\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\tinyfiledialogs\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\FBX\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\stbimage;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\fmod\inc;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\physx\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\DirectXTK\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
@@ -266,8 +266,9 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Developer\AnimDataController\AnimDataController.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Developer\LuaTypes\LuaUserTypes.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Developer\PhysicsUtilities\PhysicsAssetUtils.cpp" />
+    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Editor\LevelEditor\Platform\Windows\SlateAppMessageHandlerWindows.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Editor\LevelEditor\SLevelEditor.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Editor\LevelEditor\SlateAppMessageHandler.cpp" />
+    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Editor\LevelEditor\SlateAppMessageHandlerBase.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Editor\PropertyEditor\ControlEditorPanel.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Editor\PropertyEditor\OutlinerEditorPanel.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Editor\PropertyEditor\PhysicsAssetEditorPanel.cpp" />
@@ -302,6 +303,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core\Serialization\Archive.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core\Serialization\MemoryArchive.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core\Stats\GPUTimingManager.cpp" />
+    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core\Stats\Platform\Windows\GPUTimingManagerD3D11.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core\Stats\ProfilerStatsManager.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core\Stats\Stats.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\CoreUObject\UObject\Casts.cpp" />
@@ -453,36 +455,11 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\PhysicsVehicle\SnippetVehicleSceneQuery.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\PhysicsVehicle\SnippetVehicleTireFriction.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\PhysicsVehicle\Vehicle4W.cpp" />
+    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\RHI\BoundShaderStateCache.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\RHI\DynamicRHI.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\RHI\RHICommandList.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\RHI\RHIResources.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\RenderCore\RenderingThread.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\BillboardRenderPass.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\BlurRenderPass.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\CameraEffectRenderPass.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\CompositingPass.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\DepthPrePass.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\EditorBillboardRenderPass.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\EditorRenderPass.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\FogRenderPass.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\GizmoRenderPass.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\LightHeatMapRenderPass.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\LineRenderPass.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\OverlayShapeRenderPass.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\ParticleRenderPass.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\PhysicsAssetViewerRenderPass.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\PostProcessCompositingPass.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\Renderer.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\ShadowManager.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\ShadowRenderPass.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\SkeletalMeshRenderPass.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\SkeletalMeshRenderPassBase.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\SlateRenderPass.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\StaticMeshRenderPass.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\StaticMeshRenderPassBase.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\TileLightCullingPass.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\UpdateLightBufferPass.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\WorldBillboardRenderPass.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Slate\Widgets\Layout\SSplitter.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\SlateCore\Input\Events.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\SlateCore\Widgets\SWindow.cpp" />
@@ -493,16 +470,13 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\D3D11RHI\DXDShaderManager.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\D3D11RHI\GraphicDevice.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\RawInput.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\SubWindow\ImGuiSubWindow.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\SubWindow\ParticleSubEngine.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\SubWindow\SubEngine.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\SubWindow\SubRenderer.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\WindowsCursor.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\WindowsFileDialog.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\WindowsPlatformTime.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\LightGridGenerator.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\LuaScripts\LuaScriptComponent.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\SoundManager.cpp" />
+    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\Renderer.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\tinyfiledialogs\include\tinyfiledialogs.cpp" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Contents\Actors\Fish.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Contents\Actors\GoalPlatformActor.h" />
@@ -520,8 +494,9 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Developer\LuaUtils\LuaBindMacros.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Developer\LuaUtils\LuaBindUtils.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Developer\PhysicsUtilities\PhysicsAssetUtils.h" />
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Editor\LevelEditor\Platform\Windows\SlateAppMessageHandlerWindows.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Editor\LevelEditor\SLevelEditor.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Editor\LevelEditor\SlateAppMessageHandler.h" />
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Editor\LevelEditor\SlateAppMessageHandlerBase.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Editor\PropertyEditor\ControlEditorPanel.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Editor\PropertyEditor\IWindowToggleable.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Editor\PropertyEditor\OutlinerEditorPanel.h" />
@@ -588,6 +563,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core\Serialization\Archive.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core\Serialization\MemoryArchive.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core\Stats\GPUTimingManager.h" />
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core\Stats\Platform\Windows\GPUTimingManagerD3D11.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core\Stats\ProfilerStatsManager.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core\Stats\StatDefine.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core\Stats\Stats.h" />
@@ -669,6 +645,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Engine\Classes\Components\Light\PointLightComponent.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Engine\Classes\Components\Light\SpotLightComponent.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Engine\Classes\Components\Material\Material.h" />
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Engine\Classes\Components\Material\MaterialInfo.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Engine\Classes\Components\MeshComponent.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Engine\Classes\Components\ParticleSubUVComponent.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Engine\Classes\Components\ParticleSystemComponent.h" />
@@ -785,6 +762,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\PhysicsVehicle\SnippetVehicleSceneQuery.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\PhysicsVehicle\SnippetVehicleTireFriction.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\PhysicsVehicle\Vehicle4W.h" />
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\RHI\BoundShaderStateCache.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\RHI\DynamicRHI.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\RHI\PixelFormat.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\RHI\RHI.h" />
@@ -799,36 +777,6 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\RHI\RHIResources.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\RHI\RHIShaderBindingLayout.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\RenderCore\RenderingThread.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\BillboardRenderPass.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\BlurRenderPass.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\CameraEffectRenderPass.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\CompositingPass.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\DepthPrePass.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\EditorBillboardRenderPass.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\EditorRenderPass.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\FogRenderPass.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\GizmoRenderPass.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\IRenderPass.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\LightHeatMapRenderPass.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\LineRenderPass.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\OverlayShapeRenderPass.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\ParticleRenderPass.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\PhysicsAssetViewerRenderPass.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\PostProcessCompositingPass.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\RenderResources.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\Renderer.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\RendererHelpers.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\ShaderConstants.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\ShadowManager.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\ShadowRenderPass.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\SkeletalMeshRenderPass.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\SkeletalMeshRenderPassBase.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\SlateRenderPass.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\StaticMeshRenderPass.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\StaticMeshRenderPassBase.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\TileLightCullingPass.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\UpdateLightBufferPass.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\WorldBillboardRenderPass.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Serialization\Serializer.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Slate\Widgets\Layout\SSplitter.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\SlateCore\Input\Events.h" />
@@ -841,10 +789,6 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\D3D11RHI\GraphicDevice.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\D3D11RHI\ID3D11DynamicRHI.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\RawInput.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\SubWindow\ImGuiSubWindow.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\SubWindow\ParticleSubEngine.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\SubWindow\SubEngine.h" />
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\SubWindow\SubRenderer.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\WindowsCursor.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\WindowsFileDialog.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\WindowsPlatformTime.h" />

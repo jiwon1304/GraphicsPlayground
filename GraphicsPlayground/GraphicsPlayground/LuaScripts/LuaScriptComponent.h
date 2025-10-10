@@ -3,6 +3,7 @@
 #include "Classes/Components/ActorComponent.h"
 #include <sol/sol.hpp>
 #include <filesystem>
+#include "Core/Delegates/DelegateCombination.h"
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnLocationTenUp, const FVector);
 

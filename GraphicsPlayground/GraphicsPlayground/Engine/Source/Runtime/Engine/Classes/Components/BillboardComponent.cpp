@@ -1,5 +1,6 @@
 #include "BillboardComponent.h"
 #include <DirectXMath.h>
+#include <d3d11.h>
 #include "Launch/Define.h"
 #include "World/World.h"
 #include "Classes/Actors/Player.h"
@@ -7,6 +8,7 @@
 #include "Math/MathUtility.h"
 #include "Editor/UnrealEd/EditorViewportClient.h"
 #include "Launch/EngineLoop.h"
+#include "Windows/D3D11RHI/GraphicDevice.h"
 
 UBillboardComponent::UBillboardComponent()
 {
@@ -22,7 +24,7 @@ UObject* UBillboardComponent::Duplicate(UObject* InOuter)
     {
         NewComponent->FinalIndexU = FinalIndexU;
         NewComponent->FinalIndexV = FinalIndexV;
-        NewComponent->Texture = FEngineLoop::ResourceManager.GetTexture(TexturePath.ToWideString());
+        NewComponent->Texture = GEngineLoop.ResourceManager->GetTexture(TexturePath.ToWideString());
         NewComponent->TexturePath = TexturePath;
         NewComponent->UUIDParent = UUIDParent;
         NewComponent->bIsEditorBillboard = bIsEditorBillboard;
@@ -56,7 +58,7 @@ void UBillboardComponent::SetProperties(const TMap<FString, FString>& InProperti
     if (TempStr)
     {
         TexturePath = *TempStr;
-        Texture = FEngineLoop::ResourceManager.GetTexture(TempStr->ToWideString());
+        Texture = GEngineLoop.ResourceManager->GetTexture(TempStr->ToWideString());
     }
 }
 
@@ -86,7 +88,7 @@ int UBillboardComponent::CheckRayIntersection(const FVector& InRayOrigin, const 
 
 void UBillboardComponent::SetTexture(const FWString& InFilePath)
 {
-    Texture = FEngineLoop::ResourceManager.GetTexture(InFilePath);
+    Texture = GEngineLoop.ResourceManager->GetTexture(InFilePath);
     TexturePath = FString(InFilePath.c_str());
     //std::string str(_fileName.begin(), _fileName.end());
 }
@@ -134,7 +136,7 @@ bool UBillboardComponent::CheckPickingOnNDC(const TArray<FVector>& QuadVertices,
 
     D3D11_VIEWPORT Viewport;
     UINT NumViewports = 1;
-    FEngineLoop::GraphicDevice.DeviceContext->RSGetViewports(&NumViewports, &Viewport);
+    GEngineLoop.GraphicDevice->DeviceContext->RSGetViewports(&NumViewports, &Viewport);
 
     // NDC 좌표 계산: X, Y는 [-1,1] 범위로 매핑
     const float NdcX = (2.0f * MousePos.x / Viewport.Width) - 1.0f;

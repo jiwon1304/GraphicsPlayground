@@ -6,6 +6,7 @@
 #include "Classes/PhysicsEngine/BodySetup.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "PhysicalMaterials/Defines.h"
+#include "Windows/D3D11RHI/GraphicDevice.h"
 
 #include "Classes/Engine/Asset/StaticMeshAsset.h"
 
@@ -545,12 +546,12 @@ bool FObjLoader::ConvertToStaticMesh(const FObjInfo& RawData, FStaticMeshRenderD
 
 bool FObjLoader::CreateTextureFromFile(const FWString& Filename, bool bIsSRGB)
 {
-    if (FEngineLoop::ResourceManager.GetTexture(Filename))
+    if (GEngineLoop.ResourceManager->GetTexture(Filename))
     {
         return true;
     }
 
-    HRESULT hr = FEngineLoop::ResourceManager.LoadTextureFromFile(FEngineLoop::GraphicDevice.Device, Filename.c_str(), bIsSRGB);
+    HRESULT hr = GEngineLoop.ResourceManager->LoadTextureFromFile(GEngineLoop.GraphicDevice->Device, Filename.c_str(), bIsSRGB);
 
     if (FAILED(hr))
     {
@@ -884,9 +885,9 @@ bool FObjManager::LoadStaticMeshFromBinary(const FWString& FilePath, FStaticMesh
     {
         for (const TPair<FWString, bool>& Texture : Textures)
         {
-            if (FEngineLoop::ResourceManager.GetTexture(Texture.Key) == nullptr)
+            if (GEngineLoop.ResourceManager->GetTexture(Texture.Key) == nullptr)
             {
-                FEngineLoop::ResourceManager.LoadTextureFromFile(FEngineLoop::GraphicDevice.Device, Texture.Key.c_str(), Texture.Value);
+                GEngineLoop.ResourceManager->LoadTextureFromFile(GEngineLoop.GraphicDevice->Device, Texture.Key.c_str(), Texture.Value);
             }
         }
     }

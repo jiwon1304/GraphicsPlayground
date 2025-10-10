@@ -12,37 +12,37 @@
 
 void FResourceManager::Initialize(FRenderer* Renderer, FGraphicsDevice* Device)
 {
-    LoadTextureFromDDS(Device->Device, Device->DeviceContext, L"Assets/Texture/font.dds");
-    LoadTextureFromDDS(Device->Device, Device->DeviceContext, L"Assets/Texture/UUID_Font.dds");
+    // LoadTextureFromDDS(Device->Device, Device->DeviceContext, L"Assets/Texture/font.dds");
+    // LoadTextureFromDDS(Device->Device, Device->DeviceContext, L"Assets/Texture/UUID_Font.dds");
 
-    LoadTextureFromFile(Device->Device, L"Assets/Texture/ocean_sky.jpg");
-    LoadTextureFromFile(Device->Device, L"Assets/Texture/font.png");
-    LoadTextureFromFile(Device->Device, L"Assets/Texture/emart.png");
-    LoadTextureFromFile(Device->Device, L"Assets/Texture/T_Explosion_SubUV.png");
-    LoadTextureFromFile(Device->Device, L"Assets/Texture/UUID_Font.png");
-    LoadTextureFromFile(Device->Device, L"Assets/Texture/Wooden Crate_Crate_BaseColor.png");
-    LoadTextureFromFile(Device->Device, L"Assets/Texture/spotLight.png");
+    // LoadTextureFromFile(Device->Device, L"Assets/Texture/ocean_sky.jpg");
+    // LoadTextureFromFile(Device->Device, L"Assets/Texture/font.png");
+    // LoadTextureFromFile(Device->Device, L"Assets/Texture/emart.png");
+    // LoadTextureFromFile(Device->Device, L"Assets/Texture/T_Explosion_SubUV.png");
+    // LoadTextureFromFile(Device->Device, L"Assets/Texture/UUID_Font.png");
+    // LoadTextureFromFile(Device->Device, L"Assets/Texture/Wooden Crate_Crate_BaseColor.png");
+    // LoadTextureFromFile(Device->Device, L"Assets/Texture/spotLight.png");
 
-    LoadTextureFromFile(Device->Device, L"Assets/Editor/Icon/S_Actor.PNG");
-    LoadTextureFromFile(Device->Device, L"Assets/Editor/Icon/S_LightSpot.PNG");
-    LoadTextureFromFile(Device->Device, L"Assets/Editor/Icon/S_LightPoint.PNG");
-    LoadTextureFromFile(Device->Device, L"Assets/Editor/Icon/S_LightDirectional.PNG");
-    LoadTextureFromFile(Device->Device, L"Assets/Editor/Icon/S_ExpoHeightFog.PNG");
-    LoadTextureFromFile(Device->Device, L"Assets/Editor/Icon/S_AtmosphericHeightFog.PNG");
-    LoadTextureFromFile(Device->Device, L"Assets/Editor/Icon/AmbientLight_64x.png");
-    LoadTextureFromFile(Device->Device, L"Assets/Viewer/Bone_16x.PNG");
-    LoadTextureFromFile(Device->Device, L"Assets/Viewer/BoneNonWeighted_16x.PNG");
+    // LoadTextureFromFile(Device->Device, L"Assets/Editor/Icon/S_Actor.PNG");
+    // LoadTextureFromFile(Device->Device, L"Assets/Editor/Icon/S_LightSpot.PNG");
+    // LoadTextureFromFile(Device->Device, L"Assets/Editor/Icon/S_LightPoint.PNG");
+    // LoadTextureFromFile(Device->Device, L"Assets/Editor/Icon/S_LightDirectional.PNG");
+    // LoadTextureFromFile(Device->Device, L"Assets/Editor/Icon/S_ExpoHeightFog.PNG");
+    // LoadTextureFromFile(Device->Device, L"Assets/Editor/Icon/S_AtmosphericHeightFog.PNG");
+    // LoadTextureFromFile(Device->Device, L"Assets/Editor/Icon/AmbientLight_64x.png");
+    // LoadTextureFromFile(Device->Device, L"Assets/Viewer/Bone_16x.PNG");
+    // LoadTextureFromFile(Device->Device, L"Assets/Viewer/BoneNonWeighted_16x.PNG");
 
-    LoadTextureFromFile(Device->Device, L"Assets/Viewer/Bone_16x.png");
-    LoadTextureFromFile(Device->Device, L"Assets/Viewer/BoneNonWeighted_16x.png");
-    LoadTextureFromFile(Device->Device, L"Assets/Viewer/Body_16x.png");
-    LoadTextureFromFile(Device->Device, L"Assets/Viewer/box_16px.png");
-    LoadTextureFromFile(Device->Device, L"Assets/Viewer/Sphere_16px.png");
-    LoadTextureFromFile(Device->Device, L"Assets/Viewer/Sphyl_16x.png");
-    LoadTextureFromFile(Device->Device, L"Assets/Viewer/Constraint_16x.png");
-    LoadTextureFromFile(Device->Device, L"Assets/Viewer/icon_PhAT_Sphere_40x.png");
-    LoadTextureFromFile(Device->Device, L"Assets/Viewer/icon_PhAT_Box_40x.png");
-    LoadTextureFromFile(Device->Device, L"Assets/Viewer/icon_PhAT_Sphyl_40x.png");
+    // LoadTextureFromFile(Device->Device, L"Assets/Viewer/Bone_16x.png");
+    // LoadTextureFromFile(Device->Device, L"Assets/Viewer/BoneNonWeighted_16x.png");
+    // LoadTextureFromFile(Device->Device, L"Assets/Viewer/Body_16x.png");
+    // LoadTextureFromFile(Device->Device, L"Assets/Viewer/box_16px.png");
+    // LoadTextureFromFile(Device->Device, L"Assets/Viewer/Sphere_16px.png");
+    // LoadTextureFromFile(Device->Device, L"Assets/Viewer/Sphyl_16x.png");
+    // LoadTextureFromFile(Device->Device, L"Assets/Viewer/Constraint_16x.png");
+    // LoadTextureFromFile(Device->Device, L"Assets/Viewer/icon_PhAT_Sphere_40x.png");
+    // LoadTextureFromFile(Device->Device, L"Assets/Viewer/icon_PhAT_Box_40x.png");
+    // LoadTextureFromFile(Device->Device, L"Assets/Viewer/icon_PhAT_Sphyl_40x.png");
 }
 
 void FResourceManager::Release(FRenderer* Renderer)

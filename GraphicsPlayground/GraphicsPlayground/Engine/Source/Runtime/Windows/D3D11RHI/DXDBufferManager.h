@@ -9,6 +9,7 @@
 #include "Classes/Engine/Texture.h"
 #include "GraphicDevice.h"
 #include "Engine/UserInterface/Console.h"
+#include "Renderer/RenderMisc.h"
 
 // ShaderStage 열거형
 enum class EShaderStage

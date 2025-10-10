@@ -5,6 +5,8 @@
 #include "Runtime/InputCore/InputCoreTypes.h"
 #include "Classes/Components/ActorComponent.h"
 
+struct FKeyEvent; 
+
 DECLARE_MULTICAST_DELEGATE_OneParam(FOneFloatDelegate, const float&)
 
 class UInputComponent : public UActorComponent

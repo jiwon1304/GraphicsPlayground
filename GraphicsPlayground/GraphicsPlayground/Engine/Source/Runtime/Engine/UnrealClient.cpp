@@ -2,6 +2,7 @@
 
 #include "Launch/EngineLoop.h"
 #include <array>
+#include "Windows/D3D11RHI/GraphicDevice.h"
 
 FViewportResource::FViewportResource()
 {
@@ -105,7 +106,7 @@ HRESULT FViewportResource::CreateDepthStencil(EResourceType Type)
     DepthStencilTextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
     DepthStencilTextureDesc.CPUAccessFlags = 0;
     DepthStencilTextureDesc.MiscFlags = 0;
-    hr = FEngineLoop::GraphicDevice.Device->CreateTexture2D(&DepthStencilTextureDesc, nullptr, &NewResource.Texture2D);
+    hr = GEngineLoop.GraphicDevice->Device->CreateTexture2D(&DepthStencilTextureDesc, nullptr, &NewResource.Texture2D);
     if (FAILED(hr))
     {
         return hr;
@@ -115,7 +116,7 @@ HRESULT FViewportResource::CreateDepthStencil(EResourceType Type)
     DepthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
     DepthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
     DepthStencilViewDesc.Texture2D.MipSlice = 0;
-    hr = FEngineLoop::GraphicDevice.Device->CreateDepthStencilView(NewResource.Texture2D,  &DepthStencilViewDesc,  &NewResource.DSV);
+    hr = GEngineLoop.GraphicDevice->Device->CreateDepthStencilView(NewResource.Texture2D,  &DepthStencilViewDesc,  &NewResource.DSV);
     if (FAILED(hr))
     {
         return hr;
@@ -126,7 +127,7 @@ HRESULT FViewportResource::CreateDepthStencil(EResourceType Type)
     DepthStencilDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
     DepthStencilDesc.Texture2D.MostDetailedMip = 0;
     DepthStencilDesc.Texture2D.MipLevels = 1;
-    hr = FEngineLoop::GraphicDevice.Device->CreateShaderResourceView(NewResource.Texture2D, &DepthStencilDesc, &NewResource.SRV);
+    hr = GEngineLoop.GraphicDevice->Device->CreateShaderResourceView(NewResource.Texture2D, &DepthStencilDesc, &NewResource.SRV);
     if (FAILED(hr))
     {
         return hr;
@@ -193,12 +194,12 @@ HRESULT FViewportResource::CreateRenderTarget(EResourceType Type)
     TextureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
     TextureDesc.CPUAccessFlags = 0;
     TextureDesc.MiscFlags = 0;
-    NewResource.Texture2D = FEngineLoop::GraphicDevice.CreateTexture2D(TextureDesc, nullptr);
+    NewResource.Texture2D = GEngineLoop.GraphicDevice->CreateTexture2D(TextureDesc, nullptr);
 
     D3D11_RENDER_TARGET_VIEW_DESC RTVDesc = {};
     RTVDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; // TODO: srgb 옵션 고려해보기
     RTVDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-    hr = FEngineLoop::GraphicDevice.Device->CreateRenderTargetView(NewResource.Texture2D, &RTVDesc, &NewResource.RTV);
+    hr = GEngineLoop.GraphicDevice->Device->CreateRenderTargetView(NewResource.Texture2D, &RTVDesc, &NewResource.RTV);
     if (FAILED(hr))
     {
         return hr;
@@ -209,7 +210,7 @@ HRESULT FViewportResource::CreateRenderTarget(EResourceType Type)
     SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
     SRVDesc.Texture2D.MostDetailedMip = 0;
     SRVDesc.Texture2D.MipLevels = 1;
-    hr = FEngineLoop::GraphicDevice.Device->CreateShaderResourceView(NewResource.Texture2D, &SRVDesc, &NewResource.SRV);
+    hr = GEngineLoop.GraphicDevice->Device->CreateShaderResourceView(NewResource.Texture2D, &SRVDesc, &NewResource.SRV);
     if (FAILED(hr))
     {
         return hr;

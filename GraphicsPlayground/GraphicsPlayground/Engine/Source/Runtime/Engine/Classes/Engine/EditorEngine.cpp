@@ -18,6 +18,7 @@
 #include "World/PhysicsAssetWorld.h"
 #include "PhysicsCore/PhysxSolversModule.h"
 #include "Math/Primitive.h"
+#include "Editor/LevelEditor/SlateAppMessageHandlerBase.h"
 
 extern FEngineLoop GEngineLoop;
 
@@ -144,7 +145,7 @@ void UEditorEngine::StartPIE()
     this->ClearActorSelection(); // Editor World 기준 Select Actor 해제
     this->ClearComponentSelection();
     
-    FSlateAppMessageHandler* Handler = GEngineLoop.GetAppMessageHandler();
+    FSlateAppMessageHandlerBase* Handler = GEngineLoop.GetAppMessageHandler();
 
     Handler->OnPIEModeStart();
 
@@ -348,7 +349,7 @@ void UEditorEngine::EndPIE()
         DeselectComponent(GetSelectedComponent());
     }
 
-    FSlateAppMessageHandler* Handler = GEngineLoop.GetAppMessageHandler();
+    FSlateAppMessageHandlerBase* Handler = GEngineLoop.GetAppMessageHandler();
 
     Handler->OnPIEModeEnd();
     // 다시 EditorWorld로 돌아옴.

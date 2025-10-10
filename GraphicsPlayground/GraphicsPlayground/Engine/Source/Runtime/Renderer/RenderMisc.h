@@ -141,3 +141,41 @@ struct FTextureUVConstants
     float pad0;
     float pad1;
 };
+
+enum class EShaderSRVSlot : int8
+{
+    SRV_SpotLight = 50,
+    SRV_DirectionalLight = 51,
+    SRV_PointLight = 52,
+    SRV_SceneDepth = 99,
+    SRV_Scene = 100,
+    SRV_PostProcess = 101,
+    SRV_EditorOverlay = 102,
+    SRV_Fog = 103,
+    SRV_Debug = 104,
+    SRV_CameraEffect = 105,
+    SRV_Blur = 106,
+    SRV_ShapeOverlay = 107,
+    SRV_Viewport = 120,
+
+    SRV_MAX = 127,
+};
+
+struct FVertexInfo
+{
+    uint32_t NumVertices;
+    uint32_t Stride;
+    struct ID3D11Buffer* VertexBuffer;
+};
+
+struct FIndexInfo
+{
+    uint32_t NumIndices;
+    ID3D11Buffer* IndexBuffer;
+};
+
+struct FBufferInfo
+{
+    FVertexInfo VertexInfo;
+    FIndexInfo IndexInfo;
+};

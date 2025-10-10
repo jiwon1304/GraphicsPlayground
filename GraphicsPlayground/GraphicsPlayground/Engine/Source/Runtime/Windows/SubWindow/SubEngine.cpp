@@ -5,6 +5,7 @@
 #include "SubRenderer.h"
 #include "Engine/UnrealClient.h"
 #include "Editor/UnrealEd/EditorViewportClient.h"
+#include "Windows/D3D11RHI/GraphicDevice.h"
 
 USubEngine::USubEngine() :
     Graphics(nullptr),

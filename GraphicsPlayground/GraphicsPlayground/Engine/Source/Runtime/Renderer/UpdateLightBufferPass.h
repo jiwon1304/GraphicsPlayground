@@ -4,6 +4,7 @@
 #include "Launch/EngineBaseTypes.h"
 #include "Container/Set.h"
 #include "Launch/Define.h"
+#include <d3d11.h>
 
 #define MAX_POINTLIGHT_PER_TILE 256
 #define MAX_SPOTLIGHT_PER_TILE 256

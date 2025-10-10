@@ -10,21 +10,20 @@
 #include "Editor/UnrealEd/EditorViewportClient.h"
 #include "Editor/UnrealEd/UnrealEd.h"
 #include "World/World.h"
+#include "Renderer/Renderer.h"
 
 #include "Classes/Engine/EditorEngine.h"
-#include "Renderer/DepthPrePass.h"
+// #include "Renderer/DepthPrePass.h"
 #include "Windows/SubWindow/ParticleSubEngine.h"
 #include "Windows/SubWindow/ImGuiSubWindow.h"
 #include "SoundManager.h"
 #include "Stats/GPUTimingManager.h"
+#include "Windows/D3D11RHI/DXDBufferManager.h"
+// #include "Renderer/TileLightCullingPass.h"
+#include "Editor/LevelEditor/Platform/Windows/SlateAppMessageHandlerWindows.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 
-FGraphicsDevice FEngineLoop::GraphicDevice;
-FGraphicsDevice FEngineLoop::ParticleViewerGD;
-FRenderer FEngineLoop::Renderer;
-// UPrimitiveDrawBatch FEngineLoop::PrimitiveDrawBatch;
-FResourceManager FEngineLoop::ResourceManager;
 uint32 FEngineLoop::TotalAllocationBytes = 0;
 uint32 FEngineLoop::TotalAllocationCount = 0;
 
@@ -49,21 +48,29 @@ int32 FEngineLoop::Init(HINSTANCE hInstance)
     /* must be initialized before window. */
     WindowInit(hInstance);
 
-    UnrealEditor = new UnrealEd();
-    BufferManager = new FDXDBufferManager();
+    GraphicDevice = new FGraphicsDevice;
+    Renderer = new FRenderer;
+    ResourceManager = new FResourceManager;
+
+    {   
+        GPUTimingManager = CreateGPUTimingManager(FGPUTimingInitParams{ 3, GraphicDevice->Device, GraphicDevice->DeviceContext });
+        if (!GPUTimingManager)
+        {
+            UE_LOG(ELogLevel::Error, TEXT("Failed to initialize GPU Timing Manager!"));
+        }
+    }
+    EngineProfiler = new FEngineProfiler;
+    ParticleSubEngine = new USubEngine;
+
     UIManager = new UImGuiManager;
-    AppMessageHandler = std::make_unique<FSlateAppMessageHandler>();
-    LevelEditor = new SLevelEditor();
-    EngineProfiler = new FEngineProfiler();
+    AppMessageHandler = new FSlateAppMessageHandlerBase;
+    LevelEditor = new SLevelEditor;
+    UnrealEditor = new UnrealEd;
+    BufferManager = new FDXDBufferManager;
     
     UnrealEditor->Initialize();
-    GraphicDevice.Initialize(AppWnd);
+    GraphicDevice->Initialize(AppWnd);
     
-    GPUTimingManager = CreateGPUTimingManager(FGPUTimingInitParams{ 3, GraphicDevice.Device, GraphicDevice.DeviceContext });
-    if (!GPUTimingManager)
-    {
-        UE_LOG(ELogLevel::Error, TEXT("Failed to initialize GPU Timing Manager!"));
-    }
     EngineProfiler->SetGPUTimingManager(GPUTimingManager);
 
     // @todo Table에 Tree 구조로 넣을 수 있도록 수정
@@ -86,12 +93,12 @@ int32 FEngineLoop::Init(HINSTANCE hInstance)
     EngineProfiler->RegisterStatScope(TEXT("SlatePass"), FName(TEXT("SlatePass_CPU")), FName(TEXT("SlatePass_GPU")));
     EngineProfiler->RegisterStatScope(TEXT("Physics"), FName(TEXT("PhysicsSceneUpdate")), FName(TEXT("")));
 
-    BufferManager->Initialize(GraphicDevice.Device, GraphicDevice.DeviceContext);
-    Renderer.Initialize(&GraphicDevice, BufferManager, GPUTimingManager);
+    BufferManager->Initialize(GraphicDevice->Device, GraphicDevice->DeviceContext);
+    Renderer->Initialize(GraphicDevice, BufferManager, GPUTimingManager);
     // PrimitiveDrawBatch.Initialize(&GraphicDevice);
-    UIManager->Initialize(AppWnd, GraphicDevice.Device, GraphicDevice.DeviceContext);
-    ResourceManager.Initialize(&Renderer, &GraphicDevice);
-    
+    UIManager->Initialize(AppWnd, GraphicDevice->Device, GraphicDevice->DeviceContext);
+    ResourceManager->Initialize(Renderer, GraphicDevice);
+
     uint32 ClientWidth = 0;
     uint32 ClientHeight = 0;
     GetClientSize(ClientWidth, ClientHeight);
@@ -104,14 +111,14 @@ int32 FEngineLoop::Init(HINSTANCE hInstance)
     ParticleSubWindowInit(hInstance);
     if (ParticleViewerWnd)
     {
-        ParticleViewerGD.Initialize(ParticleViewerWnd, GraphicDevice.Device);
-        ParticleViewerGD.ClearColor[0] = 0.03f;
-        ParticleViewerGD.ClearColor[1] = 0.03f;
-        ParticleViewerGD.ClearColor[2] = 0.03f;
+        ParticleViewerGD->Initialize(ParticleViewerWnd, GraphicDevice->Device);
+        ParticleViewerGD->ClearColor[0] = 0.03f;
+        ParticleViewerGD->ClearColor[1] = 0.03f;
+        ParticleViewerGD->ClearColor[2] = 0.03f;
     }
 
     ParticleSubEngine = FObjectFactory::ConstructObject<UParticleSubEngine>(nullptr);
-    ParticleSubEngine->Initialize(ParticleViewerWnd, &ParticleViewerGD, BufferManager, UIManager, UnrealEditor);
+    ParticleSubEngine->Initialize(ParticleViewerWnd, ParticleViewerGD, BufferManager, UIManager, UnrealEditor);
     
     FSoundManager::GetInstance().Initialize();
     FSoundManager::GetInstance().LoadSound("fishdream", "Contents/Sounds/fishdream.mp3");
@@ -125,7 +132,7 @@ int32 FEngineLoop::Init(HINSTANCE hInstance)
 
 void FEngineLoop::Render() const
 {
-    GraphicDevice.Prepare();
+    GraphicDevice->Prepare();
     
     if (LevelEditor->IsMultiViewport())
     {
@@ -133,21 +140,21 @@ void FEngineLoop::Render() const
         for (int Idx = 0; Idx < 4; ++Idx)
         {
             LevelEditor->SetActiveViewportClient(Idx);
-            Renderer.Render(LevelEditor->GetActiveViewportClient());
+            Renderer->Render(LevelEditor->GetActiveViewportClient());
         }
         
         for (int Idx = 0; Idx < 4; ++Idx)
         {
             LevelEditor->SetActiveViewportClient(Idx);
-            Renderer.RenderViewport(LevelEditor->GetActiveViewportClient());
+            Renderer->RenderViewport(LevelEditor->GetActiveViewportClient());
         }
         GetLevelEditor()->SetActiveViewportClient(ActiveViewportCache);
     }
     else
     {
-        Renderer.Render(LevelEditor->GetActiveViewportClient());
+        Renderer->Render(LevelEditor->GetActiveViewportClient());
         
-        Renderer.RenderViewport(LevelEditor->GetActiveViewportClient());
+        Renderer->RenderViewport(LevelEditor->GetActiveViewportClient());
     }
     
 }
@@ -207,7 +214,7 @@ void FEngineLoop::Tick()
         UnrealEditor->Render();
 
         FConsole::GetInstance().Draw();
-        EngineProfiler->Render(GraphicDevice.DeviceContext, GraphicDevice.ScreenWidth, GraphicDevice.ScreenHeight);
+        EngineProfiler->Render();
 
         UIManager->EndFrame();
 
@@ -227,7 +234,7 @@ void FEngineLoop::Tick()
             GPUTimingManager->EndFrame();        // End GPU frame timing
         }
 
-        GraphicDevice.SwapBuffer();
+        GraphicDevice->SwapBuffer();
 
         SubEngineControl();
         do
@@ -275,9 +282,9 @@ void FEngineLoop::Exit()
 
     LevelEditor->Release();
     UIManager->Shutdown();
-    ResourceManager.Release(&Renderer);
-    Renderer.Release();
-    GraphicDevice.Release();
+    ResourceManager->Release(Renderer);
+    Renderer->Release();
+    GraphicDevice->Release();
     
     GEngine->Release();
 
@@ -335,7 +342,7 @@ LRESULT CALLBACK FEngineLoop::AppWndProc(HWND hWnd, uint32 Msg, WPARAM wParam, L
 
                 if (GEngineLoop.GetUnrealEditor())
                 {
-                    ParticleViewerGD.Resize(hWnd, FullWidth, FullHeight);
+                    GEngineLoop.ParticleViewerGD->Resize(hWnd, FullWidth, FullHeight);
                     GEngineLoop.GetUnrealEditor()->OnResize(hWnd, EWindowType::WT_ParticleSubWindow);
                 }
                 GEngineLoop.ParticleSubEngine->ViewportClient->AspectRatio = (FullWidth * 0.75f) / FullHeight;
@@ -377,18 +384,18 @@ LRESULT CALLBACK FEngineLoop::AppWndProc(HWND hWnd, uint32 Msg, WPARAM wParam, L
         {
             if (auto LevelEditor = GEngineLoop.GetLevelEditor())
             {
-                FEngineLoop::GraphicDevice.Resize(hWnd);
-                // FEngineLoop::Renderer.DepthPrePass->ResizeDepthStencil();
+                GEngineLoop.GraphicDevice->Resize(hWnd);
+                // FEngineLoop::Renderer->DepthPrePass->ResizeDepthStencil();
                 
                 uint32 ClientWidth = 0;
                 uint32 ClientHeight = 0;
                 GEngineLoop.GetClientSize(ClientWidth, ClientHeight);
             
                 LevelEditor->ResizeEditor(ClientWidth, ClientHeight);
-                FEngineLoop::Renderer.TileLightCullingPass->ResizeViewBuffers(
-                  static_cast<uint32>(LevelEditor->GetActiveViewportClient()->GetD3DViewport().Width),
-                    static_cast<uint32>(LevelEditor->GetActiveViewportClient()->GetD3DViewport().Height)
-                );
+                // FEngineLoop::Renderer->TileLightCullingPass->ResizeViewBuffers(
+                //   static_cast<uint32>(LevelEditor->GetActiveViewportClient()->GetD3DViewport().Width),
+                //     static_cast<uint32>(LevelEditor->GetActiveViewportClient()->GetD3DViewport().Height)
+                // );
             }
         }
         GEngineLoop.UpdateUI();
@@ -400,7 +407,10 @@ LRESULT CALLBACK FEngineLoop::AppWndProc(HWND hWnd, uint32 Msg, WPARAM wParam, L
         break;
     default:
         if(hWnd == GEngineLoop.AppWnd && GEngineLoop.AppMessageHandler !=nullptr)
-            GEngineLoop.AppMessageHandler->ProcessMessage(hWnd, Msg, wParam, lParam);
+            {
+                FSlateAppMessageHandlerWindows* WindowsHandler = static_cast<FSlateAppMessageHandlerWindows*>(GEngineLoop.AppMessageHandler);
+                WindowsHandler->ProcessMessage(hWnd, Msg, wParam, lParam);
+            }
         return DefWindowProc(hWnd, Msg, wParam, lParam);
     }
 
@@ -462,6 +472,6 @@ void FEngineLoop::ParticleSubWindowInit(HINSTANCE hInstance)
 
 void FEngineLoop::CleanupSubWindow()
 {
-    if (ParticleViewerGD.Device)
-        ParticleViewerGD.Release();
+    if (ParticleViewerGD->Device)
+        ParticleViewerGD->Release();
 }

@@ -4,6 +4,7 @@
 #include "Container/Map.h"
 #include "CoreUObject/UObject/NameTypes.h"
 #include "Math/Transform.h"
+#include "Math/Matrix.h"
 
 struct FMeshBoneInfo
 {

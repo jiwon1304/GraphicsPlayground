@@ -3,6 +3,8 @@
 #include "Math/JungleMath.h"
 #include "CoreUObject/UObject/Casts.h"
 #include "Launch/EngineLoop.h"
+#include "Runtime/Renderer/RenderMisc.h"
+#include "Windows/D3D11RHI/GraphicDevice.h"
 
 UPointLightComponent::UPointLightComponent()
 {
@@ -85,7 +87,7 @@ UPointLightComponent::UPointLightComponent()
 //     CubeMapTextureDesc.Usage = D3D11_USAGE_DEFAULT;
 //     CubeMapTextureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 //
-//     hr = FEngineLoop::GraphicDevice.Device->CreateTexture2D(&CubeMapTextureDesc, nullptr, &NewResource.Texture2D);
+//     hr = GEngineLoop.GraphicDevice.Device->CreateTexture2D(&CubeMapTextureDesc, nullptr, &NewResource.Texture2D);
 //     if (FAILED(hr))
 //     {
 //         UE_LOG(ELogLevel::Error, TEXT("Failed to create Shadow Cube Map texture!"));
@@ -98,7 +100,7 @@ UPointLightComponent::UPointLightComponent()
 //     rtvDesc.Texture2D.MipSlice = 0;
 //     rtvDesc.Texture2DArray.FirstArraySlice = 0;
 //     rtvDesc.Texture2DArray.ArraySize = NUM_FACES;  // DSV 생성시 모든 6면을 포함
-//     hr = FEngineLoop::GraphicDevice.Device->CreateRenderTargetView(NewResource.Texture2D, &rtvDesc, &DepthRTVArray);
+//     hr = GEngineLoop.GraphicDevice.Device->CreateRenderTargetView(NewResource.Texture2D, &rtvDesc, &DepthRTVArray);
 //     if (FAILED(hr))
 //     {
 //         UE_LOG(ELogLevel::Error, TEXT("Failed to create Shadow Cube Map RTV!"));
@@ -112,7 +114,7 @@ UPointLightComponent::UPointLightComponent()
 //     CubeMapSRVDesc.Texture2DArray.MipLevels = 1;
 //     CubeMapSRVDesc.Texture2DArray.FirstArraySlice = 0;
 //     CubeMapSRVDesc.Texture2DArray.ArraySize = NUM_FACES;
-//     hr = FEngineLoop::GraphicDevice.Device->CreateShaderResourceView(NewResource.Texture2D, &CubeMapSRVDesc, &NewResource.SRV);
+//     hr = GEngineLoop.GraphicDevice.Device->CreateShaderResourceView(NewResource.Texture2D, &CubeMapSRVDesc, &NewResource.SRV);
 //     if (FAILED(hr))
 //     {
 //         UE_LOG(ELogLevel::Error, TEXT("Failed to create Shadow Cube Map SRV!"));
@@ -133,7 +135,7 @@ UPointLightComponent::UPointLightComponent()
 //     desc.Usage = D3D11_USAGE_DEFAULT;
 //     desc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
 //     desc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE; // DSV + SRV
-//     hr = FEngineLoop::GraphicDevice.Device->CreateTexture2D(&desc, nullptr, &DSVResource.Texture2D);
+//     hr = GEngineLoop.GraphicDevice.Device->CreateTexture2D(&desc, nullptr, &DSVResource.Texture2D);
 //     if (FAILED(hr) || !DSVResource.Texture2D) {
 //         UE_LOG(ELogLevel::Error, TEXT("CreateTexture2D(Depth) failed: 0x%08X"), hr);
 //         return hr;
@@ -146,7 +148,7 @@ UPointLightComponent::UPointLightComponent()
 //     dsvDesc.Texture2DArray.MipSlice = 0;
 //     dsvDesc.Texture2DArray.FirstArraySlice = 0;
 //     dsvDesc.Texture2DArray.ArraySize = NUM_FACES;
-//     hr = FEngineLoop::GraphicDevice.Device->CreateDepthStencilView(DSVResource.Texture2D, &dsvDesc, &DSVResource.DSV);
+//     hr = GEngineLoop.GraphicDevice.Device->CreateDepthStencilView(DSVResource.Texture2D, &dsvDesc, &DSVResource.DSV);
 //     if (FAILED(hr) || !DSVResource.DSV) {
 //         UE_LOG(ELogLevel::Error, TEXT("CreateDepthStencilView failed: 0x%08X"), hr);
 //         return hr;
@@ -158,7 +160,7 @@ UPointLightComponent::UPointLightComponent()
 //     srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
 //     srvDesc.TextureCube.MostDetailedMip = 0;
 //     srvDesc.TextureCube.MipLevels = 1;
-//     hr = FEngineLoop::GraphicDevice.Device->CreateShaderResourceView(DSVResource.Texture2D, &srvDesc, &DSVResource.SRV);
+//     hr = GEngineLoop.GraphicDevice.Device->CreateShaderResourceView(DSVResource.Texture2D, &srvDesc, &DSVResource.SRV);
 //     if (FAILED(hr) || !DSVResource.SRV) {
 //         UE_LOG(ELogLevel::Error, TEXT("CreateShaderResourceView failed: 0x%08X"), hr);
 //         return hr;
@@ -195,7 +197,7 @@ void UPointLightComponent::InitShadowDebugView()
         TexDesc.MiscFlags = 0;
 
         ID3D11Texture2D* Texture = nullptr;
-        auto hr = FEngineLoop::GraphicDevice.Device->CreateTexture2D(&TexDesc, nullptr, &Texture);
+        auto hr = GEngineLoop.GraphicDevice->Device->CreateTexture2D(&TexDesc, nullptr, &Texture);
         if (FAILED(hr))
         {
             UE_LOG(ELogLevel::Error, TEXT("Failed to create shadow debug texture!"));
@@ -210,7 +212,7 @@ void UPointLightComponent::InitShadowDebugView()
         SrvDesc.Texture2D.MipLevels = 1;
 
         ID3D11ShaderResourceView* Srv = nullptr;
-        hr = FEngineLoop::GraphicDevice.Device->CreateShaderResourceView(Texture, &SrvDesc, &Srv);
+        hr = GEngineLoop.GraphicDevice->Device->CreateShaderResourceView(Texture, &SrvDesc, &Srv);
         if (FAILED(hr))
         {
             UE_LOG(ELogLevel::Error, TEXT("Failed to create shadow debug SRV!"));
@@ -416,7 +418,7 @@ void UPointLightComponent::UpdateProjectionMatrix()
 //        /*ArraySlice=*/SliceIndex,
 //        /*NumMips=*/1
 //    );
-//    FEngineLoop::GraphicDevice.DeviceContext
+//    GEngineLoop.GraphicDevice.DeviceContext
 //        ->CopySubresourceRegion(
 //            OutputTextures[SliceIndex],  // dst 텍스처
 //            /*DstSubresource=*/0,
@@ -449,7 +451,7 @@ void UPointLightComponent::UpdateProjectionMatrix()
 //    desc.Texture2DArray.ArraySize = 1;
 //
 //    ID3D11ShaderResourceView* srv = nullptr;
-//    auto hr = FEngineLoop::GraphicDevice.Device
+//    auto hr = GEngineLoop.GraphicDevice.Device
 //        ->CreateShaderResourceView(texArray, &desc, &srv);
 //    if (FAILED(hr))
 //    {

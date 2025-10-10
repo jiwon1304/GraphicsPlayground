@@ -43,10 +43,13 @@
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Developer\PhysicsUtilities\PhysicsAssetUtils.cpp">
       <Filter>Engine\Source\Developer\PhysicsUtilities</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Editor\LevelEditor\Platform\Windows\SlateAppMessageHandlerWindows.cpp">
+      <Filter>Engine\Source\Editor\LevelEditor\Platform\Windows</Filter>
+    </ClCompile>
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Editor\LevelEditor\SLevelEditor.cpp">
       <Filter>Engine\Source\Editor\LevelEditor</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Editor\LevelEditor\SlateAppMessageHandler.cpp">
+    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Editor\LevelEditor\SlateAppMessageHandlerBase.cpp">
       <Filter>Engine\Source\Editor\LevelEditor</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Editor\PropertyEditor\ControlEditorPanel.cpp">
@@ -150,6 +153,9 @@
     </ClCompile>
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core\Stats\GPUTimingManager.cpp">
       <Filter>Engine\Source\Runtime\Core\Stats</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core\Stats\Platform\Windows\GPUTimingManagerD3D11.cpp">
+      <Filter>Engine\Source\Runtime\Core\Stats\Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core\Stats\ProfilerStatsManager.cpp">
       <Filter>Engine\Source\Runtime\Core\Stats</Filter>
@@ -604,6 +610,9 @@
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\PhysicsVehicle\Vehicle4W.cpp">
       <Filter>Engine\Source\Runtime\PhysicsVehicle</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\RHI\BoundShaderStateCache.cpp">
+      <Filter>Engine\Source\Runtime\RHI</Filter>
+    </ClCompile>
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\RHI\DynamicRHI.cpp">
       <Filter>Engine\Source\Runtime\RHI</Filter>
     </ClCompile>
@@ -615,84 +624,6 @@
     </ClCompile>
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\RenderCore\RenderingThread.cpp">
       <Filter>Engine\Source\Runtime\RenderCore</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\BillboardRenderPass.cpp">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\BlurRenderPass.cpp">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\CameraEffectRenderPass.cpp">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\CompositingPass.cpp">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\DepthPrePass.cpp">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\EditorBillboardRenderPass.cpp">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\EditorRenderPass.cpp">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\FogRenderPass.cpp">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\GizmoRenderPass.cpp">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\LightHeatMapRenderPass.cpp">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\LineRenderPass.cpp">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\OverlayShapeRenderPass.cpp">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\ParticleRenderPass.cpp">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\PhysicsAssetViewerRenderPass.cpp">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\PostProcessCompositingPass.cpp">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\Renderer.cpp">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\ShadowManager.cpp">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\ShadowRenderPass.cpp">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\SkeletalMeshRenderPass.cpp">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\SkeletalMeshRenderPassBase.cpp">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\SlateRenderPass.cpp">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\StaticMeshRenderPass.cpp">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\StaticMeshRenderPassBase.cpp">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\TileLightCullingPass.cpp">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\UpdateLightBufferPass.cpp">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\WorldBillboardRenderPass.cpp">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Slate\Widgets\Layout\SSplitter.cpp">
       <Filter>Engine\Source\Runtime\Slate\Widgets\Layout</Filter>
@@ -724,18 +655,6 @@
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\RawInput.cpp">
       <Filter>Engine\Source\Runtime\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\SubWindow\ImGuiSubWindow.cpp">
-      <Filter>Engine\Source\Runtime\Windows\SubWindow</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\SubWindow\ParticleSubEngine.cpp">
-      <Filter>Engine\Source\Runtime\Windows\SubWindow</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\SubWindow\SubEngine.cpp">
-      <Filter>Engine\Source\Runtime\Windows\SubWindow</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\SubWindow\SubRenderer.cpp">
-      <Filter>Engine\Source\Runtime\Windows\SubWindow</Filter>
-    </ClCompile>
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\WindowsCursor.cpp">
       <Filter>Engine\Source\Runtime\Windows</Filter>
     </ClCompile>
@@ -750,6 +669,9 @@
       <Filter>LuaScripts</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\SoundManager.cpp" />
+    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\Renderer.cpp">
+      <Filter>Engine\Source\Runtime\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\tinyfiledialogs\include\tinyfiledialogs.cpp">
       <Filter>Engine\Source\ThirdParty\tinyfiledialogs\include</Filter>
     </ClCompile>
@@ -803,10 +725,13 @@
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Developer\PhysicsUtilities\PhysicsAssetUtils.h">
       <Filter>Engine\Source\Developer\PhysicsUtilities</Filter>
     </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Editor\LevelEditor\Platform\Windows\SlateAppMessageHandlerWindows.h">
+      <Filter>Engine\Source\Editor\LevelEditor\Platform\Windows</Filter>
+    </ClInclude>
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Editor\LevelEditor\SLevelEditor.h">
       <Filter>Engine\Source\Editor\LevelEditor</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Editor\LevelEditor\SlateAppMessageHandler.h">
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Editor\LevelEditor\SlateAppMessageHandlerBase.h">
       <Filter>Engine\Source\Editor\LevelEditor</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Editor\PropertyEditor\ControlEditorPanel.h">
@@ -1006,6 +931,9 @@
     </ClInclude>
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core\Stats\GPUTimingManager.h">
       <Filter>Engine\Source\Runtime\Core\Stats</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core\Stats\Platform\Windows\GPUTimingManagerD3D11.h">
+      <Filter>Engine\Source\Runtime\Core\Stats\Platform\Windows</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core\Stats\ProfilerStatsManager.h">
       <Filter>Engine\Source\Runtime\Core\Stats</Filter>
@@ -1248,6 +1176,9 @@
       <Filter>Engine\Source\Runtime\Engine\Classes\Components\Light</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Engine\Classes\Components\Material\Material.h">
+      <Filter>Engine\Source\Runtime\Engine\Classes\Components\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Engine\Classes\Components\Material\MaterialInfo.h">
       <Filter>Engine\Source\Runtime\Engine\Classes\Components\Material</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Engine\Classes\Components\MeshComponent.h">
@@ -1598,6 +1529,9 @@
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\PhysicsVehicle\Vehicle4W.h">
       <Filter>Engine\Source\Runtime\PhysicsVehicle</Filter>
     </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\RHI\BoundShaderStateCache.h">
+      <Filter>Engine\Source\Runtime\RHI</Filter>
+    </ClInclude>
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\RHI\DynamicRHI.h">
       <Filter>Engine\Source\Runtime\RHI</Filter>
     </ClInclude>
@@ -1640,96 +1574,6 @@
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\RenderCore\RenderingThread.h">
       <Filter>Engine\Source\Runtime\RenderCore</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\BillboardRenderPass.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\BlurRenderPass.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\CameraEffectRenderPass.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\CompositingPass.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\DepthPrePass.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\EditorBillboardRenderPass.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\EditorRenderPass.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\FogRenderPass.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\GizmoRenderPass.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\IRenderPass.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\LightHeatMapRenderPass.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\LineRenderPass.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\OverlayShapeRenderPass.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\ParticleRenderPass.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\PhysicsAssetViewerRenderPass.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\PostProcessCompositingPass.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\RenderResources.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\Renderer.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\RendererHelpers.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\ShaderConstants.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\ShadowManager.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\ShadowRenderPass.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\SkeletalMeshRenderPass.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\SkeletalMeshRenderPassBase.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\SlateRenderPass.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\StaticMeshRenderPass.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\StaticMeshRenderPassBase.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\TileLightCullingPass.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\UpdateLightBufferPass.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\WorldBillboardRenderPass.h">
-      <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Serialization\Serializer.h">
       <Filter>Engine\Source\Runtime\Serialization</Filter>
     </ClInclude>
@@ -1765,18 +1609,6 @@
     </ClInclude>
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\RawInput.h">
       <Filter>Engine\Source\Runtime\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\SubWindow\ImGuiSubWindow.h">
-      <Filter>Engine\Source\Runtime\Windows\SubWindow</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\SubWindow\ParticleSubEngine.h">
-      <Filter>Engine\Source\Runtime\Windows\SubWindow</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\SubWindow\SubEngine.h">
-      <Filter>Engine\Source\Runtime\Windows\SubWindow</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\SubWindow\SubRenderer.h">
-      <Filter>Engine\Source\Runtime\Windows\SubWindow</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Windows\WindowsCursor.h">
       <Filter>Engine\Source\Runtime\Windows</Filter>
@@ -1851,6 +1683,12 @@
     <Filter Include="Engine\Source\Editor\LevelEditor">
       <UniqueIdentifier>{2546D78A-6ABF-3412-9DB3-129ADCCC9B56}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Source\Editor\LevelEditor\Platform">
+      <UniqueIdentifier>{233B4ABA-3C4A-352D-8F63-3B4EBE3572E4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Source\Editor\LevelEditor\Platform\Windows">
+      <UniqueIdentifier>{2E3CDEB2-D2CC-3DCF-90D3-6AC57185AB3E}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Engine\Source\Editor\PropertyEditor">
       <UniqueIdentifier>{89520152-BBD7-3CD6-96E4-30A8D3737A7C}</UniqueIdentifier>
     </Filter>
@@ -1895,6 +1733,12 @@
     </Filter>
     <Filter Include="Engine\Source\Runtime\Core\Stats">
       <UniqueIdentifier>{BDFEE5EB-021F-3A4F-BBF5-F9770C5A8C4F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Source\Runtime\Core\Stats\Platform">
+      <UniqueIdentifier>{75DD7086-2871-3798-A098-B81177839F32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Source\Runtime\Core\Stats\Platform\Windows">
+      <UniqueIdentifier>{6D000B96-A796-3A91-894A-48A158822563}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Source\Runtime\Core\Templates">
       <UniqueIdentifier>{9E36F2A4-C5A5-3576-803A-945045CAF9C6}</UniqueIdentifier>
@@ -2015,9 +1859,6 @@
     </Filter>
     <Filter Include="Engine\Source\Runtime\Windows\D3D11RHI">
       <UniqueIdentifier>{AE55C938-9CB3-3D8D-A218-F1C9580580B5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Source\Runtime\Windows\SubWindow">
-      <UniqueIdentifier>{CE798F19-A603-3819-B902-EC70ADC50FD8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Source\ThirdParty">
       <UniqueIdentifier>{DDBFC117-D06C-3662-87AB-ACCD72001B4B}</UniqueIdentifier>

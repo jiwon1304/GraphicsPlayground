@@ -18,6 +18,7 @@
 #include "Contents/Actors/Fish.h"
 #include "PhysicsCore/PhysxSolversModule.h"
 #include "PhysicsCore/PhysicsScene.h"
+#include "Classes/Camera/PlayerCameraManager.h"
 
 class UEditorEngine;
 

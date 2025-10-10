@@ -7,14 +7,14 @@
 #include "Launch/EngineLoop.h"
 #include "Windows/WindowsCursor.h"
 #include "Math/Vector.h"
+#include "Windows/RawInput.h"
+#include "SlateCore/Input/Events.h"
 
 extern FEngineLoop GEngineLoop;
 
 
 FSlateAppMessageHandlerWindows::FSlateAppMessageHandlerWindows()
-    : CurrentPosition(FVector2D::ZeroVector)
-    , PreviousPosition(FVector2D::ZeroVector),
-    FSlateAppMessageHandlerBase()
+    : FSlateAppMessageHandlerBase()
 {
     RawInputHandler = std::make_unique<FRawInput>(GEngineLoop.AppWnd, [this](const RAWINPUT& RawInput)
     {
@@ -687,11 +687,11 @@ void FSlateAppMessageHandlerWindows::OnRawKeyboardInput(const RAWKEYBOARD& RawKe
     // 입력 이벤트 타입 설정
     const EInputEvent InputEventType = (RawKeyboardInput.Flags & RI_KEY_BREAK) ? IE_Released : IE_Pressed;
 
-    OnRawKeyboardInputDelegate.Broadcast(FKeyEvent{
+    OnRawKeyboardInputDelegate.Broadcast(FKeyEvent(
         EKeys::Invalid,  // TODO: 나중에 FInputKeyManager구현되면 바꾸기
         GetModifierKeys(),
         InputEventType,
-        0, // RawInput에서 Char를 얻기 어렵기 때문에
-        RawKeyboardInput.VKey
-    });
+        0 // RawInput에서 Char를 얻기 어렵기 때문에
+        // RawKeyboardInput.VKey
+    ));
 }

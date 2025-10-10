@@ -6,6 +6,9 @@
 #include "ViewportClient.h"
 #include "Launch/EngineLoop.h"
 #include "Launch/EngineBaseTypes.h"
+#include "Core/Math/Primitive.h"
+#include "SlateCore/Input/Events.h"
+#include "Core/Math/Matrix.h"
 
 #define  MIN_ORTHOZOOM (1.0)  // 2D ortho viewport zoom >= MIN_ORTHOZOOM
 #define MAX_ORTHOZOOM (1e25)
@@ -123,7 +126,7 @@ public:
     int32 ViewportIndex;
     FViewport* GetViewport() const { return Viewport; }
     
-    D3D11_VIEWPORT& GetD3DViewport() const;
+    struct D3D11_VIEWPORT& GetD3DViewport() const;
 
     FViewportResource* GetViewportResource();
 

@@ -3,13 +3,17 @@
 #include "Engine/UnrealClient.h"
 #include "Renderer/ParticleRenderPass.h"
 #include "Windows/SubWindow/ParticleSubEngine.h"
+#include "Windows/D3D11RHI/GraphicDevice.h"
+#include "Windows/D3D11RHI/DXDBufferManager.h"
+#include "Renderer/RenderMisc.h"
+
 void FSubRenderer::Initialize(FGraphicsDevice* InGraphics, FDXDBufferManager* InBufferManager, USubEngine* InEngine)
 {
     Engine = InEngine;
     Graphics = InGraphics;
     BufferManager = InBufferManager;
     ParticleRenderPass = new FParticleRenderPass();
-    ParticleRenderPass->Initialize(BufferManager, Graphics, FEngineLoop::Renderer.ShaderManager);
+    ParticleRenderPass->Initialize(BufferManager, Graphics, GEngineLoop.Renderer.ShaderManager);
 }
 
 void FSubRenderer::PrepareRender(const std::shared_ptr<FEditorViewportClient>& Viewport)

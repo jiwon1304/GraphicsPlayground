@@ -43,7 +43,7 @@ void AEditorPlayer::Input()
             ScreenToClient(GEngineLoop.AppWnd, &mousePos);
 
             /*
-            uint32 UUID = FEngineLoop::GraphicDevice.GetPixelUUID(mousePos);
+            uint32 UUID = GEngineLoop.GraphicDevice.GetPixelUUID(mousePos);
             // TArray<UObject*> objectArr = GetWorld()->GetObjectArr();
             for ( const USceneComponent* obj : TObjectRange<USceneComponent>())
             {

@@ -3,6 +3,7 @@
 
 #include "IRenderPass.h"
 #include "Launch/Define.h"
+#include "Renderer/RenderMisc.h"
 
 struct FParticleMeshEmitterInstance;
 struct FDynamicMeshEmitterReplayDataBase;

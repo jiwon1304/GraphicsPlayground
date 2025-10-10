@@ -4,7 +4,7 @@
 #include "Math/Rotator.h"
 #include "Math/Quat.h"
 #include "CoreUObject/UObject/Casts.h"
-
+#include "Renderer/RenderMisc.h"
 
 
 USpotLightComponent::USpotLightComponent()

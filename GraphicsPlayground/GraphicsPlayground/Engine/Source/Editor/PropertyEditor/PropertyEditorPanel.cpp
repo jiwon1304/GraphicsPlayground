@@ -47,6 +47,7 @@
 #include "Classes/PhysicsEngine/BodySetup.h"
 #include "Developer/PhysicsUtilities/PhysicsAssetUtils.h"
 #include "Classes/PhysicsEngine/PhysicsAsset.h"
+#include "Renderer/Renderer.h"
 
 PropertyEditorPanel::PropertyEditorPanel()
 {
@@ -827,10 +828,10 @@ void PropertyEditorPanel::RenderForDirectionalLightComponent(UDirectionalLightCo
         ImGui::Text("ShadowMap");
 
         // 분할된 개수만큼 CSM 해당 SRV 출력
-        const uint32& NumCascades = FEngineLoop::Renderer.ShadowManager->GetNumCasCades();
+        uint32 NumCascades = GEngineLoop.Renderer->ShadowManager->GetNumCasCades();
         for (uint32 i = 0; i < NumCascades; ++i)
         {
-            ImGui::Image(reinterpret_cast<ImTextureID>(FEngineLoop::Renderer.ShadowManager->GetDirectionalShadowCascadeDepthRHI()->ShadowSRVs[i]), ImVec2(200, 200));
+            ImGui::Image(reinterpret_cast<ImTextureID>(GEngineLoop.Renderer->ShadowManager->GetDirectionalShadowCascadeDepthRHI()->ShadowSRVs[i]), ImVec2(200, 200));
             //ImGui::SameLine();
         }
         ImGui::TreePop();
@@ -871,7 +872,7 @@ void PropertyEditorPanel::RenderForPointLightComponent(UPointLightComponent* Poi
 
         ImGui::Text("ShadowMap");
 
-        FShadowCubeMapArrayRHI* pointRHI = FEngineLoop::Renderer.ShadowManager->GetPointShadowCubeMapRHI();
+        FShadowCubeMapArrayRHI* pointRHI = GEngineLoop.Renderer->ShadowManager->GetPointShadowCubeMapRHI();
         const char* faceNames[] = { "+X", "-X", "+Y", "-Y", "+Z", "-Z" };
         float imageSize = 128.0f;
         int index =  PointlightComponent->GetPointLightInfo().ShadowMapArrayIndex;
@@ -946,7 +947,7 @@ void PropertyEditorPanel::RenderForSpotLightComponent(USpotLightComponent* SpotL
         }
 
         ImGui::Text("ShadowMap");
-        ImGui::Image(reinterpret_cast<ImTextureID>(FEngineLoop::Renderer.ShadowManager->GetSpotShadowDepthRHI()->ShadowSRVs[0]), ImVec2(200, 200));
+        ImGui::Image(reinterpret_cast<ImTextureID>(GEngineLoop.Renderer->ShadowManager->GetSpotShadowDepthRHI()->ShadowSRVs[0]), ImVec2(200, 200));
 
         ImGui::TreePop();
     }

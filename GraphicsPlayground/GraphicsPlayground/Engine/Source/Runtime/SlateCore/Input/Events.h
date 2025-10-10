@@ -186,7 +186,8 @@ public:
 
     uint32 GetKeyCode() const
     {
-        static_assert(false && "Keys로 바꾸기");
+        assert(false && "Keys로 바꾸기");
+        return 0;
         // return KeyCode;
     }
 

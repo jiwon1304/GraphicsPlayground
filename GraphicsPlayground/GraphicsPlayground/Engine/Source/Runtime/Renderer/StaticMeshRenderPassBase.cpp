@@ -9,6 +9,9 @@
 #include "Editor/UnrealEd/EditorViewportClient.h"
 #include "CoreUObject/UObject/Casts.h"
 #include "Editor/PropertyEditor/ShowFlags.h"
+#include "Windows/D3D11RHI/GraphicDevice.h"
+#include "Renderer/RenderMisc.h"
+#include "Renderer/RendererHelpers.h"
 
 FStaticMeshRenderPassBase::FStaticMeshRenderPassBase()
     : BufferManager(nullptr)
@@ -89,7 +92,7 @@ void FStaticMeshRenderPassBase::RenderAllStaticMeshes(const std::shared_ptr<FEdi
 
         if (Viewport->GetShowFlag() & static_cast<uint64>(EEngineShowFlags::SF_AABB))
         {
-            FEngineLoop::PrimitiveDrawBatch.AddAABBToBatch(Comp->GetBoundingBox(), Comp->GetComponentLocation(), WorldMatrix);
+            GEngineLoop.PrimitiveDrawBatch.AddAABBToBatch(Comp->GetBoundingBox(), Comp->GetComponentLocation(), WorldMatrix);
         }
     }
 }

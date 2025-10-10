@@ -9,6 +9,7 @@
 #include "Classes/Engine/OverlapResult.h"
 #include "Math/Quat.h"
 #include "Math/Primitive.h"
+#include "Math/Matrix.h"
 #include "CoreUObject/UObject/Casts.h"
 #include "CoreUObject/UObject/UObjectIterator.h"
 

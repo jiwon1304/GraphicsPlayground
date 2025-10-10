@@ -4,6 +4,7 @@
 #include "Hal/PlatformType.h"
 #include "Container/Array.h"
 #include "Core/Math/Vector.h"
+#include "Classes/Components/Material/MaterialInfo.h"
 
 struct FSkeletalMeshVertex
 {

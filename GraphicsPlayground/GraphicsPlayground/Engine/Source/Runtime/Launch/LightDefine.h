@@ -2,6 +2,7 @@
 #include "Math/Vector.h"
 #include "Math/Vector4.h"
 #include "Math/Matrix.h"
+#include "Math/Color.h"
 #define MAX_AMBIENT_LIGHT 16
 #define MAX_DIRECTIONAL_LIGHT 16
 #define MAX_POINT_LIGHT 16

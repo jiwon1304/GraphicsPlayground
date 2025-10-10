@@ -4,6 +4,7 @@
 #include "Classes/Components/SceneComponent.h"
 #include "Classes/Engine/OverlapInfo.h"
 #include "Math/Primitive.h"
+#include "Core/Delegates/DelegateCombination.h"
 
 DECLARE_MULTICAST_DELEGATE_FiveParams(FComponentHitSignature, UPrimitiveComponent* /* HitComponent */, AActor* /* OtherActor */, UPrimitiveComponent* /* OtherComp */, FVector /* NormalImpulse */, const FHitResult& /* Hit */);
 DECLARE_MULTICAST_DELEGATE_SixParams(FComponentBeginOverlapSignature, UPrimitiveComponent* /* OverlappedComponent */, AActor* /* OtherActor */, UPrimitiveComponent* /* OtherComp */, int32 /* OtherBodyIndex */, bool /* bFromSweep */, const FHitResult& /* Hit */);
@@ -115,7 +116,7 @@ public:
     void SetType(const FString& InType)
     {
         m_Type = InType;
-        //staticMesh = FEngineLoop::resourceMgr.GetMesh(m_Type);
+        //staticMesh = GEngineLoop.resourceMgr.GetMesh(m_Type);
     }
     
     FBoundingBox GetBoundingBox() const { return AABB; }

@@ -14,6 +14,7 @@
 #include "Classes/GameFramework/GameMode.h"
 #include "Classes/GameFramework/SpringArmComponent.h"
 #include "World/World.h"
+#include "Classes/Camera/PlayerCameraManager.h"
 
 AFish::AFish()
     : JumpZVelocity(50.f)

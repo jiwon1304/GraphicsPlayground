@@ -27,6 +27,7 @@ public:
     virtual ~IGPUTimingManager() = default;
 
     virtual bool Initialize(const FGPUTimingInitParams& Params) = 0;
+    virtual bool IsInitialized() const = 0;
 
     virtual void BeginFrame() = 0;
     virtual void StartTimestamp(const TStatId& StatId) = 0;

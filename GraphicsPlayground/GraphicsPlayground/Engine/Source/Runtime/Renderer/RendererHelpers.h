@@ -1,24 +1,8 @@
 #pragma once
 #include "Launch/EngineLoop.h"
-
-enum class EShaderSRVSlot : int8
-{
-    SRV_SpotLight = 50,
-    SRV_DirectionalLight = 51,
-    SRV_PointLight = 52,
-    SRV_SceneDepth = 99,
-    SRV_Scene = 100,
-    SRV_PostProcess = 101,
-    SRV_EditorOverlay = 102,
-    SRV_Fog = 103,
-    SRV_Debug = 104,
-    SRV_CameraEffect = 105,
-    SRV_Blur = 106,
-    SRV_ShapeOverlay = 107,
-    SRV_Viewport = 120,
-
-    SRV_MAX = 127,
-};
+#include "RenderMisc.h"
+#include "Windows/D3D11RHI/GraphicDevice.h"
+#include "Windows/D3D11RHI/DXDBufferManager.h"
 
 namespace MaterialUtils
 {
@@ -48,7 +32,7 @@ namespace MaterialUtils
         {
             if (MaterialInfo.TextureFlag & (1 << Idx)) // EMaterialTextureFlags와 EMaterialTextureSlots의 순서가 일치한다는 전제 조건.
             {
-                std::shared_ptr<FTexture> Texture = FEngineLoop::ResourceManager.GetTexture(MaterialInfo.TextureInfos[Idx].TexturePath);
+                std::shared_ptr<FTexture> Texture = GEngineLoop.ResourceManager->GetTexture(MaterialInfo.TextureInfos[Idx].TexturePath);
                 SRVs[Idx] = Texture->TextureSRV;
                 Samplers[Idx] = Texture->SamplerState;
 

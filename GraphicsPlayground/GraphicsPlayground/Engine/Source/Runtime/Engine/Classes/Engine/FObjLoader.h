@@ -6,7 +6,10 @@
 #include "Serialization/Serializer.h"
 
 class UStaticMesh;
+class UMaterial;
+struct FMaterialInfo;
 struct FObjManager;
+struct FObjInfo;
 
 struct FStaticMeshVertex;
 struct FStaticMeshRenderData;

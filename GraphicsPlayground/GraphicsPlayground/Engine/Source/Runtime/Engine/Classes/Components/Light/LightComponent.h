@@ -2,6 +2,8 @@
 #include "Engine/UnrealClient.h"
 #include "Classes/Components/SceneComponent.h"
 #include "Math/Primitive.h"
+#include "Runtime/Launch/LightDefine.h"
+#include "Math/Matrix.h"
 
 #define NUM_FACES 6
 

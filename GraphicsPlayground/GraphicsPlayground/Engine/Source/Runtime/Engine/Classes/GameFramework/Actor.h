@@ -6,6 +6,7 @@
 #include "CoreUObject/UObject/Object.h"
 #include "CoreUObject/UObject/ObjectFactory.h"
 #include "CoreUObject/UObject/ObjectMacros.h"
+#include "Core/Delegates/DelegateCombination.h"
 
 DECLARE_MULTICAST_DELEGATE_TwoParams(FActorBeginOverlapSignature, AActor* /* OverlappedActor */, AActor* /* OtherActor */);
 DECLARE_MULTICAST_DELEGATE_TwoParams(FActorEndOverlapSignature, AActor* /* OverlappedActor */, AActor* /* OtherActor */);

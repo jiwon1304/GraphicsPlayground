@@ -22,6 +22,7 @@ class FLightHeatMapRenderPass;
 class FPostProcessCompositingPass;
 class FDXDBufferManager;
 class IGPUTimingManager;
+class FGraphicsDevice;
 enum class EResourceType : uint8;
 
 class FSceneRenderPass;

@@ -9,10 +9,9 @@
 #include "Misc/Optional.h"
 #include "Templates/TemplateUtilities.h"
 #include "Templates/TypeUtilities.h"
+#include "CoreUObject/UObject/ObjectUtils.h"
 
 class UScriptStruct;
-
-
 struct FProperty
 {
     /**

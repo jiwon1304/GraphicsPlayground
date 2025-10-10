@@ -3,10 +3,12 @@
 #define _TCHAR_DEFINED
 #include <d3d11.h>
 
-#include "RendererHelpers.h"
+// #include "RendererHelpers.h"
+#include "Renderer/RenderMisc.h"
 #include "Container/Array.h"
 #include "Math/Matrix.h"     // FMatrix (UE 스타일)
 
+class FGraphicsDevice;
 struct FShadowDepthRHI
 {
     // --- 방향성 광원 섀도우 리소스 (CSM 기반) ---

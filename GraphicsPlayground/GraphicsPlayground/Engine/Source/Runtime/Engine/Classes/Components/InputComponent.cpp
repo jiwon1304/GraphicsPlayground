@@ -1,4 +1,6 @@
 #include "InputComponent.h"
+#include "SlateCore/Input/Events.h"
+#include "Editor/LevelEditor/SlateAppMessageHandlerBase.h"
 
 void UInputComponent::ProcessInput(float DeltaTime)
 {
@@ -29,7 +31,7 @@ void UInputComponent::SetPossess()
 
 void UInputComponent::BindInputDelegate()
 {
-    FSlateAppMessageHandler* Handler = GEngineLoop.GetAppMessageHandler();
+    FSlateAppMessageHandlerBase* Handler = GEngineLoop.GetAppMessageHandler();
 
     BindKeyDownDelegateHandles.Add(Handler->OnKeyDownDelegate.AddLambda([this](const FKeyEvent& InKeyEvent)
     {
@@ -50,7 +52,7 @@ void UInputComponent::UnPossess()
 
 void UInputComponent::ClearBindDelegate()
 {
-    FSlateAppMessageHandler* Handler = GEngineLoop.GetAppMessageHandler();
+    FSlateAppMessageHandlerBase* Handler = GEngineLoop.GetAppMessageHandler();
 
     for (FDelegateHandle DelegateHandle : BindKeyDownDelegateHandles)
     {

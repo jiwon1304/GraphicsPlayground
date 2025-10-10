@@ -10,6 +10,7 @@ public:
     ~FGPUTimingManagerD3D11() override = default;
 
     bool Initialize(const FGPUTimingInitParams& Params) override;
+    bool IsInitialized() const override { return bInitialized; }
 
     void BeginFrame() override;
     void StartTimestamp(const TStatId& StatId) override;

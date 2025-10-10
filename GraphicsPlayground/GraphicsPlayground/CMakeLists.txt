@@ -13,8 +13,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Graphics API Settings
-option(USE_OPENGL "Use OpenGL backend" ON)
-option(USE_DIRECTX11 "Use DirectX 11 backend" OFF)
+# option(USE_OPENGL "Use OpenGL backend" ON)
+# option(USE_DIRECTX11 "Use DirectX 11 backend" OFF)
+
+option(USE_OPENGL "Use OpenGL backend" OFF)
+option(USE_DIRECTX11 "Use DirectX 11 backend" ON)
 
 # Project Settings
 set(PROJECT_NAME GraphicsPlayground)
@@ -71,16 +74,21 @@ list(FILTER PROJECT_HEADER_FILES EXCLUDE REGEX "pch\\.h$")
 # -----------------------------------------------------------------------------------------------
 # 임시로 renderer 디렉토리 제외
 # Renderer/ 전체 제외
+# if (WIN32 AND USE_DIRECTX11)
+    # Windows + DirectX11 조합에서는 Renderer/ 제외하지 않음
+# else()
 list(FILTER PROJECT_SOURCE_FILES EXCLUDE REGEX "(/|\\\\)Renderer(/|\\\\)")
 list(FILTER PROJECT_HEADER_FILES EXCLUDE REGEX "(/|\\\\)Renderer(/|\\\\)")
-list(FILTER PROJECT_SOURCE_FILES EXCLUDE REGEX "(/|\\\\)Windows(/|\\\\)")
-list(FILTER PROJECT_HEADER_FILES EXCLUDE REGEX "(/|\\\\)Windows(/|\\\\)")
-
+list(FILTER PROJECT_SOURCE_FILES EXCLUDE REGEX "(/|\\\\)SubWindow(/|\\\\)")
+list(FILTER PROJECT_HEADER_FILES EXCLUDE REGEX "(/|\\\\)SubWindow(/|\\\\)")
+# list(FILTER PROJECT_SOURCE_FILES EXCLUDE REGEX "(/|\\\\)Runtime/Windows(/|\\\\)")
+# list(FILTER PROJECT_HEADER_FILES EXCLUDE REGEX "(/|\\\\)Runtime/Windows(/|\\\\)")
+# endif()
 
 # 대신 Renderer/Renderer.cpp만 다시 추가
-if(EXISTS "${ROOT_SRC_DIR}/Renderer/Renderer.cpp")
-    list(APPEND PROJECT_SOURCE_FILES "${ROOT_SRC_DIR}/Renderer/Renderer.cpp")
-endif()
+if(EXISTS "${ROOT_SRC_DIR}/Engine/Source/Runtime/Renderer/Renderer.cpp")
+    list(APPEND PROJECT_SOURCE_FILES "${ROOT_SRC_DIR}/Engine/Source/Runtime/Renderer/Renderer.cpp")
+endif() 
 
 
 
@@ -95,6 +103,14 @@ if (NOT USE_DIRECTX11)
     list(FILTER PROJECT_HEADER_FILES EXCLUDE REGEX "(/|\\\\)(DX11|DirectX11)(/|\\\\)")
 endif()
 
+if (NOT WIN32)
+    list(FILTER PROJECT_SOURCE_FILES EXCLUDE REGEX "(/|\\\\)Windows(/|\\\\)")
+    list(FILTER PROJECT_HEADER_FILES EXCLUDE REGEX "(/|\\\\)Windows(/|\\\\)")
+endif()
+if (NOT APPLE)
+    list(FILTER PROJECT_SOURCE_FILES EXCLUDE REGEX "(/|\\\\)MacOS(/|\\\\)")
+    list(FILTER PROJECT_HEADER_FILES EXCLUDE REGEX "(/|\\\\)MacOS(/|\\\\)")
+endif()
 # -----------------------------------------------------------------------------------------------
 # Graphics API 의존성
 # -----------------------------------------------------------------------------------------------
@@ -277,12 +293,19 @@ target_compile_definitions(${PROJECT_NAME}
         UNICODE
         _UNICODE
         _CONSOLE
-        BUILD_RENDER_BACKEND=\"${BUILD_RENDER_BACKEND_STR}\"
+        # BUILD_RENDER_BACKEND=\"${BUILD_RENDER_BACKEND_STR}\"
 )
 if (USE_OPENGL)
-    target_compile_definitions(${PROJECT_NAME} PRIVATE GP_GFX_BACKEND_GL3 IMGUI_IMPL_OPENGL_LOADER_GLAD)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE 
+        GP_GFX_BACKEND_GL3 
+        IMGUI_IMPL_OPENGL_LOADER_GLAD
+        USE_OPENGL
+        )
 elseif (USE_DIRECTX11)
-    target_compile_definitions(${PROJECT_NAME} PRIVATE GP_GFX_BACKEND_DX11)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE 
+        GP_GFX_BACKEND_DX11
+        USE_DIRECTX11
+        )
 endif()
 if (WIN32)
     target_compile_definitions(${PROJECT_NAME} PRIVATE FBXSDK_SHARED)

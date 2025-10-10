@@ -169,8 +169,8 @@ void SkeletalMeshViewerPanel::ClearRefSkeletalMeshComponent()
 
 void SkeletalMeshViewerPanel::LoadBoneIcon()
 {
-    BoneIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/Bone_16x.PNG")->TextureSRV;
-    NonWeightBoneIconSRV = FEngineLoop::ResourceManager.GetTexture(L"Assets/Viewer/BoneNonWeighted_16x.PNG")->TextureSRV;
+    BoneIconSRV = GEngineLoop.ResourceManager->GetTexture(L"Assets/Viewer/Bone_16x.PNG")->TextureSRV;
+    NonWeightBoneIconSRV = GEngineLoop.ResourceManager->GetTexture(L"Assets/Viewer/BoneNonWeighted_16x.PNG")->TextureSRV;
 
 }
 

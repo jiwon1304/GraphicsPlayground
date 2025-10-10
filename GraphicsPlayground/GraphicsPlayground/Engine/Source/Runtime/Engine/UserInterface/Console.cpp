@@ -102,7 +102,7 @@ void FEngineProfiler::SetGPUTimingManager(IGPUTimingManager* InGPUTimingManager)
     GPUTimingManager = InGPUTimingManager;
 }
 
-void FEngineProfiler::Render(ID3D11DeviceContext* Context, UINT Width, UINT Height)
+void FEngineProfiler::Render()
 {
     if (!bShowWindow) return;
 
@@ -242,7 +242,7 @@ void FConsole::Draw() {
     ImGui::SetNextWindowSize(WindowSize, ImGuiCond_Always);
 
     // 창을 표시하고 닫힘 여부 확인
-    Overlay.Render(FEngineLoop::GraphicDevice.DeviceContext, Width, Height);
+    Overlay.Render();
 
     bExpand = ImGui::Begin("Console", &bWasOpen);
     if (!bExpand)

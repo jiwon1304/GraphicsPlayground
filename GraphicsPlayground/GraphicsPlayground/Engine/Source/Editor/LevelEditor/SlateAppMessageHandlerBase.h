@@ -50,6 +50,8 @@ public:
     FSlateAppMessageHandlerBase();
     ~FSlateAppMessageHandlerBase() = default;
 
+    void OnPIEModeStart() { OnPIEModeStartDelegate.Broadcast(); }
+    void OnPIEModeEnd() { OnPIEModeEndDelegate.Broadcast(); }
 protected:
     /**
      * Handles input before broadcast to delegates

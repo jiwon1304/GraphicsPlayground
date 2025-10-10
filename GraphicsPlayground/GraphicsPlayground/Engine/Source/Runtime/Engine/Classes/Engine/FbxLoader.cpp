@@ -14,6 +14,7 @@
 #include "Container/String.h"
 #include "Container/Set.h"
 #include "Developer/AnimDataController/AnimDataController.h"
+#include "Windows/D3D11RHI/GraphicDevice.h"
 
 struct FVertexKey
 {
@@ -1679,12 +1680,12 @@ void FFbxLoader::ConvertSceneToLeftHandedZUpXForward()
 
 bool FFbxLoader::CreateTextureFromFile(const FWString& Filename, bool bIsSRGB)
 {
-    if (FEngineLoop::ResourceManager.GetTexture(Filename))
+    if (GEngineLoop.ResourceManager->GetTexture(Filename))
     {
         return true;
     }
 
-    HRESULT hr = FEngineLoop::ResourceManager.LoadTextureFromFile(FEngineLoop::GraphicDevice.Device, Filename.c_str(), bIsSRGB);
+    HRESULT hr = GEngineLoop.ResourceManager->LoadTextureFromFile(GEngineLoop.GraphicDevice->Device, Filename.c_str(), bIsSRGB);
 
     if (FAILED(hr))
     {

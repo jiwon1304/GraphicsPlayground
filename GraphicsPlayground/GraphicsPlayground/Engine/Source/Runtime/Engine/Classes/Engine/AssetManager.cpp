@@ -16,6 +16,7 @@
 #include "Classes/PhysicsEngine/PhysicsAsset.h"
 #include "Serialization/MemoryArchive.h"
 #include "CoreUObject/UObject/ObjectFactory.h"
+#include "Windows/D3D11RHI/GraphicDevice.h"
 
 bool UAssetManager::IsInitialized()
 {
@@ -743,7 +744,7 @@ bool UAssetManager::SerializeAssetLoadResult(FArchive& Ar, FAssetLoadResult& Res
             // 텍스처 렌더 리소스 생성
             for (const FTextureInfo& Info : Material->GetMaterialInfo().TextureInfos)
             {
-                FEngineLoop::ResourceManager.LoadTextureFromFile(FEngineLoop::GraphicDevice.Device, Info.TexturePath.c_str(), Info.bIsSRGB);
+                GEngineLoop.ResourceManager->LoadTextureFromFile(GEngineLoop.GraphicDevice->Device, Info.TexturePath.c_str(), Info.bIsSRGB);
             }
         }
     }

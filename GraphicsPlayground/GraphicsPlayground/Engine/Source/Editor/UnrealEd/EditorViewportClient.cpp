@@ -16,6 +16,8 @@
 #include "Editor/LevelEditor/SLevelEditor.h"
 #include "SlateCore/Input/Events.h"
 #include "World/PhysicsAssetWorld.h"
+#include "Classes/Camera/PlayerCameraManager.h"
+#include "Windows/D3D11RHI/GraphicDevice.h"
 
 FVector FEditorViewportClient::Pivot = FVector(0.0f, 0.0f, 0.0f);
 float FEditorViewportClient::OrthoSize = 10.0f;
@@ -281,7 +283,7 @@ void FEditorViewportClient::InputKey(const FKeyEvent& InKeyEvent)
         }
         case 'M':
         {
-            FEngineLoop::GraphicDevice.Resize(GEngineLoop.AppWnd);
+            GEngineLoop.GraphicDevice->Resize(GEngineLoop.AppWnd);
             SLevelEditor* LevelEd = GEngineLoop.GetLevelEditor();
             LevelEd->SetEnableMultiViewport(!LevelEd->IsMultiViewport());
             break;

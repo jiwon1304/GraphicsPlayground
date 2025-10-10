@@ -5,7 +5,9 @@
 
 class ID3D11Device;
 class ID3D11DeviceContext;
-typedef int HRESULT;
+#ifndef HRESULT 
+typedef long HRESULT;
+#endif
 
 class FRenderer;
 class FGraphicsDevice;

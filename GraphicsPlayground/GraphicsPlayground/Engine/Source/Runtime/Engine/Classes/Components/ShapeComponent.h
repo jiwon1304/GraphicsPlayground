@@ -1,6 +1,7 @@
 
 #pragma once
 #include "PrimitiveComponent.h"
+#include "Core/Math/Color.h"
 
 enum class EShapeType : uint8
 {

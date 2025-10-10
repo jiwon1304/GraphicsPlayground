@@ -153,24 +153,24 @@ FORCEINLINE FVertexDeclarationRHIRef RHICreateVertexDeclaration(const FVertexDec
     return GDynamicRHI->RHICreateVertexDeclaration(Elements);
 }
 
-FORCEINLINE FPixelShaderRHIRef RHICreatePixelShader(/*TArrayView<const uint8> Code, const FSHAHash& Hash*/)
+FORCEINLINE FPixelShaderRHIRef RHICreatePixelShader(const TArray<const uint8> &Code)
 {
-    return GDynamicRHI->RHICreatePixelShader(/*Code, Hash*/);
+    return GDynamicRHI->RHICreatePixelShader(Code);
 }
 
-FORCEINLINE FVertexShaderRHIRef RHICreateVertexShader(/*TArrayView<const uint8> Code, const FSHAHash& Hash*/)
+FORCEINLINE FVertexShaderRHIRef RHICreateVertexShader(const TArray<const uint8> &Code)
 {
-    return GDynamicRHI->RHICreateVertexShader(/*Code, Hash*/);
+    return GDynamicRHI->RHICreateVertexShader(Code);
 }
 
-FORCEINLINE FGeometryShaderRHIRef RHICreateGeometryShader(/*TArrayView<const uint8> Code, const FSHAHash& Hash*/)
+FORCEINLINE FGeometryShaderRHIRef RHICreateGeometryShader(const TArray<const uint8> &Code)
 {
-    return GDynamicRHI->RHICreateGeometryShader(/*Code, Hash*/);
+    return GDynamicRHI->RHICreateGeometryShader(Code);
 }
 
-FORCEINLINE FComputeShaderRHIRef RHICreateComputeShader(/*TArrayView<const uint8> Code, const FSHAHash& Hash*/)
+FORCEINLINE FComputeShaderRHIRef RHICreateComputeShader(const TArray<const uint8> &Code)
 {
-    return GDynamicRHI->RHICreateComputeShader(/*Code, Hash*/);
+    return GDynamicRHI->RHICreateComputeShader(Code);
 }
 
 // FORCEINLINE FStagingBufferRHIRef RHICreateStagingBuffer()
