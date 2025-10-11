@@ -11,6 +11,7 @@
 #include "Editor/UnrealEd/UnrealEd.h"
 #include "World/World.h"
 #include "Renderer/Renderer.h"
+#include "Classes/Engine/ResourceMgr.h"
 
 #include "Classes/Engine/EditorEngine.h"
 // #include "Renderer/DepthPrePass.h"
@@ -18,6 +19,7 @@
 #include "Windows/SubWindow/ImGuiSubWindow.h"
 #include "SoundManager.h"
 #include "Stats/GPUTimingManager.h"
+#include "Stats/ProfilerStatsManager.h"
 #include "Windows/D3D11RHI/DXDBufferManager.h"
 // #include "Renderer/TileLightCullingPass.h"
 #include "Editor/LevelEditor/Platform/Windows/SlateAppMessageHandlerWindows.h"
@@ -96,7 +98,7 @@ int32 FEngineLoop::Init(HINSTANCE hInstance)
     BufferManager->Initialize(GraphicDevice->Device, GraphicDevice->DeviceContext);
     Renderer->Initialize(GraphicDevice, BufferManager, GPUTimingManager);
     // PrimitiveDrawBatch.Initialize(&GraphicDevice);
-    UIManager->Initialize(AppWnd, GraphicDevice->Device, GraphicDevice->DeviceContext);
+    UIManager->Initialize(AppWnd, GraphicDevice);
     ResourceManager->Initialize(Renderer, GraphicDevice);
 
     uint32 ClientWidth = 0;

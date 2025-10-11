@@ -1,7 +1,7 @@
 ﻿#include "Property.h"
 #include "Class.h"
 #include "ScriptStruct.h"
-
+#include "Engine/UserInterface/Console.h"
 
 void FProperty::Resolve()
 {

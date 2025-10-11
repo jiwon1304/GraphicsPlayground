@@ -3,6 +3,7 @@
 // Engine\Source\Runtime\Experimental\Chaos\Public\ChaosSolversModule.h
 #include "CoreUObject/UObject/Object.h"
 #include "PhysicsCore/PhysXIntegration.h"
+#include "Container/Array.h"
 
 class FPhysicsSolver;
 struct FPhysScene;

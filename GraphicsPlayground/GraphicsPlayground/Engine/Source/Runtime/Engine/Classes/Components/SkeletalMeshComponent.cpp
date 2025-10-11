@@ -14,6 +14,7 @@
 #include "Classes/Engine/Engine.h"
 #include "CoreUObject/UObject/Casts.h"
 #include "CoreUObject/UObject/ObjectFactory.h"
+#include "Core/Stats/Stats.h"
 
 bool USkeletalMeshComponent::bIsCPUSkinning = false;
 

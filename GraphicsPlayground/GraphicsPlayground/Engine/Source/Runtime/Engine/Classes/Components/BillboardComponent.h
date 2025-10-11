@@ -3,7 +3,7 @@
 #define _TCHAR_DEFINED
 #include <wrl.h>
 #include "PrimitiveComponent.h"
-
+#include "Classes/Engine/Texture.h"
 
 class UBillboardComponent : public UPrimitiveComponent
 {

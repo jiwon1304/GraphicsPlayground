@@ -2,12 +2,14 @@
 #include "Launch/EngineLoop.h"
 #include "NameTypes.h"
 #include "Misc/CoreMiscDefines.h"
+#include "Core/Container/String.h"
 
 struct FPropertyChangedEvent;
 extern FEngineLoop GEngineLoop;
 
 class UClass;
 class UWorld;
+class FArchive;
 
 class UObject
 {

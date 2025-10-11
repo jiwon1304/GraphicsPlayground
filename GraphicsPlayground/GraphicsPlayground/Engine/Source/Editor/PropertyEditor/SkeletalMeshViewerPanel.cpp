@@ -15,6 +15,7 @@
 #include "Contents/AnimInstance/MyAnimInstance.h"
 #include "Classes/Animation/AnimSoundNotify.h"
 #include "SoundManager.h"
+#include "Engine/Classes/Engine/ResourceMgr.h"
 
 SkeletalMeshViewerPanel::SkeletalMeshViewerPanel()
 {

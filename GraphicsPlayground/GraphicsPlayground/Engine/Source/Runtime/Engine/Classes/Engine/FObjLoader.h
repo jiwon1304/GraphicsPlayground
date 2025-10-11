@@ -4,6 +4,7 @@
 #include "Container/Map.h"
 #include "HAL/PlatformType.h"
 #include "Serialization/Serializer.h"
+#include "Engine/Classes/Engine/Asset/StaticMeshAsset.h"
 
 class UStaticMesh;
 class UMaterial;

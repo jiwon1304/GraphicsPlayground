@@ -4,14 +4,15 @@
 #include "Launch/ImGuiManager.h"
 #include "Font/RawFonts.h"
 #include "Font/IconDefs.h"
+#include "Windows/D3D11RHI/GraphicDevice.h"
 
-void UImGuiManager::Initialize(HWND hWnd, ID3D11Device* Device, ID3D11DeviceContext* DeviceContext)
+void UImGuiManager::Initialize(HWND hWnd, FGraphicsDevice* InGraphics)
 {
     IMGUI_CHECKVERSION();
     ImGuiContext = ImGui::CreateContext();
     ImGuiIO& IO = ImGui::GetIO();
     ImGui_ImplWin32_Init(hWnd);
-    ImGui_ImplDX11_Init(Device, DeviceContext);
+    ImGui_ImplDX11_Init(InGraphics->Device, InGraphics->DeviceContext);
     SharedFont = IO.Fonts->AddFontFromFileTTF(R"(C:\Windows\Fonts\malgun.ttf)", 18.0f, nullptr, IO.Fonts->GetGlyphRangesKorean());
 
     unsigned char* pixels;

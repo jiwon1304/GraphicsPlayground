@@ -5,6 +5,7 @@
 #include "Launch/EngineLoop.h"
 #include "Runtime/Renderer/RenderMisc.h"
 #include "Windows/D3D11RHI/GraphicDevice.h"
+#include "Engine/UserInterface/Console.h"
 
 UPointLightComponent::UPointLightComponent()
 {

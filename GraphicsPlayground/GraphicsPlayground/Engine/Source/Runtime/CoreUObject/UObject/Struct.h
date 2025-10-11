@@ -1,8 +1,9 @@
 ﻿#pragma once
 #include "CoreUObject/UObject/Object.h"
+#include "Core/Container/Array.h"
+#include "Core/Container/Map.h"
 
 struct FProperty;
-
 
 /**
  * UClass와 UScriptStruct의 기본 클래스입니다.

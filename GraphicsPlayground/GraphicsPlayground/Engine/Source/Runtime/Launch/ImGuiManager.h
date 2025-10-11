@@ -1,10 +1,13 @@
 #pragma once
 #include "Core/HAL/PlatformType.h"
+#include "ThirdParty/ImGui/imgui.h"
+
+class FGraphicsDevice;
 
 class UImGuiManager
 {
 public:
-    void Initialize(HWND hWnd, ID3D11Device* Device, ID3D11DeviceContext* DeviceContext);
+    void Initialize(HWND hWnd, FGraphicsDevice* InGraphics);
     void BeginFrame() const;
     void EndFrame() const;
     void PreferenceStyle() const;

@@ -3,6 +3,7 @@
 #include "Launch/Define.h"
 #include "Hal/PlatformType.h"
 #include "Container/Array.h"
+#include "Classes/Components/Material/MaterialInfo.h"
 
 struct FStaticMeshVertex
 {

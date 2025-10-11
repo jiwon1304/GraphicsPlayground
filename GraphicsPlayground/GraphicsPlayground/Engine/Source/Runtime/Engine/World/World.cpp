@@ -19,6 +19,7 @@
 #include "PhysicsCore/PhysxSolversModule.h"
 #include "PhysicsCore/PhysicsScene.h"
 #include "Classes/Camera/PlayerCameraManager.h"
+#include "Core/Stats/Stats.h"
 
 class UEditorEngine;
 

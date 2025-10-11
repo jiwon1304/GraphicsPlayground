@@ -1,4 +1,5 @@
 #include "AnimStateMachine.h"
+#include "Engine/UserInterface/Console.h"
 
 UAnimStateMachine::UAnimStateMachine()
 {

@@ -10,6 +10,7 @@
 #include "Templates/TemplateUtilities.h"
 #include "Templates/TypeUtilities.h"
 #include "CoreUObject/UObject/ObjectUtils.h"
+#include "ThirdParty/ImGui/imgui.h"
 
 class UScriptStruct;
 struct FProperty

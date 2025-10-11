@@ -16,6 +16,8 @@ class USubEngine;
 class IGPUTimingManager;
 class FEngineProfiler;
 class FResourceManager;
+class FGraphicsDevice;
+class FRenderer;
 
 class FEngineLoop
 {
@@ -61,7 +63,7 @@ public:
 
 private:
     UImGuiManager* UIManager;
-    ImGuiContext *CurrentImGuiContext;
+    struct ImGuiContext *CurrentImGuiContext;
     // TODO: GWorld 제거, Editor들 EditorEngine으로 넣기
 
     FSlateAppMessageHandlerBase* AppMessageHandler = nullptr;

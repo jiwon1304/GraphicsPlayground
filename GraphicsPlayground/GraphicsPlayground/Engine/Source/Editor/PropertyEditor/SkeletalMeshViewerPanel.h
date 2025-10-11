@@ -2,6 +2,7 @@
 #include "Classes/Engine/EditorEngine.h"
 #include "Classes/GameFramework/Actor.h"
 #include "Editor/UnrealEd/EditorPanel.h"
+#include <d3d11.h>
 
 class USkeletalMesh;
 class FReferenceSkeleton;

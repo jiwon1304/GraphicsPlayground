@@ -17,6 +17,7 @@
 #include "Serialization/MemoryArchive.h"
 #include "CoreUObject/UObject/ObjectFactory.h"
 #include "Windows/D3D11RHI/GraphicDevice.h"
+#include "Engine/Classes/Engine/ResourceMgr.h"
 
 bool UAssetManager::IsInitialized()
 {

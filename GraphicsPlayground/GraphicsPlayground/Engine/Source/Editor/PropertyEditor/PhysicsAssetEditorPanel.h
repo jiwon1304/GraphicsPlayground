@@ -3,6 +3,7 @@
 #include "Classes/GameFramework/Actor.h"   // TODO - Actor를 상속해야 작동함. 상위 클래스에서 문제 발생함. uint8에 접근 못하는듯
 #include "Classes/PhysicsEngine/BodySetup.h"
 #include "Editor/UnrealEd/EditorPanel.h"
+#include <d3d11.h>
 
 struct FReferenceSkeleton;
 

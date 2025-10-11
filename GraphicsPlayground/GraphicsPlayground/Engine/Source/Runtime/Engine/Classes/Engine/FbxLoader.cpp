@@ -15,6 +15,7 @@
 #include "Container/Set.h"
 #include "Developer/AnimDataController/AnimDataController.h"
 #include "Windows/D3D11RHI/GraphicDevice.h"
+#include "Engine/Classes/Engine/ResourceMgr.h"
 
 struct FVertexKey
 {

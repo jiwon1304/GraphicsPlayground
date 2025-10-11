@@ -3,7 +3,7 @@
 #include "Class.h"
 #include "Object.h"
 #include "CoreUObject/UObject/UObjectHash.h"
-
+#include "Engine/UserInterface/Console.h"
 
 void FUObjectArray::AddObject(UObject* Object)
 {

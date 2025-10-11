@@ -9,6 +9,7 @@
 #include "Editor/UnrealEd/EditorViewportClient.h"
 #include "Launch/EngineLoop.h"
 #include "Windows/D3D11RHI/GraphicDevice.h"
+#include "Engine/Classes/Engine/ResourceMgr.h"
 
 UBillboardComponent::UBillboardComponent()
 {
