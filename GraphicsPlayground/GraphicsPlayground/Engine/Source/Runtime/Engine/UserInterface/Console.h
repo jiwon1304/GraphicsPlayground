@@ -18,10 +18,10 @@ static consteval std::string_view GetFileName(std::string_view PathView)
 }
 
 #define FILENAME GetFileName(__FILE__)
-#define UE_LOG(Level, Fmt, ...) FConsole::GetInstance().AddLog(Level, "[%s:%d] " Fmt, FILENAME.data(), __LINE__, __VA_ARGS__)
+#define UE_LOG(Level, Fmt, ...) FConsole::GetInstance().AddLog(Level, "[%s:%d] " Fmt, FILENAME.data(), __LINE__ __VA_OPT__(,) __VA_ARGS__)
 
 // TODO: 테스트 해야함
-#define UE_LOGFMT(Level, Fmt, ...) FConsole::GetInstance().AddLogFmt(Level, "[{}:{}] " Fmt, FILENAME, __LINE__, __VA_ARGS__)
+#define UE_LOGFMT(Level, Fmt, ...) FConsole::GetInstance().AddLogFmt(Level, "[{}:{}] " Fmt, FILENAME, __LINE__ __VA_OPT__(,)  __VA_ARGS__)
 
 
 enum class ELogLevel : uint8
@@ -121,7 +121,7 @@ public:
 
     void Draw();
     void ExecuteCommand(const std::string& Command);
-    void OnResize(HWND hWnd);
+    // void OnResize(HWND hWnd);
 
     virtual void Toggle() override
     {
@@ -187,6 +187,6 @@ public:
 
 private:
     bool bExpand = true;
-    UINT Width;
-    UINT Height;
+    // uint32 Width;
+    // uint32 Height;
 };
