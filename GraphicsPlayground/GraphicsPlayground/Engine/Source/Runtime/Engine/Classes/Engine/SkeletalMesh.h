@@ -2,7 +2,8 @@
 #include "SkinnedAsset.h"
 #include "Classes/Animation/Skeleton.h"
 #include "Classes/Engine/Asset/SkeletalMeshAsset.h" 
-class UPhysicsAsset;
+#include "Classes/PhysicsEngine/PhysicsAsset.h"
+
 class USkeleton;
 //struct FSkeletalMeshRenderData;
 

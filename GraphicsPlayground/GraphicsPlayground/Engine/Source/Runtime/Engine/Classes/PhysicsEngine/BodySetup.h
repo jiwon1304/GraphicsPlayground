@@ -3,6 +3,7 @@
 #include "AggregateGeom.h"
 #include "BodyInstance.h"
 #include "PhysicsCore/BodySetupCore.h"
+#include "Runtime/PhysicalMaterials/PhysicalMaterial.h"
 
 // asset에 들어있는 모든 collision 정보를 담고 있습니다.
 // BodyInstance와 같은 physics state를 초기화할 때 사용합니다.
@@ -28,7 +29,7 @@ public:
 
     UPROPERTY(
         EditAnywhere,
-        class UPhysicalMaterial*,
+        UPhysicalMaterial*,
         PhysMaterial,
         = nullptr
     )

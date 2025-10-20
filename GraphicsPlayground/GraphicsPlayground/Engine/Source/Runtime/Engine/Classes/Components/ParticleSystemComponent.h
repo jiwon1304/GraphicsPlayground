@@ -3,9 +3,9 @@
 #include "CoreUObject/UObject/ObjectMacros.h"
 #include "Classes/Components/PrimitiveComponent.h"
 #include "Classes/Particles/ParticleHelper.h"
+#include "Engine/Classes/Particles/ParticleSystem.h"
 
 struct FParticleEmitterInstance;
-class UParticleSystem;
 class UMaterial;
 
 

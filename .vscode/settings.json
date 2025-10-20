@@ -46,6 +46,8 @@
         "map": "cpp",
         "execution": "cpp",
         "system_error": "cpp",
-        "filesystem": "cpp"
+        "filesystem": "cpp",
+        "array": "cpp",
+        "span": "cpp"
     }
 }

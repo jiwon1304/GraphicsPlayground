@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreUObject/UObject/ObjectMacros.h"
+#include "PhysicsConstraintTemplate.h"
 
 // 하나의 랙돌을 구성하는 rigid body와 constraint의 집합체입니다. 하나의 SkeletalMesh는 하나의 PhysicsAsset를 가집니다.
 class UPhysicsAsset : public UObject

@@ -380,11 +380,11 @@ void FConsole::ExecuteCommand(const std::string& Command)
     }
 }
 
-void FConsole::OnResize(HWND hWnd)
-{
-    RECT ClientRect;
-    GetClientRect(hWnd, &ClientRect);
-    Width = ClientRect.right - ClientRect.left;
-    Height = ClientRect.bottom - ClientRect.top;
-}
+// void FConsole::OnResize(HWND hWnd)
+// {
+//     RECT ClientRect;
+//     GetClientRect(hWnd, &ClientRect);
+//     Width = ClientRect.right - ClientRect.left;
+//     Height = ClientRect.bottom - ClientRect.top;
+// }
 

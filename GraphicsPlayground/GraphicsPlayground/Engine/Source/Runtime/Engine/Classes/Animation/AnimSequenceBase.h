@@ -1,10 +1,11 @@
 #pragma once
 #include "AnimationAsset.h"
+#include "AnimTypes.h"
 
 class UAnimDataController;
 class UAnimDataModel;
-struct FAnimNotifyEvent;
-struct FAnimNotifyTrack;
+// struct FAnimNotifyEvent;
+// struct FAnimNotifyTrack;
 class USkeletalMeshComponent;
 
 class UAnimSequenceBase : public UAnimationAsset

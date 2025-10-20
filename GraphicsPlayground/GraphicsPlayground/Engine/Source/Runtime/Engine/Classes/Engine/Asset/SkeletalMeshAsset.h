@@ -34,7 +34,7 @@ struct FSkeletalMeshRenderData
     FString DisplayName;
 
     TArray<FSkeletalMeshVertex> Vertices;
-    TArray<UINT> Indices;
+    TArray<uint16> Indices;
 
     TArray<FMaterialInfo> Materials;
     TArray<FMaterialSubset> MaterialSubsets;

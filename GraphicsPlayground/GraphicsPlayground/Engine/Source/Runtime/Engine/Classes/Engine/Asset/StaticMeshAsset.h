@@ -31,7 +31,7 @@ struct FStaticMeshRenderData
     FString DisplayName;
 
     TArray<FStaticMeshVertex> Vertices;
-    TArray<UINT> Indices;
+    TArray<uint16> Indices;
 
     TArray<FMaterialInfo> Materials;
     TArray<FMaterialSubset> MaterialSubsets;

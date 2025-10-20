@@ -12,12 +12,24 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Graphics API Settings
-# option(USE_OPENGL "Use OpenGL backend" ON)
-# option(USE_DIRECTX11 "Use DirectX 11 backend" OFF)
+# Compiler settings
+if (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+    add_compile_options(-Wno-invalid-offsetof) # for ObjectMacro's offsetof()
+endif()
+message(STATUS "Compiler")
+message(STATUS " - ID       \t: ${CMAKE_CXX_COMPILER_ID}")
+message(STATUS " - Version  \t: ${CMAKE_CXX_COMPILER_VERSION}")
+message(STATUS " - Path     \t: ${CMAKE_CXX_COMPILER}")
 
-option(USE_OPENGL "Use OpenGL backend" OFF)
-option(USE_DIRECTX11 "Use DirectX 11 backend" ON)
+# Graphics API Settings
+option(API_FALLBACK "Enable API Fallback (force OpenGL)" OFF)
+if(API_FALLBACK OR APPLE)
+    set(USE_OPENGL ON)
+    set(USE_DIRECTX11 OFF)
+else()
+    set(USE_DIRECTX11 ON)
+    set(USE_OPENGL OFF)
+endif()
 
 # Project Settings
 set(PROJECT_NAME GraphicsPlayground)

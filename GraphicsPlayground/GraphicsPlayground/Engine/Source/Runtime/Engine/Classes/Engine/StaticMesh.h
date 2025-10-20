@@ -3,9 +3,9 @@
 #include "CoreUObject/UObject/ObjectMacros.h"
 #include "Classes/Components/Material/Material.h"
 #include "Launch/Define.h"
+#include "Engine/Classes/PhysicsEngine/BodySetup.h"
 
 struct FStaticMeshRenderData;
-class UBodySetup;
 
 class UStaticMesh : public UObject
 {

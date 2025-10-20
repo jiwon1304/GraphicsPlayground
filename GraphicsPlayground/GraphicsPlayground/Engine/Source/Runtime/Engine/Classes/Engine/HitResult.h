@@ -134,7 +134,7 @@ struct FHitResult
     /** Initialize empty hit result with given time. */
     FORCEINLINE void Init()
     {
-        ZeroMemory(this, sizeof(FHitResult));
+        std::memset(this, 0, sizeof(FHitResult));
         // HitObjectHandle = FActorInstanceHandle();
         Time = 1.f;
         MyItem = INDEX_NONE;
@@ -143,7 +143,7 @@ struct FHitResult
     /** Initialize empty hit result with given time, TraceStart, and TraceEnd */
     FORCEINLINE void Init(FVector Start, FVector End)
     {
-        ZeroMemory(this, sizeof(FHitResult));
+        std::memset(this, 0, sizeof(FHitResult));
         // HitObjectHandle = FActorInstanceHandle();
         Time = 1.f;
         TraceStart = Start;
