@@ -11,7 +11,7 @@
 // }
 
 template <typename T>
-TQuat<T>::TQuat(const FRotator& R)
+TQuat<T>::TQuat(const TRotator<T>& R)
 {
     *this = R.Quaternion();
     //assert(0); // 이거 Rotator::Quaternion()이랑 값이 다름. 이게 틀린거같음.
@@ -317,9 +317,9 @@ TQuat<T>::TQuat(const FRotator& R)
 template <typename T>
 TRotator<T> TQuat<T>::Rotator() const
 {
-    const float SingularityTest = Z * X - W * Y;
-    const float YawY = 2.f * (W * Z + X * Y);
-    const float YawX = (1.f - 2.f * (FMath::Square(Y) + FMath::Square(Z)));
+    const T SingularityTest = Z * X - W * Y;
+    const T YawY = 2.f * (W * Z + X * Y);
+    const T YawX = (1.f - 2.f * (FMath::Square(Y) + FMath::Square(Z)));
 
     // reference 
     // http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
@@ -328,9 +328,9 @@ TRotator<T> TQuat<T>::Rotator() const
     // this value was found from experience, the above websites recommend different values
     // but that isn't the case for us, so I went through different testing, and finally found the case 
     // where both of world lives happily. 
-    constexpr float SINGULARITY_THRESHOLD = 0.4999995f;
-    constexpr float RAD_TO_DEG = (180.f / PI);
-    float Pitch, Yaw, Roll;
+    constexpr T SINGULARITY_THRESHOLD = 0.4999995f;
+    constexpr T RAD_TO_DEG = (180.f / PI);
+    T Pitch, Yaw, Roll;
 
     if (SingularityTest < -SINGULARITY_THRESHOLD)
     {

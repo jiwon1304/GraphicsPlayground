@@ -2,13 +2,10 @@
 #include "Container/String.h"
 #include "Serialization/Archive.h"
 #include "MathUtility.h"
+#include "MathFwd.h"
 #include "Vector.h"
 #include "Matrix.h"
 #include "Misc/Parse.h"
-
-struct FVector;
-struct FQuat;
-struct FMatrix;
 
 // 회전 정보를 Degree 단위로 저장하는 템플릿 구조체
 template <typename T>
@@ -34,7 +31,7 @@ struct TRotator
     explicit TRotator(const TQuat<T>& InQuat);
 
     // Zero rotator (C++17 inline static)
-    inline static const TRotator<T> ZeroRotator{};
+    static const TRotator<T> ZeroRotator;
 
     TRotator operator+(const TRotator& Other) const;
     TRotator& operator+=(const TRotator& Other);
@@ -91,6 +88,9 @@ inline FArchive& operator<<(FArchive& Ar, TRotator<T>& R)
 }
 
 // ===== Template definitions =====
+template <typename T>
+const TRotator<T> TRotator<T>::ZeroRotator = TRotator<T>(T(0), T(0), T(0));
+
 template <typename T>
 TRotator<T>::TRotator(const TVector<T>& InVector)
     : Pitch(FMath::RadiansToDegrees(InVector.Y)), Yaw(FMath::RadiansToDegrees(InVector.Z)), Roll(FMath::RadiansToDegrees(InVector.X))

@@ -1,8 +1,8 @@
-﻿#pragma once
+#pragma once
 #include "Container/Set.h"
 #include "InputCore/InputCoreTypes.h"
 #include "Math/Vector.h"
-
+#include "Math/Vector2.h"
 
 class FKeySet : public TSet<EKeys::Type>
 {

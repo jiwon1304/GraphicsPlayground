@@ -528,7 +528,7 @@ FVector4 FMatrix::TransformVector(const FVector& V) const
 FVector FMatrix::InverseTransformVector(const FVector& V) const
 {
     const FMatrix InvSelf = Inverse(*this);
-    return InvSelf.TransformVector(V);
+    return FVector(InvSelf.TransformVector(V));
 }
 
 void FMatrix::RemoveScaling(float Tolerance)

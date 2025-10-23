@@ -1,8 +1,15 @@
-﻿// #include "Vector.h"
+ #include "Vector.h"
 // #include "Vector2.h"
-// #include "Vector4.h"
+ #include "Vector4.h"
 // #include "Misc/Parse.h"
 
+template<typename T>
+TVector<T>::TVector(const TVector4<T>& V)
+{
+    X = V.X;
+    Y = V.Y;
+    Z = V.Z;
+}
 
 // FString TVector2::ToString() const
 // {
@@ -64,3 +71,7 @@
 //     return bSuccessful;
 
 // }
+
+// explicit instantiation
+template struct TVector<float>;
+template struct TVector<double>;

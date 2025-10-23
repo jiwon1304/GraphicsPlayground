@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <cassert>
 #include <compare>
 #include "MathUtility.h"
@@ -20,6 +20,7 @@ public:
     constexpr TVector() : X(0), Y(0), Z(0) {}
     constexpr TVector(T X, T Y, T Z) : X(X), Y(Y), Z(Z) {}
     constexpr explicit TVector(T Scalar) : X(Scalar), Y(Scalar), Z(Scalar) {}
+    explicit TVector(const TVector4<T>& V);
     constexpr TVector(const TVector&) = default;
     constexpr TVector& operator=(const TVector&) = default;
 
@@ -104,6 +105,13 @@ public:
 
     // 비교 연산자, 인덱스 연산자 등은 constexpr로 구현 가능하지만, std::partial_ordering은 C++20 이상에서만 constexpr 지원
 
+    bool ContainsNaN() const
+    {
+        return (!FMath::IsFinite(X) || 
+                !FMath::IsFinite(Y) ||
+                !FMath::IsFinite(Z));
+    }
+
     constexpr T SquaredLength() const { return X * X + Y * Y + Z * Z; }
     constexpr T SizeSquared() const { return SquaredLength(); }
     constexpr T Length() const { return FMath::Sqrt(SquaredLength()); }
@@ -146,16 +154,16 @@ public:
         return {X * Scale, Y * Scale, Z * Scale};
     }
 
-    constexpr TVector<T> GetSafeNormal(T Tolerance) const
+    constexpr TVector<T> GetSafeNormal(T Tolerance = KINDA_SMALL_NUMBER) const
     {
-        const float SquareSum = X*X + Y*Y + Z*Z;
+        constexpr float SquareSum = X*X + Y*Y + Z*Z;
 
         // Not sure if it's safe to add tolerance in there. Might introduce too many errors
-        if constexpr (SquareSum == 1.f)
+        if (SquareSum == 1.f)
         {
             return *this;
         }
-        else if constexpr (SquareSum < Tolerance)
+        else if (SquareSum < Tolerance)
         {
             return ZeroVector;
         }

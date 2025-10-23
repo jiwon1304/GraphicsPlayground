@@ -12,9 +12,10 @@
 // {
 // }
 
+template <typename T>
 TRotator<T>::TRotator(const TQuat<T>& InQuat)
 {
-    const FRotator R = InQuat.Rotator();
+    const TRotator<T> R = InQuat.Rotator();
     Pitch = static_cast<T>(R.Pitch);
     Yaw   = static_cast<T>(R.Yaw);
     Roll  = static_cast<T>(R.Roll);

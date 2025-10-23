@@ -74,7 +74,7 @@ public:
     }
 
     // 오일러 각(FRotator)으로부터 TQuat 생성 (Pitch, Yaw, Roll 순서로 도(degree) 단위 입력)
-    explicit TQuat(const FRotator& R);
+    explicit TQuat(const TRotator<T>& R);
 
 public:
     /**
@@ -351,7 +351,7 @@ public:
 
 
     // 쿼터니언을 FRotator (오일러 각, 도 단위)로 변환
-    FRotator Rotator() const;
+    TRotator<T> Rotator() const;
 
     TQuat<T> Inverse() const
     {
