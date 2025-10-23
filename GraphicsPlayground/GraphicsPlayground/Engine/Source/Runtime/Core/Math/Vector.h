@@ -105,17 +105,16 @@ public:
 
     constexpr std::partial_ordering operator<=>(const TVector<T>& Other) const { return SizeSquared() <=> Other.SizeSquared(); }
     constexpr std::partial_ordering operator<=>(T Scalar) const { return SizeSquared() <=> Scalar * Scalar; }
-    constexpr std::partial_ordering operator<=>(float Scalar, const TVector<T>& Vector) const { return Scalar * Scalar <=> Vector.SizeSquared();}
 
-    constexpr T& operator[](size_t Index)
+    constexpr T& operator[](int Index)
     {
-        assert(Index < 3);
+        assert(0 <= Index && Index < 3);
         return reinterpret_cast<T*>(this)[Index];
     }
 
-    constexpr const T& operator[](size_t Index) const
+    constexpr const T& operator[](int Index) const
     {
-        assert(Index < 3);
+        assert(0<= Index && Index < 3);
         return reinterpret_cast<const T*>(this)[Index];
     }
 
@@ -170,7 +169,7 @@ public:
 
     constexpr TVector<T> GetSafeNormal(T Tolerance = KINDA_SMALL_NUMBER) const
     {
-        constexpr float SquareSum = X*X + Y*Y + Z*Z;
+        float SquareSum = X*X + Y*Y + Z*Z;
 
         // Not sure if it's safe to add tolerance in there. Might introduce too many errors
         if (SquareSum == 1.f)
@@ -448,6 +447,12 @@ FArchive& operator<<(FArchive& Ar, TVector<T>& V)
 // {
 //     return Scalar * Scalar <=> Vector.SizeSquared();
 // }
+
+template <typename T>
+constexpr std::partial_ordering operator<=>(T Scalar, const TVector<T>& Vector)
+{
+    return Scalar * Scalar <=> Vector.SizeSquared();
+}
 
 // inline float& FVector::operator[](int Index)
 // {
