@@ -1,6 +1,6 @@
 #pragma once
 #include "MathUtility.h"
-#include "Rotator.h"
+#include "MathFwd.h"
 #include "Matrix.h"
 #include "Serialization/Archive.h"
 
@@ -16,21 +16,17 @@ public:
 
     using FReal = T;
 
-    static constexpr TQuat<T> Identity = TQuat<T>(0, 0, 0, 1);
+    static const TQuat<T> Identity;
 
 public:
     // 기본 생성자 (항등 쿼터니언: X=0, Y=0, Z=0, W=1)
-    TQuat()
-        : X(0), Y(0), Z(0), W(1)
-    {}
+    constexpr TQuat() : X(0), Y(0), Z(0), W(1) {}
 
     // X, Y, Z, W 값으로 초기화
-    TQuat(T InX, T InY, T InZ, T InW)
-        : X(InX), Y(InY), Z(InZ), W(InW)
-    {}
+    constexpr TQuat(T InX, T InY, T InZ, T InW) : X(InX), Y(InY), Z(InZ), W(InW) {}
 
-    TQuat(const TQuat&) = default;
-    TQuat& operator=(const TQuat&) = default;
+    constexpr TQuat(const TQuat&) = default;
+    constexpr TQuat& operator=(const TQuat&) = default;
 
     // 회전 축과 각도(라디안)를 받아서 TQuat 생성
     FORCEINLINE TQuat(const TVector<T>& Axis, T AngleRad)
@@ -78,12 +74,7 @@ public:
     }
 
     // 오일러 각(FRotator)으로부터 TQuat 생성 (Pitch, Yaw, Roll 순서로 도(degree) 단위 입력)
-    explicit TQuat(const FRotator& R)
-    {
-        *this = R.Quaternion();
-    }
-
-
+    explicit TQuat(const FRotator& R);
 
 public:
     /**
@@ -360,38 +351,7 @@ public:
 
 
     // 쿼터니언을 FRotator (오일러 각, 도 단위)로 변환
-    FRotator Rotator() const
-    {
-        const T SingularityTest = Z * X - W * Y;
-        const T YawY = T(2) * (W * Z + X * Y);
-        const T YawX = (T(1) - T(2) * (FMath::Square(Y) + FMath::Square(Z)));
-
-        constexpr T SINGULARITY_THRESHOLD = static_cast<T>(0.4999995);
-        constexpr T RAD_TO_DEG = static_cast<T>(180) / static_cast<T>(PI);
-        T Pitch, Yaw, Roll;
-
-        if (SingularityTest < -SINGULARITY_THRESHOLD)
-        {
-            Pitch = T(-90);
-            Yaw = (FMath::Atan2(YawY, YawX) * RAD_TO_DEG);
-            Roll = FRotator::NormalizeAxis(static_cast<float>(-Yaw - (T(2) * FMath::Atan2(X, W) * RAD_TO_DEG)));
-        }
-        else if (SingularityTest > SINGULARITY_THRESHOLD)
-        {
-            Pitch = T(90);
-            Yaw = (FMath::Atan2(YawY, YawX) * RAD_TO_DEG);
-            Roll = FRotator::NormalizeAxis(static_cast<float>(Yaw - (T(2) * FMath::Atan2(X, W) * RAD_TO_DEG)));
-        }
-        else
-        {
-            Pitch = (FMath::Asin(T(2) * SingularityTest) * RAD_TO_DEG);
-            Yaw = (FMath::Atan2(YawY, YawX) * RAD_TO_DEG);
-            Roll = (FMath::Atan2(T(-2) * (W*X + Y*Z), (T(1) - T(2) * (FMath::Square(X) + FMath::Square(Y)))) * RAD_TO_DEG);
-        }
-
-        return FRotator(static_cast<float>(Pitch), static_cast<float>(Yaw), static_cast<float>(Roll));
-    }
-
+    FRotator Rotator() const;
 
     TQuat<T> Inverse() const
     {
@@ -409,6 +369,9 @@ public:
         return X == T(0) && Y == T(0) && Z == T(0) && W == T(1);
     }
 };
+
+template <typename T>
+const TQuat<T> TQuat<T>::Identity = TQuat<T>(0, 0, 0, 1);
 
 template <typename T>
 inline FArchive& operator<<(FArchive& Ar, TQuat<T>& Q)

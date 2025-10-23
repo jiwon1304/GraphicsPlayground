@@ -1,4 +1,5 @@
-// #include "Rotator.h"
+#include "Rotator.h"
+#include "Quat.h"
 
 // #include "Vector.h"
 // #include "Quat.h"
@@ -11,14 +12,13 @@
 // {
 // }
 
-// template <typename T>
-// TRotator<T>::TRotator(const TQuat<T>& InQuat)
-// {
-//     const FRotator R = InQuat.Rotator();
-//     Pitch = static_cast<T>(R.Pitch);
-//     Yaw   = static_cast<T>(R.Yaw);
-//     Roll  = static_cast<T>(R.Roll);
-// }
+TRotator<T>::TRotator(const TQuat<T>& InQuat)
+{
+    const FRotator R = InQuat.Rotator();
+    Pitch = static_cast<T>(R.Pitch);
+    Yaw   = static_cast<T>(R.Yaw);
+    Roll  = static_cast<T>(R.Roll);
+}
 
 // template <typename T>
 // TRotator<T> TRotator<T>::operator+(const TRotator& Other) const
@@ -120,36 +120,36 @@
 //     return TRotator(Pitch + DeltaPitch, Yaw + DeltaYaw, Roll + DeltaRoll);
 // }
 
-// template <typename T>
-// TRotator<T> TRotator<T>::FromQuaternion(const TQuat<T>& InQuat) const
-// {
-//     return TRotator(InQuat);
-// }
+template <typename T>
+TRotator<T> TRotator<T>::FromQuaternion(const TQuat<T>& InQuat) const
+{
+    return TRotator(InQuat);
+}
 
-// template <typename T>
-// TQuat<T> TRotator<T>::Quaternion() const
-// {
-//     const T DegToRad = static_cast<T>(PI) / T(180);
-//     const T Div = DegToRad / T(2);
-//     T SP, SY, SR;
-//     T CP, CY, CR;
+template <typename T>
+TQuat<T> TRotator<T>::Quaternion() const
+{
+    const T DegToRad = static_cast<T>(PI) / T(180);
+    const T Div = DegToRad / T(2);
+    T SP, SY, SR;
+    T CP, CY, CR;
 
-//     const T PitchNoWinding = FMath::Fmod(Pitch, T(360));
-//     const T YawNoWinding = FMath::Fmod(Yaw, T(360));
-//     const T RollNoWinding = FMath::Fmod(Roll, T(360));
+    const T PitchNoWinding = FMath::Fmod(Pitch, T(360));
+    const T YawNoWinding = FMath::Fmod(Yaw, T(360));
+    const T RollNoWinding = FMath::Fmod(Roll, T(360));
 
-//     FMath::SinCos(&SP, &CP, PitchNoWinding * Div);
-//     FMath::SinCos(&SY, &CY, YawNoWinding * Div);
-//     FMath::SinCos(&SR, &CR, RollNoWinding * Div);
+    FMath::SinCos(&SP, &CP, PitchNoWinding * Div);
+    FMath::SinCos(&SY, &CY, YawNoWinding * Div);
+    FMath::SinCos(&SR, &CR, RollNoWinding * Div);
     
-//     TQuat<T> RotationQuat;
-//     RotationQuat.X = CR * SP * SY - SR * CP * CY;
-//     RotationQuat.Y = -CR * SP * CY - SR * CP * SY;
-//     RotationQuat.Z = CR * CP * SY - SR * SP * CY;
-//     RotationQuat.W = CR * CP * CY + SR * SP * SY;
+    TQuat<T> RotationQuat;
+    RotationQuat.X = CR * SP * SY - SR * CP * CY;
+    RotationQuat.Y = -CR * SP * CY - SR * CP * SY;
+    RotationQuat.Z = CR * CP * SY - SR * SP * CY;
+    RotationQuat.W = CR * CP * CY + SR * SP * SY;
 
-//     return RotationQuat;
-// }
+    return RotationQuat;
+}
 
 // template <typename T>
 // TVector<T> TRotator<T>::ToVector() const
@@ -260,5 +260,6 @@
 //     return Angle;
 // }
 
-// // 명시적 인스턴스화
-// template struct TRotator<float>;
+// explicit instantiation
+template struct TRotator<float>;
+template struct TRotator<double>;

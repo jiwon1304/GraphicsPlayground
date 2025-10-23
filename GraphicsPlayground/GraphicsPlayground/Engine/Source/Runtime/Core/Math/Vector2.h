@@ -20,8 +20,8 @@ public:
     constexpr TVector2(const TVector2&) = default;
     constexpr TVector2& operator=(const TVector2&) = default;
 
-    static constexpr TVector2<T> ZeroVector = TVector2<T>(0);
-    static constexpr TVector2<T> OneVector = TVector2<T>(1);
+    static const TVector2<T> ZeroVector;
+    static const TVector2<T> OneVector;
 
     constexpr TVector2 operator+(const TVector2& Rhs) const
     {
@@ -89,6 +89,12 @@ public:
         return FMath::Abs(X - Other.X) <= Tolerance && FMath::Abs(Y - Other.Y) <= Tolerance;
     }
 };
+
+template <typename T>
+const TVector2<T> TVector2<T>::ZeroVector = TVector2<T>(0);
+
+template <typename T>
+const TVector2<T> TVector2<T>::OneVector = TVector2<T>(1);
 
 template <typename T>
 FArchive& operator<<(FArchive& Ar, TVector2<T>& V)

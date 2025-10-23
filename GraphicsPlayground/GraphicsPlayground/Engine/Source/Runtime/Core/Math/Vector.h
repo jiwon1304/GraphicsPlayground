@@ -23,17 +23,17 @@ public:
     constexpr TVector(const TVector&) = default;
     constexpr TVector& operator=(const TVector&) = default;
 
-    static constexpr TVector<T> ZeroVector = TVector<T>(0, 0, 0);
-    static constexpr TVector<T> OneVector = TVector<T>(1, 1, 1);
-    static constexpr TVector<T> UpVector = TVector<T>(0, 0, 1);
-    static constexpr TVector<T> DownVector = TVector<T>(0, 0, -1);
-    static constexpr TVector<T> ForwardVector = TVector<T>(1, 0, 0);
-    static constexpr TVector<T> BackwardVector = TVector<T>(-1, 0, 0);
-    static constexpr TVector<T> RightVector = TVector<T>(0, 1, 0);
-    static constexpr TVector<T> LeftVector = TVector<T>(0, -1, 0);
-    static constexpr TVector<T> XAxisVector = TVector<T>(1, 0, 0);
-    static constexpr TVector<T> YAxisVector = TVector<T>(0, 1, 0);
-    static constexpr TVector<T> ZAxisVector = TVector<T>(0, 0, 1);
+    static const TVector<T> ZeroVector;
+    static const TVector<T> OneVector;
+    static const TVector<T> UpVector;
+    static const TVector<T> DownVector;
+    static const TVector<T> ForwardVector;
+    static const TVector<T> BackwardVector;
+    static const TVector<T> RightVector;
+    static const TVector<T> LeftVector;
+    static const TVector<T> XAxisVector;
+    static const TVector<T> YAxisVector;
+    static const TVector<T> ZAxisVector;
 
 public:
     static constexpr TVector<T> Zero() { return ZeroVector; }
@@ -207,6 +207,40 @@ public:
         return bSuccessful;
     }
 };
+
+// Static member definitions
+template <typename T>
+const TVector<T> TVector<T>::ZeroVector = TVector<T>(0, 0, 0);
+
+template <typename T>
+const TVector<T> TVector<T>::OneVector = TVector<T>(1, 1, 1);
+
+template <typename T>
+const TVector<T> TVector<T>::UpVector = TVector<T>(0, 0, 1);
+
+template <typename T>
+const TVector<T> TVector<T>::DownVector = TVector<T>(0, 0, -1);
+
+template <typename T>
+const TVector<T> TVector<T>::ForwardVector = TVector<T>(1, 0, 0);
+
+template <typename T>
+const TVector<T> TVector<T>::BackwardVector = TVector<T>(-1, 0, 0);
+
+template <typename T>
+const TVector<T> TVector<T>::RightVector = TVector<T>(0, 1, 0);
+
+template <typename T>
+const TVector<T> TVector<T>::LeftVector = TVector<T>(0, -1, 0);
+
+template <typename T>
+const TVector<T> TVector<T>::XAxisVector = TVector<T>(1, 0, 0);
+
+template <typename T>
+const TVector<T> TVector<T>::YAxisVector = TVector<T>(0, 1, 0);
+
+template <typename T>
+const TVector<T> TVector<T>::ZAxisVector = TVector<T>(0, 0, 1);
 
 template <typename T>
 FArchive& operator<<(FArchive& Ar, TVector<T>& V)
