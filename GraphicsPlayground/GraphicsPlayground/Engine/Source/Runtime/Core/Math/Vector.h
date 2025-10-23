@@ -102,7 +102,21 @@ public:
     constexpr bool operator==(const TVector<T>& Other) const { return X == Other.X && Y == Other.Y && Z == Other.Z; }
     constexpr bool operator!=(const TVector<T>& Other) const { return X != Other.X || Y != Other.Y || Z != Other.Z; }
 
-    // 비교 연산자, 인덱스 연산자 등은 constexpr로 구현 가능하지만, std::partial_ordering은 C++20 이상에서만 constexpr 지원
+    constexpr std::partial_ordering operator<=>(const TVector<T>& Other) const { return SizeSquared() <=> Other.SizeSquared(); }
+    constexpr std::partial_ordering operator<=>(T Scalar) const { return SizeSquared() <=> Scalar * Scalar; }
+    constexpr std::partial_ordering operator<=>(float Scalar, const TVector<T>& Vector) const { return Scalar * Scalar <=> Vector.SizeSquared();}
+
+    constexpr T& operator[](size_t Index)
+    {
+        assert(Index < 3);
+        return reinterpret_cast<T*>(this)[Index];
+    }
+
+    constexpr const T& operator[](size_t Index) const
+    {
+        assert(Index < 3);
+        return reinterpret_cast<const T*>(this)[Index];
+    }
 
     constexpr T SquaredLength() const { return X * X + Y * Y + Z * Z; }
     constexpr T SizeSquared() const { return SquaredLength(); }
