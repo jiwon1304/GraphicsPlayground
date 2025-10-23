@@ -143,7 +143,7 @@ public:
     constexpr T GetMin() const { return FMath::Min(FMath::Min(X, Y), Z); }
     constexpr T GetMax() const { return FMath::Max(FMath::Max(X, Y), Z); }
 
-    constexpr bool Normalize(T Tolerance)
+    constexpr bool Normalize(T Tolerance = KINDA_SMALL_NUMBER)
     {
         const float SquareSum = X * X + Y * Y + Z * Z;
         if (SquareSum > Tolerance)
