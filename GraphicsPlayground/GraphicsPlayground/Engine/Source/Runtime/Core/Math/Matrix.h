@@ -48,7 +48,7 @@ public:
     static TVector<T> TransformVector(const TVector<T>& V, const TMatrix<T>& M);
     static TVector4<T> TransformVector(const TVector4<T>& V, const TMatrix<T>& M);
 
-    TVector4<T> TransformFVector4(const TVector4<T>& vector) const;
+    TVector4<T> TransformVector4(const TVector4<T>& vector) const;
     TVector<T> TransformPosition(const TVector<T>& vector) const;
 
     TQuat<T> ToQuat() const;

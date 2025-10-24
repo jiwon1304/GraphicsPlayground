@@ -82,7 +82,7 @@ TMatrix<T> TMatrix<T>::operator*(T Scalar) const
 
 // 스칼라 나눗셈
 template <typename T>
-TMatrix<T> TMatrix<T>::operator/(float Scalar) const
+TMatrix<T> TMatrix<T>::operator/(T Scalar) const
 {
     TMatrix<T> Result;
     for (int32 i = 0; i < 4; i++)
@@ -366,7 +366,7 @@ TMatrix<T> TMatrix<T>::CreateTranslationMatrix(const TVector<T>& V)
 }
 
 template <typename T>
-TMatrix<T> TMatrix<T>::CreateRotationMatrix(const FRotator& R)
+TMatrix<T> TMatrix<T>::CreateRotationMatrix(const TRotator<T>& R)
 {
     const T RadRoll = FMath::DegreesToRadians(R.Roll);
     const T RadPitch = FMath::DegreesToRadians(R.Pitch);
@@ -489,7 +489,7 @@ TVector4<T> TMatrix<T>::TransformVector(const TVector4<T>& V, const TMatrix<T>& 
 }
 
 template <typename T>
-TVector4<T> TMatrix<T>::TransformTVector4<T>(const TVector4<T>& vector) const
+TVector4<T> TMatrix<T>::TransformVector4(const TVector4<T>& vector) const
 {
     return TVector4<T>{
         M[0][0] * vector.X + M[1][0] * vector.Y + M[2][0] * vector.Z + M[3][0] * vector.W,
