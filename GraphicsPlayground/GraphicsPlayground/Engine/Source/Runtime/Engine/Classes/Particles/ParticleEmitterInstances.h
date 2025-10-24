@@ -12,7 +12,6 @@ class UParticleModuleTypeDataMesh;
 class UMaterial;
 
 struct FBaseParticle;
-struct FVector;
 struct FDynamicEmitterReplayDataBase;
 struct FDynamicEmitterDataBase;
 

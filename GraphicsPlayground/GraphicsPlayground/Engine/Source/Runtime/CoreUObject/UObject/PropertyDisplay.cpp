@@ -1,4 +1,4 @@
-﻿#include "Property.h"
+#include "Property.h"
 
 #include "Class.h"
 #include "PropertyEvent.h"
@@ -7,6 +7,7 @@
 #include "Editor/UnrealEd/ImGuiWidget.h"
 #include "Math/NumericLimits.h"
 #include "Template/SubclassOf.h"
+#include "Math/Matrix.h"
 
 #include "ImGui/imgui.h"
 #include "Misc/Optional.h"

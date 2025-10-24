@@ -2,12 +2,11 @@
 #include "IRenderPass.h"
 #include "RendererHelpers.h"
 #include "Container/Array.h"
+#include "Math/MathFwd.h"
 
 class UStaticMeshComponent;
 class UMaterial;
 
-struct FMatrix;
-struct FVector4;
 struct FStaticMaterial;
 struct FStaticMeshRenderData;
 struct ID3D11Buffer;

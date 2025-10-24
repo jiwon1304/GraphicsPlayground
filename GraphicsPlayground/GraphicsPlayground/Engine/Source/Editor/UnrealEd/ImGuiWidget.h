@@ -4,9 +4,7 @@
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
 #include "Math/NumericLimits.h"
-
-struct FVector;
-struct FRotator;
+#include "Math/MathFwd.h"
 
 struct FControlInfo
 {

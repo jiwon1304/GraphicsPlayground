@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <immintrin.h>
 #include "HAL/PlatformType.h"
+#include "Math/MathFwd.h"
 
 /**
  * @param A0    Selects which element (0-3) from 'A' into 1st slot in the result
@@ -11,8 +12,6 @@
 #define SHUFFLEMASK(A0,A1,B2,B3) ( (A0) | ((A1)<<2) | ((B2)<<4) | ((B3)<<6) )
 
 #define VectorReplicate(Vec, Index) VectorReplicateTemplate<Index>(Vec)
-
-struct FMatrix;
 
 
 // 4 floats

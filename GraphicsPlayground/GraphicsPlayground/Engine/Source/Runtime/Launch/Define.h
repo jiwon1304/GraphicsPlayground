@@ -8,6 +8,7 @@
 // 수학 관련
 #include "Math/Vector.h"
 #include "Math/Vector4.h"
+#include "Math/Vector2.h"
 #include "Math/Matrix.h"
 
 #define _TCHAR_DEFINED

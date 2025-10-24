@@ -5,73 +5,76 @@
 #include "Serialization/Archive.h"
 
 // 4x4 행렬 연산
-struct alignas(16) FMatrix
+template <typename T>
+struct alignas(16) TMatrix
 {
+    static_assert(std::is_floating_point_v<T>, "T must be floating point");
 public:
-    alignas(16) float M[4][4];
+    alignas(16) T M[4][4];
 
-    using FReal = float;
+    using FReal = T;
 
 public:
-    static const FMatrix Identity;
+    static const TMatrix<T> Identity;
 
 public:
     // 기본 연산자 오버로딩
-    FMatrix operator+(const FMatrix& Other) const;
-    FMatrix operator-(const FMatrix& Other) const;
-    FMatrix operator*(const FMatrix& Other) const;
-    FMatrix& operator*=(const FMatrix& Other);
-    FMatrix operator*(float Scalar) const;
-    FMatrix operator/(float Scalar) const;
-    float* operator[](int row);
-    const float* operator[](int row) const;
+    TMatrix operator+(const TMatrix<T>& Other) const;
+    TMatrix operator-(const TMatrix<T>& Other) const;
+    TMatrix operator*(const TMatrix<T>& Other) const;
+    TMatrix& operator*=(const TMatrix<T>& Other);
+    TMatrix operator*(T Scalar) const;
+    TMatrix operator/(T Scalar) const;
+    T* operator[](int row);
+    const T* operator[](int row) const;
 
-    FVector ExtractScaling(float Tolerance = SMALL_NUMBER);
-    FVector GetOrigin() const;
-    void SetOrigin(const FVector& NewOrigin);
-    FVector4 GetColumn(int32 ColumnIndex) const;
-    float Determinant() const;
+    TVector<T> ExtractScaling(T Tolerance = SMALL_NUMBER);
+    TVector<T> GetOrigin() const;
+    void SetOrigin(const TVector<T>& NewOrigin);
+    TVector4<T> GetColumn(int32 ColumnIndex) const;
+    T Determinant() const;
 
-    void SetAxis(int32 i, const FVector& Axis);
-    FVector GetScaledAxis(EAxis::Type InAxis) const;
+    void SetAxis(int32 i, const TVector<T>& Axis);
+    TVector<T> GetScaledAxis(EAxis::Type InAxis) const;
 
     // 유틸리티 함수
-    static FMatrix Transpose(const FMatrix& Mat);
-    static FMatrix Inverse(const FMatrix& Mat);
-    static FMatrix CreateTranslationMatrix(const FVector& V);
-    static FMatrix CreateRotationMatrix(const FRotator& R);
-    static FMatrix CreateRotationMatrix(const FQuat& Q);
-    static FMatrix CreateScaleMatrix(const FVector& V);
+    static TMatrix Transpose(const TMatrix<T>& Mat);
+    static TMatrix Inverse(const TMatrix<T>& Mat);
+    static TMatrix CreateTranslationMatrix(const TVector<T>& V);
+    static TMatrix CreateRotationMatrix(const TRotator<T>& R);
+    static TMatrix CreateRotationMatrix(const TQuat<T>& Q);
+    static TMatrix CreateScaleMatrix(const TVector<T>& V);
 
-    static FVector TransformVector(const FVector& V, const FMatrix& M);
-    static FVector4 TransformVector(const FVector4& V, const FMatrix& M);
+    static TVector<T> TransformVector(const TVector<T>& V, const TMatrix<T>& M);
+    static TVector4<T> TransformVector(const TVector4<T>& V, const TMatrix<T>& M);
 
-    FVector4 TransformFVector4(const FVector4& vector) const;
-    FVector TransformPosition(const FVector& vector) const;
+    TVector4<T> TransformVector4(const TVector4<T>& vector) const;
+    TVector<T> TransformPosition(const TVector<T>& vector) const;
 
-    FQuat ToQuat() const;
+    TQuat<T> ToQuat() const;
 
-    FVector GetScaleVector(float Tolerance = SMALL_NUMBER) const;
+    TVector<T> GetScaleVector(T Tolerance = SMALL_NUMBER) const;
 
-    FVector GetTranslationVector() const;
+    TVector<T> GetTranslationVector() const;
 
-    FMatrix GetMatrixWithoutScale(float Tolerance = SMALL_NUMBER) const;
+    TMatrix GetMatrixWithoutScale(T Tolerance = SMALL_NUMBER) const;
 
-    FVector4 TransformVector(const FVector& V) const;
+    TVector4<T> TransformVector(const TVector<T>& V) const;
 
     /**
      *	이 매트릭스의 역행렬로 방향 벡터를 변환합니다. (위치 정보는 무시됨)
      *	표면 노멀(또는 평면)을 변환하고 비균일 스케일링까지 올바르게 적용하려면
      *	행렬 역행렬의 adjoint를 사용하는 TransformByUsingAdjointT를 사용하세요.
      */
-    FVector InverseTransformVector(const FVector& V) const;
+    TVector<T> InverseTransformVector(const TVector<T>& V) const;
 
-    void RemoveScaling(float Tolerance = SMALL_NUMBER);
+    void RemoveScaling(T Tolerance = SMALL_NUMBER);
 
-    bool Equals(const FMatrix& Other, float Tolerance = KINDA_SMALL_NUMBER) const;
+    bool Equals(const TMatrix& Other, T Tolerance = KINDA_SMALL_NUMBER) const;
 };
 
-inline FArchive& operator<<(FArchive& Ar, FMatrix& M)
+template <typename T>
+inline FArchive& operator<<(FArchive& Ar, TMatrix<T>& M)
 {
     Ar << M.M[0][0] << M.M[0][1] << M.M[0][2] << M.M[0][3];
     Ar << M.M[1][0] << M.M[1][1] << M.M[1][2] << M.M[1][3];

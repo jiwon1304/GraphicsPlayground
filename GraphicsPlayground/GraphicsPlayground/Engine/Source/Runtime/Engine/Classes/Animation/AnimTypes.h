@@ -4,8 +4,6 @@
 #include "Math/Quat.h"
 #include "Math/Vector.h"
 
-struct FQuat;
-struct FVector;
 
 #define MAX_ANIMATION_TRACKS 65535
 

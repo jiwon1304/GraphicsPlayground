@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <concepts>
 #include "Container/Array.h"
 #include "Container/Map.h"
@@ -7,7 +7,7 @@
 #include "Template/IsTSubclassOf.h"
 #include "Templates/IsArray.h"
 
-#include "magic_enum/magic_enum.hpp"
+#include "ThirdParty/magic_enum/include/magic_enum/magic_enum.hpp"
 #include "Templates/TemplateUtilities.h"
 
 
