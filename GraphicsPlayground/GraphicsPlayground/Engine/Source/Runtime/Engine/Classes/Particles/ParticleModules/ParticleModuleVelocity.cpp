@@ -71,12 +71,12 @@ void UParticleModuleVelocity::SpawnEx(
             }
             else
             {
-                Vel = Owner->EmitterToSimulation.TransformVector(Vel);
+                Vel = FVector(Owner->EmitterToSimulation.TransformVector(Vel));
             }
         }
         else if (bInWorldSpace == false)
         {
-            Vel = Owner->EmitterToSimulation.TransformVector(Vel);
+            Vel = FVector(Owner->EmitterToSimulation.TransformVector(Vel));
         }
         Vel *= OwnerScale;
         Vel += FromOrigin * StartVelocityRadial.GetValue(Owner->EmitterTime, Owner->Component, InRandomStream) * OwnerScale;

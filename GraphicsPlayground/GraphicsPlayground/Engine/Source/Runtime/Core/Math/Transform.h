@@ -31,18 +31,18 @@ struct FTransform
     FVector InverseTransformDirection(const FVector& V) const;
     
     // 회전 관련 추가 함수들
-    FQuat GetRotation() const { return Rotation; }
-    FRotator Rotator() const { return Rotation.Rotator(); }
-    void SetRotation(const FQuat& InRotation) { Rotation = InRotation; }
+    FORCEINLINE FQuat GetRotation() const { return Rotation; }
+    FORCEINLINE FRotator Rotator() const { return Rotation.Rotator(); }
+    FORCEINLINE void SetRotation(const FQuat& InRotation) { Rotation = InRotation; }
     
     // 위치 관련 함수들
-    FVector GetTranslation() const { return Translation; }
-    void SetTranslation(const FVector& InTranslation) { Translation = InTranslation; }
-    void AddToTranslation(const FVector& InTranslation) { Translation += InTranslation; }
+    FORCEINLINE FVector GetTranslation() const { return Translation; }
+    FORCEINLINE void SetTranslation(const FVector& InTranslation) { Translation = InTranslation; }
+    FORCEINLINE void AddToTranslation(const FVector& InTranslation) { Translation += InTranslation; }
     
     // 스케일 관련 함수들
-    FVector GetScale3D() const { return Scale3D; }
-    void SetScale3D(const FVector& InScale) { Scale3D = InScale; }
+    FORCEINLINE FVector GetScale3D() const { return Scale3D; }
+    FORCEINLINE void SetScale3D(const FVector& InScale) { Scale3D = InScale; }
     bool IsUniform() const;
     float GetMaximumAxisScale() const;
     float GetMinimumAxisScale() const;

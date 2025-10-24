@@ -1,7 +1,9 @@
-﻿#include "MathUtility.h"
+#include "MathUtility.h"
 #include "Color.h"
 #include "Quat.h"
 #include "Vector.h"
+#include "Vector4.h"
+#include "Vector2.h"
 #include "Rotator.h"
 
 namespace

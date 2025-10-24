@@ -2,6 +2,7 @@
 #include "IRenderPass.h"
 #include "Container/Array.h"
 #include "Windows/D3D11RHI/DXDShaderManager.h"
+#include "Math/MathFwd.h"
 
 class FShadowManager;
 class USkeletalMesh;
@@ -9,8 +10,6 @@ class UMaterial;
 struct FSkeletalMeshRenderData;
 class USkeletalMeshComponent;
 
-struct FMatrix;
-struct FVector4;
 struct FStaticMaterial;
 struct FStaticMeshRenderData;
 struct ID3D11Buffer;

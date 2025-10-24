@@ -1,128 +1,149 @@
 #include "Rotator.h"
-
-#include "Vector.h"
 #include "Quat.h"
-#include "Matrix.h"
-#include "Misc/Parse.h"
 
-const FRotator FRotator::ZeroRotator(0.0f, 0.0f, 0.0f);
+// #include "Vector.h"
+// #include "Quat.h"
+// #include "Matrix.h"
+// #include "Misc/Parse.h"
 
-FRotator::FRotator(const FVector& InVector)
-    : Pitch(FMath::RadiansToDegrees(InVector.Y)), Yaw(FMath::RadiansToDegrees(InVector.Z)), Roll(FMath::RadiansToDegrees(InVector.X))
+// template <typename T>
+// TRotator<T>::TRotator(const TVector<T>& InVector)
+//     : Pitch(FMath::RadiansToDegrees(InVector.Y)), Yaw(FMath::RadiansToDegrees(InVector.Z)), Roll(FMath::RadiansToDegrees(InVector.X))
+// {
+// }
+
+template <typename T>
+TRotator<T>::TRotator(const TQuat<T>& InQuat)
 {
+    const TRotator<T> R = InQuat.Rotator();
+    Pitch = static_cast<T>(R.Pitch);
+    Yaw   = static_cast<T>(R.Yaw);
+    Roll  = static_cast<T>(R.Roll);
 }
 
-FRotator::FRotator(const FQuat& InQuat)
+// template <typename T>
+// TRotator<T> TRotator<T>::operator+(const TRotator& Other) const
+// {
+//     return TRotator(Pitch + Other.Pitch, Yaw + Other.Yaw, Roll + Other.Roll);
+// }
+
+// template <typename T>
+// TRotator<T>& TRotator<T>::operator+=(const TRotator& Other)
+// {
+//     Pitch += Other.Pitch; Yaw += Other.Yaw; Roll += Other.Roll;
+//     return *this;
+// }
+
+// template <typename T>
+// TRotator<T> TRotator<T>::operator-(const TRotator& Other) const
+// {
+//     return TRotator(Pitch - Other.Pitch, Yaw - Other.Yaw, Roll - Other.Roll);
+// }
+
+// template <typename T>
+// TRotator<T>& TRotator<T>::operator-=(const TRotator& Other)
+// {
+//     Pitch -= Other.Pitch; Yaw -= Other.Yaw; Roll -= Other.Roll;
+//     return *this;
+// }
+
+// template <typename T>
+// TRotator<T> TRotator<T>::operator*(T Scalar) const
+// {
+//     return TRotator(Pitch * Scalar, Yaw * Scalar, Roll * Scalar);
+// }
+
+// template <typename T>
+// TRotator<T>& TRotator<T>::operator*=(T Scalar)
+// {
+//     Pitch *= Scalar; Yaw *= Scalar; Roll *= Scalar;
+//     return *this;
+// }
+
+// template <typename T>
+// TRotator<T> TRotator<T>::operator/(const TRotator& Other) const
+// {
+//     return TRotator(Pitch / Other.Pitch, Yaw / Other.Yaw, Roll / Other.Roll);
+// }
+
+// template <typename T>
+// TRotator<T> TRotator<T>::operator/(T Scalar) const
+// {
+//     return TRotator(Pitch / Scalar, Yaw / Scalar, Roll / Scalar);
+// }
+
+// template <typename T>
+// TRotator<T>& TRotator<T>::operator/=(T Scalar)
+// {
+//     Pitch /= Scalar; Yaw /= Scalar; Roll /= Scalar;
+//     return *this;
+// }
+
+// template <typename T>
+// TRotator<T> TRotator<T>::operator-() const
+// {
+//     return TRotator(-Pitch, -Yaw, -Roll);
+// }
+
+// template <typename T>
+// bool TRotator<T>::operator==(const TRotator& Other) const
+// {
+//     return Pitch == Other.Pitch && Yaw == Other.Yaw && Roll == Other.Roll;
+// }
+
+// template <typename T>
+// bool TRotator<T>::operator!=(const TRotator& Other) const
+// {
+//     return Pitch != Other.Pitch || Yaw != Other.Yaw || Roll != Other.Roll;
+// }
+
+// template <typename T>
+// bool TRotator<T>::IsNearlyZero(T Tolerance) const
+// {
+//     return FMath::Abs(Pitch) <= Tolerance && FMath::Abs(Yaw) <= Tolerance && FMath::Abs(Roll) <= Tolerance;
+// }
+
+// template <typename T>
+// bool TRotator<T>::IsZero() const
+// {
+//     return Pitch == T(0) && Yaw == T(0) && Roll == T(0);
+// }
+
+// template <typename T>
+// bool TRotator<T>::Equals(const TRotator& Other, T Tolerance) const
+// {
+//     return FMath::Abs(Pitch - Other.Pitch) <= Tolerance && FMath::Abs(Yaw - Other.Yaw) <= Tolerance && FMath::Abs(Roll - Other.Roll) <= Tolerance;
+// }
+
+// template <typename T>
+// TRotator<T> TRotator<T>::Add(T DeltaPitch, T DeltaYaw, T DeltaRoll) const
+// {
+//     return TRotator(Pitch + DeltaPitch, Yaw + DeltaYaw, Roll + DeltaRoll);
+// }
+
+template <typename T>
+TRotator<T> TRotator<T>::FromQuaternion(const TQuat<T>& InQuat) const
 {
-    *this = InQuat.Rotator();
+    return TRotator(InQuat);
 }
 
-FRotator FRotator::operator+(const FRotator& Other) const
+template <typename T>
+TQuat<T> TRotator<T>::Quaternion() const
 {
-    return FRotator(Pitch + Other.Pitch, Yaw + Other.Yaw, Roll + Other.Roll);
-}
+    const T DegToRad = static_cast<T>(PI) / T(180);
+    const T Div = DegToRad / T(2);
+    T SP, SY, SR;
+    T CP, CY, CR;
 
-FRotator& FRotator::operator+=(const FRotator& Other)
-{
-    Pitch += Other.Pitch; Yaw += Other.Yaw; Roll += Other.Roll;
-    return *this;
-}
-
-FRotator FRotator::operator-(const FRotator& Other) const
-{
-    return FRotator(Pitch - Other.Pitch, Yaw - Other.Yaw, Roll - Other.Roll);
-}
-
-FRotator& FRotator::operator-=(const FRotator& Other)
-{
-    Pitch -= Other.Pitch; Yaw -= Other.Yaw; Roll -= Other.Roll;
-    return *this;
-}
-
-FRotator FRotator::operator*(float Scalar) const
-{
-    return FRotator(Pitch * Scalar, Yaw * Scalar, Roll * Scalar);
-}
-
-FRotator& FRotator::operator*=(float Scalar)
-{
-    Pitch *= Scalar; Yaw *= Scalar; Roll *= Scalar;
-    return *this;
-}
-
-FRotator FRotator::operator/(const FRotator& Other) const
-{
-    return FRotator(Pitch / Other.Pitch, Yaw / Other.Yaw, Roll / Other.Roll);
-}
-
-FRotator FRotator::operator/(float Scalar) const
-{
-    return FRotator(Pitch / Scalar, Yaw / Scalar, Roll / Scalar);
-}
-
-FRotator& FRotator::operator/=(float Scalar)
-{
-    Pitch /= Scalar; Yaw /= Scalar; Roll /= Scalar;
-    return *this;
-}
-
-FRotator FRotator::operator-() const
-{
-    return FRotator(-Pitch, -Yaw, -Roll);
-}
-
-bool FRotator::operator==(const FRotator& Other) const
-{
-    return Pitch == Other.Pitch && Yaw == Other.Yaw && Roll == Other.Roll;
-}
-
-bool FRotator::operator!=(const FRotator& Other) const
-{
-    return Pitch != Other.Pitch || Yaw != Other.Yaw || Roll != Other.Roll;
-}
-
-bool FRotator::IsNearlyZero(float Tolerance) const
-{
-    return FMath::Abs(Pitch) <= Tolerance && FMath::Abs(Yaw) <= Tolerance && FMath::Abs(Roll) <= Tolerance;
-}
-
-bool FRotator::IsZero() const
-{
-    return Pitch == 0.0f && Yaw == 0.0f && Roll == 0.0f;
-}
-
-bool FRotator::Equals(const FRotator& Other, float Tolerance) const
-{
-    return FMath::Abs(Pitch - Other.Pitch) <= Tolerance && FMath::Abs(Yaw - Other.Yaw) <= Tolerance && FMath::Abs(Roll - Other.Roll) <= Tolerance;
-
-}
-
-FRotator FRotator::Add(float DeltaPitch, float DeltaYaw, float DeltaRoll) const
-{
-    return FRotator(Pitch + DeltaPitch, Yaw + DeltaYaw, Roll + DeltaRoll);
-}
-
-FRotator FRotator::FromQuaternion(const FQuat& InQuat) const
-{
-    return FRotator(InQuat);
-}
-
-FQuat FRotator::Quaternion() const
-{
-    float DegToRad = PI / 180.0f;
-    float Div = DegToRad / 2.0f;
-    float SP, SY, SR;
-    float CP, CY, CR;
-
-    const float PitchNoWinding = FMath::Fmod(Pitch, 360.0f);
-    const float YawNoWinding = FMath::Fmod(Yaw, 360.0f);
-    const float RollNoWinding = FMath::Fmod(Roll, 360.0f);
+    const T PitchNoWinding = FMath::Fmod(Pitch, T(360));
+    const T YawNoWinding = FMath::Fmod(Yaw, T(360));
+    const T RollNoWinding = FMath::Fmod(Roll, T(360));
 
     FMath::SinCos(&SP, &CP, PitchNoWinding * Div);
     FMath::SinCos(&SY, &CY, YawNoWinding * Div);
     FMath::SinCos(&SR, &CR, RollNoWinding * Div);
     
-    FQuat RotationQuat;
+    TQuat<T> RotationQuat;
     RotationQuat.X = CR * SP * SY - SR * CP * CY;
     RotationQuat.Y = -CR * SP * CY - SR * CP * SY;
     RotationQuat.Z = CR * CP * SY - SR * SP * CY;
@@ -131,93 +152,115 @@ FQuat FRotator::Quaternion() const
     return RotationQuat;
 }
 
-FVector FRotator::ToVector() const
-{
-    const float PitchNoWinding = FMath::Fmod(Pitch, 360.f);
-    const float YawNoWinding = FMath::Fmod(Yaw, 360.f);
+// template <typename T>
+// TVector<T> TRotator<T>::ToVector() const
+// {
+//     const T PitchNoWinding = FMath::Fmod(Pitch, T(360));
+//     const T YawNoWinding = FMath::Fmod(Yaw, T(360));
 
-    float CP, SP, CY, SY;
-    FMath::SinCos( &SP, &CP, FMath::DegreesToRadians(PitchNoWinding) );
-    FMath::SinCos( &SY, &CY, FMath::DegreesToRadians(YawNoWinding) );
-    FVector V = FVector( CP*CY, CP*SY, SP );
+//     T CP, SP, CY, SY;
+//     FMath::SinCos(&SP, &CP, FMath::DegreesToRadians(PitchNoWinding));
+//     FMath::SinCos(&SY, &CY, FMath::DegreesToRadians(YawNoWinding));
+//     TVector<T> V(CP*CY, CP*SY, SP);
 
-    if (!_finite(V.X) || !_finite(V.Y) || !_finite(V.Z))
-    {
-        V = FVector::ForwardVector;
-    }
+//     if (!FMath::IsFinite(static_cast<float>(V.X)) || !FMath::IsFinite(static_cast<float>(V.Y)) || !FMath::IsFinite(static_cast<float>(V.Z)))
+//     {
+//         V = TVector<T>::ForwardVector;
+//     }
     
-    return V;
-}
+//     return V;
+// }
 
-FVector FRotator::RotateVector(const FVector& Vec) const
-{
-    return Quaternion().RotateVector(Vec);
-}
+// template <typename T>
+// TVector<T> TRotator<T>::RotateVector(const TVector<T>& Vec) const
+// {
+//     return Quaternion().RotateVector(Vec);
+// }
 
-FMatrix FRotator::ToMatrix() const
-{
-    return FMatrix::CreateRotationMatrix(*this);
-}
+// template <typename T>
+// FMatrix TRotator<T>::ToMatrix() const
+// {
+//     // FMatrix는 FRotator에 대한 오버로드가 있으므로 필요 시 변환
+//     return FMatrix::CreateRotationMatrix(FRotator(static_cast<float>(Pitch), static_cast<float>(Yaw), static_cast<float>(Roll)));
+// }
 
-FRotator FRotator::MakeLookAtRotation(const FVector& From, const FVector& To)
-{
-    FVector Dir = To - From;
-    float Yaw = std::atan2(Dir.Y, Dir.X) * 180.0f / PI;
-    float DistanceXY = std::sqrt(Dir.X * Dir.X + Dir.Y * Dir.Y);
-    float Pitch = std::atan2(Dir.Z, DistanceXY) * 180.0f / PI;
-    float Roll = 0.0f;
-    return FRotator(Pitch, Yaw, Roll);
-}
+// template <typename T>
+// TRotator<T> TRotator<T>::MakeLookAtRotation(const TVector<T>& From, const TVector<T>& To)
+// {
+//     TVector<T> Dir = To - From;
+//     T Yaw = FMath::Atan2(Dir.Y, Dir.X) * (T(180) / static_cast<T>(PI));
+//     T DistanceXY = FMath::Sqrt(Dir.X * Dir.X + Dir.Y * Dir.Y);
+//     T Pitch = FMath::Atan2(Dir.Z, DistanceXY) * (T(180) / static_cast<T>(PI));
+//     T Roll = T(0);
+//     return TRotator(Pitch, Yaw, Roll);
+// }
 
-float FRotator::ClampAxis(float Angle)
-{
-    Angle = FMath::Fmod(Angle, 360.0f);
-    if (Angle < 0.0f)
-    {
-        Angle += 360.0f;
-    }
-    return Angle;
-}
+// template <typename T>
+// T TRotator<T>::ClampAxis(T Angle)
+// {
+//     Angle = FMath::Fmod(Angle, T(360));
+//     if (Angle < T(0))
+//     {
+//         Angle += T(360);
+//     }
+//     return Angle;
+// }
 
-FRotator FRotator::GetNormalized() const
-{
-    return FRotator(FMath::UnwindDegrees(Pitch), FMath::UnwindDegrees(Yaw), FMath::UnwindDegrees(Roll));
-}
+// template <typename T>
+// TRotator<T> TRotator<T>::GetNormalized() const
+// {
+//     return TRotator(FMath::UnwindDegrees(Pitch), FMath::UnwindDegrees(Yaw), FMath::UnwindDegrees(Roll));
+// }
 
-void FRotator::Normalize()
-{
-    Pitch = FMath::UnwindDegrees(Pitch);
-    Yaw = FMath::UnwindDegrees(Yaw);
-    Roll = FMath::UnwindDegrees(Roll);
-}
+// template <typename T>
+// void TRotator<T>::Normalize()
+// {
+//     Pitch = FMath::UnwindDegrees(Pitch);
+//     Yaw = FMath::UnwindDegrees(Yaw);
+//     Roll = FMath::UnwindDegrees(Roll);
+// }
 
-FString FRotator::ToString() const
-{
-    return FString::Printf(TEXT("Pitch=%3.3f Yaw=%3.3f Roll=%3.3f"), Pitch, Yaw, Roll);
-}
+// template <typename T>
+// FString TRotator<T>::ToString() const
+// {
+//     return FString::Printf(TEXT("Pitch=%3.3f Yaw=%3.3f Roll=%3.3f"), static_cast<float>(Pitch), static_cast<float>(Yaw), static_cast<float>(Roll));
+// }
 
-bool FRotator::InitFromString(const FString& InSourceString)
-{
-    Pitch = 0.0f;
-    Yaw = 0.0f;
-    Roll = 0.0f;
+// template <typename T>
+// bool TRotator<T>::InitFromString(const FString& InSourceString)
+// {
+//     Pitch = T(0);
+//     Yaw = T(0);
+//     Roll = T(0);
 
-    const bool bSuccess = FParse::Value(*InSourceString, TEXT("Pitch="), Pitch) &&
-        FParse::Value(*InSourceString, TEXT("Yaw="), Yaw) &&
-        FParse::Value(*InSourceString, TEXT("Roll="), Roll);
+//     float FP=0, FY=0, FR=0;
+//     const bool bSuccess = FParse::Value(*InSourceString, TEXT("Pitch="), FP) &&
+//         FParse::Value(*InSourceString, TEXT("Yaw="), FY) &&
+//         FParse::Value(*InSourceString, TEXT("Roll="), FR);
 
-    return bSuccess;
-}
+//     if (bSuccess)
+//     {
+//         Pitch = static_cast<T>(FP);
+//         Yaw   = static_cast<T>(FY);
+//         Roll  = static_cast<T>(FR);
+//     }
+//     return bSuccess;
+// }
 
-float FRotator::NormalizeAxis(float Angle)
-{
-    Angle = ClampAxis(Angle);
+// template <typename T>
+// T TRotator<T>::NormalizeAxis(T Angle)
+// {
+//     Angle = ClampAxis(Angle);
 
-    if (Angle > 180.0f)
-    {
-        // shift to (-180,180]
-        Angle -= 360.0f;
-    }
+//     if (Angle > T(180))
+//     {
+//         // shift to (-180,180]
+//         Angle -= T(360);
+//     }
 
-    return Angle;
-}
+//     return Angle;
+// }
+
+// explicit instantiation
+template struct TRotator<float>;
+template struct TRotator<double>;
