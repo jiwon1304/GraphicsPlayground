@@ -53,15 +53,31 @@ TMatrix<T> TMatrix<T>::operator-(const TMatrix<T>& Other) const
 template <typename T>
 TMatrix<T> TMatrix<T>::operator*(const TMatrix<T>& Other) const
 {
-    TMatrix<T> Result = {};
-    SSE::VectorMatrixMultiply(&Result, this, &Other);
+    //TMatrix<T> Result = {};
+    //SSE::VectorMatrixMultiply(&Result, this, &Other);
+    //return Result;
+
+    TMatrix<T> Result{};
+    for (int32 i = 0; i < 4; ++i)
+    {
+        for (int32 j = 0; j < 4; ++j)
+        {
+            Result.M[i][j] = static_cast<T>(0);
+            for (int32 k = 0; k < 4; ++k)
+            {
+                Result.M[i][j] += M[i][k] * Other.M[k][j];
+            }
+        }
+    }
     return Result;
 }
 
 template <typename T>
 TMatrix<T>& TMatrix<T>::operator*=(const TMatrix<T>& Other)
 {
-    SSE::VectorMatrixMultiply(this, this, &Other);
+    //SSE::VectorMatrixMultiply(this, this, &Other);
+    //return *this;
+    *this = (*this) * Other;
     return *this;
 }
 
@@ -246,23 +262,33 @@ TVector<T> TMatrix<T>::GetScaledAxis(EAxis::Type InAxis) const
 template <typename T>
 TMatrix<T> TMatrix<T>::Transpose(const TMatrix<T>& Mat)
 {
-    TMatrix<T> dst;
+    //TMatrix<T> dst;
 
-    // 각 행을 128비트(4 float) 단위로 로드
-    VectorRegister4Float row0 = _mm_loadu_ps(&Mat.M[0][0]); // 첫 번째 행
-    VectorRegister4Float row1 = _mm_loadu_ps(&Mat.M[1][0]); // 두 번째 행
-    VectorRegister4Float row2 = _mm_loadu_ps(&Mat.M[2][0]); // 세 번째 행
-    VectorRegister4Float row3 = _mm_loadu_ps(&Mat.M[3][0]); // 네 번째 행
+    //// 각 행을 128비트(4 float) 단위로 로드
+    //VectorRegister4Float row0 = _mm_loadu_ps(&Mat.M[0][0]); // 첫 번째 행
+    //VectorRegister4Float row1 = _mm_loadu_ps(&Mat.M[1][0]); // 두 번째 행
+    //VectorRegister4Float row2 = _mm_loadu_ps(&Mat.M[2][0]); // 세 번째 행
+    //VectorRegister4Float row3 = _mm_loadu_ps(&Mat.M[3][0]); // 네 번째 행
 
-    _MM_TRANSPOSE4_PS(row0, row1, row2, row3);
+    //_MM_TRANSPOSE4_PS(row0, row1, row2, row3);
 
-    // 전치된 행을 저장
-    _mm_storeu_ps(&dst.M[0][0], row0);
-    _mm_storeu_ps(&dst.M[1][0], row1);
-    _mm_storeu_ps(&dst.M[2][0], row2);
-    _mm_storeu_ps(&dst.M[3][0], row3);
+    //// 전치된 행을 저장
+    //_mm_storeu_ps(&dst.M[0][0], row0);
+    //_mm_storeu_ps(&dst.M[1][0], row1);
+    //_mm_storeu_ps(&dst.M[2][0], row2);
+    //_mm_storeu_ps(&dst.M[3][0], row3);
 
-    return dst;
+    //return dst;
+
+    TMatrix<T> Result;
+    for (int32 i = 0; i < 4; i++)
+    {
+        for (int32 j = 0; j < 4; j++)
+        {
+            Result.M[i][j] = Mat.M[j][i];
+        }
+    }
+    return Result;
 }
 
 template <typename T>
@@ -506,7 +532,7 @@ TVector<T> TMatrix<T>::TransformPosition(const TVector<T>& vector) const
     T y = M[0][1] * vector.X + M[1][1] * vector.Y + M[2][1] * vector.Z + M[3][1];
     T z = M[0][2] * vector.X + M[1][2] * vector.Y + M[2][2] * vector.Z + M[3][2];
     T w = M[0][3] * vector.X + M[1][3] * vector.Y + M[2][3] * vector.Z + M[3][3];
-    return w != 0.0f ? FVector{x / w, y / w, z / w} : FVector{x, y, z};
+    return w != 0.0f ? TVector<T>{x / w, y / w, z / w} : TVector<T>{x, y, z};
 }
 
 template <typename T>
@@ -554,7 +580,7 @@ TMatrix<T> TMatrix<T>::GetMatrixWithoutScale(T Tolerance) const
 template <typename T>
 TVector4<T> TMatrix<T>::TransformVector(const TVector<T>& V) const
 {
-    return TransformTVector4<T>(TVector4<T>{V.X, V.Y, V.Z, 0.f});
+    return TransformVector4(TVector4<T>{V.X, V.Y, V.Z, 0.f});
 }
 
 template <typename T>
@@ -600,7 +626,6 @@ bool TMatrix<T>::Equals(const TMatrix<T>& Other, T Tolerance) const
 
     return true;
 }
-
 
 template struct TMatrix<float>;
 template struct TMatrix<double>;

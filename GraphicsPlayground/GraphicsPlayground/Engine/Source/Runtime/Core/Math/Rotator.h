@@ -266,7 +266,7 @@ template <typename T>
 TMatrix<T> TRotator<T>::ToMatrix() const
 {
     // FMatrix는 FRotator에 대한 오버로드가 있으므로 필요 시 변환
-    return TMatrix<T>::CreateRotationMatrix(FRotator(static_cast<float>(Pitch), static_cast<float>(Yaw), static_cast<float>(Roll)));
+    return TMatrix<T>::CreateRotationMatrix(TRotator<T>(static_cast<float>(Pitch), static_cast<float>(Yaw), static_cast<float>(Roll)));
 }
 
 template <typename T>
