@@ -12,7 +12,7 @@ struct TVector
 {
     static_assert(std::is_floating_point_v<T>, "T must be floating point");
 public:
-    alignas(16) T X, Y, Z;
+    T X, Y, Z;
 
     using FReal = T;
 
