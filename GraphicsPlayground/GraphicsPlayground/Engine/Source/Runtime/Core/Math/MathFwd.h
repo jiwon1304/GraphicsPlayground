@@ -20,7 +20,9 @@ struct TQuat;
 template <typename T>
 struct TRotator;
 
-struct FMatrix;
+template <typename T>
+struct TMatrix;
+
 struct FPlane;
 
 using FVector = TVector<float>;
@@ -28,3 +30,4 @@ using FVector2D = TVector2<float>;
 using FVector4 = TVector4<float>;
 using FQuat = TQuat<float>;
 using FRotator = TRotator<float>;
+using FMatrix = TMatrix<float>;
