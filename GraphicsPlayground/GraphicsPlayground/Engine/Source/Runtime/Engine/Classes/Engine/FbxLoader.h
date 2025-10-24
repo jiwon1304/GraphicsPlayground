@@ -6,6 +6,7 @@
 #include "HAL/PlatformType.h"
 #include "Container/Array.h"
 #include "Container/Map.h"
+#include "Math/MathFwd.h"
 
 class UAnimationAsset;
 struct FSkeletalMeshVertex;
@@ -18,7 +19,6 @@ class FString;
 class USkeletalMesh;
 struct FSkeletalMeshRenderData;
 struct FAssetLoadResult;
-struct FMatrix;
 
 class FFbxLoader
 {

@@ -67,7 +67,7 @@ struct TRotator
     TQuat<T> Quaternion() const;
     TVector<T> ToVector() const;
     TVector<T> RotateVector(const TVector<T>& Vec) const;
-    FMatrix ToMatrix() const;
+    TMatrix<T> ToMatrix() const;
 
     static T ClampAxis(T Angle);
     TRotator GetNormalized() const;
@@ -263,10 +263,10 @@ TVector<T> TRotator<T>::RotateVector(const TVector<T>& Vec) const
 }
 
 template <typename T>
-FMatrix TRotator<T>::ToMatrix() const
+TMatrix<T> TRotator<T>::ToMatrix() const
 {
     // FMatrix는 FRotator에 대한 오버로드가 있으므로 필요 시 변환
-    return FMatrix::CreateRotationMatrix(FRotator(static_cast<float>(Pitch), static_cast<float>(Yaw), static_cast<float>(Roll)));
+    return TMatrix<T>::CreateRotationMatrix(FRotator(static_cast<float>(Pitch), static_cast<float>(Yaw), static_cast<float>(Roll)));
 }
 
 template <typename T>

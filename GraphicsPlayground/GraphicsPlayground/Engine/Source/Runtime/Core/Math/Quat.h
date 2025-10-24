@@ -35,7 +35,7 @@ public:
     }
 
     // 회전 행렬로부터 TQuat 생성
-    TQuat(const FMatrix& M)
+    TQuat(const TMatrix<T>& M)
     {
         const T Trace = static_cast<T>(M.M[0][0] + M.M[1][1] + M.M[2][2]);
 
@@ -331,9 +331,9 @@ public:
 
 
     // 쿼터니언을 회전 행렬로 변환
-    FMatrix ToMatrix() const
+    TMatrix<T> ToMatrix() const
     {
-        FMatrix R;
+        TMatrix<T> R;
 
         const T X2 = X + X;    const T Y2 = Y + Y;    const T Z2 = Z + Z;
         const T XX = X * X2;   const T XY = X * Y2;   const T XZ = X * Z2;
