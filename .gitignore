@@ -447,9 +447,10 @@ FodyWeavers.xsd
 ### Game Tech Lab ###
 
 # 다시 포함
-!EngineSIU/EngineSIU/Assets/**/*.obj
-!EngineSIU/EngineSIU/Contents/**/*.obj
-!EngineSIU/EngineSIU/Engine/Source/ThirdParty/**
+!GraphicsPlayground/GraphicsPlayground/Assets/**/*.obj
+!GraphicsPlayground/GraphicsPlayground/Contents/**/*.obj
+!GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/**
+GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/magic_enum
 
 *.bin
 EngineSIU/EngineSIU/Shaders/Binary/*.cso
