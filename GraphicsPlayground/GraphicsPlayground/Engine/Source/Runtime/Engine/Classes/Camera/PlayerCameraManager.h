@@ -3,6 +3,7 @@
 #include "Classes/GameFramework/Actor.h"
 #include "Core/Delegates/DelegateCombination.h"
 #include "Core/Math/Color.h"
+#include "Core/Math/Vector2.h"
 
 class UCameraShakeBase;
 class UCameraComponent;

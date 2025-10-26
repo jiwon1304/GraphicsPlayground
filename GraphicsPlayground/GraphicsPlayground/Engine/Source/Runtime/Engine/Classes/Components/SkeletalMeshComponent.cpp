@@ -265,7 +265,7 @@ int USkeletalMeshComponent::CheckRayIntersection(const FVector& InRayOrigin, con
         return 0;
     }
     
-    const TArray<UINT>& Indices = RenderData->Indices;
+    const TArray<uint16>& Indices = RenderData->Indices;
     const int32 IndexNum = Indices.Num();
     const bool bHasIndices = (IndexNum > 0);
     

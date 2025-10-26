@@ -908,6 +908,9 @@
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core\Math\Vector.h">
       <Filter>Engine\Source\Runtime\Core\Math</Filter>
     </ClInclude>
+    <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core\Math\Vector2.h">
+      <Filter>Engine\Source\Runtime\Core\Math</Filter>
+    </ClInclude>
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core\Math\Vector4.h">
       <Filter>Engine\Source\Runtime\Core\Math</Filter>
     </ClInclude>

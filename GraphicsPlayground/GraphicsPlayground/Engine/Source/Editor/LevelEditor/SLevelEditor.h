@@ -3,6 +3,7 @@
 #include "Container/Map.h"
 #include "Container/Array.h"
 #include "Core/Math/Vector.h"
+#include "Core/Math/Vector2.h"
 
 class SSplitterH;
 class SSplitterV;

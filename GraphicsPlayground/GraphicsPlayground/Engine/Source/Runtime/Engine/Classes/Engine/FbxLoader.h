@@ -73,7 +73,7 @@ private:
     UStaticMesh* CreateStaticMesh(FbxNode* MeshNode, int32 GlobalMeshIdx);
 
     template<typename T>
-    void CalculateTangents(TArray<T>& Vertices, const TArray<uint32>& Indices);
+    void CalculateTangents(TArray<T>& Vertices, const TArray<uint16>& Indices);
 
     template<typename T>
     void CalculateTangent_Internal(T& PivotVertex, const T& Vertex1, const T& Vertex2);
@@ -111,7 +111,7 @@ private:
 };
 
 template <typename T>
-void FFbxLoader::CalculateTangents(TArray<T>& Vertices, const TArray<uint32>& Indices)
+void FFbxLoader::CalculateTangents(TArray<T>& Vertices, const TArray<uint16>& Indices)
 {
     // 탄젠트 초기화
     for (T& Vertex : Vertices)

@@ -337,6 +337,7 @@ if (MSVC)
         $<$<CONFIG:Release>:/O2>
         $<$<CONFIG:Release>:/Oi>
         $<$<CONFIG:Release>:/Gy>
+        /Zc:preprocessor
     )
     # WinMain을 사용한다면 WINDOWS 서브시스템이 필요
     target_link_options(${PROJECT_NAME} PRIVATE /SUBSYSTEM:WINDOWS)

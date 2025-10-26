@@ -3,6 +3,7 @@
 #include "Launch/EngineLoop.h"
 #include <array>
 #include "Windows/D3D11RHI/GraphicDevice.h"
+#include "Core/Math/Vector2.h"
 
 FViewportResource::FViewportResource()
 {

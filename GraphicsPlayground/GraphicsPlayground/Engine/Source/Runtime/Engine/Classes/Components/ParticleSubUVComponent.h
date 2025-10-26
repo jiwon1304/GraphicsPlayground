@@ -2,6 +2,7 @@
 #define _TCHAR_DEFINED
 #include <wrl.h>
 #include "BillboardComponent.h"
+#include "Core/Math/Vector2.h"
 
 // ParticleSubUVComponent: 서브UV 파티클 컴포넌트 (Billboard 컴포넌트를 상속)
 class UParticleSubUVComponent : public UBillboardComponent

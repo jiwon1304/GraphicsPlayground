@@ -894,7 +894,7 @@ USkeletalMesh* FFbxLoader::CreateSkeletalMeshFromNodes(const TArray<FbxNode*>& M
             }
         }
 
-        TMap<int32, TArray<uint32>> TempMaterialIndices; //MaterialIndex별 인덱스 배열
+        TMap<int32, TArray<uint16>> TempMaterialIndices; //MaterialIndex별 인덱스 배열
 
         int VertexCounter = 0; // 폴리곤 정점 인덱스 (eByPolygonVertex 모드용)
 
@@ -916,7 +916,7 @@ USkeletalMesh* FFbxLoader::CreateSkeletalMeshFromNodes(const TArray<FbxNode*>& M
                 }
             }
 
-            uint32 PolyIndices[3];
+            uint16 PolyIndices[3];
             // 각 폴리곤(삼각형)의 정점 3개 순회
             for (int32 j = 0; j < 3; ++j)
             {
@@ -1025,7 +1025,7 @@ USkeletalMesh* FFbxLoader::CreateSkeletalMeshFromNodes(const TArray<FbxNode*>& M
         for (auto& Pair : TempMaterialIndices)
         {
             int32 MatIdx = Pair.Key;
-            const TArray<uint32>& Indices = Pair.Value;
+            const TArray<uint16>& Indices = Pair.Value;
 
             FMaterialSubset Subset;
             Subset.MaterialIndex = MatIdx;
@@ -1100,7 +1100,7 @@ UStaticMesh* FFbxLoader::CreateStaticMesh(FbxNode* MeshNode, int32 GlobalMeshIdx
     const FbxLayerElementUV* UVElement = BaseLayer->GetUVs();
     const FbxLayerElementVertexColor* ColorElement = BaseLayer->GetVertexColors();
 
-    TMap<int32, TArray<uint32>> TempMaterialIndices; //MaterialIndex별 인덱스 배열
+    TMap<int32, TArray<uint16>> TempMaterialIndices; //MaterialIndex별 인덱스 배열
 
     int VertexCounter = 0; // 폴리곤 정점 인덱스 (eByPolygonVertex 모드용)
 
@@ -1122,7 +1122,7 @@ UStaticMesh* FFbxLoader::CreateStaticMesh(FbxNode* MeshNode, int32 GlobalMeshIdx
             }
         }
 
-        uint32 PolyIndices[3];
+        uint16 PolyIndices[3];
         // 각 폴리곤(삼각형)의 정점 3개 순회
         for (int32 j = 0; j < 3; ++j)
         {
@@ -1139,7 +1139,7 @@ UStaticMesh* FFbxLoader::CreateStaticMesh(FbxNode* MeshNode, int32 GlobalMeshIdx
             int UVIndex = (UVElement) ? (UVElement->GetMappingMode() == FbxLayerElement::eByPolygonVertex ? Mesh->GetTextureUVIndex(i, j) : ControlPointIndex) : -1;
             int ColorIndex = (ColorElement) ? (ColorElement->GetMappingMode() == FbxLayerElement::eByControlPoint ? ControlPointIndex : VertexCounter) : -1;
             
-            uint32 NewIndex;
+            uint16 NewIndex;
 
             // 정점 병합 키 생성
             FVertexKey Key(ControlPointIndex, NormalIndex, TangentIndex, UVIndex, ColorIndex);
@@ -1207,7 +1207,7 @@ UStaticMesh* FFbxLoader::CreateStaticMesh(FbxNode* MeshNode, int32 GlobalMeshIdx
     for (auto& Pair : TempMaterialIndices)
     {
         int32 MatIdx = Pair.Key;
-        const TArray<uint32>& Indices = Pair.Value;
+        const TArray<uint16>& Indices = Pair.Value;
 
         FMaterialSubset Subset;
         Subset.MaterialIndex = MatIdx;
