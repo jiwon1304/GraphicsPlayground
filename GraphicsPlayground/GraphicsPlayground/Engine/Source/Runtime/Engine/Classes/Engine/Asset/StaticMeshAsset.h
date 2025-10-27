@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Launch/Define.h"
-#include "Hal/PlatformType.h"
+#include "HAL/PlatformType.h"
 #include "Container/Array.h"
 #include "Classes/Components/Material/MaterialInfo.h"
 

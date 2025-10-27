@@ -31,29 +31,44 @@ inline std::string WStringToString(const std::wstring& WString)
 }
 
 #else
-#include <locale>
-#include <codecvt>
+
+#include <clocale>
+#include <cstdlib>
 
 // variable length -> fixed length (16bit)
+
 inline std::wstring StringToWString(const std::string& String)
 {
     if (String.empty())
     {
         return std::wstring{};
     }
-    std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
-    return converter.from_bytes(String);
+    std::setlocale(LC_ALL, "en_US.UTF-8");
+    size_t len = std::mbstowcs(nullptr, String.c_str(), 0);
+    if (len == (size_t)-1) {
+        return std::wstring{};
+    }
+    std::wstring wstr(len, 0);
+    std::mbstowcs(&wstr[0], String.c_str(), len);
+    return wstr;
 }
 
 // fixed length (16bit) -> variable length
+
 inline std::string WStringToString(const std::wstring& WString)
 {
     if (WString.empty())
     {
         return std::string{};
     }
-    std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
-    return converter.to_bytes(WString);
+    std::setlocale(LC_ALL, "en_US.UTF-8");
+    size_t len = std::wcstombs(nullptr, WString.c_str(), 0);
+    if (len == (size_t)-1) {
+        return std::string{};
+    }
+    std::string str(len, 0);
+    std::wcstombs(&str[0], WString.c_str(), len);
+    return str;
 }
 
 #endif

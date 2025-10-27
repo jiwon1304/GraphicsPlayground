@@ -5,9 +5,9 @@
 #include "Classes/Engine/Asset/SkeletalMeshAsset.h"
 #include "CoreUObject/Template/SubclassOf.h"
 #include "Classes/Animation/AnimNodeBase.h"
+#include "Engine/Classes/Engine/SkeletalMesh.h"
 
 class UAnimSequence;
-class USkeletalMesh;
 struct FAnimNotifyEvent;
 class UAnimSequenceBase;
 class UAnimInstance;

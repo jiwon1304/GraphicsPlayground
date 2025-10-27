@@ -10,11 +10,11 @@ class UPhysicalMaterial : public UObject
 
 public:
     UPhysicalMaterial()
-        : Friction(0.5f)
+        : Density(1.0f)
+        , Friction(0.5f)
         , StaticFriction(0.5f)
-        , Restitution(0.5f)
-        , Density(1.0f)
         , BaseFrictionImpulse(0.5f)
+        , Restitution(0.5f)
     {
     }
 

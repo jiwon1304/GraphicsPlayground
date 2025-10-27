@@ -85,7 +85,7 @@ public:
         }
     }
     
-    const bool IsValid() const
+    bool IsValid() const
     {
         return (Asset && (RefSkeleton != nullptr) && (BoneIndices.Num() > 0));
     }
@@ -95,7 +95,7 @@ public:
         return BoneIndices;
     }
 
-    const int32 GetCompactPoseNumBones() const
+    int32 GetCompactPoseNumBones() const
     {
         return BoneIndices.Num();
     }
