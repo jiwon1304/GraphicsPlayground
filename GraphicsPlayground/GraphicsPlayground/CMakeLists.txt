@@ -36,9 +36,23 @@ set(PROJECT_NAME GraphicsPlayground)
 set(ROOT_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 set(THIRD_PARTY_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Engine/Source/ThirdParty")
 set(BUILD_TARGET_OS "${CMAKE_SYSTEM_NAME}")
-set(BUILD_TARGET_ARCH "x64")
-set(BUILD_TARGET_TYPE "Debug")
-set(BUILD_PREFIX_DIR "${BUILD_TARGET_OS}/${BUILD_TARGET_ARCH}/${BUILD_TARGET_TYPE}")
+
+if ( CMAKE_SYSTEM_PROCESSOR MATCHES "^(x86_64|AMD64|amd64|x64)$" )
+    set(BUILD_TARGET_ARCH "x64")
+elseif ( CMAKE_SYSTEM_PROCESSOR MATCHES "^(aarch64|ARM64|arm64)$" )
+    set(BUILD_TARGET_ARCH "arm64")
+else()
+    message(FATAL_ERROR "지원하지 않는 아키텍처: ${CMAKE_SYSTEM_PROCESSOR}")
+    set(BUILD_TARGET_ARCH "x64")
+endif()
+
+if (NOT DEFINED CMAKE_BUILD_TYPE)
+    message(STATUS "CMAKE_BUILD_TYPE이 설정되지 않았습니다. 기본값 'Debug'로 설정합니다.")
+    set(CMAKE_BUILD_TYPE "Debug")
+endif()
+
+# 설정한 빌드 타입을 기반으로 BUILD_PREFIX_DIR 설정
+set(BUILD_PREFIX_DIR "${BUILD_TARGET_OS}/${BUILD_TARGET_ARCH}/${CMAKE_BUILD_TYPE}")
 
 # -----------------------------------------------------------------------------------------------
 # 그래픽스 API 옵션 및 플랫폼 분기
@@ -339,10 +353,12 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     lua
     $<$<CONFIG:Debug>:fmodL_vc>
     $<$<NOT:$<CONFIG:Debug>>:fmod_vc>
-    libfbxsdk
+    libfbxsdk   
     libxml2
     zlib
 )
+
+add_definitions(-DFBXSDK_SHARED)
 
 if (WIN32)
     target_link_directories(${PROJECT_NAME} PRIVATE
@@ -392,23 +408,30 @@ target_link_libraries(${PROJECT_NAME} PRIVATE imgui)
 # -----------------------------------------------------------------------------------------------
 macro(copy_bin LIB_NAME)
     set(SRC_DIR "${THIRD_PARTY_DIR}/${LIB_NAME}/bin/${BUILD_PREFIX_DIR}")
+    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+        set(OUT_DIR "${_OUT_ROOT}/Debug")
+    else()
+        set(OUT_DIR "${_OUT_ROOT}/Release")
+    endif()
 
-    set(OUT_DIR_DEBUG   "${_OUT_ROOT}/Debug")
-    set(OUT_DIR_RELEASE "${_OUT_ROOT}/Release")
+    # 디렉토리 생성
+    file(MAKE_DIRECTORY "${OUT_DIR}")
 
     # SRC_DIR 안의 모든 파일만 선택 (하위 폴더 제외)
-    file(GLOB FILES_TO_COPY "${SRC_DIR}/*") 
+    file(GLOB FILES_TO_COPY "${SRC_DIR}/*")
+    message(STATUS "FILES_TO_COPY: ${FILES_TO_COPY}")
 
     foreach(FILE_PATH ${FILES_TO_COPY})
         get_filename_component(FILE_NAME ${FILE_PATH} NAME)
         add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy
                 "${FILE_PATH}"
-                "$<IF:$<CONFIG:Debug>,${OUT_DIR_DEBUG}/${FILE_NAME},${OUT_DIR_RELEASE}/${FILE_NAME}>"
+                "${OUT_DIR}/${FILE_NAME}"
             COMMENT "Copying ${FILE_NAME} from ${LIB_NAME}"
         )
     endforeach()
 endmacro()
+
 
 
 copy_bin("lua")
