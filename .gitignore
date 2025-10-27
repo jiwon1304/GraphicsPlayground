@@ -473,7 +473,7 @@ FodyWeavers.xsd
 # 다시 포함
 !EngineSIU/EngineSIU/Assets/**/*.obj
 !EngineSIU/EngineSIU/Contents/**/*.obj
-!EngineSIU/EngineSIU/Engine/Source/ThirdParty/**
+# !EngineSIU/EngineSIU/Engine/Source/ThirdParty/**
 
 *.bin
 GraphicsPlayground/GraphicsPlayground/Shaders/Binary/*.cso
