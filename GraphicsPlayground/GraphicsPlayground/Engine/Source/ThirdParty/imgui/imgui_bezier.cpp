@@ -88,7 +88,7 @@ namespace ImGui
 
         {
             char buf[128];
-            sprintf_s(buf, sizeof(buf), "0##%s", label);
+            ImFormatString(buf, IM_ARRAYSIZE(buf), "0##%s", label);
 
             for (int i = 0; i < 2; ++i)
             {
