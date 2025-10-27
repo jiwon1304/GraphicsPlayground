@@ -449,6 +449,8 @@ FodyWeavers.xsd
 /GraphicsPlayground/Binaries
 /build
 /GraphicsPlayground/build
+/out
+/GraphicsPlayground/out
 
 # Windows Installer files from build outputs
 *.cab
