@@ -1,0 +1,2 @@
+Engine/Source/ThirdParty/fbxsdk/lib/Windows/x64/Release/libfbxsdk-md.lib filter=lfs diff=lfs merge=lfs -text
+Engine/Source/ThirdParty/fbxsdk/lib/Windows/x64/Debug/libfbxsdk-md.lib filter=lfs diff=lfs merge=lfs -text
