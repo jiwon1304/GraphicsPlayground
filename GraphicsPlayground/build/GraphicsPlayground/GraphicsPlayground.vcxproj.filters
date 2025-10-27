@@ -681,11 +681,11 @@
       <Filter>LuaScripts</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\SoundManager.cpp" />
+    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\tinyfiledialogs\src\tinyfiledialogs.cpp">
+      <Filter>Engine\Source\ThirdParty\tinyfiledialogs\src</Filter>
+    </ClCompile>
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\Renderer.cpp">
       <Filter>Engine\Source\Runtime\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\tinyfiledialogs\include\tinyfiledialogs.cpp">
-      <Filter>Engine\Source\ThirdParty\tinyfiledialogs\include</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1896,8 +1896,8 @@
     <Filter Include="Engine\Source\ThirdParty\tinyfiledialogs">
       <UniqueIdentifier>{18846626-F7B9-3150-AB56-7DB0FBDCB161}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Source\ThirdParty\tinyfiledialogs\include">
-      <UniqueIdentifier>{E0182C9F-50FF-38F9-AB6E-5DBE94D98D1C}</UniqueIdentifier>
+    <Filter Include="Engine\Source\ThirdParty\tinyfiledialogs\src">
+      <UniqueIdentifier>{4DDFE8AC-7258-335E-A52D-63004DD03425}</UniqueIdentifier>
     </Filter>
     <Filter Include="Font">
       <UniqueIdentifier>{5E0B99BD-3C48-3F5A-95E1-79C2C34E7CBF}</UniqueIdentifier>

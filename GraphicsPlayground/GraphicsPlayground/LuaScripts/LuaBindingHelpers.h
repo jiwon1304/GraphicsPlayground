@@ -1,6 +1,6 @@
 ﻿
 #pragma once
-#include <sol/sol.hpp>
+#include "ThirdParty/sol2/include/sol/sol.hpp"
 #include "Runtime/Core/Math/Vector.h"
 #include "Runtime/Engine/UserInterface/Console.h"
 #include "Developer/LuaUtils/LuaBindMacros.h"

@@ -362,7 +362,7 @@ namespace ImGui
             ImVec2 pos = (g.IO.MousePos - bb.Min) / (bb.Max - bb.Min);
             pos.y = 1 - pos.y;
 
-            ImFormatString(buf, IM_ARRAYSIZE(buf), "%s (%.3f, %.3f)", label, pos.x, pos.y); 
+            sprintf_s(buf, "%s (%f,%f)", label, pos.x, pos.y);
             str = buf;
         }
 

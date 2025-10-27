@@ -1,10 +1,10 @@
 {
     "configurations": [
         {
-            "name": "Debug GraphicsPlayground",
+            "name": "[WIN64]Debug GraphicsPlayground",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/Binaries/x64/Debug/GraphicsPlayground.exe",
+            "program": "${workspaceFolder}/Binaries/Windows/x64/Debug/GraphicsPlayground.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/GraphicsPlayground",

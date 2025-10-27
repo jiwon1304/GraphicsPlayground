@@ -1,7 +1,7 @@
 #pragma once
 #include "Runtime/CoreUObject/UObject/ObjectMacros.h"
 #include "Classes/Components/ActorComponent.h"
-#include <sol/sol.hpp>
+#include "ThirdParty/sol2/include/sol/sol.hpp"
 #include <filesystem>
 #include "Core/Delegates/DelegateCombination.h"
 

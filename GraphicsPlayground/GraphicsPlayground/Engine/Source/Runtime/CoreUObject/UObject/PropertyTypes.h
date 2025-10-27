@@ -7,7 +7,7 @@
 #include "CoreUObject/Template/IsTSubclassOf.h"
 #include "Templates/IsArray.h"
 
-#include "ThirdParty/magic_enum/include/magic_enum/magic_enum.hpp"
+#include "ThirdParty/magic_enum/include/magic_enum.hpp"
 #include "Templates/TemplateUtilities.h"
 
 

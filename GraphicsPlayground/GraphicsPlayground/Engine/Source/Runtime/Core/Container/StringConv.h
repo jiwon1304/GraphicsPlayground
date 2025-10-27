@@ -1,5 +1,36 @@
 ﻿#pragma once
 #include <string>
+
+#ifdef _MSC_VER
+#include <Windows.h>
+
+// variable length -> fixed length (16bit)
+inline std::wstring StringToWString(const std::string& String)
+{
+    if (String.empty())
+    {
+        return std::wstring{};
+    }
+    int size_needed = MultiByteToWideChar(CP_UTF8, 0, &String[0], (int)String.size(), NULL, 0);
+    std::wstring wstr(size_needed, 0);
+    MultiByteToWideChar(CP_UTF8, 0, &String[0], (int)String.size(), &wstr[0], size_needed);
+    return wstr;
+}
+
+// fixed length (16bit) -> variable length
+inline std::string WStringToString(const std::wstring& WString)
+{
+    if (WString.empty())
+    {
+        return std::string{};
+    }
+    int size_needed = WideCharToMultiByte(CP_UTF8, 0, &WString[0], (int)WString.size(), NULL, 0, NULL, NULL);
+    std::string str(size_needed, 0);
+    WideCharToMultiByte(CP_UTF8, 0, &WString[0], (int)WString.size(), &str[0], size_needed, NULL, NULL);
+    return str;
+}
+
+#else
 #include <locale>
 #include <codecvt>
 
@@ -24,6 +55,8 @@ inline std::string WStringToString(const std::wstring& WString)
     std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
     return converter.to_bytes(WString);
 }
+
+#endif
 
 /**
  * change FString to const char*

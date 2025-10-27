@@ -8,7 +8,7 @@
 #include "CoreUObject/UObject/ObjectFactory.h"
 #include "CoreUObject/UObject/ObjectGlobals.h"
 
-#include "JSON/json.hpp"
+#include "ThirdParty/json/include/json.hpp"
 #include "World/World.h"
 
 using namespace NS_SceneManagerData;

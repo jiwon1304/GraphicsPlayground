@@ -42,13 +42,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\Binaries\x64\Debug\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\Binaries\Windows\x64\Debug\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">GraphicsPlayground.dir\Debug\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">GraphicsPlayground</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.exe</TargetExt>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\Binaries\x64\Release\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\Binaries\Windows\x64\Release\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">GraphicsPlayground.dir\Release\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">GraphicsPlayground</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.exe</TargetExt>
@@ -57,7 +57,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Engine;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\backends;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\Lua\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\sol2\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\magic_enum\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\Json\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\tinyfiledialogs\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\FBX\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\stbimage;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\fmod\inc;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\physx\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\DirectXTK\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Engine;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\backends;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\fbxsdk\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\sol2\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\lua\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\tinyfiledialogs\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\physx\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\directxtk\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>%(AdditionalOptions) /utf-8 /bigobj</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -85,10 +85,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;UNICODE;_UNICODE;_CONSOLE;GP_GFX_BACKEND_DX11;USE_DIRECTX11;FBXSDK_SHARED;IMGUI_IMPL_WIN32_DISABLE_GAMEPAD;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Engine;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\backends;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\Lua\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\sol2\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\magic_enum\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\Json\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\tinyfiledialogs\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\FBX\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\stbimage;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\fmod\inc;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\physx\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\DirectXTK\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Engine;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\backends;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\fbxsdk\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\sol2\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\lua\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\tinyfiledialogs\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\physx\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\directxtk\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Engine;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\backends;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\Lua\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\sol2\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\magic_enum\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\Json\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\tinyfiledialogs\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\FBX\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\stbimage;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\fmod\inc;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\physx\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\DirectXTK\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Engine;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\backends;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\fbxsdk\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\sol2\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\lua\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\tinyfiledialogs\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\physx\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\directxtk\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -96,21 +96,216 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <PostBuildEvent>
-      <Message></Message>
+      <Message>Copying lua.dll from lua	Copying lua.pdb from lua	Copying fmodL.dll from fmod	Copying libfbxsdk.dll from fbxsdk	Copying LowLevelAABB_static_64.pdb from physx	Copying LowLevelDynamics_static_64.pdb from physx	Copying LowLevel_static_64.pdb from physx	Copying PhysXCommon_64.dll from physx	Copying PhysXCommon_64.pdb from physx	Copying PhysXCooking_64.dll from physx	Copying PhysXCooking_64.pdb from physx	Copying PhysXDevice64.dll from physx	Copying PhysXFoundation_64.dll from physx	Copying PhysXFoundation_64.pdb from physx	Copying PhysXGpu_64.dll from physx	Copying PhysXPvdSDK_static_64.pdb from physx	Copying PhysXTask_static_64.pdb from physx	Copying PhysX_64.dll from physx	Copying PhysX_64.pdb from physx	Copying SceneQuery_static_64.pdb from physx	Copying SimulationController_static_64.pdb from physx	Copying glut32.dll from physx	Copying DirectXTK.dll from directxtk	Copying DirectXTK.pdb from directxtk</Message>
       <Command>setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -E echo "[PostBuild] Copy runtime DLLs (Windows)"
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/lua/bin/Windows/x64/Debug/lua.dll C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Debug/lua.dll
 if %errorlevel% neq 0 goto :cmEnd
-"C:\Program Files\CMake\bin\cmake.exe" -DSRC="C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/Lua/bin/Debug/lua.dll" -DDST_DIR="C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/x64/Debug" -P C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/build/GraphicsPlayground/CopyIfExists.cmake
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/lua/bin/Windows/x64/Debug/lua.pdb C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Debug/lua.pdb
 if %errorlevel% neq 0 goto :cmEnd
-"C:\Program Files\CMake\bin\cmake.exe" -DSRC="C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/fmod/lib/x64/fmod.dll" -DDST_DIR="C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/x64/Debug" -P C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/build/GraphicsPlayground/CopyIfExists.cmake
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/fmod/bin/Windows/x64/Debug/fmodL.dll C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Debug/fmodL.dll
 if %errorlevel% neq 0 goto :cmEnd
-"C:\Program Files\CMake\bin\cmake.exe" -DSRC="C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/fmod/lib/x64/fmodL.dll" -DDST_DIR="C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/x64/Debug" -P C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/build/GraphicsPlayground/CopyIfExists.cmake
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/fbxsdk/bin/Windows/x64/Debug/libfbxsdk.dll C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Debug/libfbxsdk.dll
 if %errorlevel% neq 0 goto :cmEnd
-"C:\Program Files\CMake\bin\cmake.exe" -DSRC="C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/FBX/lib/x64/Debug/libfbxsdk.dll" -DDST_DIR="C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/x64/Debug" -P C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/build/GraphicsPlayground/CopyIfExists.cmake
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/LowLevelAABB_static_64.pdb C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Debug/LowLevelAABB_static_64.pdb
 if %errorlevel% neq 0 goto :cmEnd
-"C:\Program Files\CMake\bin\cmake.exe" -DSRC_DIR="C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/debug" -DDST_DIR="C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/x64/Debug" -P C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/build/GraphicsPlayground/CopyDirDllsIfExists.cmake
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/LowLevelDynamics_static_64.pdb C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Debug/LowLevelDynamics_static_64.pdb
 if %errorlevel% neq 0 goto :cmEnd
-"C:\Program Files\CMake\bin\cmake.exe" -DSRC="C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/freetype/WIN64/bin/freetype.dll" -DDST_DIR="C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/x64/Debug" -P C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/build/GraphicsPlayground/CopyIfExists.cmake
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/LowLevel_static_64.pdb C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Debug/LowLevel_static_64.pdb
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/PhysXCommon_64.dll C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Debug/PhysXCommon_64.dll
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/PhysXCommon_64.pdb C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Debug/PhysXCommon_64.pdb
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/PhysXCooking_64.dll C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Debug/PhysXCooking_64.dll
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/PhysXCooking_64.pdb C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Debug/PhysXCooking_64.pdb
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/PhysXDevice64.dll C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Debug/PhysXDevice64.dll
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/PhysXFoundation_64.dll C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Debug/PhysXFoundation_64.dll
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/PhysXFoundation_64.pdb C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Debug/PhysXFoundation_64.pdb
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/PhysXGpu_64.dll C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Debug/PhysXGpu_64.dll
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/PhysXPvdSDK_static_64.pdb C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Debug/PhysXPvdSDK_static_64.pdb
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/PhysXTask_static_64.pdb C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Debug/PhysXTask_static_64.pdb
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/PhysX_64.dll C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Debug/PhysX_64.dll
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/PhysX_64.pdb C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Debug/PhysX_64.pdb
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/SceneQuery_static_64.pdb C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Debug/SceneQuery_static_64.pdb
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/SimulationController_static_64.pdb C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Debug/SimulationController_static_64.pdb
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/glut32.dll C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Debug/glut32.dll
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/directxtk/bin/Windows/x64/Debug/DirectXTK.dll C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Debug/DirectXTK.dll
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/directxtk/bin/Windows/x64/Debug/DirectXTK.pdb C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Debug/DirectXTK.pdb
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -120,8 +315,8 @@ exit /b %1
 if %errorlevel% neq 0 goto :VCEnd</Command>
     </PostBuildEvent>
     <Link>
-      <AdditionalDependencies>freetype.lib;DirectXTK.lib;lua.lib;fmodL_vc.lib;libfbxsdk.lib;libxml2.lib;zlib.lib;PhysX_64.lib;PhysXFoundation_64.lib;PhysXVehicle_static_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;comdlg32.lib;ole32.lib;shell32.lib;uuid.lib;user32.lib;Debug\imgui.lib;d3d11.lib;dxgi.lib;d3dcompiler.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/DirectXTK/Lib/x64/Debug;C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/DirectXTK/Lib/x64/Debug/$(Configuration);C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/Lua/lib/Debug;C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/Lua/lib/Debug/$(Configuration);C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/Lua/bin/Debug;C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/Lua/bin/Debug/$(Configuration);C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/fmod/lib/x64;C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/fmod/lib/x64/$(Configuration);C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/FBX/lib/x64/Debug;C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/FBX/lib/x64/Debug/$(Configuration);C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/debug;C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/debug/$(Configuration);C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/freetype/WIN64/lib;C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/freetype/WIN64/lib/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freetype.lib;lua.lib;fmodL_vc.lib;libfbxsdk.lib;libxml2.lib;zlib.lib;DirectXTK.lib;PhysX_64.lib;PhysXFoundation_64.lib;PhysXVehicle_static_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;comdlg32.lib;ole32.lib;shell32.lib;uuid.lib;user32.lib;Debug\imgui.lib;d3d11.lib;dxgi.lib;d3dcompiler.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/fbxsdk/lib/Windows/x64/Debug;C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/fbxsdk/lib/Windows/x64/Debug/$(Configuration);C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/fmod/lib/Windows/x64/Debug;C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/fmod/lib/Windows/x64/Debug/$(Configuration);C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/freetype/lib/Windows/x64/Debug;C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/freetype/lib/Windows/x64/Debug/$(Configuration);C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/lua/lib/Windows/x64/Debug;C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/lua/lib/Windows/x64/Debug/$(Configuration);C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/sol2/lib/Windows/x64/Debug;C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/sol2/lib/Windows/x64/Debug/$(Configuration);C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/lib/Windows/x64/Debug;C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/lib/Windows/x64/Debug/$(Configuration);C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/directxtk/lib/Windows/x64/Debug;C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/directxtk/lib/Windows/x64/Debug/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <DataExecutionPrevention></DataExecutionPrevention>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -129,7 +324,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
       <ImportLibrary>C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/build/GraphicsPlayground/Debug/GraphicsPlayground.lib</ImportLibrary>
       <LinkErrorReporting></LinkErrorReporting>
-      <ProgramDataBaseFile>C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/x64/Debug/GraphicsPlayground.pdb</ProgramDataBaseFile>
+      <ProgramDataBaseFile>C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Debug/GraphicsPlayground.pdb</ProgramDataBaseFile>
       <RandomizedBaseAddress></RandomizedBaseAddress>
       <SubSystem>Windows</SubSystem>
     </Link>
@@ -139,7 +334,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Engine;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\backends;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\Lua\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\sol2\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\magic_enum\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\Json\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\tinyfiledialogs\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\FBX\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\stbimage;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\fmod\inc;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\physx\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\DirectXTK\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Engine;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\backends;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\fbxsdk\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\sol2\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\lua\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\tinyfiledialogs\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\physx\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\directxtk\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>%(AdditionalOptions) /utf-8 /bigobj</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -170,10 +365,10 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;UNICODE;_UNICODE;_CONSOLE;GP_GFX_BACKEND_DX11;USE_DIRECTX11;FBXSDK_SHARED;IMGUI_IMPL_WIN32_DISABLE_GAMEPAD;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Engine;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\backends;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\Lua\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\sol2\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\magic_enum\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\Json\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\tinyfiledialogs\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\FBX\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\stbimage;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\fmod\inc;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\physx\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\DirectXTK\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Engine;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\backends;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\fbxsdk\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\sol2\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\lua\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\tinyfiledialogs\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\physx\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\directxtk\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Engine;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\backends;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\freetype\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\Lua\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\sol2\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\magic_enum\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\Json\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\tinyfiledialogs\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\FBX\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\stbimage;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\fmod\inc;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\physx\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\DirectXTK\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Core;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Engine;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\imgui\backends;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\fbxsdk\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\sol2\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\lua\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\tinyfiledialogs\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\physx\include;C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\directxtk\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -181,21 +376,216 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <PostBuildEvent>
-      <Message></Message>
+      <Message>Copying lua.dll from lua	Copying lua.pdb from lua	Copying fmodL.dll from fmod	Copying libfbxsdk.dll from fbxsdk	Copying LowLevelAABB_static_64.pdb from physx	Copying LowLevelDynamics_static_64.pdb from physx	Copying LowLevel_static_64.pdb from physx	Copying PhysXCommon_64.dll from physx	Copying PhysXCommon_64.pdb from physx	Copying PhysXCooking_64.dll from physx	Copying PhysXCooking_64.pdb from physx	Copying PhysXDevice64.dll from physx	Copying PhysXFoundation_64.dll from physx	Copying PhysXFoundation_64.pdb from physx	Copying PhysXGpu_64.dll from physx	Copying PhysXPvdSDK_static_64.pdb from physx	Copying PhysXTask_static_64.pdb from physx	Copying PhysX_64.dll from physx	Copying PhysX_64.pdb from physx	Copying SceneQuery_static_64.pdb from physx	Copying SimulationController_static_64.pdb from physx	Copying glut32.dll from physx	Copying DirectXTK.dll from directxtk	Copying DirectXTK.pdb from directxtk</Message>
       <Command>setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -E echo "[PostBuild] Copy runtime DLLs (Windows)"
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/lua/bin/Windows/x64/Debug/lua.dll C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Release/lua.dll
 if %errorlevel% neq 0 goto :cmEnd
-"C:\Program Files\CMake\bin\cmake.exe" -DSRC="C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/Lua/bin/Release/lua.dll" -DDST_DIR="C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/x64/Release" -P C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/build/GraphicsPlayground/CopyIfExists.cmake
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/lua/bin/Windows/x64/Debug/lua.pdb C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Release/lua.pdb
 if %errorlevel% neq 0 goto :cmEnd
-"C:\Program Files\CMake\bin\cmake.exe" -DSRC="C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/fmod/lib/x64/fmod.dll" -DDST_DIR="C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/x64/Release" -P C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/build/GraphicsPlayground/CopyIfExists.cmake
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/fmod/bin/Windows/x64/Debug/fmodL.dll C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Release/fmodL.dll
 if %errorlevel% neq 0 goto :cmEnd
-"C:\Program Files\CMake\bin\cmake.exe" -DSRC="C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/fmod/lib/x64/fmodL.dll" -DDST_DIR="C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/x64/Release" -P C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/build/GraphicsPlayground/CopyIfExists.cmake
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/fbxsdk/bin/Windows/x64/Debug/libfbxsdk.dll C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Release/libfbxsdk.dll
 if %errorlevel% neq 0 goto :cmEnd
-"C:\Program Files\CMake\bin\cmake.exe" -DSRC="C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/FBX/lib/x64/Release/libfbxsdk.dll" -DDST_DIR="C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/x64/Release" -P C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/build/GraphicsPlayground/CopyIfExists.cmake
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/LowLevelAABB_static_64.pdb C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Release/LowLevelAABB_static_64.pdb
 if %errorlevel% neq 0 goto :cmEnd
-"C:\Program Files\CMake\bin\cmake.exe" -DSRC_DIR="C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/release" -DDST_DIR="C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/x64/Release" -P C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/build/GraphicsPlayground/CopyDirDllsIfExists.cmake
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/LowLevelDynamics_static_64.pdb C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Release/LowLevelDynamics_static_64.pdb
 if %errorlevel% neq 0 goto :cmEnd
-"C:\Program Files\CMake\bin\cmake.exe" -DSRC="C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/freetype/WIN64/bin/freetype.dll" -DDST_DIR="C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/x64/Release" -P C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/build/GraphicsPlayground/CopyIfExists.cmake
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/LowLevel_static_64.pdb C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Release/LowLevel_static_64.pdb
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/PhysXCommon_64.dll C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Release/PhysXCommon_64.dll
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/PhysXCommon_64.pdb C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Release/PhysXCommon_64.pdb
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/PhysXCooking_64.dll C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Release/PhysXCooking_64.dll
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/PhysXCooking_64.pdb C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Release/PhysXCooking_64.pdb
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/PhysXDevice64.dll C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Release/PhysXDevice64.dll
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/PhysXFoundation_64.dll C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Release/PhysXFoundation_64.dll
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/PhysXFoundation_64.pdb C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Release/PhysXFoundation_64.pdb
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/PhysXGpu_64.dll C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Release/PhysXGpu_64.dll
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/PhysXPvdSDK_static_64.pdb C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Release/PhysXPvdSDK_static_64.pdb
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/PhysXTask_static_64.pdb C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Release/PhysXTask_static_64.pdb
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/PhysX_64.dll C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Release/PhysX_64.dll
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/PhysX_64.pdb C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Release/PhysX_64.pdb
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/SceneQuery_static_64.pdb C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Release/SceneQuery_static_64.pdb
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/SimulationController_static_64.pdb C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Release/SimulationController_static_64.pdb
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/Windows/x64/Debug/glut32.dll C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Release/glut32.dll
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/directxtk/bin/Windows/x64/Debug/DirectXTK.dll C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Release/DirectXTK.dll
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/directxtk/bin/Windows/x64/Debug/DirectXTK.pdb C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Release/DirectXTK.pdb
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -205,8 +595,8 @@ exit /b %1
 if %errorlevel% neq 0 goto :VCEnd</Command>
     </PostBuildEvent>
     <Link>
-      <AdditionalDependencies>freetype.lib;DirectXTK.lib;lua.lib;fmod_vc.lib;libfbxsdk.lib;libxml2.lib;zlib.lib;PhysX_64.lib;PhysXFoundation_64.lib;PhysXVehicle_static_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;comdlg32.lib;ole32.lib;shell32.lib;uuid.lib;user32.lib;Release\imgui.lib;d3d11.lib;dxgi.lib;d3dcompiler.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/DirectXTK/Lib/x64/Release;C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/DirectXTK/Lib/x64/Release/$(Configuration);C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/Lua/lib/Release;C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/Lua/lib/Release/$(Configuration);C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/Lua/bin/Release;C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/Lua/bin/Release/$(Configuration);C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/fmod/lib/x64;C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/fmod/lib/x64/$(Configuration);C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/FBX/lib/x64/Release;C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/FBX/lib/x64/Release/$(Configuration);C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/release;C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/bin/release/$(Configuration);C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/freetype/WIN64/lib;C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/freetype/WIN64/lib/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freetype.lib;lua.lib;fmod_vc.lib;libfbxsdk.lib;libxml2.lib;zlib.lib;DirectXTK.lib;PhysX_64.lib;PhysXFoundation_64.lib;PhysXVehicle_static_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;comdlg32.lib;ole32.lib;shell32.lib;uuid.lib;user32.lib;Release\imgui.lib;d3d11.lib;dxgi.lib;d3dcompiler.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/fbxsdk/lib/Windows/x64/Debug;C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/fbxsdk/lib/Windows/x64/Debug/$(Configuration);C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/fmod/lib/Windows/x64/Debug;C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/fmod/lib/Windows/x64/Debug/$(Configuration);C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/freetype/lib/Windows/x64/Debug;C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/freetype/lib/Windows/x64/Debug/$(Configuration);C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/lua/lib/Windows/x64/Debug;C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/lua/lib/Windows/x64/Debug/$(Configuration);C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/sol2/lib/Windows/x64/Debug;C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/sol2/lib/Windows/x64/Debug/$(Configuration);C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/lib/Windows/x64/Debug;C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/physx/lib/Windows/x64/Debug/$(Configuration);C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/directxtk/lib/Windows/x64/Debug;C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/directxtk/lib/Windows/x64/Debug/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <DataExecutionPrevention></DataExecutionPrevention>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -214,7 +604,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
       <ImportLibrary>C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/build/GraphicsPlayground/Release/GraphicsPlayground.lib</ImportLibrary>
       <LinkErrorReporting></LinkErrorReporting>
-      <ProgramDataBaseFile>C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/x64/Release/GraphicsPlayground.pdb</ProgramDataBaseFile>
+      <ProgramDataBaseFile>C:/Users/USER/Documents/GitHub/GraphicsPlayground/GraphicsPlayground/Binaries/Windows/x64/Release/GraphicsPlayground.pdb</ProgramDataBaseFile>
       <RandomizedBaseAddress></RandomizedBaseAddress>
       <SubSystem>Windows</SubSystem>
     </Link>
@@ -482,8 +872,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\LightGridGenerator.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\LuaScripts\LuaScriptComponent.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\SoundManager.cpp" />
+    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\tinyfiledialogs\src\tinyfiledialogs.cpp" />
     <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Runtime\Renderer\Renderer.cpp" />
-    <ClCompile Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\ThirdParty\tinyfiledialogs\include\tinyfiledialogs.cpp" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Contents\Actors\Fish.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Contents\Actors\GoalPlatformActor.h" />
     <ClInclude Include="C:\Users\USER\Documents\GitHub\GraphicsPlayground\GraphicsPlayground\GraphicsPlayground\Engine\Source\Contents\Actors\ItemActor.h" />

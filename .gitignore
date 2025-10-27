@@ -276,6 +276,8 @@ _pkginfo.txt
 # CMake build directory
 /build/
 /Build/
+/GraphicsPlayground/build/
+/GraphicsPlayground/Build/
 
 # CMake generated files
 CMakeFiles/
@@ -442,6 +444,12 @@ FodyWeavers.xsd
 # Local History for Visual Studio Code
 .history/
 
+# build files
+/Binaries
+/GraphicsPlayground/Binaries
+/build
+/GraphicsPlayground/build
+
 # Windows Installer files from build outputs
 *.cab
 *.msi
@@ -466,7 +474,7 @@ FodyWeavers.xsd
 !EngineSIU/EngineSIU/Engine/Source/ThirdParty/**
 
 *.bin
-EngineSIU/EngineSIU/Shaders/Binary/*.cso
+GraphicsPlayground/GraphicsPlayground/Shaders/Binary/*.cso
 
 .idea
 

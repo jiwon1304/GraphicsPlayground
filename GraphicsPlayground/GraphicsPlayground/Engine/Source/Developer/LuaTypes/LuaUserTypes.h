@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "sol/sol.hpp"
+#include "ThirdParty/sol2/include/sol/sol.hpp"
 #include "Templates/TemplateUtilities.h"
 
 

@@ -1,3 +1,0 @@
-[submodule "GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/magic_enum"]
-	path = GraphicsPlayground/GraphicsPlayground/Engine/Source/ThirdParty/magic_enum
-	url = https://github.com/Neargye/magic_enum.git

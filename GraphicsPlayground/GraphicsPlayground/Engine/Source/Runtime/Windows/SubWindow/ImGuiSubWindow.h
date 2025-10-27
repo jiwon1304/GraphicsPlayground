@@ -1,8 +1,8 @@
 #pragma once
 #include <d3d11.h>
 #include "ThirdParty/imgui/imgui.h"
-#include "ThirdParty/imgui/imgui_impl_win32.h"
-#include "ThirdParty/imgui/imgui_impl_dx11.h"
+#include "ThirdParty/imgui/backends/imgui_impl_win32.h"
+#include "ThirdParty/imgui/backends/imgui_impl_dx11.h"
 
 
 #include "Font/RawFonts.h"
