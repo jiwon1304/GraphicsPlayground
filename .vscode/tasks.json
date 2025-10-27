@@ -7,7 +7,7 @@
       "command": "cmake",
       "args": [
         "-S", "${workspaceFolder}",
-        "-B", "${workspaceFolder}/build",
+        "-B", "${workspaceFolder}/build/Windows/x64",
         "-G", "Visual Studio 17 2022",
         "-A", "x64",
         "-T", "host=x64",
@@ -22,7 +22,7 @@
       "type": "shell",
       "command": "cmake",
       "args": [
-        "--build", "${workspaceFolder}/build",
+        "--build", "${workspaceFolder}/build/Windows/x64",
         "--config", "Debug"
       ],
       "problemMatcher": [],
@@ -33,6 +33,39 @@
       "label": "CMake: Windows/x64/Debug",
       "dependsOrder": "sequence",
       "dependsOn": ["CMake: configure Windows/x64/Debug", "CMake: build Windows/x64/Debug"],
+      "group": "build",
+      "presentation": { "reveal": "always" }
+    },
+    {
+      "label": "CMake: configure Darwin/arm64/Debug",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "-S", "${workspaceFolder}",
+        "-B", "${workspaceFolder}/build/Darwin/arm64",
+        "-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE",
+        "-DCMAKE_BUILD_TYPE=Debug"
+      ],
+      "problemMatcher": [],
+      "group": "build",
+      "presentation": { "reveal": "always" }
+    },
+    {
+      "label": "CMake: build Darwin/arm64/Debug",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--build", "${workspaceFolder}/build/Darwin/arm64",
+        "--config", "Debug"
+      ],
+      "problemMatcher": [],
+      "group": "build",
+      "presentation": { "reveal": "always" }
+    },
+    {
+      "label": "CMake: Darwin/arm64/Debug",
+      "dependsOrder": "sequence",
+      "dependsOn": ["CMake: configure Darwin/arm64/Debug", "CMake: build Darwin/arm64/Debug"],
       "group": "build",
       "presentation": { "reveal": "always" }
     }

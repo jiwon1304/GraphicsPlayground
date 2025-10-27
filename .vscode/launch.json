@@ -11,6 +11,18 @@
             "environment": [],
             // "console": "externalTerminal"
             "preLaunchTask": "CMake: Windows/x64/Debug"
+        },
+        {
+            "name": "Darwin/arm64/Debug",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/Binaries/Darwin/arm64/Debug/GraphicsPlayground.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/GraphicsPlayground",
+            "environment": [],
+            // "console": "externalTerminal"
+            "preLaunchTask": "CMake: Darwin/arm64/Debug"
         }
     ]
 }

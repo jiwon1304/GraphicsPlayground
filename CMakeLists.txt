@@ -7,6 +7,19 @@
 
 cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
 
+# 다중 OS에서 동일한 빌드 디렉터리를 사용할 때, 이전에 Windows 전용 설정이 캐시에 남아있을 수 있음.
+# Unix Makefiles/Ninja는 generator platform 개념을 지원하지 않기 때문에, non-Windows 환경에서는 해당 값을 비워준다.
+if (NOT WIN32)
+    if (DEFINED CMAKE_GENERATOR_PLATFORM AND NOT "${CMAKE_GENERATOR_PLATFORM}" STREQUAL "")
+        message(STATUS "Clearing cached CMAKE_GENERATOR_PLATFORM='${CMAKE_GENERATOR_PLATFORM}' for generator '${CMAKE_GENERATOR}'")
+        unset(CMAKE_GENERATOR_PLATFORM CACHE)
+    endif()
+    if (DEFINED CMAKE_GENERATOR_TOOLSET AND NOT "${CMAKE_GENERATOR_TOOLSET}" STREQUAL "")
+        message(STATUS "Clearing cached CMAKE_GENERATOR_TOOLSET='${CMAKE_GENERATOR_TOOLSET}' for generator '${CMAKE_GENERATOR}'")
+        unset(CMAKE_GENERATOR_TOOLSET CACHE)
+    endif()
+endif()
+
 # 프로젝트 정의: LANGUAGES 에 C 추가 (ThirdParty C 파일을 컴파일하기 위함)
 project(GraphicsPlaygroundProj LANGUAGES C CXX)
 
