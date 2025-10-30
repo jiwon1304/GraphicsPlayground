@@ -31,11 +31,6 @@ void MakeContextCurrent(Window* window)
     glfwMakeContextCurrent(window);
 }
 
-void SetInputMode(Window* Window, int mode, int value)
-{
-    glfwSetInputMode(Window, mode, value);
-}
-
 int LoadGLLoader()
 {
     return gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);

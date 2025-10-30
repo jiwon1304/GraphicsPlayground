@@ -12,8 +12,8 @@
 #include "ThirdParty/OpenGL/glfw/WIN64/include/GLFW/glfw3native.h"
 
 #elif defined(BUILD_PLATFORM_MACOS)
-#include "ThirdParty/OpenGL/glfw/MACOS/include/GLFW/glfw3.h"
-#include "ThirdParty/OpenGL/glfw/MACOS/include/GLFW/glfw3native.h"
+#include "ThirdParty/opengl/glfw/include/glfw3.h"
+#include "ThirdParty/opengl/glfw/include/glfw3native.h"
 
 #else
 static_assert(false, "Unsupported platform for OpenGL");

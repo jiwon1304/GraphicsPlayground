@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SlateAppMessageHandlerBase.h"
+#include "Editor/LevelEditor/SlateAppMessageHandlerBase.h"
 
 class GLFWwindow;
 
