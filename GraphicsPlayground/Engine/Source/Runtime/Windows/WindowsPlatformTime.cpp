@@ -1,10 +1,7 @@
-﻿#include "Windows/WindowsPlatformTime.h"
+﻿#ifdef BUILD_PLATFORM_WINDOWS
+#include "Windows/WindowsPlatformTime.h"
 
-
-double FWindowsPlatformTime::GSecondsPerCycle = 0.0;
-bool FWindowsPlatformTime::bInitialized = false;
-
-void FWindowsPlatformTime::InitTiming()
+void FWindowsPlatformTime::InitTiming_Internal()
 {
     if (!bInitialized)
     {
@@ -16,17 +13,8 @@ void FWindowsPlatformTime::InitTiming()
             Frequency = 1.0;
         }
 
-        GSecondsPerCycle = 1.0 / Frequency;
+        SecondsPerCycle = 1.0 / Frequency;
     }
-}
-
-float FWindowsPlatformTime::GetSecondsPerCycle()
-{
-    if (!bInitialized)
-    {
-        InitTiming();
-    }
-    return static_cast<float>(GSecondsPerCycle);
 }
 
 uint64 FWindowsPlatformTime::GetFrequency()
@@ -36,23 +24,11 @@ uint64 FWindowsPlatformTime::GetFrequency()
     return Frequency.QuadPart;
 }
 
-double FWindowsPlatformTime::ToMilliseconds(uint64 CycleDiff)
-{
-    const double Ms = static_cast<double>(CycleDiff)
-        * GetSecondsPerCycle()
-        * 1000.0;
-
-    return Ms;
-}
-
-uint64 FWindowsPlatformTime::Cycles64()
+uint64 FWindowsPlatformTime::Cycles_Internal()
 {
     LARGE_INTEGER CycleCount;
     QueryPerformanceCounter(&CycleCount);
     return static_cast<uint64>(CycleCount.QuadPart);
 }
 
-uint32 FWindowsPlatformTime::Cycles()
-{
-    return static_cast<uint32>(Cycles64());
-}
+#endif

@@ -13,8 +13,8 @@ void UEngine::Init()
 {
     // Random Seed 초기화
     {
-        const uint32 Seed1 = FPlatformTime::Cycles();
-        const uint32 Seed2 = FPlatformTime::Cycles();
+        const uint32 Seed1 = FPlatformTime::Cycles32();
+        const uint32 Seed2 = FPlatformTime::Cycles32();
 
         FMath::RandInit(static_cast<int32>(Seed1));
         FMath::SRandInit(static_cast<int32>(Seed2));

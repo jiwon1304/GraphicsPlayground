@@ -76,7 +76,7 @@ public:
         }
         else
         {
-            InitialSeed = FPlatformTime::Cycles();
+            InitialSeed = FPlatformTime::Cycles32();
         }
 
         Seed = uint32(InitialSeed);
