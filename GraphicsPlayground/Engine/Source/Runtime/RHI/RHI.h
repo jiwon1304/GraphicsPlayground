@@ -1,8 +1,11 @@
 #pragma once
 
+#include "RHIFwd.h"
 #include "RHI/RHIDefinitions.h"
+#include "DynamicRHI.h"
 #include "CoreUObject/UObject/NameTypes.h"
-#include "Core/Container/Array.h"
+
+extern void RHIInit();
 
 struct FRHIResourceStats
 {
@@ -33,8 +36,6 @@ struct FVertexElement
         , Stride(InStride)
     {}
 };
-
-using FVertexDeclarationElementList = TArray<FVertexElement>;
 
 struct FSamplerStateInitializerRHI
 {
