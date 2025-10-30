@@ -137,83 +137,124 @@ FORCEINLINE double CeilToDouble(double F)
 
 namespace SIMD = SSE;
 #elif defined(__ARM_NEON__)
-#include <arm_neon.h>
-
-// 4 floats
-typedef float32x4_t VectorRegister4Float;
+#include "ThirdParty/Ne10/include/NE10.h"
 
 namespace NEON
 {
 
-/**
- * Vector의 특정 인덱스를 복제합니다.
- * @tparam Index 복제할 Index (0 ~ 3)
- * @param Vector 복제할 대상
- * @return 복제된 레지스터
- */
-template <int Index>
-FORCEINLINE VectorRegister4Float VectorReplicateTemplate(const VectorRegister4Float& Vector)
-{
-    // NEON에서 특정 요소 복제: vdupq_lane_f32
-    return vdupq_n_f32(vgetq_lane_f32(Vector, Index));
-}
+// /**
+//  * Vector의 특정 인덱스를 복제합니다.
+//  * @tparam Index 복제할 Index (0 ~ 3)
+//  * @param Vector 복제할 대상
+//  * @return 복제된 레지스터
+//  */
+// template <int Index>
+// FORCEINLINE VectorRegister4Float VectorReplicateTemplate(const VectorRegister4Float& Vector)
+// {
+//     // NEON에서 특정 요소 복제: vdupq_lane_f32
+//     return vdupq_n_f32(vgetq_lane_f32(Vector, Index));
+// }
 
-FORCEINLINE VectorRegister4Float VectorMultiply(const VectorRegister4Float& Vec1, const VectorRegister4Float& Vec2)
-{
-    return vmulq_f32(Vec1, Vec2);
-}
+// FORCEINLINE VectorRegister4Float VectorMultiply(const VectorRegister4Float& Vec1, const VectorRegister4Float& Vec2)
+// {
+//     return vmulq_f32(Vec1, Vec2);
+// }
 
-FORCEINLINE VectorRegister4Float VectorAdd(const VectorRegister4Float& Vec1, const VectorRegister4Float& Vec2)
-{
-    return vaddq_f32(Vec1, Vec2);
-}
+// FORCEINLINE VectorRegister4Float VectorAdd(const VectorRegister4Float& Vec1, const VectorRegister4Float& Vec2)
+// {
+//     return vaddq_f32(Vec1, Vec2);
+// }
 
-FORCEINLINE VectorRegister4Float VectorMultiplyAdd(
-    const VectorRegister4Float& Vec1,
-    const VectorRegister4Float& Vec2,
-    const VectorRegister4Float& Vec3
-)
-{
-    // Vec1 * Vec2 + Vec3
-    return vaddq_f32(vmulq_f32(Vec1, Vec2), Vec3);
-}
+// FORCEINLINE VectorRegister4Float VectorMultiplyAdd(
+//     const VectorRegister4Float& Vec1,
+//     const VectorRegister4Float& Vec2,
+//     const VectorRegister4Float& Vec3
+// )
+// {
+//     // Vec1 * Vec2 + Vec3
+//     return vaddq_f32(vmulq_f32(Vec1, Vec2), Vec3);
+// }
 
 inline void VectorMatrixMultiply(FMatrix* Result, const FMatrix* Matrix1, const FMatrix* Matrix2)
 {
-    const VectorRegister4Float* Matrix1Ptr = reinterpret_cast<const VectorRegister4Float*>(Matrix1);
-    const VectorRegister4Float* Matrix2Ptr = reinterpret_cast<const VectorRegister4Float*>(Matrix2);
-    VectorRegister4Float* Ret = reinterpret_cast<VectorRegister4Float*>(Result);
+    ne10_mulmat_4x4f((ne10_mat4x4f_t*)Result, (ne10_mat4x4f_t*)Matrix1, (ne10_mat4x4f_t*)Matrix2, 1);
 
-    VectorRegister4Float Temp, R0, R1, R2;
+    // const VectorRegister4Float* Matrix1Ptr = reinterpret_cast<const VectorRegister4Float*>(Matrix1);
+    // const VectorRegister4Float* Matrix2Ptr = reinterpret_cast<const VectorRegister4Float*>(Matrix2);
+    // VectorRegister4Float* Ret = reinterpret_cast<VectorRegister4Float*>(Result);
 
-    // 첫번째 행 계산
-    Temp = VectorMultiply(VectorReplicateTemplate<0>(Matrix1Ptr[0]), Matrix2Ptr[0]);
-    Temp = VectorMultiplyAdd(VectorReplicateTemplate<1>(Matrix1Ptr[0]), Matrix2Ptr[1], Temp);
-    Temp = VectorMultiplyAdd(VectorReplicateTemplate<2>(Matrix1Ptr[0]), Matrix2Ptr[2], Temp);
-    R0  = VectorMultiplyAdd(VectorReplicateTemplate<3>(Matrix1Ptr[0]), Matrix2Ptr[3], Temp);
+    // VectorRegister4Float Temp, R0, R1, R2;
 
-    // 두번째 행 계산
-    Temp = VectorMultiply(VectorReplicateTemplate<0>(Matrix1Ptr[1]), Matrix2Ptr[0]);
-    Temp = VectorMultiplyAdd(VectorReplicateTemplate<1>(Matrix1Ptr[1]), Matrix2Ptr[1], Temp);
-    Temp = VectorMultiplyAdd(VectorReplicateTemplate<2>(Matrix1Ptr[1]), Matrix2Ptr[2], Temp);
-    R1  = VectorMultiplyAdd(VectorReplicateTemplate<3>(Matrix1Ptr[1]), Matrix2Ptr[3], Temp);
+    // // 첫번째 행 계산
+    // Temp = VectorMultiply(VectorReplicateTemplate<0>(Matrix1Ptr[0]), Matrix2Ptr[0]);
+    // Temp = VectorMultiplyAdd(VectorReplicateTemplate<1>(Matrix1Ptr[0]), Matrix2Ptr[1], Temp);
+    // Temp = VectorMultiplyAdd(VectorReplicateTemplate<2>(Matrix1Ptr[0]), Matrix2Ptr[2], Temp);
+    // R0  = VectorMultiplyAdd(VectorReplicateTemplate<3>(Matrix1Ptr[0]), Matrix2Ptr[3], Temp);
 
-    // 세번째 행 계산
-    Temp = VectorMultiply(VectorReplicateTemplate<0>(Matrix1Ptr[2]), Matrix2Ptr[0]);
-    Temp = VectorMultiplyAdd(VectorReplicateTemplate<1>(Matrix1Ptr[2]), Matrix2Ptr[1], Temp);
-    Temp = VectorMultiplyAdd(VectorReplicateTemplate<2>(Matrix1Ptr[2]), Matrix2Ptr[2], Temp);
-    R2  = VectorMultiplyAdd(VectorReplicateTemplate<3>(Matrix1Ptr[2]), Matrix2Ptr[3], Temp);
+    // // 두번째 행 계산
+    // Temp = VectorMultiply(VectorReplicateTemplate<0>(Matrix1Ptr[1]), Matrix2Ptr[0]);
+    // Temp = VectorMultiplyAdd(VectorReplicateTemplate<1>(Matrix1Ptr[1]), Matrix2Ptr[1], Temp);
+    // Temp = VectorMultiplyAdd(VectorReplicateTemplate<2>(Matrix1Ptr[1]), Matrix2Ptr[2], Temp);
+    // R1  = VectorMultiplyAdd(VectorReplicateTemplate<3>(Matrix1Ptr[1]), Matrix2Ptr[3], Temp);
 
-    // 네번째 행 계산
-    Temp = VectorMultiply(VectorReplicateTemplate<0>(Matrix1Ptr[3]), Matrix2Ptr[0]);
-    Temp = VectorMultiplyAdd(VectorReplicateTemplate<1>(Matrix1Ptr[3]), Matrix2Ptr[1], Temp);
-    Temp = VectorMultiplyAdd(VectorReplicateTemplate<2>(Matrix1Ptr[3]), Matrix2Ptr[2], Temp);
-    Temp = VectorMultiplyAdd(VectorReplicateTemplate<3>(Matrix1Ptr[3]), Matrix2Ptr[3], Temp);
+    // // 세번째 행 계산
+    // Temp = VectorMultiply(VectorReplicateTemplate<0>(Matrix1Ptr[2]), Matrix2Ptr[0]);
+    // Temp = VectorMultiplyAdd(VectorReplicateTemplate<1>(Matrix1Ptr[2]), Matrix2Ptr[1], Temp);
+    // Temp = VectorMultiplyAdd(VectorReplicateTemplate<2>(Matrix1Ptr[2]), Matrix2Ptr[2], Temp);
+    // R2  = VectorMultiplyAdd(VectorReplicateTemplate<3>(Matrix1Ptr[2]), Matrix2Ptr[3], Temp);
 
-    Ret[0] = R0;
-    Ret[1] = R1;
-    Ret[2] = R2;
-    Ret[3] = Temp;
+    // // 네번째 행 계산
+    // Temp = VectorMultiply(VectorReplicateTemplate<0>(Matrix1Ptr[3]), Matrix2Ptr[0]);
+    // Temp = VectorMultiplyAdd(VectorReplicateTemplate<1>(Matrix1Ptr[3]), Matrix2Ptr[1], Temp);
+    // Temp = VectorMultiplyAdd(VectorReplicateTemplate<2>(Matrix1Ptr[3]), Matrix2Ptr[2], Temp);
+    // Temp = VectorMultiplyAdd(VectorReplicateTemplate<3>(Matrix1Ptr[3]), Matrix2Ptr[3], Temp);
+
+    // // 네번째 행 계산
+    // Temp = VectorMultiply(VectorReplicateTemplate<0>(Matrix1Ptr[3]), Matrix2Ptr[0]);
+    // Temp = VectorMultiplyAdd(VectorReplicateTemplate<1>(Matrix1Ptr[3]), Matrix2Ptr[1], Temp);
+    // Temp = VectorMultiplyAdd(VectorReplicateTemplate<2>(Matrix1Ptr[3]), Matrix2Ptr[2], Temp);
+    // Temp = VectorMultiplyAdd(VectorReplicateTemplate<3>(Matrix1Ptr[3]), Matrix2Ptr[3], Temp);
+
+    // Ret[0] = R0;
+    // Ret[1] = R1;
+    // Ret[2] = R2;
+    // Ret[3] = Temp;
+}
+
+// Ne10은 column-major 행렬에 pre-multiplcation (M * v)를 수행
+// 이 프로젝트에서는 row-major와 post-multiplication (v * M)을 사용하므로
+// 그대로 넣어도 문제가 없음.
+void VectorMatrixMultiply(FVector4* Result, const FMatrix* Matrix, const FVector4* Vector)
+{
+    ne10_mulcmatvec_cm4x4f_v4f((ne10_vec4f_t*)Result, (ne10_mat4x4f_t*)Matrix, (ne10_vec4f_t*)Vector, 1);
+}
+
+void VectorMatrixTranspose(FMatrix* Result, const FMatrix* Matrix)
+{
+    ne10_transmat_4x4f((ne10_mat4x4f_t*)Result, (ne10_mat4x4f_t*)Matrix, 1);
+    // // https://developer.arm.com/documentation/102107a/0100/Floating-point-4x4-matrix-transposition
+    // float32x4_t row0 = vld1q_f32(&Matrix->M[0][0]);
+    // float32x4_t row1 = vld1q_f32(&Matrix->M[1][0]);
+    // float32x4_t row2 = vld1q_f32(&Matrix->M[2][0]);
+    // float32x4_t row3 = vld1q_f32(&Matrix->M[3][0]);
+
+    // float32x4x2_t t0 = vtrnq_f32(row0, row1);
+    // float32x4x2_t t1 = vtrnq_f32(row2, row3);
+
+    // float32x4_t res0 = vcombine_f32(vget_low_f32(t0.val[0]), vget_low_f32(t1.val[0]));
+    // float32x4_t res1 = vcombine_f32(vget_low_f32(t0.val[1]), vget_low_f32(t1.val[1]));
+    // float32x4_t res2 = vcombine_f32(vget_high_f32(t0.val[0]), vget_high_f32(t1.val[0]));
+    // float32x4_t res3 = vcombine_f32(vget_high_f32(t0.val[1]), vget_high_f32(t1.val[1]));
+
+    // vst1q_f32(&Result->M[0][0], res0);
+    // vst1q_f32(&Result->M[1][0], res1);
+    // vst1q_f32(&Result->M[2][0], res2);
+    // vst1q_f32(&Result->M[3][0], res3);
+}
+
+void VectorMatrixInverse(FMatrix* Result, const FMatrix* Matrix)
+{
+    ne10_invmat_4x4f((ne10_mat4x4f_t*)Result, (ne10_mat4x4f_t*)Matrix, 1);
 }
 
 // 아래 함수들은 NEON에서 round, floor, ceil을 바로 지원하지 않으므로 대체 구현 필요
