@@ -148,3 +148,13 @@ using FSetRenderTargetsInfoRHIRef    = TRefCountPtr<FRHISetRenderTargetsInfo>;
 using FGraphicsPipelineStateRHIRef   = TRefCountPtr<FRHIGraphicsPipelineState>;
 using FGraphicsPipelineStateFallBackRHIRef = TRefCountPtr<FRHIGraphicsPipelineStateFallBack>;
 using FRenderPassInfoRHIRef          = TRefCountPtr<FRHIRenderPassInfo>;
+
+// ---------------------------------------------------------------------------
+// Initializers
+// ---------------------------------------------------------------------------
+struct FVertexElement;
+using FVertexDeclarationElementList = TArray<FVertexElement>; // forward decl 가능?
+struct FSamplerStateInitializerRHI;
+struct FRasterizerStateInitializerRHI;
+struct FDepthStencilStateInitializerRHI;
+struct FBlendStateInitializerRHI;

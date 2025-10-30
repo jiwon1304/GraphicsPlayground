@@ -58,20 +58,20 @@ set(BUILD_PREFIX_DIR "${BUILD_TARGET_OS}/${BUILD_TARGET_ARCH}/${CMAKE_BUILD_TYPE
 # 그래픽스 API 옵션 및 플랫폼 분기
 # -----------------------------------------------------------------------------------------------
 if(USE_OPENGL AND USE_DIRECTX11)
-    message(FATAL_ERROR "OpenGL과 DirectX11은 동시에 사용할 수 없습니다. 둘 중 하나만 선택하세요.")
+    message(FATAL_ERROR "")
 elseif(NOT USE_OPENGL AND NOT USE_DIRECTX11)
-    message(FATAL_ERROR "OpenGL 또는 DirectX11 중 하나를 반드시 선택해야 합니다.")
+    message(FATAL_ERROR "")
 endif()
 
 if (APPLE AND USE_DIRECTX11)
-    message(FATAL_ERROR "macOS에서는 DirectX11을 사용할 수 없습니다. USE_DIRECTX11=OFF로 설정하세요.")
+    message(FATAL_ERROR "")
 endif()
 
 if (USE_OPENGL)
-    message(STATUS "그래픽스 API: OpenGL 선택됨")
+    message(STATUS "Graphics API: OpenGL")
     set(BUILD_RENDER_BACKEND_STR "OPENGL3")
 elseif(USE_DIRECTX11)
-    message(STATUS "그래픽스 API: DirectX11 선택됨")
+    message(STATUS "Graphics API: DirectX11")
     set(BUILD_RENDER_BACKEND_STR "DX11")
 endif()
 
@@ -344,13 +344,13 @@ target_link_directories(${PROJECT_NAME} PRIVATE
     "${THIRD_PARTY_DIR}/fbxsdk/lib/${BUILD_PREFIX_DIR}"
     "${THIRD_PARTY_DIR}/fmod/lib/${BUILD_PREFIX_DIR}"
     "${THIRD_PARTY_DIR}/freetype/lib/${BUILD_PREFIX_DIR}"
-    "${THIRD_PARTY_DIR}/lua/lib/${BUILD_PREFIX_DIR}"
+    # "${THIRD_PARTY_DIR}/lua/lib/${BUILD_PREFIX_DIR}"
     "${THIRD_PARTY_DIR}/sol2/lib/${BUILD_PREFIX_DIR}"
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     freetype
-    lua
+    # lua
     $<$<CONFIG:Debug>:fmodL_vc>
     $<$<NOT:$<CONFIG:Debug>>:fmod_vc>
     libfbxsdk   
@@ -398,7 +398,11 @@ endif()
 
 
 get_target_property(LINK_DIRS ${PROJECT_NAME} LINK_DIRECTORIES)
-message(STATUS "Link directories for ${PROJECT_NAME}: ${LINK_DIRS}")
+message(STATUS "Link directories for ${PROJECT_NAME}:")
+
+foreach(DIR ${LINK_DIRS})
+    message(STATUS " - ${DIR}")
+endforeach()
 
 # imgui 링크 (공통)
 target_link_libraries(${PROJECT_NAME} PRIVATE imgui)
@@ -434,7 +438,7 @@ endmacro()
 
 
 
-copy_bin("lua")
+# copy_bin("lua")
 copy_bin("fmod")
 copy_bin("fbxsdk")
 
