@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "*.gs": "glsl",
         "algorithm": "cpp",
         "array": "cpp",
         "atomic": "cpp",
@@ -123,7 +124,18 @@
         "xstring": "cpp",
         "xtr1common": "cpp",
         "xtree": "cpp",
-        "coroutine": "cpp"
+        "coroutine": "cpp",
+        "__bit_reference": "cpp",
+        "__tree": "cpp",
+        "execution": "cpp",
+        "__hash_table": "cpp",
+        "__locale": "cpp",
+        "__node_handle": "cpp",
+        "__split_buffer": "cpp",
+        "__verbose_abort": "cpp",
+        "print": "cpp",
+        "queue": "cpp",
+        "stack": "cpp"
     },
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
 }

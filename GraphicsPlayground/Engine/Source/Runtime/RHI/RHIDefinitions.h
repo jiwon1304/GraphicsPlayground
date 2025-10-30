@@ -452,9 +452,9 @@ enum class EStencilOp : uint8
 // -----------------------------------------------------------------------------
 enum class EUniformBufferUsage : uint8
 {
-    Static,
-    Dynamic,
-    SingleFrame
+    Static, // write once at initialization time. corresponds to D3D11_USAGE_IMMUTABLE
+    Dynamic, // write multiple times. corresponds to D3D11_USAGE_DYNAMIC
+    SingleFrame // write once per frame. corresponds to D3D11_USAGE_DYNAMIC with DISCARD flag
 };
 
 enum EUniformBufferBaseType : uint8

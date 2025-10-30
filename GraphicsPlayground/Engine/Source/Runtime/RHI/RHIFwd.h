@@ -6,10 +6,11 @@
 // ---------------------------------------------------------------------------
 // Command
 // ---------------------------------------------------------------------------
-// class FRHICommandListBase;
-// class FRHICommandList;
-// class FRHICommandListImmediate;
-// class IRHICommandContext;
+// 이거 컴파일 안되던데...
+class FRHICommandListBase;
+class FRHICommandList;
+class FRHICommandListImmediate;
+class IRHICommandContext;
 
 // -------------------------------------------------------------------------
 // Base / Core

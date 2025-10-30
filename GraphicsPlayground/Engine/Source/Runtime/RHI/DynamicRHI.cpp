@@ -1,6 +1,6 @@
 #include "DynamicRHI.h"
 #include "RHIResources.h"
-#ifdef WIN32
+#ifdef BUILD_PLATFORM_WINDOWS
 #include "Windows/D3D11RHI/D3D11RHIPrivate.h"
 #else
 #include "OpenGLDrv/OpenGLDrv.h"
@@ -10,7 +10,7 @@ FDynamicRHI* GDynamicRHI = nullptr;
 
 FDynamicRHI* PlatformCreateDynamicRHI()
 {
-#ifdef WIN32
+#ifdef BUILD_PLATFORM_WINDOWS
     // return new FD3D11DynamicRHI();
     return nullptr;
 #else
