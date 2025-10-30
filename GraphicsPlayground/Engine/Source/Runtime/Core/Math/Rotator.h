@@ -25,8 +25,6 @@ struct TRotator
         : Pitch(InPitch), Yaw(InYaw), Roll(InRoll)
     {}
 
-    TRotator(const TRotator& Other) = default;
-
     explicit TRotator(const TVector<T>& InVector);
     explicit TRotator(const TQuat<T>& InQuat);
 

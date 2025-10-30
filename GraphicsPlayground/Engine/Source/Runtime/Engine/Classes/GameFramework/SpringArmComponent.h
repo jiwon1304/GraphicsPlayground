@@ -5,8 +5,8 @@
 #include "Classes/Components/SceneComponent.h"
 #include "Math/Quat.h"
 #include "Math/Vector.h"
-#include "Editor/PropertyEditor/PropertyEditorPanel.h"
 
+class PropertyEditorPanel;
 
 class USpringArmComponent : public USceneComponent
 {

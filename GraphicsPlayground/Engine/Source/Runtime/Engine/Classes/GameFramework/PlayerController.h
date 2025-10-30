@@ -16,14 +16,14 @@ public:
 
     virtual void PostSpawnInitialize() override;
 
-    virtual void BeginPlay();
+    virtual void BeginPlay() override;
 
     virtual void Tick(float DeltaTime) override;
     void ProcessInput(float DeltaTime) const;
 
-    virtual void Destroyed();
+    virtual void Destroyed() override;
 
-    virtual void EndPlay(const EEndPlayReason::Type EndPlayReason);
+    virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
     UInputComponent* GetInputComponent() const { return InputComponent; }
 
