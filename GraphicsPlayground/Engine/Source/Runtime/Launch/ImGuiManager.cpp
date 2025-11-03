@@ -66,7 +66,7 @@ void UImGuiManager::PreferenceStyle() const
 
     /** Colors */
     ImVec4 AccentColor = ImVec4(0.0f, 0.3f, 0.0f, 1.0f);
-    ImVec4 PrimaryTextColor = ImGui::ColorConvertU32ToFloat4(IM_COL32(33, 33, 33, 255));
+    ImVec4 PrimaryTextColor = ImGui::ColorConvertU32ToFloat4(IM_COL32(255, 255, 255, 255));
 
     Style.WindowRounding = 5.0f;
     Style.FrameRounding = 5.0f;
