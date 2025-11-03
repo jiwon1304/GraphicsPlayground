@@ -8,7 +8,7 @@
 #include "CoreUObject/UObject/ObjectFactory.h"
 #include "Math/transform.h"
 #include "Classes/Animation/Skeleton.h"
-#include "SkeletalMesh.h"
+#include "Classes/Engine/SkeletalMesh.h"
 #include "Classes/Animation/AnimSequence.h"
 #include "Classes/Engine/Asset/StaticMeshAsset.h"
 #include "Container/String.h"

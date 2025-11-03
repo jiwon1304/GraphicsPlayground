@@ -2,7 +2,7 @@
 
 #include "BodySetup.h"
 #include "PhysicsConstraintTemplate.h"
-#include "Classes/Engine/AssetManager.h"
+#include "Classes/Engine/Asset/AssetManager.h"
 #include "Classes/Engine/SkeletalMesh.h"
 #include "CoreUObject/UObject/ObjectFactory.h"
 

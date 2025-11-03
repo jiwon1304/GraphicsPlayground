@@ -2,7 +2,7 @@
 
 #include <fbxsdk.h>
 
-#include "StaticMesh.h"
+#include "Engine/Classes/Engine/StaticMesh.h"
 #include "HAL/PlatformType.h"
 #include "Container/Array.h"
 #include "Container/Map.h"

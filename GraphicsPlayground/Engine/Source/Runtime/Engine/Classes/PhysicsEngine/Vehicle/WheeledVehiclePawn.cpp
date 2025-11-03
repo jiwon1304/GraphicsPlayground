@@ -1,6 +1,6 @@
 #include "WheeledVehiclePawn.h"
-#include "Classes/Engine/AssetManager.h"
-#include "Classes/Engine/FObjLoader.h"
+#include "Classes/Engine/Asset/AssetManager.h"
+#include "Classes/Engine/Asset/FObjLoader.h"
 
 AWheeledVehiclePawn::AWheeledVehiclePawn()
 {

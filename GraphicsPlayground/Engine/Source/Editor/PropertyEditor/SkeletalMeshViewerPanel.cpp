@@ -7,7 +7,7 @@
 #include "Classes/Animation/AnimData/AnimDataModel.h"
 #include "Classes/Engine/SkeletalMesh.h"
 #include "Classes/Animation/Skeleton.h"
-#include "Engine/Classes/Engine/FbxLoader.h"
+#include "Engine/Classes/Engine/Asset/FbxLoader.h"
 #include "ThirdParty/imgui/imgui_neo_sequencer.h"
 #include "Classes/Components/SkeletalMeshComponent.h"
 #include "Classes/Animation/AnimTypes.h"

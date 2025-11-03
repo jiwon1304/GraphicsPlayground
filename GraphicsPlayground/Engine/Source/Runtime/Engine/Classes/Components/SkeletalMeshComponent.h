@@ -1,7 +1,7 @@
 #pragma once
 #include "SkinnedMeshComponent.h"
 #include "Classes/Actors/Player.h"
-#include "Classes/Engine/AssetManager.h"
+#include "Classes/Engine/Asset/AssetManager.h"
 #include "Classes/Engine/Asset/SkeletalMeshAsset.h"
 #include "CoreUObject/Template/SubclassOf.h"
 #include "Classes/Animation/AnimNodeBase.h"

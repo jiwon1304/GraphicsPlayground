@@ -16,7 +16,7 @@
 #include "CoreUObject/UObject/Casts.h"
 #include "CoreUObject/UObject/UObjectIterator.h"
 #include "Editor/PropertyEditor/ShowFlags.h"
-#include "Classes/Engine/AssetManager.h"
+#include "Classes/Engine/Asset/AssetManager.h"
 #include "Renderer/RendererHelpers.h"
 
 class UEditorEngine;

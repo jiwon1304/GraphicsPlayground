@@ -5,7 +5,7 @@
 #include "Engine/UnrealClient.h"
 #include "Classes/Actors/Cube.h"
 #include "Classes/Animation/Skeleton.h"
-#include "Classes/Engine/AssetManager.h"
+#include "Classes/Engine/Asset/AssetManager.h"
 #include "Editor/PropertyEditor/SubEditor/ParticleViewerPanel.h"
 #include "Classes/Particles/ParticleSystem.h"
 #include "Classes/Particles/ParticleEmitter.h"

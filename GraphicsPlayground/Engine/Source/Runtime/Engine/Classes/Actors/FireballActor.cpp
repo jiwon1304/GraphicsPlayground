@@ -1,5 +1,5 @@
 #include "FireballActor.h"
-#include "Classes/Engine/FObjLoader.h"
+#include "Classes/Engine/Asset/FObjLoader.h"
 
 #include "Classes/Components/Light/PointLightComponent.h"
 

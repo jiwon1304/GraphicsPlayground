@@ -1,5 +1,5 @@
-#include "StaticMesh.h"
-#include "Classes/Engine/FObjLoader.h"
+#include "Engine/Classes/Engine/StaticMesh.h"
+#include "Classes/Engine/Asset/FObjLoader.h"
 #include "CoreUObject/UObject/Casts.h"
 #include "CoreUObject/UObject/ObjectFactory.h"
 

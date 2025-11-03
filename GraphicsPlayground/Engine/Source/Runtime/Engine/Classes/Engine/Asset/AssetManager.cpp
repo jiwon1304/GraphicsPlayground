@@ -5,11 +5,11 @@
 
 #include "FbxLoader.h"
 #include "Classes/Animation/Skeleton.h"
-#include "SkeletalMesh.h"
+#include "Engine/Classes/Engine/SkeletalMesh.h"
 #include "Classes/Animation/AnimationAsset.h"
 #include "Classes/Animation/AnimSequence.h"
 #include "Classes/Components/Material/Material.h"
-#include "Classes/Engine/FObjLoader.h"
+#include "Classes/Engine/Asset/FObjLoader.h"
 #include "CoreUObject/UObject/Casts.h"
 #include "Classes/Engine/Asset/SkeletalMeshAsset.h"
 #include "Classes/Engine/Asset/StaticMeshAsset.h"

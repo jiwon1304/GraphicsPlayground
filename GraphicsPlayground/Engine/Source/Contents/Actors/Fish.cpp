@@ -7,7 +7,7 @@
 #include "Classes/Components/SphereComponent.h"
 #include "Contents/Components/FishTailComponent.h"
 #include "Contents/Components/FishBodyComponent.h"
-#include "Classes/Engine/FObjLoader.h"
+#include "Classes/Engine/Asset/FObjLoader.h"
 #include "SoundManager.h"
 #include "TriggerBox.h"
 #include "Contents/Objects/DamageCameraShake.h"

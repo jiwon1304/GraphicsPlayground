@@ -10,7 +10,7 @@
 #include "CoreUObject/UObject/Casts.h"
 #include "Editor/PropertyEditor/ShowFlags.h"
 #include "Classes/Engine/Asset/SkeletalMeshAsset.h"
-#include "Classes/Engine/AssetManager.h"
+#include "Classes/Engine/Asset/AssetManager.h"
 #include "RendererHelpers.h"
 #include "Editor/UnrealEd/PrimitiveDrawBatch.h"
 

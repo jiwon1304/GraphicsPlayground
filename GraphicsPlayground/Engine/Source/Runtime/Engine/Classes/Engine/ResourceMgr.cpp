@@ -7,7 +7,7 @@
 // #include "Classes/Components/SkySphereComponent.h"
 // #include "Windows/D3D11RHI/GraphicDevice.h"
 // #include "ThirdParty/DirectXTK/Include/DirectXTK/DDSTextureLoader.h"
-#include "Classes/Engine/FObjLoader.h"
+#include "Classes/Engine/Asset/FObjLoader.h"
 
 
 void FResourceManager::Initialize(FRenderer* Renderer, FGraphicsDevice* Device)

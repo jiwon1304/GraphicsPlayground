@@ -7,7 +7,7 @@
 #include "Classes/Particles/ParticleModules/ParticleModuleRequired.h"
 #include "Classes/Particles/ParticleModules/ParticleModuleSpawn.h"
 #include "Classes/Particles/ParticleLODLevel.h"
-#include "Classes/Engine/AssetManager.h"
+#include "Classes/Engine/Asset/AssetManager.h"
 #include "Classes/Components/ParticleSystemComponent.h"
 #include "Classes/Particles/ParticleModules/ParticleModuleLifetime.h"
 #include "Classes/Particles/ParticleModules/ParticleModuleSize.h"

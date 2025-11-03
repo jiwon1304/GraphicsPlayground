@@ -1,7 +1,7 @@
 
 #include "PlatformActor.h"
 
-#include "Classes/Engine/FObjLoader.h"
+#include "Classes/Engine/Asset/FObjLoader.h"
 
 APlatformActor::APlatformActor()
 {

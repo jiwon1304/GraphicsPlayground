@@ -1,7 +1,7 @@
 #include "SceneManager.h"
 #include <fstream>
 #include "EditorViewportClient.h"
-#include "Classes/Engine/FObjLoader.h"
+#include "Classes/Engine/Asset/FObjLoader.h"
 #include "Classes/Engine/StaticMeshActor.h"
 #include "CoreUObject/UObject/Casts.h"
 #include "CoreUObject/UObject/Object.h"

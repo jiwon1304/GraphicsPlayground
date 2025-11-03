@@ -15,7 +15,7 @@
 #include "Classes/Camera/CameraComponent.h"
 #include "Classes/Components/ProjectileMovementComponent.h"
 
-#include "Classes/Engine/FObjLoader.h"
+#include "Classes/Engine/Asset/FObjLoader.h"
 #include "Engine/Classes/Engine/StaticMeshActor.h"
 #include "Editor/LevelEditor/SLevelEditor.h"
 #include "Editor/PropertyEditor/ShowFlags.h"
@@ -45,10 +45,10 @@
 #include "Contents/Actors/SkeletalMeshActorTest.h"
 #include "Contents/Actors/TriggerBox.h"
 #include "Renderer/CompositingPass.h"
-#include "Classes/Engine/FbxLoader.h"
+#include "Classes/Engine/Asset/FbxLoader.h"
 
 #include "Contents/Actors/ParticleSystemActor.h"
-#include "Classes/Engine/AssetManager.h"
+#include "Classes/Engine/Asset/AssetManager.h"
 #include "Classes/Components/ParticleSystemComponent.h"
 #include "Classes/Particles/ParticleSystem.h"
 #include "Classes/Particles/ParticleSpriteEmitter.h"
