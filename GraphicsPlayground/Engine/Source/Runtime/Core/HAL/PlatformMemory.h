@@ -158,7 +158,11 @@ void FPlatformMemory::AlignedFree(void* Address, size_t Size)
     if (Address)
     {
         DecrementStats<AllocType>(Size);
+#ifdef _MSC_VER
+        _aligned_free(Address);
+#else
         std::free(Address);
+#endif
     }
 }
 
