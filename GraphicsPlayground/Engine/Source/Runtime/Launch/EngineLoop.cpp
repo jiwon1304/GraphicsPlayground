@@ -281,7 +281,6 @@ void FEngineLoop::SubEngineControl()
 
 void FEngineLoop::Exit()
 {
-
     ParticleSubEngine->Release();
     CleanupSubWindow();
 
@@ -322,6 +321,11 @@ void FEngineLoop::WindowInit(HINSTANCE hInstance)
 
 LRESULT CALLBACK FEngineLoop::AppWndProc(HWND hWnd, uint32 Msg, WPARAM wParam, LPARAM lParam)
 {
+    if (GEngineLoop.bIsExit)
+    {
+        return DefWindowProc(hWnd, Msg, wParam, lParam);
+    }
+
     if (hWnd == GEngineLoop.AppWnd)
     {
         ImGui::SetCurrentContext(GEngineLoop.UIManager->GetContext());
