@@ -653,15 +653,15 @@ FStaticMeshRenderData* FObjManager::LoadObjStaticMeshAsset(const FString& PathFi
         return *It;
     }
 
-    FWString BinaryPath = (PathFileName + ".bin").ToWideString();
-    if (std::ifstream(BinaryPath).good())
-    {
-        if (LoadStaticMeshFromBinary(BinaryPath, *NewStaticMesh))
-        {
-            ObjStaticMeshMap.Add(PathFileName, NewStaticMesh);
-            return NewStaticMesh;
-        }
-    }
+    // FWString BinaryPath = (PathFileName + ".bin").ToWideString();
+    // if (std::ifstream(BinaryPath).good())
+    // {
+    //     if (LoadStaticMeshFromBinary(BinaryPath, *NewStaticMesh))
+    //     {
+    //         ObjStaticMeshMap.Add(PathFileName, NewStaticMesh);
+    //         return NewStaticMesh;
+    //     }
+    // }
 
     // Parse OBJ
     FObjInfo NewObjInfo;
@@ -699,7 +699,7 @@ FStaticMeshRenderData* FObjManager::LoadObjStaticMeshAsset(const FString& PathFi
         return nullptr;
     }
 
-    SaveStaticMeshToBinary(BinaryPath, *NewStaticMesh); 
+    // SaveStaticMeshToBinary(BinaryPath, *NewStaticMesh); 
     ObjStaticMeshMap.Add(PathFileName, NewStaticMesh);
     return NewStaticMesh;
 }

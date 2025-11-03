@@ -23,6 +23,7 @@
 #include "Classes/Components/Light/PointLightComponent.h"
 #include "Classes/Components/HeightFogComponent.h"
 #include "Editor/PropertyEditor/ShowFlags.h"
+#include "Classes/Engine/ResourceMgr.h"
 
 void FEditorRenderPass::Initialize(FDXDBufferManager* InBufferManager, FGraphicsDevice* InGraphics, FDXDShaderManager* InShaderManager)
 {
@@ -341,12 +342,12 @@ void FEditorRenderPass::LazyLoad()
 {
     // Resourcemanager에서 로드된 texture의 포인터를 가져옴
     // FResourceManager::Initialize에 이미 추가되어 있어야 함
-    Resources.IconTextures[EIconType::DirectionalLight] = GEngineLoop.ResourceManager.GetTexture(L"Assets/Editor/Icon/DirectionalLight_64x.png");
-    Resources.IconTextures[EIconType::PointLight] = GEngineLoop.ResourceManager.GetTexture(L"Assets/Editor/Icon/PointLight_64x.png");
-    Resources.IconTextures[EIconType::SpotLight] = GEngineLoop.ResourceManager.GetTexture(L"Assets/Editor/Icon/SpotLight_64x.png");
-    Resources.IconTextures[EIconType::AmbientLight] = GEngineLoop.ResourceManager.GetTexture(L"Assets/Editor/Icon/AmbientLight_64x.png");
-    Resources.IconTextures[EIconType::ExponentialFog] = GEngineLoop.ResourceManager.GetTexture(L"Assets/Editor/Icon/ExponentialHeightFog_64.png");
-    Resources.IconTextures[EIconType::AtmosphericFog] = GEngineLoop.ResourceManager.GetTexture(L"Assets/Editor/Icon/AtmosphericFog_64.png");
+    Resources.IconTextures[EIconType::DirectionalLight] = GEngineLoop.ResourceManager->GetTexture(L"Assets/Editor/Icon/DirectionalLight_64x.png");
+    Resources.IconTextures[EIconType::PointLight] = GEngineLoop.ResourceManager->GetTexture(L"Assets/Editor/Icon/PointLight_64x.png");
+    Resources.IconTextures[EIconType::SpotLight] = GEngineLoop.ResourceManager->GetTexture(L"Assets/Editor/Icon/SpotLight_64x.png");
+    Resources.IconTextures[EIconType::AmbientLight] = GEngineLoop.ResourceManager->GetTexture(L"Assets/Editor/Icon/AmbientLight_64x.png");
+    Resources.IconTextures[EIconType::ExponentialFog] = GEngineLoop.ResourceManager->GetTexture(L"Assets/Editor/Icon/ExponentialHeightFog_64.png");
+    Resources.IconTextures[EIconType::AtmosphericFog] = GEngineLoop.ResourceManager->GetTexture(L"Assets/Editor/Icon/AtmosphericFog_64.png");
 
     // Gizmo arrow 로드
     FStaticMeshRenderData* RenderData = FObjManager::GetStaticMesh(L"Assets/GizmoTranslationZ.obj")->GetRenderData();

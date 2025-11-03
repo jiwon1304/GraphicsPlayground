@@ -126,7 +126,7 @@ void FGizmoRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& View
     // 씬 뎁스를 쉐이더 리소스로 사용
     Graphics->DeviceContext->PSSetShaderResources(static_cast<UINT>(EShaderSRVSlot::SRV_SceneDepth), 1, &ViewportResource->GetDepthStencil(EResourceType::ERT_Scene)->SRV);
     
-    Graphics->DeviceContext->RSSetState(GEngineLoop.GraphicDevice.RasterizerSolidBack);
+    Graphics->DeviceContext->RSSetState(GEngineLoop.GraphicDevice->RasterizerSolidBack);
 
     FViewportSize ViewportSize;
     ViewportSize.ViewportSize.X = Viewport->GetViewport()->GetRect().Width;

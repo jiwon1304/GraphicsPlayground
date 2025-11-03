@@ -5,6 +5,7 @@
 #include "Launch/Define.h"
 #include "Engine/UnrealClient.h" // Depth Stencil View
 #include <d3d11.h>
+#include "Renderer/RenderMisc.h"
 
 #include "Classes/Components/Light/PointLightComponent.h"
 

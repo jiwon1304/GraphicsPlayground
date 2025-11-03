@@ -318,14 +318,14 @@ void FParticleRenderPass::RenderSpriteEmitter(const std::shared_ptr<FEditorViewp
     //Sprite니까 무조건 0번?
     if (!ReplayData.Material)return;
     std::shared_ptr<FTexture> Texture = 
-        GEngineLoop.ResourceManager.GetTexture(ReplayData.Material->GetMaterialInfo().TextureInfos[0].TexturePath);
+        GEngineLoop.ResourceManager->GetTexture(ReplayData.Material->GetMaterialInfo().TextureInfos[0].TexturePath);
 
     ID3D11ShaderResourceView* SRVs[9] = {};
     ID3D11SamplerState* Samplers[9] = {};
     if (ReplayData.Material->GetMaterialInfo().TextureInfos.IsValidIndex(0))
     {
         const FWString& TexturePath = ReplayData.Material[0].GetMaterialInfo().TextureInfos[0].TexturePath;
-        std::shared_ptr<FTexture> Texture = GEngineLoop.ResourceManager.GetTexture(TexturePath);
+        std::shared_ptr<FTexture> Texture = GEngineLoop.ResourceManager->GetTexture(TexturePath);
         if (Texture)
         {
             SRVs[0] = Texture->TextureSRV;
@@ -452,7 +452,7 @@ void FParticleRenderPass::RenderMeshEmitter(
             if (TextureInfos.IsValidIndex(0))
             {
                 const FWString& TexturePath = TextureInfos[0].TexturePath;
-                std::shared_ptr<FTexture> Texture = GEngineLoop.ResourceManager.GetTexture(TexturePath);
+                std::shared_ptr<FTexture> Texture = GEngineLoop.ResourceManager->GetTexture(TexturePath);
                 if (Texture)
                 {
                     SRVs[0] = Texture->TextureSRV;

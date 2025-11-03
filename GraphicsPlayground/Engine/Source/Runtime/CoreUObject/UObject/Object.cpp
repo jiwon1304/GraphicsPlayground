@@ -3,6 +3,7 @@
 #include "ObjectFactory.h"
 #include "Class.h"
 #include "Classes/Engine/Engine.h"
+#include "Core/Math/Vector4.h"
 
 
 UClass* UObject::StaticClass()
@@ -61,6 +62,18 @@ UWorld* UObject::GetWorld() const
 void UObject::MarkAsGarbage()
 {
     GUObjectArray.MarkRemoveObject(this);
+}
+
+FVector4 UObject::EncodeUUID() const
+{
+    FVector4 Result;
+
+    Result.X = static_cast<float>(UUID % 0xFF);
+    Result.Y = static_cast<float>(UUID >> 8 & 0xFF);
+    Result.Z = static_cast<float>(UUID >> 16 & 0xFF);
+    Result.W = static_cast<float>(UUID >> 24 & 0xFF);
+
+    return Result;
 }
 
 bool UObject::IsA(const UClass* SomeBase) const

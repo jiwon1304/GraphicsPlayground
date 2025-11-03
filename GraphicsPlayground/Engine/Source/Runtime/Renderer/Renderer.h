@@ -59,14 +59,14 @@ public:
     //==========================================================================
     // 초기화/해제 관련 함수
     //==========================================================================
-    void Initialize(FGraphicsDevice* InGraphics, FDXDBufferManager* InBufferManager, IGPUTimingManager* InGPUTimingManager) {}
-    void Release() {}
+    void Initialize(FGraphicsDevice* InGraphics, FDXDBufferManager* InBufferManager, IGPUTimingManager* InGPUTimingManager);
+    void Release();
 
     //==========================================================================
     // 렌더 패스 관련 함수
     //==========================================================================
-    void Render(const std::shared_ptr<FEditorViewportClient>& Viewport) {}
-    void RenderViewport(const std::shared_ptr<FEditorViewportClient>& Viewport) const {} // TODO: 추후 RenderSlate로 변경해야함
+    void Render(const std::shared_ptr<FEditorViewportClient>& Viewport);
+    void RenderViewport(const std::shared_ptr<FEditorViewportClient>& Viewport) const; // TODO: 추후 RenderSlate로 변경해야함
 
 protected:
     void BeginRender(const std::shared_ptr<FEditorViewportClient>& Viewport) const;
@@ -85,10 +85,10 @@ protected:
     //==========================================================================
 public:
     // 상수 버퍼 생성/해제
-    void CreateConstantBuffers() {}
-    void ReleaseConstantBuffer() const {}
+    void CreateConstantBuffers();
+    void ReleaseConstantBuffer() const;
 
-    void CreateCommonShader() const {}
+    void CreateCommonShader() const;
 
 public:
     FGraphicsDevice* Graphics;

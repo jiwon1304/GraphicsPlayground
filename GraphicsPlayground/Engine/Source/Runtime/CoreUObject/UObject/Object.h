@@ -3,6 +3,7 @@
 #include "NameTypes.h"
 #include "Misc/CoreMiscDefines.h"
 #include "Core/Container/String.h"
+#include "Core/Math/MathFwd.h"
 
 struct FPropertyChangedEvent;
 extern FEngineLoop GEngineLoop;
@@ -90,17 +91,7 @@ public:
     // ~UObjectBaseUtility
 
 public:
-    // FVector4 EncodeUUID() const
-    // {
-    //     FVector4 Result;
-
-    //     Result.X = static_cast<float>(UUID % 0xFF);
-    //     Result.Y = static_cast<float>(UUID >> 8 & 0xFF);
-    //     Result.Z = static_cast<float>(UUID >> 16 & 0xFF);
-    //     Result.W = static_cast<float>(UUID >> 24 & 0xFF);
-
-    //     return Result;
-    // }
+    FVector4 EncodeUUID() const;
 
     virtual void SerializeAsset(FArchive& Ar) {}
 };

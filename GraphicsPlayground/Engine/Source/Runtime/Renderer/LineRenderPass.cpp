@@ -17,6 +17,10 @@
 
 #include "Editor/UnrealEd/EditorViewportClient.h"
 
+#include "Editor/UnrealEd/PrimitiveDrawBatch.h"
+
+#include "Renderer/LinePrimitiveBatchArgs.h"
+
 // 생성자/소멸자
 FLineRenderPass::FLineRenderPass()
     : BufferManager(nullptr)
@@ -69,7 +73,7 @@ void FLineRenderPass::PrepareLineShader() const
     Graphics->DeviceContext->IASetInputLayout(nullptr);
     Graphics->DeviceContext->PSSetShader(PixelLineShader, nullptr, 0);
 
-    GEngineLoop.PrimitiveDrawBatch.PrepareLineResources();
+    GEngineLoop.PrimitiveDrawBatch->PrepareLineResources();
 }
 
 void FLineRenderPass::DrawLineBatch(const FLinePrimitiveBatchArgs& BatchArgs) const
@@ -109,9 +113,9 @@ void FLineRenderPass::ProcessLineRendering(const std::shared_ptr<FEditorViewport
     UpdateObjectConstant(FMatrix::Identity, FVector4(0, 0, 0, 0), false);
 
     FLinePrimitiveBatchArgs BatchArgs;
-    GEngineLoop.PrimitiveDrawBatch.PrepareBatch(BatchArgs);
+    GEngineLoop.PrimitiveDrawBatch->PrepareBatch(BatchArgs);
     DrawLineBatch(BatchArgs);
-    GEngineLoop.PrimitiveDrawBatch.RemoveArr();
+    GEngineLoop.PrimitiveDrawBatch->RemoveArr();
 }
 
 void FLineRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& Viewport)

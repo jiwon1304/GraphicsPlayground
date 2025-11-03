@@ -10,6 +10,7 @@
 
 #include "ShaderConstants.h"
 #include "Classes/Engine/Texture.h"
+#include "Renderer/RenderMisc.h"
 
 /// <summary>
 /// Shader관련 모음.

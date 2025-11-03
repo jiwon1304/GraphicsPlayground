@@ -3,6 +3,8 @@
 #include "RenderMisc.h"
 #include "Windows/D3D11RHI/GraphicDevice.h"
 #include "Windows/D3D11RHI/DXDBufferManager.h"
+#include "Classes/Components/Material/MaterialInfo.h"
+#include "Classes/Engine/ResourceMgr.h"
 
 namespace MaterialUtils
 {

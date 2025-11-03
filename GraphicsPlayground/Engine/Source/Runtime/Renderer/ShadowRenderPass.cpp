@@ -17,6 +17,7 @@
 #include "CoreUObject/UObject/UObjectIterator.h"
 #include "Editor/PropertyEditor/ShowFlags.h"
 #include "Classes/Engine/AssetManager.h"
+#include "Renderer/RendererHelpers.h"
 
 class UEditorEngine;
 class UStaticMeshComponent;

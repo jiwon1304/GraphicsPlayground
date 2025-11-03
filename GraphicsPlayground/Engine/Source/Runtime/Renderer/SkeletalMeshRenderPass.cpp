@@ -5,6 +5,7 @@
 #include "Windows/D3D11RHI/DXDShaderManager.h"
 #include "Windows/D3D11RHI/GraphicDevice.h"
 #include "Editor/UnrealEd/EditorViewportClient.h"
+#include "Runtime/Windows/D3D11RHI/DXDBufferManager.h"
 
 void FSkeletalMeshRenderPass::CreateResource()
 {

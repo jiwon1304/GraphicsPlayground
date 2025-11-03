@@ -28,7 +28,7 @@ AGameMode::AGameMode()
         Handler->OnKeyDownDelegate.AddLambda([this](const FKeyEvent& KeyEvent)
         {
             // 키가 Space, 아직 게임이 안 시작됐고, 실패 또는 종료되지 않았다면
-            if (KeyEvent.GetKeyCode() == VK_SPACE &&
+            if (KeyEvent.GetKey() == EKeys::SpaceBar &&
                 !bGameRunning && bGameEnded)
             {
                 StartMatch();
@@ -38,7 +38,7 @@ AGameMode::AGameMode()
         Handler->OnKeyDownDelegate.AddLambda([this](const FKeyEvent& KeyEvent)
             {
                 // 키가 Space, 아직 게임이 안 시작됐고, 실패 또는 종료되지 않았다면
-                if (KeyEvent.GetKeyCode() == VK_RCONTROL && 
+                if (KeyEvent.GetKey() == EKeys::RightControl &&
                     bGameRunning && !bGameEnded)
                 {
                     EndMatch(false);

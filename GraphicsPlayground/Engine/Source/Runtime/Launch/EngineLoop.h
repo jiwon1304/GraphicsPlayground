@@ -18,7 +18,7 @@ class FEngineProfiler;
 class FResourceManager;
 class FGraphicsDevice;
 class FRenderer;
-
+class UPrimitiveDrawBatch;
 class FEngineLoop
 {
 public:
@@ -44,7 +44,7 @@ private:
 public:
     FGraphicsDevice* GraphicDevice = nullptr;
     FRenderer* Renderer = nullptr;
-    // static UPrimitiveDrawBatch PrimitiveDrawBatch;
+    static UPrimitiveDrawBatch* PrimitiveDrawBatch;
     FResourceManager* ResourceManager = nullptr;
     static uint32 TotalAllocationBytes;
     static uint32 TotalAllocationCount;

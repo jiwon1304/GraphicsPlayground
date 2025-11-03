@@ -12,6 +12,7 @@
 #include "Windows/D3D11RHI/GraphicDevice.h"
 #include "Renderer/RenderMisc.h"
 #include "Renderer/RendererHelpers.h"
+#include "Editor/UnrealEd/PrimitiveDrawBatch.h"
 
 FStaticMeshRenderPassBase::FStaticMeshRenderPassBase()
     : BufferManager(nullptr)
@@ -92,7 +93,7 @@ void FStaticMeshRenderPassBase::RenderAllStaticMeshes(const std::shared_ptr<FEdi
 
         if (Viewport->GetShowFlag() & static_cast<uint64>(EEngineShowFlags::SF_AABB))
         {
-            GEngineLoop.PrimitiveDrawBatch.AddAABBToBatch(Comp->GetBoundingBox(), Comp->GetComponentLocation(), WorldMatrix);
+            GEngineLoop.PrimitiveDrawBatch->AddAABBToBatch(Comp->GetBoundingBox(), Comp->GetComponentLocation(), WorldMatrix);
         }
     }
 }

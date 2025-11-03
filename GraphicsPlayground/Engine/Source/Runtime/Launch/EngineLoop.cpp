@@ -23,11 +23,14 @@
 #include "Windows/D3D11RHI/DXDBufferManager.h"
 // #include "Renderer/TileLightCullingPass.h"
 #include "Editor/LevelEditor/Platform/Windows/SlateAppMessageHandlerWindows.h"
+#include "Editor/UnrealEd/PrimitiveDrawBatch.h"
+#include "Core/Stats/Platform/Windows/GPUTimingManagerD3D11.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 
 uint32 FEngineLoop::TotalAllocationBytes = 0;
 uint32 FEngineLoop::TotalAllocationCount = 0;
+UPrimitiveDrawBatch* FEngineLoop::PrimitiveDrawBatch = nullptr;
 
 FEngineLoop::FEngineLoop()
     : AppWnd(nullptr)
@@ -54,25 +57,25 @@ int32 FEngineLoop::Init(HINSTANCE hInstance)
     Renderer = new FRenderer;
     ResourceManager = new FResourceManager;
 
-    {   
-        GPUTimingManager = CreateGPUTimingManager(FGPUTimingInitParams{ 3, GraphicDevice->Device, GraphicDevice->DeviceContext });
-        if (!GPUTimingManager)
-        {
-            UE_LOG(ELogLevel::Error, TEXT("Failed to initialize GPU Timing Manager!"));
-        }
-    }
     EngineProfiler = new FEngineProfiler;
     ParticleSubEngine = new USubEngine;
 
     UIManager = new UImGuiManager;
-    AppMessageHandler = new FSlateAppMessageHandlerBase;
+    AppMessageHandler = new FSlateAppMessageHandlerWindows;
     LevelEditor = new SLevelEditor;
     UnrealEditor = new UnrealEd;
     BufferManager = new FDXDBufferManager;
+    PrimitiveDrawBatch = new UPrimitiveDrawBatch;
+    ParticleViewerGD = new FGraphicsDevice;
+    GPUTimingManager = new FGPUTimingManagerD3D11;
     
     UnrealEditor->Initialize();
     GraphicDevice->Initialize(AppWnd);
-    
+    GPUTimingManager = CreateGPUTimingManager(FGPUTimingInitParams{ 3, GraphicDevice->Device, GraphicDevice->DeviceContext });
+    if (!GPUTimingManager)
+    {
+        UE_LOG(ELogLevel::Error, TEXT("Failed to initialize GPU Timing Manager!"));
+    }
     EngineProfiler->SetGPUTimingManager(GPUTimingManager);
 
     // @todo Table에 Tree 구조로 넣을 수 있도록 수정
@@ -97,7 +100,7 @@ int32 FEngineLoop::Init(HINSTANCE hInstance)
 
     BufferManager->Initialize(GraphicDevice->Device, GraphicDevice->DeviceContext);
     Renderer->Initialize(GraphicDevice, BufferManager, GPUTimingManager);
-    // PrimitiveDrawBatch.Initialize(&GraphicDevice);
+    PrimitiveDrawBatch->Initialize(GraphicDevice);
     UIManager->Initialize(AppWnd, GraphicDevice);
     ResourceManager->Initialize(Renderer, GraphicDevice);
 

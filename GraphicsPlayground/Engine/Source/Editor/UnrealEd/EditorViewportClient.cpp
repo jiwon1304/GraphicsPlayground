@@ -294,9 +294,9 @@ void FEditorViewportClient::InputKey(const FKeyEvent& InKeyEvent)
 
         // Virtual Key
         UEditorEngine* EdEngine = CastChecked<UEditorEngine>(GEngine);
-        switch (InKeyEvent.GetKeyCode())
+        switch (InKeyEvent.GetKey())
         {
-        case VK_DELETE:
+        case EKeys::Delete:
         {
             if (GEngine->ActiveWorld->WorldType == EWorldType::SkeletalViewer || GEngine->ActiveWorld->WorldType == EWorldType::PhysicsAssetEditor)
                 return;
@@ -334,7 +334,7 @@ void FEditorViewportClient::InputKey(const FKeyEvent& InKeyEvent)
             }
             break;
         }
-        case VK_SPACE:
+        case EKeys::SpaceBar:
         {
             EdEngine->GetEditorPlayer()->AddControlMode();
             break;

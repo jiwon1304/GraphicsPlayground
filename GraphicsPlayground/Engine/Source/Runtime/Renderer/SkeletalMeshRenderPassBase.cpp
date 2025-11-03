@@ -12,6 +12,7 @@
 #include "Classes/Engine/Asset/SkeletalMeshAsset.h"
 #include "Classes/Engine/AssetManager.h"
 #include "RendererHelpers.h"
+#include "Editor/UnrealEd/PrimitiveDrawBatch.h"
 
 class UEditorEngine;
 
@@ -146,7 +147,7 @@ void FSkeletalMeshRenderPassBase::RenderAllSkeletalMeshes(const std::shared_ptr<
 
         if (Viewport->GetShowFlag() & static_cast<uint64>(EEngineShowFlags::SF_AABB))
         {
-            GEngineLoop.PrimitiveDrawBatch.AddAABBToBatch(Comp->GetBoundingBox(), Comp->GetComponentLocation(), WorldMatrix);
+            GEngineLoop.PrimitiveDrawBatch->AddAABBToBatch(Comp->GetBoundingBox(), Comp->GetComponentLocation(), WorldMatrix);
         }
     }
 }

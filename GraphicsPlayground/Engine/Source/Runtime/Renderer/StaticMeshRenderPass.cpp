@@ -29,6 +29,7 @@
 #include "Classes/Components/Light/PointLightComponent.h"
 #include "Contents/Actors/Fish.h"
 #include "Classes/Engine/AssetManager.h"
+#include "Editor/UnrealEd/PrimitiveDrawBatch.h"
 
 
 FStaticMeshRenderPass::FStaticMeshRenderPass()
@@ -350,7 +351,7 @@ void FStaticMeshRenderPass::RenderAllStaticMeshes(const std::shared_ptr<FEditorV
 
         if (Viewport->GetShowFlag() & static_cast<uint64>(EEngineShowFlags::SF_AABB))
         {
-            GEngineLoop.PrimitiveDrawBatch.AddAABBToBatch(Comp->GetBoundingBox(), Comp->GetComponentLocation(), WorldMatrix);
+            GEngineLoop.PrimitiveDrawBatch->AddAABBToBatch(Comp->GetBoundingBox(), Comp->GetComponentLocation(), WorldMatrix);
         }
     }
 }

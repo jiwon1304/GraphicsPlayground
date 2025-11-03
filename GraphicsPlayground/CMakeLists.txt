@@ -104,18 +104,18 @@ list(APPEND PROJECT_SOURCE_FILES
 # if (WIN32 AND USE_DIRECTX11)
     # Windows + DirectX11 조합에서는 Renderer/ 제외하지 않음
 # else()
-list(FILTER PROJECT_SOURCE_FILES EXCLUDE REGEX "(/|\\\\)Renderer(/|\\\\)")
-list(FILTER PROJECT_HEADER_FILES EXCLUDE REGEX "(/|\\\\)Renderer(/|\\\\)")
+# list(FILTER PROJECT_SOURCE_FILES EXCLUDE REGEX "(/|\\\\)Renderer(/|\\\\)")
+# list(FILTER PROJECT_HEADER_FILES EXCLUDE REGEX "(/|\\\\)Renderer(/|\\\\)")
 # list(FILTER PROJECT_SOURCE_FILES EXCLUDE REGEX "(/|\\\\)SubWindow(/|\\\\)")
 # list(FILTER PROJECT_HEADER_FILES EXCLUDE REGEX "(/|\\\\)SubWindow(/|\\\\)")
 # list(FILTER PROJECT_SOURCE_FILES EXCLUDE REGEX "(/|\\\\)Runtime/Windows(/|\\\\)")
 # list(FILTER PROJECT_HEADER_FILES EXCLUDE REGEX "(/|\\\\)Runtime/Windows(/|\\\\)")
 # endif()
 
-# 대신 Renderer/Renderer.cpp만 다시 추가
-if(EXISTS "${ROOT_SRC_DIR}/Engine/Source/Runtime/Renderer/Renderer.cpp")
-    list(APPEND PROJECT_SOURCE_FILES "${ROOT_SRC_DIR}/Engine/Source/Runtime/Renderer/Renderer.cpp")
-endif() 
+# # 대신 Renderer/Renderer.cpp만 다시 추가
+# if(EXISTS "${ROOT_SRC_DIR}/Engine/Source/Runtime/Renderer/Renderer.cpp")
+#     list(APPEND PROJECT_SOURCE_FILES "${ROOT_SRC_DIR}/Engine/Source/Runtime/Renderer/Renderer.cpp")
+# endif() 
 
 
 # 백엔드별 소스 필터링(필요 시 경로 패턴 조정)
