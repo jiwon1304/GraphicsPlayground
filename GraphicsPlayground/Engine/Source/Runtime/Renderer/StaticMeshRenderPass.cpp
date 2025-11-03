@@ -306,7 +306,7 @@ void FStaticMeshRenderPass::RenderPrimitive(ID3D11Buffer* pVertexBuffer, UINT Nu
     UINT Stride = sizeof(FStaticMeshVertex);
     UINT Offset = 0;
     Graphics->DeviceContext->IASetVertexBuffers(0, 1, &pVertexBuffer, &Stride, &Offset);
-    Graphics->DeviceContext->IASetIndexBuffer(pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+    Graphics->DeviceContext->IASetIndexBuffer(pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
     Graphics->DeviceContext->DrawIndexed(NumIndices, 0, 0);
 }
 

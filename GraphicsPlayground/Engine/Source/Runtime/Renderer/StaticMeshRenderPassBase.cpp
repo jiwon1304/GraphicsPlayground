@@ -112,7 +112,7 @@ void FStaticMeshRenderPassBase::RenderPrimitive(FStaticMeshRenderData* RenderDat
     BufferManager->CreateIndexBuffer(RenderData->ObjectName, RenderData->Indices, IndexInfo);
     if (IndexInfo.IndexBuffer)
     {
-        Graphics->DeviceContext->IASetIndexBuffer(IndexInfo.IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+        Graphics->DeviceContext->IASetIndexBuffer(IndexInfo.IndexBuffer, DXGI_FORMAT_R16_UINT, 0);
     }
 
     if (RenderData->MaterialSubsets.Num() == 0)
@@ -157,7 +157,7 @@ void FStaticMeshRenderPassBase::RenderPrimitive(ID3D11Buffer* VertexBuffer, ID3D
     UINT Stride = sizeof(FStaticMeshVertex);
     UINT Offset = 0;
     Graphics->DeviceContext->IASetVertexBuffers(0, 1, &VertexBuffer, &Stride, &Offset);
-    Graphics->DeviceContext->IASetIndexBuffer(IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+    Graphics->DeviceContext->IASetIndexBuffer(IndexBuffer, DXGI_FORMAT_R16_UINT, 0);
     Graphics->DeviceContext->DrawIndexed(IndicesNum, 0, 0);
 }
 
