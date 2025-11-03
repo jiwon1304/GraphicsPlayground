@@ -248,6 +248,10 @@ bool UAssetManager::SavePhysicsAssetBinary(UPhysicsAsset* PhysicsAsset)
 void UAssetManager::LoadContentFiles()
 {
     const std::string BasePathName = "Contents/";
+    if (!std::filesystem::exists(BasePathName) || !std::filesystem::is_directory(BasePathName))
+    {
+        return;
+    }
 
     for (const auto& Entry : std::filesystem::recursive_directory_iterator(BasePathName))
     {
@@ -288,6 +292,10 @@ void UAssetManager::LoadContentFiles()
 void UAssetManager::LoadLazyContentFiles()
 {
     const std::string BasePathName = "Contents/";
+    if (!std::filesystem::exists(BasePathName) || !std::filesystem::is_directory(BasePathName))
+    {
+        return;
+    }
 
     for (const auto& Entry : std::filesystem::recursive_directory_iterator(BasePathName))
     {

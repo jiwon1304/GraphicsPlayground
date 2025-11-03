@@ -653,15 +653,15 @@ FStaticMeshRenderData* FObjManager::LoadObjStaticMeshAsset(const FString& PathFi
         return *It;
     }
 
-    // FWString BinaryPath = (PathFileName + ".bin").ToWideString();
-    // if (std::ifstream(BinaryPath).good())
-    // {
-    //     if (LoadStaticMeshFromBinary(BinaryPath, *NewStaticMesh))
-    //     {
-    //         ObjStaticMeshMap.Add(PathFileName, NewStaticMesh);
-    //         return NewStaticMesh;
-    //     }
-    // }
+    FWString BinaryPath = (PathFileName + ".bin").ToWideString();
+    if (std::ifstream(BinaryPath).good())
+    {
+        if (LoadStaticMeshFromBinary(BinaryPath, *NewStaticMesh))
+        {
+            ObjStaticMeshMap.Add(PathFileName, NewStaticMesh);
+            return NewStaticMesh;
+        }
+    }
 
     // Parse OBJ
     FObjInfo NewObjInfo;
@@ -699,7 +699,7 @@ FStaticMeshRenderData* FObjManager::LoadObjStaticMeshAsset(const FString& PathFi
         return nullptr;
     }
 
-    // SaveStaticMeshToBinary(BinaryPath, *NewStaticMesh); 
+    SaveStaticMeshToBinary(BinaryPath, *NewStaticMesh); 
     ObjStaticMeshMap.Add(PathFileName, NewStaticMesh);
     return NewStaticMesh;
 }
@@ -738,12 +738,12 @@ bool FObjManager::SaveStaticMeshToBinary(const FWString& FilePath, const FStatic
     // Vertices
     uint32 VertexCount = StaticMesh.Vertices.Num();
     File.write(reinterpret_cast<const char*>(&VertexCount), sizeof(VertexCount));
-    File.write(reinterpret_cast<const char*>(StaticMesh.Vertices.GetData()), VertexCount * sizeof(FStaticMeshVertex));
+    File.write(reinterpret_cast<const char*>(StaticMesh.Vertices.GetData()), VertexCount * sizeof(StaticMesh.Vertices[0]));
 
     // Indices
     uint32 IndexCount = StaticMesh.Indices.Num();
     File.write(reinterpret_cast<const char*>(&IndexCount), sizeof(IndexCount));
-    File.write(reinterpret_cast<const char*>(StaticMesh.Indices.GetData()), IndexCount * sizeof(UINT));
+    File.write(reinterpret_cast<const char*>(StaticMesh.Indices.GetData()), IndexCount * sizeof(StaticMesh.Indices[0]));
 
     // Materials
     uint32 MaterialCount = StaticMesh.Materials.Num();
@@ -789,8 +789,8 @@ bool FObjManager::SaveStaticMeshToBinary(const FWString& FilePath, const FStatic
     }
 
     // Bounding Box
-    File.write(reinterpret_cast<const char*>(&StaticMesh.BoundingBoxMin), sizeof(FVector));
-    File.write(reinterpret_cast<const char*>(&StaticMesh.BoundingBoxMax), sizeof(FVector));
+    File.write(reinterpret_cast<const char*>(&StaticMesh.BoundingBoxMin), sizeof(StaticMesh.BoundingBoxMin[0]));
+    File.write(reinterpret_cast<const char*>(&StaticMesh.BoundingBoxMax), sizeof(StaticMesh.BoundingBoxMax[0]));
 
     File.close();
     return true;
@@ -820,13 +820,13 @@ bool FObjManager::LoadStaticMeshFromBinary(const FWString& FilePath, FStaticMesh
     uint32 VertexCount = 0;
     File.read(reinterpret_cast<char*>(&VertexCount), sizeof(VertexCount));
     OutStaticMesh.Vertices.SetNum(VertexCount);
-    File.read(reinterpret_cast<char*>(OutStaticMesh.Vertices.GetData()), VertexCount * sizeof(FStaticMeshVertex));
+    File.read(reinterpret_cast<char*>(OutStaticMesh.Vertices.GetData()), VertexCount * sizeof(OutStaticMesh.Vertices[0]));
 
     // Indices
     uint32 IndexCount = 0;
     File.read(reinterpret_cast<char*>(&IndexCount), sizeof(IndexCount));
     OutStaticMesh.Indices.SetNum(IndexCount);
-    File.read(reinterpret_cast<char*>(OutStaticMesh.Indices.GetData()), IndexCount * sizeof(UINT));
+    File.read(reinterpret_cast<char*>(OutStaticMesh.Indices.GetData()), IndexCount * sizeof(OutStaticMesh.Indices[0]));
 
     // Material
     uint32 MaterialCount = 0;
@@ -877,8 +877,8 @@ bool FObjManager::LoadStaticMeshFromBinary(const FWString& FilePath, FStaticMesh
     }
 
     // Bounding Box
-    File.read(reinterpret_cast<char*>(&OutStaticMesh.BoundingBoxMin), sizeof(FVector));
-    File.read(reinterpret_cast<char*>(&OutStaticMesh.BoundingBoxMax), sizeof(FVector));
+    File.read(reinterpret_cast<char*>(&OutStaticMesh.BoundingBoxMin), sizeof(OutStaticMesh.BoundingBoxMin[0]));
+    File.read(reinterpret_cast<char*>(&OutStaticMesh.BoundingBoxMax), sizeof(OutStaticMesh.BoundingBoxMax[0]));
 
     File.close();
 
