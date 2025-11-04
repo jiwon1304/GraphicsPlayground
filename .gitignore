@@ -443,14 +443,20 @@ FodyWeavers.xsd
 
 ### Game Tech Lab ###
 
-# 다시 포함
-!EngineSIU/EngineSIU/Assets/**/*.obj
-!EngineSIU/EngineSIU/Contents/**/*.obj
-# !EngineSIU/EngineSIU/Engine/Source/ThirdParty/**
+# 3D model files
+!GraphicsPlayground/GraphicsPlayground/Assets/**/*.obj
+!GraphicsPlayground/GraphicsPlayground/Contents/**/*.obj
 
+# 3D model binary files
 *.bin
+
+# GraphicsPlayground/Contents/*
+
+# shader binary files
 GraphicsPlayground/Shaders/Binary/*.cso
 
 .idea
 
 **/imgui.ini
+
+GraphicsPlayground/Saved/AutoSaves.scene
