@@ -1,13 +1,13 @@
 #pragma once
-#include "Editor/LevelEditor/SlateAppMessageHandlerBase.h"
+#include "ApplicationCore/Generic/GenericSlateAppMessageHandler.h"
 
 class FRawInput;
 
-class FSlateAppMessageHandlerWindows : public FSlateAppMessageHandlerBase
+class FWindowsSlateAppMessageHandler : public FGenericSlateAppMessageHandler
 {
 public:
-    FSlateAppMessageHandlerWindows();
-    ~FSlateAppMessageHandlerWindows() = default;
+    FWindowsSlateAppMessageHandler();
+    ~FWindowsSlateAppMessageHandler() = default;
 
     void ProcessMessage(HWND hWnd, uint32 Msg, WPARAM wParam, LPARAM lParam);
 

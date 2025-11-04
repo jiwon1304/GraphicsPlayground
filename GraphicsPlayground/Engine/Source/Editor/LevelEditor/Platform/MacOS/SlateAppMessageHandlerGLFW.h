@@ -4,11 +4,11 @@
 
 class GLFWwindow;
 
-class FMacSlateAppMessageHandler : public FGenericSlateAppMessageHandler
+class FSlateAppMessageHandlerGLFW : public FGenericSlateAppMessageHandler
 {
 public:
-    FMacSlateAppMessageHandler() = default;
-    ~FMacSlateAppMessageHandler();
+    FSlateAppMessageHandlerGLFW() = default;
+    ~FSlateAppMessageHandlerGLFW();
 
     void RegisterWindow(GLFWwindow* InWindow);
 
@@ -23,7 +23,7 @@ private:
     static void MouseButtonCallback(GLFWwindow* wnd, int button, int action, int mods);
     static void CursorPosCallback(GLFWwindow* wnd, double xpos, double ypos);
     static void ScrollCallback(GLFWwindow* wnd, double xoffset, double yoffset);
-    static FMacSlateAppMessageHandler* GetSelf(GLFWwindow* wnd);
+    static FSlateAppMessageHandlerGLFW* GetSelf(GLFWwindow* wnd);
 
     static EMouseButtons::Type ToMouseButton(int glfwButton);
 

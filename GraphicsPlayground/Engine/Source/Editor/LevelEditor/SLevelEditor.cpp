@@ -10,7 +10,7 @@
 #include "Slate/Widgets/Layout/SSplitter.h"
 #include "SlateCore/Widgets/SWindow.h"
 #include "Editor/UnrealEd/EditorViewportClient.h"
-#include "Editor/LevelEditor/SlateAppMessageHandlerBase.h"
+#include "ApplicationCore/Generic/GenericSlateAppMessageHandler.h"
 
 extern FEngineLoop GEngineLoop;
 
@@ -81,7 +81,7 @@ void SLevelEditor::Initialize(uint32 InEditorWidth, uint32 InEditorHeight)
     
     LoadConfig();
 
-    FSlateAppMessageHandlerBase* Handler = GEngineLoop.GetAppMessageHandler();
+    FGenericSlateAppMessageHandler* Handler = GEngineLoop.GetAppMessageHandler();
 
     Handler->OnPIEModeStartDelegate.AddLambda([this]()
         {
@@ -295,7 +295,7 @@ void SLevelEditor::WriteIniFile(const FString& FilePath, const TMap<FString, FSt
 
 void SLevelEditor::RegisterEditorInputDelegates() 
 {
-    FSlateAppMessageHandlerBase* Handler = GEngineLoop.GetAppMessageHandler();
+    FGenericSlateAppMessageHandler* Handler = GEngineLoop.GetAppMessageHandler();
     
     // Clear current delegate functions
     for (const FDelegateHandle& Handle : InputDelegatesHandles)
@@ -627,7 +627,7 @@ void SLevelEditor::RegisterEditorInputDelegates()
 
 void SLevelEditor::RegisterPIEInputDelegates()
 {
-    FSlateAppMessageHandlerBase* Handler = GEngineLoop.GetAppMessageHandler();
+    FGenericSlateAppMessageHandler* Handler = GEngineLoop.GetAppMessageHandler();
 
     // Clear current delegate functions
     for (const FDelegateHandle& Handle : InputDelegatesHandles)

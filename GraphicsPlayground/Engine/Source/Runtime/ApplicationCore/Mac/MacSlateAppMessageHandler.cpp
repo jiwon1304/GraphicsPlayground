@@ -1,47 +1,47 @@
-#include "SlateAppMessageHandlerGLFW.h"
+#include "MacSlateAppMessageHandler.h"
 #include <OpenGLDrv/OpenGL3.h>
 
-FSlateAppMessageHandlerGLFW::~FSlateAppMessageHandlerGLFW()
+FMacSlateAppMessageHandler::~FMacSlateAppMessageHandler()
 {
     if (Window)
         FOpenGL::SetWindowUserPointer(Window, nullptr);
 }
 
-void FSlateAppMessageHandlerGLFW::RegisterWindow(GLFWwindow *InWindow)
+void FMacSlateAppMessageHandler::RegisterWindow(GLFWwindow *InWindow)
 {
     Window = InWindow;
 
     FOpenGL::SetWindowUserPointer(Window, this);
 
-    FOpenGL::SetKeyCallback(Window, &FSlateAppMessageHandlerGLFW::KeyCallback);
-    FOpenGL::SetCharCallback(Window, &FSlateAppMessageHandlerGLFW::CharCallback);
-    FOpenGL::SetMouseButtonCallback(Window, &FSlateAppMessageHandlerGLFW::MouseButtonCallback);
-    FOpenGL::SetCursorPosCallback(Window, &FSlateAppMessageHandlerGLFW::CursorPosCallback);
-    FOpenGL::SetScrollCallback(Window, &FSlateAppMessageHandlerGLFW::ScrollCallback);
+    FOpenGL::SetKeyCallback(Window, &FMacSlateAppMessageHandler::KeyCallback);
+    FOpenGL::SetCharCallback(Window, &FMacSlateAppMessageHandler::CharCallback);
+    FOpenGL::SetMouseButtonCallback(Window, &FMacSlateAppMessageHandler::MouseButtonCallback);
+    FOpenGL::SetCursorPosCallback(Window, &FMacSlateAppMessageHandler::CursorPosCallback);
+    FOpenGL::SetScrollCallback(Window, &FMacSlateAppMessageHandler::ScrollCallback);
 
     if (FOpenGL::RawMouseMotionSupported())
         FOpenGL::SetInputMode(Window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 }
 
-void FSlateAppMessageHandlerGLFW::ProcessMessage()
+void FMacSlateAppMessageHandler::ProcessMessage()
 {
     FOpenGL::PollEvents();
 }
 
-bool FSlateAppMessageHandlerGLFW::IsWindowFocused(void *NativeWindowPtr) const
+bool FMacSlateAppMessageHandler::IsWindowFocused(void *NativeWindowPtr) const
 {
     GLFWwindow* wnd = static_cast<GLFWwindow*>(NativeWindowPtr);
     return glfwGetWindowAttrib(wnd, GLFW_FOCUSED) != 0;
 }
 
 // static
-FSlateAppMessageHandlerGLFW* FSlateAppMessageHandlerGLFW::GetSelf(GLFWwindow* wnd)
+FMacSlateAppMessageHandler* FMacSlateAppMessageHandler::GetSelf(GLFWwindow* wnd)
 {
-    return static_cast<FSlateAppMessageHandlerGLFW*>(glfwGetWindowUserPointer(wnd));
+    return static_cast<FMacSlateAppMessageHandler*>(glfwGetWindowUserPointer(wnd));
 }
 
 // static
-void FSlateAppMessageHandlerGLFW::KeyCallback(GLFWwindow* wnd, int key, int scancode, int action, int mods)
+void FMacSlateAppMessageHandler::KeyCallback(GLFWwindow* wnd, int key, int scancode, int action, int mods)
 {
     auto* self = GetSelf(wnd);
     if (!self) return;
@@ -59,7 +59,7 @@ void FSlateAppMessageHandlerGLFW::KeyCallback(GLFWwindow* wnd, int key, int scan
 }
 
 // static
-void FSlateAppMessageHandlerGLFW::CharCallback(GLFWwindow* wnd, unsigned int codepoint)
+void FMacSlateAppMessageHandler::CharCallback(GLFWwindow* wnd, unsigned int codepoint)
 {
     auto* self = GetSelf(wnd);
     if (!self) return;
@@ -70,7 +70,7 @@ void FSlateAppMessageHandlerGLFW::CharCallback(GLFWwindow* wnd, unsigned int cod
 }
 
 // static
-void FSlateAppMessageHandlerGLFW::MouseButtonCallback(GLFWwindow* wnd, int button, int action, int mods)
+void FMacSlateAppMessageHandler::MouseButtonCallback(GLFWwindow* wnd, int button, int action, int mods)
 {
     auto* self = GetSelf(wnd);
     if (!self) return;
@@ -94,7 +94,7 @@ void FSlateAppMessageHandlerGLFW::MouseButtonCallback(GLFWwindow* wnd, int butto
 }
 
 // static
-void FSlateAppMessageHandlerGLFW::CursorPosCallback(GLFWwindow* wnd, double xpos, double ypos)
+void FMacSlateAppMessageHandler::CursorPosCallback(GLFWwindow* wnd, double xpos, double ypos)
 {
     auto* self = GetSelf(wnd);
     if (!self) return;
@@ -104,7 +104,7 @@ void FSlateAppMessageHandlerGLFW::CursorPosCallback(GLFWwindow* wnd, double xpos
 }
 
 // static
-void FSlateAppMessageHandlerGLFW::ScrollCallback(GLFWwindow* wnd, double xoffset, double yoffset)
+void FMacSlateAppMessageHandler::ScrollCallback(GLFWwindow* wnd, double xoffset, double yoffset)
 {
     auto* self = GetSelf(wnd);
     if (!self) return;
@@ -116,7 +116,7 @@ void FSlateAppMessageHandlerGLFW::ScrollCallback(GLFWwindow* wnd, double xoffset
 }
 
 // static
-EMouseButtons::Type FSlateAppMessageHandlerGLFW::ToMouseButton(int glfwButton)
+EMouseButtons::Type FMacSlateAppMessageHandler::ToMouseButton(int glfwButton)
 {
     switch (glfwButton)
     {
@@ -127,7 +127,7 @@ EMouseButtons::Type FSlateAppMessageHandlerGLFW::ToMouseButton(int glfwButton)
     }
 }
 
-void FSlateAppMessageHandlerGLFW::UpdateModifierFromMods(int mods)
+void FMacSlateAppMessageHandler::UpdateModifierFromMods(int mods)
 {
     const bool shift   = (mods & GLFW_MOD_SHIFT)   != 0;
     const bool ctrl    = (mods & GLFW_MOD_CONTROL) != 0;

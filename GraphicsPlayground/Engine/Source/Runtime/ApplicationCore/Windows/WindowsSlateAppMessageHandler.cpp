@@ -1,4 +1,4 @@
-#include "SlateAppMessageHandlerWindows.h"
+#include "WindowsSlateAppMessageHandler.h"
 
 #define _TCHAR_DEFINED
 #include <windowsx.h>
@@ -13,8 +13,8 @@
 extern FEngineLoop GEngineLoop;
 
 
-FSlateAppMessageHandlerWindows::FSlateAppMessageHandlerWindows()
-    : FSlateAppMessageHandlerBase()
+FWindowsSlateAppMessageHandler::FWindowsSlateAppMessageHandler()
+    : FGenericSlateAppMessageHandler()
 {
     RawInputHandler = std::make_unique<FRawInput>(GEngineLoop.AppWnd, [this](const RAWINPUT& RawInput)
     {
@@ -22,7 +22,7 @@ FSlateAppMessageHandlerWindows::FSlateAppMessageHandlerWindows()
     });
 }
 
-void FSlateAppMessageHandlerWindows::HandleRawInput(const RAWINPUT& RawInput)
+void FWindowsSlateAppMessageHandler::HandleRawInput(const RAWINPUT& RawInput)
 {
     if (RawInput.header.dwType == RIM_TYPEMOUSE)
     {
@@ -34,7 +34,7 @@ void FSlateAppMessageHandlerWindows::HandleRawInput(const RAWINPUT& RawInput)
     }
 }
 
-void FSlateAppMessageHandlerWindows::ProcessMessage(HWND hWnd, uint32 Msg, WPARAM wParam, LPARAM lParam)
+void FWindowsSlateAppMessageHandler::ProcessMessage(HWND hWnd, uint32 Msg, WPARAM wParam, LPARAM lParam)
 {
     switch (Msg)
     {
@@ -361,17 +361,17 @@ void FSlateAppMessageHandlerWindows::ProcessMessage(HWND hWnd, uint32 Msg, WPARA
     }
 }
 
-bool FSlateAppMessageHandlerWindows::IsWindowFocused(void *NativeWindowPtr) const
+bool FWindowsSlateAppMessageHandler::IsWindowFocused(void *NativeWindowPtr) const
 {
     return GetFocus() == static_cast<HWND>(NativeWindowPtr);
 }
 
-// void FSlateAppMessageHandlerWindows::OnKeyChar(const TCHAR Character, const bool IsRepeat)
+// void FWindowsSlateAppMessageHandler::OnKeyChar(const TCHAR Character, const bool IsRepeat)
 // {
 //     OnKeyCharDelegate.Broadcast(Character, IsRepeat);
 // }
 
-// void FSlateAppMessageHandlerWindows::OnKeyDown(const uint32 KeyCode, const uint32 CharacterCode, const bool IsRepeat)
+// void FWindowsSlateAppMessageHandler::OnKeyDown(const uint32 KeyCode, const uint32 CharacterCode, const bool IsRepeat)
 // {
 //     FInputKeyManager::Get();
 //     OnKeyDownDelegate.Broadcast(FKeyEvent{
@@ -383,7 +383,7 @@ bool FSlateAppMessageHandlerWindows::IsWindowFocused(void *NativeWindowPtr) cons
 //     });
 // }
 
-// void FSlateAppMessageHandlerWindows::OnKeyUp(const uint32 KeyCode, const uint32 CharacterCode, const bool IsRepeat)
+// void FWindowsSlateAppMessageHandler::OnKeyUp(const uint32 KeyCode, const uint32 CharacterCode, const bool IsRepeat)
 // {
 //     assert(!IsRepeat);  // KeyUp 이벤트에서 IsRepeat가 true일수가 없기 때문에
 
@@ -396,7 +396,7 @@ bool FSlateAppMessageHandlerWindows::IsWindowFocused(void *NativeWindowPtr) cons
 //     });
 // }
 
-// void FSlateAppMessageHandlerWindows::OnMouseDown(const EMouseButtons::Type Button, const FVector2D CursorPos)
+// void FWindowsSlateAppMessageHandler::OnMouseDown(const EMouseButtons::Type Button, const FVector2D CursorPos)
 // {
 //     if (ImGui::GetIO().WantCaptureMouse)
 //     {
@@ -437,7 +437,7 @@ bool FSlateAppMessageHandlerWindows::IsWindowFocused(void *NativeWindowPtr) cons
 //     });
 // }
 
-// void FSlateAppMessageHandlerWindows::OnMouseUp(const EMouseButtons::Type Button, const FVector2D CursorPos)
+// void FWindowsSlateAppMessageHandler::OnMouseUp(const EMouseButtons::Type Button, const FVector2D CursorPos)
 // {
 //     if (ImGui::GetIO().WantCaptureMouse)
 //     {
@@ -478,7 +478,7 @@ bool FSlateAppMessageHandlerWindows::IsWindowFocused(void *NativeWindowPtr) cons
 //     });
 // }
 
-// void FSlateAppMessageHandlerWindows::OnMouseDoubleClick(const EMouseButtons::Type Button, const FVector2D CursorPos)
+// void FWindowsSlateAppMessageHandler::OnMouseDoubleClick(const EMouseButtons::Type Button, const FVector2D CursorPos)
 // {
 //     EKeys::Type EffectingButton = EKeys::Invalid;
 //     switch (Button)
@@ -515,7 +515,7 @@ bool FSlateAppMessageHandlerWindows::IsWindowFocused(void *NativeWindowPtr) cons
 //     });
 // }
 
-// void FSlateAppMessageHandlerWindows::OnMouseWheel(const float Delta, const FVector2D CursorPos)
+// void FWindowsSlateAppMessageHandler::OnMouseWheel(const float Delta, const FVector2D CursorPos)
 // {
 //     OnMouseWheelDelegate.Broadcast(FPointerEvent{
 //         CursorPos,
@@ -528,7 +528,7 @@ bool FSlateAppMessageHandlerWindows::IsWindowFocused(void *NativeWindowPtr) cons
 //     });
 // }
 
-// void FSlateAppMessageHandlerWindows::OnMouseMove()
+// void FWindowsSlateAppMessageHandler::OnMouseMove()
 // {
 //     OnMouseMoveDelegate.Broadcast(FPointerEvent{
 //         GetCursorPos(),
@@ -541,7 +541,7 @@ bool FSlateAppMessageHandlerWindows::IsWindowFocused(void *NativeWindowPtr) cons
 //     });
 // }
 
-void FSlateAppMessageHandlerWindows::OnRawMouseInput(const RAWMOUSE& RawMouseInput)
+void FWindowsSlateAppMessageHandler::OnRawMouseInput(const RAWMOUSE& RawMouseInput)
 {
     // 눌린 버튼 상태 (PressedMouseButtons) 업데이트 및 EffectingButton 결정
     const USHORT ButtonFlags = LOWORD(RawMouseInput.ulButtons); // 하위 워드: 버튼 변경 플래그
@@ -694,7 +694,7 @@ void FSlateAppMessageHandlerWindows::OnRawMouseInput(const RAWMOUSE& RawMouseInp
     }
 }
 
-void FSlateAppMessageHandlerWindows::OnRawKeyboardInput(const RAWKEYBOARD& RawKeyboardInput)
+void FWindowsSlateAppMessageHandler::OnRawKeyboardInput(const RAWKEYBOARD& RawKeyboardInput)
 {
     // 입력 이벤트 타입 설정
     const EInputEvent InputEventType = (RawKeyboardInput.Flags & RI_KEY_BREAK) ? IE_Released : IE_Pressed;

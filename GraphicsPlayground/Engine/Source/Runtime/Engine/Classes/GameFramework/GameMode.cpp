@@ -8,7 +8,7 @@
 #include "Contents/Actors/ItemActor.h"
 #include "Classes/Engine/Engine.h"
 #include "Engine/World/World.h"
-#include "Editor/LevelEditor/SlateAppMessageHandlerBase.h"
+#include "ApplicationCore/Generic/GenericSlateAppMessageHandler.h"
 #include "SlateCore/Input/Events.h"
 
 AGameMode::AGameMode()
@@ -19,7 +19,7 @@ AGameMode::AGameMode()
 
     SetActorTickInEditor(false); // PIE 모드에서만 Tick 수행
 
-    if (FSlateAppMessageHandlerBase* Handler = GEngineLoop.GetAppMessageHandler())
+    if (FGenericSlateAppMessageHandler* Handler = GEngineLoop.GetAppMessageHandler())
     {
         /*Handler->OnPIEModeStartDelegate.AddLambda([this]()
         {
