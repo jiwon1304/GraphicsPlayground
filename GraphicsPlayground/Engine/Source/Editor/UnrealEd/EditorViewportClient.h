@@ -14,12 +14,21 @@
 #define MAX_ORTHOZOOM (1e25)
 
 struct FPointerEvent;
-enum class EViewScreenLocation : uint8;
 class FViewportResource;
 class ATransformGizmo;
 class USceneComponent;
 struct FMinimalViewInfo;
 class UEngine;
+
+enum class EViewScreenLocation : uint8
+{
+    EVL_TopLeft,
+    EVL_TopRight,
+    EVL_BottomLeft,
+    EVL_BottomRight,
+    EVL_MAX,
+};
+
 struct FViewportCamera
 {
 public:
@@ -196,7 +205,7 @@ public:
     static void SetOthoSize(float InValue);
 
 private: // Input
-    POINT PrevMousePos;
+    int32 PrevMousePos[2];
     bool bRightMouseDown = false;
 
     // 카메라 움직임에 사용될 키를 임시로 저장해서 사용할 예정

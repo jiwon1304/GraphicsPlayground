@@ -44,6 +44,9 @@ static_assert(false, "Unsupported platform");
 #define FORCENOINLINE __attribute__((noinline))
 #define RESTRICT __restrict__
 
+#define FLT_MAX __FLT_MAX__
+#define FLT_MIN __FLT_MIN__
+
 #endif
 //-----------------------------------------
 

@@ -345,6 +345,13 @@ void FSlateAppMessageHandlerWindows::ProcessMessage(HWND hWnd, uint32 Msg, WPARA
         return;
     }
 
+    case WM_ACTIVATE:
+    {
+        const bool bIsFocused = (LOWORD(wParam) != WA_INACTIVE);
+        OnWindowFocus(bIsFocused);
+        return;
+    }
+
     default:
     {
         // 추후에 추가 Message가 필요하면 다음 파일을 참조
@@ -352,6 +359,11 @@ void FSlateAppMessageHandlerWindows::ProcessMessage(HWND hWnd, uint32 Msg, WPARA
         return;
     }
     }
+}
+
+bool FSlateAppMessageHandlerWindows::IsWindowFocused(void *NativeWindowPtr) const
+{
+    return GetFocus() == static_cast<HWND>(NativeWindowPtr);
 }
 
 // void FSlateAppMessageHandlerWindows::OnKeyChar(const TCHAR Character, const bool IsRepeat)

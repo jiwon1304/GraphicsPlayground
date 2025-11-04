@@ -28,6 +28,12 @@ void FSlateAppMessageHandlerGLFW::ProcessMessage()
     FOpenGL::PollEvents();
 }
 
+bool FSlateAppMessageHandlerGLFW::IsWindowFocused(void *NativeWindowPtr) const
+{
+    GLFWwindow* wnd = static_cast<GLFWwindow*>(NativeWindowPtr);
+    return glfwGetWindowAttrib(wnd, GLFW_FOCUSED) != 0;
+}
+
 // static
 FSlateAppMessageHandlerGLFW* FSlateAppMessageHandlerGLFW::GetSelf(GLFWwindow* wnd)
 {

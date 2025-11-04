@@ -5,7 +5,7 @@ extern FEngineLoop GEngineLoop;
 
 void SSplitter::Initialize(FRect InitRect)
 {
-    __super::Initialize(InitRect);
+    SWindow::Initialize(InitRect);
     
     if (SideLT == nullptr)
     {
@@ -62,7 +62,7 @@ void SSplitter::SaveConfig(TMap<FString, FString>& Config) const {}
 
 void SSplitterH::Initialize(FRect InRect)
 {
-    __super::Initialize(InRect);
+    SWindow::Initialize(InRect);
 
     UpdateChildRects();
 }
@@ -93,7 +93,7 @@ void SSplitterH::SaveConfig(TMap<FString, FString>& Config) const
 
 void SSplitterH::OnResize(uint32 InWidth, uint32 InHeight)
 {
-    __super::OnResize(InWidth, InHeight);
+    SWindow::OnResize(InWidth, InHeight);
     
     UpdateChildRects();
 }
@@ -139,7 +139,7 @@ void SSplitterH::UpdateChildRects()
 
 void SSplitterV::Initialize(FRect InRect)
 {
-    __super::Initialize(InRect);
+    SWindow::Initialize(InRect);
 
     UpdateChildRects();
 }
@@ -170,7 +170,7 @@ void SSplitterV::SaveConfig(TMap<FString, FString>& Config) const
 
 void SSplitterV::OnResize(uint32 InWidth, uint32 InHeight)
 {
-    __super::OnResize(InWidth, InHeight);
+    SWindow::OnResize(InWidth, InHeight);
     
     UpdateChildRects();
 }

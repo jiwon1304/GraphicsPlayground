@@ -370,10 +370,11 @@ void SLevelEditor::RegisterEditorInputDelegates()
             // 마우스 이벤트가 일어난 위치의 뷰포트를 선택
             if (bMultiViewportMode)
             {
-                POINT Point;
-                GetCursorPos(&Point);
-                ScreenToClient(GEngineLoop.AppWnd, &Point);
-                FVector2D ClientPos = FVector2D{ static_cast<float>(Point.x), static_cast<float>(Point.y) };
+                // POINT Point;
+                // GetCursorPos(&Point);
+                // ScreenToClient(GEngineLoop.AppWnd, &Point);
+                // FVector2D ClientPos = FVector2D{ static_cast<float>(Point.x), static_cast<float>(Point.y) };
+                FVector2D ClientPos = InMouseEvent.GetScreenSpacePosition();
                 SelectViewport(ClientPos);
                 VSplitter->OnPressed({ ClientPos.X, ClientPos.Y });
                 HSplitter->OnPressed({ ClientPos.X, ClientPos.Y });
@@ -417,13 +418,15 @@ void SLevelEditor::RegisterEditorInputDelegates()
                 // TODO: 나중에 커서가 Viewport 위에 있을때만 ECursorType::Crosshair로 바꾸게끔 하기
                 // ECursorType CursorType = ECursorType::Crosshair;
                 ECursorType CursorType = ECursorType::Arrow;
-                POINT Point;
-
-                GetCursorPos(&Point);
-                ScreenToClient(GEngineLoop.AppWnd, &Point);
-                FVector2D ClientPos = FVector2D{ static_cast<float>(Point.x), static_cast<float>(Point.y) };
-                const bool bIsVerticalHovered = VSplitter->IsSplitterHovered({ ClientPos.X, ClientPos.Y });
-                const bool bIsHorizontalHovered = HSplitter->IsSplitterHovered({ ClientPos.X, ClientPos.Y });
+                
+                // POINT Point;
+                // GetCursorPos(&Point);
+                // ScreenToClient(GEngineLoop.AppWnd, &Point);
+                FVector2D MousePosVector = InMouseEvent.GetScreenSpacePosition();
+                FPoint MousePos = FPoint(MousePosVector.X, MousePosVector.Y);
+                
+                const bool bIsVerticalHovered = VSplitter->IsSplitterHovered(MousePos);
+                const bool bIsHorizontalHovered = HSplitter->IsSplitterHovered(MousePos);
 
                 if (bIsHorizontalHovered && bIsVerticalHovered)
                 {
@@ -470,7 +473,7 @@ void SLevelEditor::RegisterEditorInputDelegates()
 
     InputDelegatesHandles.Add(Handler->OnRawMouseInputDelegate.AddLambda([this](const FPointerEvent& InMouseEvent)
         {
-			if(::GetFocus()!=GEngineLoop.AppWnd) return;
+			if(GEngineLoop.GetAppMessageHandler()->IsWindowFocused(GEngineLoop.AppWnd)) return;
             // Mouse Move 이벤트 일때만 실행
             if (
                 InMouseEvent.GetInputEvent() == IE_Axis

@@ -11,6 +11,7 @@ public:
 
     void ProcessMessage(HWND hWnd, uint32 Msg, WPARAM wParam, LPARAM lParam);
 
+    bool IsWindowFocused(void* NativeWindowPtr) const override;
 protected:
     void OnRawMouseInput(const RAWMOUSE& RawMouseInput);
     void OnRawKeyboardInput(const RAWKEYBOARD& RawKeyboardInput);

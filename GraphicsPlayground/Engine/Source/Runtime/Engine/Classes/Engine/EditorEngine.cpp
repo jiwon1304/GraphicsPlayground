@@ -147,7 +147,7 @@ void UEditorEngine::StartPIE()
     
     FSlateAppMessageHandlerBase* Handler = GEngineLoop.GetAppMessageHandler();
 
-    Handler->OnPIEModeStart();
+    Handler->BroadcastPIEModeStart();
 
     FWorldContext& PIEWorldContext = CreateNewWorldContext(EWorldType::PIE);
 
@@ -351,7 +351,7 @@ void UEditorEngine::EndPIE()
 
     FSlateAppMessageHandlerBase* Handler = GEngineLoop.GetAppMessageHandler();
 
-    Handler->OnPIEModeEnd();
+    Handler->BroadcastPIEModeEnd();
     // 다시 EditorWorld로 돌아옴.
     ActiveWorld = EditorWorld;
 }

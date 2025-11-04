@@ -15,6 +15,8 @@ public:
     // GLFW uses polling
     void ProcessMessage();
 
+    bool IsWindowFocused(void* NativeWindowPtr) const override;
+
 private:
     static void KeyCallback(GLFWwindow* wnd, int key, int scancode, int action, int mods);
     static void CharCallback(GLFWwindow* wnd, unsigned int codepoint);

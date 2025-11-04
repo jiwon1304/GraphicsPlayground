@@ -22,6 +22,7 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnMouseMoveDelegate, const FPointerEvent& /
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnRawMouseInputDelegate, const FPointerEvent& /*InRawMouseEvent*/);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnRawKeyboardInputDelegate, const FKeyEvent& /*InRawKeyboardEvent*/);
 
+
 DECLARE_MULTICAST_DELEGATE(FOnPIEModeStart);
 DECLARE_MULTICAST_DELEGATE(FOnPIEModeEnd);
 
@@ -50,8 +51,11 @@ public:
     FSlateAppMessageHandlerBase();
     ~FSlateAppMessageHandlerBase() = default;
 
-    void OnPIEModeStart() { OnPIEModeStartDelegate.Broadcast(); }
-    void OnPIEModeEnd() { OnPIEModeEndDelegate.Broadcast(); }
+    void BroadcastPIEModeStart() { OnPIEModeStartDelegate.Broadcast(); }
+    void BroadcastPIEModeEnd() { OnPIEModeEndDelegate.Broadcast(); }
+
+    // @todo : cache state with callback function
+    virtual bool IsWindowFocused(void* NativeWindowPtr) const = 0;
 protected:
     /**
      * Handles input before broadcast to delegates
@@ -94,16 +98,6 @@ protected:
             ModifierKeyState[EModifierKey::RightWin],
             ModifierKeyState[EModifierKey::CapsLock]
         };
-    }
-
-public:
-    FORCEINLINE void BroadcastPIEModeStart()
-    {
-        OnPIEModeStartDelegate.Broadcast();
-    }
-    FORCEINLINE void BroadcastPIEModeEnd()
-    {
-        OnPIEModeEndDelegate.Broadcast();
     }
     
 protected:
