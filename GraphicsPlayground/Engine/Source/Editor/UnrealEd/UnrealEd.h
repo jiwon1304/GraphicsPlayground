@@ -13,7 +13,7 @@ public:
     void Initialize();
 
     void Render(EWindowType WindowType = EWindowType::WT_Main) const;
-     void OnResize(HWND hWnd, EWindowType WindowType = EWindowType::WT_Main) const;
+    void OnResize(float InWidth, float InHeight, EWindowType WindowType = EWindowType::WT_Main) const;
     
     void AddEditorPanel(const FString& PanelId, const std::shared_ptr<UEditorPanel>& EditorPanel);
     std::shared_ptr<UEditorPanel> GetEditorPanel(const FString& PanelId);

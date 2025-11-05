@@ -2,7 +2,7 @@
 #include "Core/HAL/PlatformType.h"
 #include <memory>
 
-class FSlateAppMessageHandlerBase;
+class FGenericSlateAppMessageHandler;
 class UnrealEd;
 class UImGuiManager;
 class UWorld;
@@ -18,6 +18,9 @@ class FEngineProfiler;
 class FResourceManager;
 class FGraphicsDevice;
 class FRenderer;
+class FGenericApplication;
+class FGenericWindow;
+struct FGenericApplicationInitParams;
 
 class FEngineLoop
 {
@@ -25,19 +28,19 @@ public:
     FEngineLoop();
 
     int32 PreInit();
-    int32 Init(HINSTANCE hInstance);
+    int32 Init(FGenericApplicationInitParams* MainWindowInstanceHandler);
     void Render() const;
     void Tick();
     void Exit();
-
-    void GetClientSize(uint32 &OutWidth, uint32 &OutHeight) const;
 
     void OpenParticleSystemViewer();
     void SubEngineControl();
 
 private:
-    void WindowInit(HINSTANCE hInstance);
-    static LRESULT CALLBACK AppWndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
+    // void WindowInit(HINSTANCE hInstance);
+    // static LRESULT CALLBACK AppWndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
+
+    void InitApplication(FGenericApplicationInitParams* InAppInitParams);
 
     void UpdateUI();
 
@@ -49,37 +52,42 @@ public:
     static uint32 TotalAllocationBytes;
     static uint32 TotalAllocationCount;
 
-    HWND AppWnd;
-
+    
     IGPUTimingManager* GPUTimingManager = nullptr;
     FEngineProfiler* EngineProfiler = nullptr;
+    
+    // HWND AppWnd;
+    // FGraphicsDevice* ParticleViewerGD = nullptr;
+    // HWND ParticleViewerWnd;
+    // void ParticleSubWindowInit(HINSTANCE hInstance);
+    // void CleanupSubWindow();
 
-    FGraphicsDevice* ParticleViewerGD = nullptr;
-    HWND ParticleViewerWnd;
-    void ParticleSubWindowInit(HINSTANCE hInstance);
-    void CleanupSubWindow();
+public:
+    FGenericApplication* Application = nullptr;
+    std::shared_ptr<FGenericWindow> MainWindow = nullptr;
+    std::shared_ptr<FGenericWindow> ParticleViewerWindow = nullptr;
 
-    USubEngine* ParticleSubEngine = nullptr;
+    // USubEngine* ParticleSubEngine = nullptr;
 
 private:
-    UImGuiManager* UIManager;
-    struct ImGuiContext *CurrentImGuiContext;
+    UImGuiManager* UIManager = nullptr;
+    struct ImGuiContext *CurrentImGuiContext = nullptr;
     // TODO: GWorld 제거, Editor들 EditorEngine으로 넣기
 
-    FSlateAppMessageHandlerBase* AppMessageHandler = nullptr;
+    FGenericSlateAppMessageHandler* AppMessageHandler = nullptr;
     SLevelEditor* LevelEditor = nullptr;
     UnrealEd* UnrealEditor = nullptr;
     FDXDBufferManager* BufferManager = nullptr; // TODO: UEngine으로 옮겨야함.
 
     bool bIsExit = false;
     // @todo Option으로 선택 가능하도록
-    int32 TargetFPS = 999;
+    float TargetFPS = 60.0f;
 
 public:
     SLevelEditor* GetLevelEditor() const { return LevelEditor; }
     UnrealEd* GetUnrealEditor() const { return UnrealEditor; }
 
-    FSlateAppMessageHandlerBase *GetAppMessageHandler() const { return AppMessageHandler; }
+    FGenericSlateAppMessageHandler *GetAppMessageHandler() const { return AppMessageHandler; }
 };
 
 extern FEngineLoop GEngineLoop;

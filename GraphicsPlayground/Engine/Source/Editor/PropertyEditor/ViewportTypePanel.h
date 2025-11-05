@@ -8,7 +8,7 @@ public:
     static ViewportTypePanel& GetInstance();
 
     void Draw(const std::shared_ptr<FEditorViewportClient>& ActiveViewport) const;
-    void OnResize(HWND hWnd);
+    // void OnResize(HWND hWnd);
 
     virtual void Toggle() override {
         if (bWasOpen) {
@@ -18,7 +18,7 @@ public:
 
 private:
     bool bWasOpen = true;
-    UINT width;
-    UINT height;
+    // UINT width;
+    // UINT height;
 };
 

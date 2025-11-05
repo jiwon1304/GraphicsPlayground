@@ -24,7 +24,11 @@ public:
     UEditorPanel(float InWidth, float InHeight) : Width(InWidth), Height(InHeight) {}
     virtual ~UEditorPanel() = default;
     virtual void Render() = 0;
-    void OnResize(const FGenericWindow* Window);
+    void OnResize(float InWidth, float InHeight)
+    {
+        this->Width = InWidth;
+        this->Height = InHeight;
+    }
 
     void  SetSupportedWorldTypes(EWorldTypeBitFlag mask) { SupportedMask = mask; }
     EWorldTypeBitFlag GetSupportedWorldTypes() const { return SupportedMask; }

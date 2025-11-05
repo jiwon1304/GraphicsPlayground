@@ -129,10 +129,10 @@ uint64 ShowFlags::ConvertSelectionToFlags(const bool Selected[])
     return Flags;
 }
 
-void ShowFlags::OnResize(HWND hWnd)
-{
-    RECT ClientRect;
-    GetClientRect(hWnd, &ClientRect);
-    Width = ClientRect.right - ClientRect.left;
-    Height = ClientRect.bottom - ClientRect.top;
-}
+// void ShowFlags::OnResize(HWND hWnd)
+// {
+//     RECT ClientRect;
+//     GetClientRect(hWnd, &ClientRect);
+//     Width = ClientRect.right - ClientRect.left;
+//     Height = ClientRect.bottom - ClientRect.top;
+// }

@@ -11,11 +11,11 @@ ViewportTypePanel& ViewportTypePanel::GetInstance()
 
 void ViewportTypePanel::Draw(const std::shared_ptr<FEditorViewportClient>& ActiveViewport) const
 {
-    float controllWindowWidth = static_cast<float>(width) * 0.12f;
-    float controllWindowHeight = static_cast<float>(height) * 0.f;
+    float controllWindowWidth = static_cast<float>(Width) * 0.12f;
+    float controllWindowHeight = static_cast<float>(Height) * 0.f;
 
-    float controllWindowPosX = (static_cast<float>(width) - controllWindowWidth) * 0.5f;
-    float controllWindowPosY = (static_cast<float>(height) - controllWindowHeight) * 0.f;
+    float controllWindowPosX = (static_cast<float>(Width) - controllWindowWidth) * 0.5f;
+    float controllWindowPosY = (static_cast<float>(Height) - controllWindowHeight) * 0.f;
     ImGui::SetNextWindowPos(ImVec2(controllWindowPosX, controllWindowPosY));
     ImGui::SetNextWindowSize(ImVec2(controllWindowWidth, controllWindowHeight), ImGuiCond_Always);
 
@@ -43,10 +43,10 @@ void ViewportTypePanel::Draw(const std::shared_ptr<FEditorViewportClient>& Activ
     ImGui::End();
 }
 
-void ViewportTypePanel::OnResize(HWND hWnd)
-{
-    RECT clientRect;
-    GetClientRect(hWnd, &clientRect);
-    width = clientRect.right - clientRect.left;
-    height = clientRect.bottom - clientRect.top;
-}
+// void ViewportTypePanel::OnResize(HWND hWnd)
+// {
+//     RECT clientRect;
+//     GetClientRect(hWnd, &clientRect);
+//     width = clientRect.right - clientRect.left;
+//     height = clientRect.bottom - clientRect.top;
+// }

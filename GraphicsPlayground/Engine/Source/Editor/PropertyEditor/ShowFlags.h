@@ -35,7 +35,7 @@ public:
 
     static void Draw(const std::shared_ptr<FEditorViewportClient>& ActiveViewport);
     static uint64 ConvertSelectionToFlags(const bool Selected[]);
-    void OnResize(HWND hWnd);
+    // void OnResize(HWND hWnd);
 
     virtual void Toggle() override {
         if (bWasOpen) {
@@ -45,6 +45,4 @@ public:
     uint64 CurrentFlags = 2047;
 private:
     bool bWasOpen = true;
-    UINT Width;
-    UINT Height;
 };

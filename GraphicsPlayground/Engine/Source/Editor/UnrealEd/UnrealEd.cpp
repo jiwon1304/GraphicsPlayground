@@ -96,7 +96,7 @@ void UnrealEd::AddEditorPanel(const FString& PanelId, const std::shared_ptr<UEdi
     Panels[PanelId] = EditorPanel;
 }
 
-void UnrealEd::OnResize(HWND hWnd, EWindowType WindowType) const
+void UnrealEd::OnResize(float InWidth, float InHeight, EWindowType WindowType) const
 {
     if (WindowType == EWindowType::WT_Main)
     {
@@ -104,7 +104,7 @@ void UnrealEd::OnResize(HWND hWnd, EWindowType WindowType) const
         {
             if (Panel.Value)
             {
-                Panel.Value->OnResize(hWnd);
+                Panel.Value->OnResize(InWidth, InHeight);
             }
         }
     }
@@ -114,7 +114,7 @@ void UnrealEd::OnResize(HWND hWnd, EWindowType WindowType) const
         {
             if (Panel.Value)
             {
-                Panel.Value->OnResize(hWnd);
+                Panel.Value->OnResize(InWidth, InHeight);
             }
         }
     }
