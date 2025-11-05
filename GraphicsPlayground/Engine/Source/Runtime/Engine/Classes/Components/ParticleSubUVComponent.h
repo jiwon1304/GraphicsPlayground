@@ -1,6 +1,6 @@
 #pragma once
-#define _TCHAR_DEFINED
-#include <wrl.h>
+// #define _TCHAR_DEFINED
+// #include <wrl.h>
 #include "BillboardComponent.h"
 #include "Core/Math/Vector2.h"
 

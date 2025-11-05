@@ -1,7 +1,7 @@
 #pragma once
 
-#define _TCHAR_DEFINED
-#include <wrl.h>
+// #define _TCHAR_DEFINED
+// #include <wrl.h>
 #include "PrimitiveComponent.h"
 #include "Classes/Engine/Texture.h"
 
