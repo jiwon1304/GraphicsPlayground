@@ -10,6 +10,7 @@
 #include "Launch/EngineLoop.h"
 #include "Windows/D3D11RHI/GraphicDevice.h"
 #include "Engine/Classes/Engine/ResourceMgr.h"
+#include "ApplicationCore/Generic/GenericSlateAppMessageHandler.h"
 
 UBillboardComponent::UBillboardComponent()
 {
@@ -131,9 +132,10 @@ bool UBillboardComponent::CheckPickingOnNDC(const TArray<FVector>& QuadVertices,
     // TODO: 이 로직으로는 멀티 뷰포트에서 빌보드 피킹 안됨.
     
     // 마우스 위치를 클라이언트 좌표로 가져온 후 NDC 좌표로 변환
-    POINT MousePos;
-    GetCursorPos(&MousePos);
-    ScreenToClient(GEngineLoop.AppWnd, &MousePos);
+    // POINT MousePos;
+    // GetCursorPos(&MousePos);
+    // ScreenToClient(GEngineLoop.AppWnd, &MousePos);
+    FVector2D MousePos = GEngineLoop.GetAppMessageHandler()->GetCursorPos();
 
     D3D11_VIEWPORT Viewport;
     UINT NumViewports = 1;

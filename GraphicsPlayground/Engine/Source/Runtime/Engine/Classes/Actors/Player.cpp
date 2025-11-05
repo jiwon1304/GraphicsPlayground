@@ -17,7 +17,7 @@
 #include "Classes/PhysicsEngine/BodySetup.h"
 #include "Classes/PhysicsEngine/PhysicsAsset.h"
 #include "World/PhysicsAssetWorld.h"
-
+#include "ApplicationCore/Generic/GenericSlateAppMessageHandler.h"
 
 void AEditorPlayer::Tick(float DeltaTime)
 {
@@ -37,10 +37,11 @@ void AEditorPlayer::Input()
         {   
             bLeftMouseDown = true;
 
-            POINT mousePos;
-            GetCursorPos(&mousePos);
-            GetCursorPos(&LastMousePos);
-            ScreenToClient(GEngineLoop.AppWnd, &mousePos);
+            // POINT mousePos;
+            // GetCursorPos(&mousePos);
+            // GetCursorPos(&LastMousePos);
+            // ScreenToClient(GEngineLoop.AppWnd, &mousePos);
+            FVector2D mousePos = GEngineLoop.GetAppMessageHandler()->GetCursorPos();
 
             /*
             uint32 UUID = GEngineLoop.GraphicDevice.GetPixelUUID(mousePos);
@@ -56,7 +57,7 @@ void AEditorPlayer::Input()
             FVector pickPosition;
 
             std::shared_ptr<FEditorViewportClient> ActiveViewport = GEngineLoop.GetLevelEditor()->GetActiveViewportClient();
-            ScreenToViewSpace(mousePos.x, mousePos.y, ActiveViewport, pickPosition);
+            ScreenToViewSpace(mousePos.X, mousePos.Y, ActiveViewport, pickPosition);
             bool res = PickGizmo(pickPosition, ActiveViewport.get());
             if (!res) PickActor(pickPosition);
             if (res)
