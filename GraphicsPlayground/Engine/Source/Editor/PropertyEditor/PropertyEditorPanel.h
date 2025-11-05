@@ -50,7 +50,6 @@ public:
     PropertyEditorPanel();
 
     virtual void Render() override;
-    virtual void OnResize(HWND hWnd) override;
 
 private:
     static void RGBToHSV(float R, float G, float B, float& H, float& S, float& V);
@@ -91,7 +90,6 @@ private:
 
     
 private:
-    float Width = 0, Height = 0;
     /* Material Property */
     int SelectedMaterialIndex = -1;
     int CurMaterialIndex = -1;

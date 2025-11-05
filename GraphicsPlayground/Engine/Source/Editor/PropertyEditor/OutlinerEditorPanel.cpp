@@ -4,7 +4,7 @@
 #include "Classes/Engine/EditorEngine.h"
 #include <functional>
 
-OutlinerEditorPanel::OutlinerEditorPanel()
+OutlinerEditorPanel::OutlinerEditorPanel() : UEditorPanel(0, 0)
 {
     SetSupportedWorldTypes(EWorldTypeBitFlag::Editor | EWorldTypeBitFlag::PIE );
 }
@@ -109,11 +109,4 @@ void OutlinerEditorPanel::Render()
 
     ImGui::End();
 }
-    
-void OutlinerEditorPanel::OnResize(HWND hWnd)
-{
-    RECT clientRect;
-    GetClientRect(hWnd, &clientRect);
-    Width = clientRect.right - clientRect.left;
-    Height = clientRect.bottom - clientRect.top;
-}
+

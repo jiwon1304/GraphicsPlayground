@@ -17,7 +17,7 @@ const float	DefaultPrimSize = 15.0f;
 const float	DuplicateXOffset = 10.0f;
 const ImVec4 InActiveTextColor = ImVec4(0.3f, 0.3f, 0.3f, 1.0f);
 
-FPhysicsAssetEditorPanel::FPhysicsAssetEditorPanel()
+FPhysicsAssetEditorPanel::FPhysicsAssetEditorPanel() : UEditorPanel(0, 0)
 {
     SetSupportedWorldTypes(EWorldTypeBitFlag::PhysicsAssetEditor);
 }
@@ -188,16 +188,6 @@ void FPhysicsAssetEditorPanel::Render()
     }
     ImGui::End();
     ImGui::PopStyleVar();
-}
-
-void FPhysicsAssetEditorPanel::OnResize(HWND hWnd)
-{
-    RECT clientRect;
-    if (hWnd && GetClientRect(hWnd, &clientRect))
-    {
-        Width = static_cast<float>(clientRect.right - clientRect.left);
-        Height = static_cast<float>(clientRect.bottom - clientRect.top);
-    }
 }
 
 void FPhysicsAssetEditorPanel::RenderAddPrimitiveButton()

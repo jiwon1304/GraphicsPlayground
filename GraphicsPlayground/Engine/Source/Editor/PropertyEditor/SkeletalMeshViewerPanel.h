@@ -14,7 +14,6 @@ public:
     SkeletalMeshViewerPanel();
 
     virtual void Render() override;
-    virtual void OnResize(HWND hWnd) override;
 
     void SetSkeletalMesh(USkeletalMesh* SMesh);
 
@@ -23,7 +22,6 @@ public:
 
     void ClearRefSkeletalMeshComponent();
 private:
-    float Width = 0, Height = 0;
     USkeletalMesh* SkeletalMesh;
 
     void LoadBoneIcon();

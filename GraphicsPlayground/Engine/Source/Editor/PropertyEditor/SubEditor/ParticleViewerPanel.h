@@ -13,8 +13,8 @@ class FEditorViewportClient;
 class ParticleViewerPanel : public UEditorPanel
 {
 public:
+    ParticleViewerPanel() : UEditorPanel(800, 600) {}
     virtual void Render() override;
-    virtual void OnResize(HWND hWnd) override; // HWND는 Windows 특정 타입
 
 private:
     void RenderPanelLayout();
@@ -52,10 +52,6 @@ private:
     int SelectedModuleIndex = -1;
 
 private:
-
-    float Width = 800.0f; 
-    float Height = 600.0f;
-
     FRenderTargetRHI* RenderTargetRHI;
     FDepthStencilRHI* DepthStencilRHI;
 

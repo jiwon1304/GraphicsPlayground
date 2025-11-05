@@ -60,7 +60,8 @@
 #include "Classes/Particles/ParticleModules/ParticleModuleVelocity.h"
 
 #include "Classes/PhysicsEngine/Vehicle/WheeledVehiclePawn.h"
-ControlEditorPanel::ControlEditorPanel()
+
+ControlEditorPanel::ControlEditorPanel() : UEditorPanel(300, 100)
 {
     SetSupportedWorldTypes(EWorldTypeBitFlag::Editor | EWorldTypeBitFlag::PIE | EWorldTypeBitFlag::SkeletalViewer | EWorldTypeBitFlag::PhysicsAssetEditor);
 }
@@ -751,14 +752,6 @@ void ControlEditorPanel::CreateSRTButton(ImVec2 ButtonSize)
     {
         ImGui::PopStyleColor();
     }
-}
-
-void ControlEditorPanel::OnResize(const HWND hWnd)
-{
-    RECT ClientRect;
-    GetClientRect(hWnd, &ClientRect);
-    Width = ClientRect.right - ClientRect.left;
-    Height = ClientRect.bottom - ClientRect.top;
 }
 
 void ControlEditorPanel::CreateLightSpawnButton(const ImVec2 InButtonSize, ImFont* IconFont)

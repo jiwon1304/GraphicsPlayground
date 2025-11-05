@@ -49,7 +49,7 @@
 #include "Classes/PhysicsEngine/PhysicsAsset.h"
 #include "Renderer/Renderer.h"
 
-PropertyEditorPanel::PropertyEditorPanel()
+PropertyEditorPanel::PropertyEditorPanel() : UEditorPanel(0, 0)
 {
     SetSupportedWorldTypes(EWorldTypeBitFlag::Editor|EWorldTypeBitFlag::PIE);
 }
@@ -1579,12 +1579,4 @@ void PropertyEditorPanel::RenderCreateMaterialView()
     }
 
     ImGui::End();
-}
-
-void PropertyEditorPanel::OnResize(HWND hWnd)
-{
-    RECT ClientRect;
-    GetClientRect(hWnd, &ClientRect);
-    Width = ClientRect.right - ClientRect.left;
-    Height = ClientRect.bottom - ClientRect.top;
 }

@@ -13,7 +13,6 @@ public:
     FPhysicsAssetEditorPanel();
     virtual ~FPhysicsAssetEditorPanel() override = default;
     virtual void Render() override;
-    virtual void OnResize(HWND hWnd) override;
 
 private:
     void RenderAddPrimitiveButton();
@@ -37,8 +36,6 @@ private:
     void AddShape(UPhysicsAsset* InPhysicsAsset, UBodySetup* TargetBodySetup, int32 BoneIndex, EAggCollisionShape::Type InShapeType) const;
     
 private:
-    float Width = 0, Height = 0;
-
     ID3D11ShaderResourceView* BoneIconSRV = nullptr;
     ID3D11ShaderResourceView* NonWeightBoneIconSRV = nullptr;
 

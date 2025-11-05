@@ -17,7 +17,7 @@
 #include "SoundManager.h"
 #include "Engine/Classes/Engine/ResourceMgr.h"
 
-SkeletalMeshViewerPanel::SkeletalMeshViewerPanel()
+SkeletalMeshViewerPanel::SkeletalMeshViewerPanel() : UEditorPanel(0, 0)
 {
     SetSupportedWorldTypes(EWorldTypeBitFlag::SkeletalViewer);
 }
@@ -124,14 +124,6 @@ void SkeletalMeshViewerPanel::Render()
         ImGui::End();
         ImGui::PopStyleVar();
     }
-}
-
-void SkeletalMeshViewerPanel::OnResize(HWND hWnd)
-{
-    RECT ClientRect;
-    GetClientRect(hWnd, &ClientRect);
-    Width = ClientRect.right - ClientRect.left;
-    Height = ClientRect.bottom - ClientRect.top;
 }
 
 void SkeletalMeshViewerPanel::SetSkeletalMesh(USkeletalMesh* SMesh)
