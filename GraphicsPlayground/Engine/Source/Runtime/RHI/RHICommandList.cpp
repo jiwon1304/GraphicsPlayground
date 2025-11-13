@@ -10,8 +10,8 @@ FRHICommandListExecutor GRHICommandList;
 // 
 // Latest graphics APIs utilize parallelism to execute multiple commands concurrently.
 // That is, there is one immediate command list and may be other parallel command lists.
-// But we only (currently) use D3D11 and OpenGL3.3, which only supports single-thread,
-// therefore the translation and submission processes are done sequentially.
+// But we only (currently) use D3D11 and OpenGL3.3, which only supports single-thread.
+// Therefore the translation and submission processes are done sequentially.
 void FRHICommandListExecutor::Submit()
 {
     // submit all commands in the immediate command list

@@ -5,6 +5,9 @@
 #include "PixelFormat.h"
 #include "Container/Array.h"
 
+// Creates the platform specific RHI instance
+extern void RHIInit();
+
 class FRHICommandListBase;
 class IRHICommandContext;
 

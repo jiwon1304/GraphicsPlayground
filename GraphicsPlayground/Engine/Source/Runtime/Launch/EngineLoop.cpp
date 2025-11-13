@@ -26,7 +26,10 @@
 #include "ApplicationCore/Windows/WindowsSlateAppMessageHandler.h"
 
 // 여기부터 새로추가한거
+#include "EngineLoop.h"
+
 #include "RenderCore/RenderingThread.h"
+#include "RHI/RHICommandList.h"
 #include "ApplicationCore/Generic/GenericSlateAppMessageHandler.h"
 #include "ApplicationCore/Generic/GenericApplication.h"
 #include "ApplicationCore/Generic/GenericWindow.h"
@@ -36,19 +39,25 @@
 
 // Plaform-specific
 #ifdef BUILD_PLATFORM_WINDOWS
-    #include "ApplicationCore/Windows/WindowsApplication.h"
-    #include "ApplicationCore/Windows/WindowsWindow.h"
 
-    extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
+#include "ApplicationCore/Windows/WindowsApplication.h"
+#include "ApplicationCore/Windows/WindowsWindow.h"
+
+extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 
 #elif defined(BUILD_PLATFORM_MACOS)
-    #include "ApplicationCore/Mac/MacApplication.h"
-    #include "ApplicationCore/Mac/MacWindow.h"
-    #include "OpenGLDrv/OpenGLDrv.h"
-    #include "OpenGLDrv/Platform/Mac/MacOpenGLPlatform.h"
-#include "EngineLoop.h"
+
+#include "ApplicationCore/Mac/MacApplication.h"
+#include "ApplicationCore/Mac/MacWindow.h"
+#include "OpenGLDrv/OpenGLDrv.h"
+#include "OpenGLDrv/Platform/Mac/MacOpenGLPlatform.h"
+
+#ifdef BUILD_RENDER_BACKEND == OPENGL3
+#include "Runtime/OpenGLDrv/Platform/Mac/MacOpenGLPlatform.h"
+#endif // USE_OPENGL
+
 #else
-    static_assert(false, "Unsupported platform for FEngineLoop");
+static_assert(false, "Unsupported platform for FEngineLoop");
 #endif
 
 FEngineLoop GEngineLoop;
@@ -62,7 +71,7 @@ int32 FEngineLoop::PreInit()
     return 0;
 }
 
-int32 FEngineLoop::Init(FGenericApplicationInitParams *InAppInitParams)
+int32 FEngineLoop::Init(FGenericApplicationInitParams* InAppInitParams)
 {
     FPlatformTime::InitTiming();
 
@@ -264,6 +273,9 @@ void FEngineLoop::Tick()
         GraphicDevice->SwapBuffer();
 
         SubEngineControl();
+
+        GRHICommandList.Submit();
+        
         do
         {
             Sleep(0);
@@ -437,7 +449,7 @@ void FEngineLoop::Exit()
 //     return 0;
 // }
 
-void FEngineLoop::InitApplication(FGenericApplicationInitParams *InAppInitParams)
+void FEngineLoop::InitApplication(FGenericApplicationInitParams* InAppInitParams)
 {
     char ApplicationName[] = "GraphicsPlayground";
     wchar_t ApplicationNameW[] = L"GraphicsPlayground";
@@ -453,6 +465,8 @@ void FEngineLoop::InitApplication(FGenericApplicationInitParams *InAppInitParams
 
     MainWindow = Application->MakeWindow(WindowParams);
 #elif defined(BUILD_PLATFORM_MACOS)
+    // Initialize OpenGL RHI first to get the native window handle
+
     FMacApplicationInitParams* MacAppInitParams = static_cast<FMacApplicationInitParams*>(InAppInitParams);
     FMacApplication* MacApplication = new FMacApplication(MacAppInitParams);
     Application = MacApplication;

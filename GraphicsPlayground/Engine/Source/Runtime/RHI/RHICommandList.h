@@ -706,6 +706,9 @@ public:
     void ImmediateFlush();
 };
 
+/**
+ * Executor for RHICommandList
+ */
 class FRHICommandListExecutor
 {
 public:
@@ -714,6 +717,9 @@ public:
         return GRHICommandList.CommandListImmediate;
     }
 
+    /**
+     * Dispatch and empty the command list
+     */
     void Submit();
 
     friend class FRHICommandListBase;

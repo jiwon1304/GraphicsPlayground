@@ -11,6 +11,7 @@
 #include "Core/Container/String.h"
 
 /**
+ * @brief Immediately runs a runnable object in its own thread.
  * Runs an FRunnable object in its own thread.
  * Destructor of FRunnable will be called in this class's destructor.
  * The destructor will wait for the thread to complete.
@@ -46,6 +47,8 @@ public:
     void Join();
 
     /**
+     * @brief Call FRunnable::Stop() and wait for the thread to complete.
+     * 
      * FRunnable::Stop() should be implemented properly in the derived class.
      * Otherwise, this function just waits for the thread to complete.
      * This function also calls FRunnable::Join() after completion.

@@ -8,7 +8,7 @@
 
 FDynamicRHI* GDynamicRHI = nullptr;
 
-FDynamicRHI* PlatformCreateDynamicRHI()
+static FDynamicRHI* PlatformCreateDynamicRHI()
 {
 #ifdef BUILD_PLATFORM_WINDOWS
     // return new FD3D11DynamicRHI();
@@ -18,7 +18,6 @@ FDynamicRHI* PlatformCreateDynamicRHI()
 #endif
 }
 
-// EngineLoop 초기화 할 때 호출
 void RHIInit()
 {
     assert(GDynamicRHI == nullptr);
