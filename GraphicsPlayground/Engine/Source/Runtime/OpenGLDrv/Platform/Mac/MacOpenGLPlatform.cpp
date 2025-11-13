@@ -1,10 +1,13 @@
 #include "OpenGLDrv/Platform/OpenGLDrvPrivate.h"
 #include "OpenGLDrv/OpenGLThirdParty.h"
 #include "OpenGLDrv/OpenGL3.h"
+#include "MacOpenGLPlatform.h"
 
 #ifndef BUILD_PLATFORM_MACOS
 static_assert(false, "This file is only for MacOS");
 #endif
+
+FPlatformOpenGLDevice* GOpenGLDevice = nullptr;
 
 static void ErrorCallback(int Error, const char* Description)
 {
@@ -21,25 +24,6 @@ static void PlatformCreateDummyOpenGLWindow(FPlatformOpenGLContext* OutContext)
     FOpenGL::MakeContextCurrent(OutContext->Window);
     FOpenGL::LoadGLLoader();
 }
-
-/**
- * OpenGL does not have explicit context.
- * Rather, the context is implicitly bound to the current window.
- */
-struct FPlatformOpenGLContext
-{
-    FOpenGL::Window* Window;
-    GLuint ViewportFramebuffer;
-    GLuint BackBufferResource;
-    GLenum BackBufferTarget;
-};
-
-struct FPlatformOpenGLDevice
-{
-    FPlatformOpenGLContext MainContext;
-     // For initialization, it does not represent any real window or rendering context
-    FPlatformOpenGLContext DummyContext;
-};
 
 bool PlatformInitOpenGL()
 {
@@ -117,10 +101,4 @@ void PlatformResizeOpenGLContext(FPlatformOpenGLContext* Context,
         Context->BackBufferTarget = BackBufferTarget;
         Context->BackBufferResource = BackBufferResource;
     }
-}
-
-// MacOS has no native window handle
-void* PlatformGetWindow(FPlatformOpenGLContext* Context)
-{
-    return (void*)Context->Window;
 }

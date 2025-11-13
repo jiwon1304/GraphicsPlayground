@@ -171,8 +171,8 @@ public:
     virtual void RHIDrawPrimitive(uint32 BaseVertexIndex, uint32 NumVertices, uint32 NumInstances) override;
     virtual void RHIDrawIndexedPrimitive(uint32 BaseVertexIndex, uint32 StartIndex, uint32 NumIndices, uint32 NumInstances) override;
 
-private:
-    FOpenGL::Window* MainWindow = nullptr;
+protected:
+    // FOpenGL::Window* MainWindow = nullptr;
 
     struct FPlatformOpenGLDevice* PlatformDevice = nullptr;
 
