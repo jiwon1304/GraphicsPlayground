@@ -1,6 +1,6 @@
 #include "OpenGLDrv.h"
 
-void FOpenGLDynamicRHI::InitializeStateResource()
+void* FOpenGLDynamicRHI::RHIGetNativeDevice()
 {
-    CurrentState.
+    return PlatformDevice;
 }

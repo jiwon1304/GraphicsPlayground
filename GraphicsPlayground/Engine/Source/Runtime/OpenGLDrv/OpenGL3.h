@@ -270,6 +270,16 @@ void SetWindowUserPointer(Window* Window, void* Pointer)
     glfwSetWindowUserPointer(Window, Pointer);
 }
 
+void* GetWindowUserPointer(Window* Window)
+{
+    return glfwGetWindowUserPointer(Window);
+}
+
+void SetWindowSizeCallback(Window* Window, WindowSizeCallback Callback)
+{
+    glfwSetWindowSizeCallback(Window, Callback);
+}
+
 void SetKeyCallback(Window* Window, GLFWkeyfun Callback)
 {
     glfwSetKeyCallback(Window, Callback);
@@ -305,4 +315,47 @@ void SetInputMode(Window* Window, int mode, int value)
     glfwSetInputMode(Window, mode, value);
 }
 
+// -------------------------------------------------------------
+// Window
+// --------------------------------------------------------------
+void SetWindowPos(Window* window, int x, int y)
+{
+    glfwSetWindowPos(window, x, y);
 }
+
+void GetWindowPos(Window* window, int* x, int* y)
+{
+    glfwGetWindowPos(window, x, y);
+}
+
+void SetWindowSize(Window* window, int width, int height)
+{
+    glfwSetWindowSize(window, width, height);
+}
+
+void GetWindowSize(Window* window, int* width, int* height)
+{
+    glfwGetWindowSize(window, width, height);
+}
+
+void ShowWindow(Window* window)
+{
+    glfwShowWindow(window);
+}
+
+void RestoreWindow(Window* window)
+{
+    glfwRestoreWindow(window);
+}
+
+void FocusWindow(Window* window)
+{
+    glfwFocusWindow(window);
+}
+
+bool IsWindowFocused(Window* window)
+{
+    return glfwGetWindowAttrib(window, GLFW_FOCUSED) != 0;
+}
+
+}; // namespace FOpenGL

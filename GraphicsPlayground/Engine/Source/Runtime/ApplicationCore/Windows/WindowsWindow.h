@@ -7,7 +7,7 @@ class FWindowsWindow : public FGenericWindow
 public:
     FWindowsWindow();
 
-    virtual void ReshapeWindow(int32 X, int32 Y, int32 Width, int32 Height) override;
+    // virtual void ReshapeWindow(int32 X, int32 Y, int32 Width, int32 Height) override;
 
     virtual void GetWindowShape(int32& X, int32& Y, int32& Width, int32& Height) const override;
 

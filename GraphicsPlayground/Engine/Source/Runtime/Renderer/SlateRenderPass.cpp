@@ -6,6 +6,7 @@
 #include "Windows/D3D11RHI/DXDShaderManager.h"
 #include "Editor/UnrealEd/EditorViewportClient.h"
 #include "CoreUObject/UObject/Object.h"
+#include "ApplicationCore/Generic/GenericWindow.h"
 
 FSlateRenderPass::FSlateRenderPass()
     : BufferManager(nullptr)
@@ -37,12 +38,15 @@ void FSlateRenderPass::Render(const std::shared_ptr<FEditorViewportClient>& View
 {
     const FRect Rect = Viewport->GetViewport()->GetRect();
 
-    uint32 ClientWidth = 0;
-    uint32 ClientHeight = 0;
-    GEngineLoop.GetClientSize(ClientWidth, ClientHeight);
+    // uint32 ClientWidth = 0;
+    // uint32 ClientHeight = 0;
+    // GEngineLoop.GetClientSize(ClientWidth, ClientHeight);
 
-    const float ClientWidthFloat = static_cast<float>(ClientWidth);
-    const float ClientHeightFloat = static_cast<float>(ClientHeight);
+    int32 X, Y, Width, Height;
+    GEngineLoop.MainWindow->GetWindowShape(X, Y, Width, Height);
+
+    const float ClientWidthFloat = static_cast<float>(Width);
+    const float ClientHeightFloat = static_cast<float>(Height);
 
     // 버퍼 업데이트
     FSlateTransform Transform;

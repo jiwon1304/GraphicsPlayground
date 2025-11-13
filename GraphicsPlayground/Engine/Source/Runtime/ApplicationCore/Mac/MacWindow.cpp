@@ -1,10 +1,23 @@
 #include "MacWindow.h"
 #include "OpenGLDrv/OpenGL3.h"
 
-void FMacWindow::ReshapeWindow(int32 X, int32 Y, int32 Width, int32 Height)
+// void FMacWindow::ReshapeWindow(int32 X, int32 Y, int32 Width, int32 Height)
+// {
+//     FOpenGL::SetWindowSize(WindowHandle, Width, Height);
+//     FOpenGL::SetWindowPos(WindowHandle, X, Y);
+// }
+
+void FMacWindow::Initialize(FOpenGL::Window *InWindowHandle)
 {
-    FOpenGL::SetWindowSize(WindowHandle, Width, Height);
-    FOpenGL::SetWindowPos(WindowHandle, X, Y);
+    WindowHandle = InWindowHandle;
+    FOpenGL::SetWindowUserPointer(WindowHandle, this);
+    FOpenGL::SetWindowSizeCallback(WindowHandle, [](FOpenGL::Window* window, int width, int height) {
+        FMacWindow* MacWindow = static_cast<FMacWindow*>(FOpenGL::GetWindowUserPointer(window));
+        if (MacWindow)
+        {
+            MacWindow->OnResize(width, height);
+        }
+    });
 }
 
 void FMacWindow::GetWindowShape(int32 &X, int32 &Y, int32 &Width, int32 &Height) const

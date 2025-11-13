@@ -33,6 +33,8 @@ public:
     FGenericApplication(FGenericApplicationInitParams* InInitParams) {}
     virtual ~FGenericApplication() = default;
 
+    // Just create and return a platform-specific window
+    // Initialization should be done afterward
     virtual std::shared_ptr<FGenericWindow> MakeWindow(std::shared_ptr<FGenericWindowInitParams> Params) = 0;
 
     void SetMessageHandler(std::shared_ptr<FGenericSlateAppMessageHandler> InSlateAppMessageHandler) { SlateAppMessageHandler = InSlateAppMessageHandler; }
