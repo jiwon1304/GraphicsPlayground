@@ -1,11 +1,7 @@
 #pragma once
 
-// CMAKE에 추가하기!!!!!!!!
-/** Enqueues a render command to a render pipe. The default implementation takes a lambda and schedules on the render thread.
- *  Alternative implementations accept either a reference or pointer to an FRenderCommandPipe instance to schedule on an async
- *  pipe, if enabled.
- */
-
+#define USE_THREADED_RENDERING 0
+#define USE_RHI_THREAD 0
 
 /** Whether the rendering thread should be created or not */
 extern bool GUseThreadedRendering;
@@ -16,8 +12,9 @@ extern void InitRenderingThread();
 
 extern void ShutdownRenderingThread();
 
-extern void TickRenderingTickables();
+extern bool IsInRenderingThread();
 
+extern bool IsInRHIThread();
 
 /**
  * Originally the rendering commands are "recorded" from game thread and "replayed" in rendering thread.
