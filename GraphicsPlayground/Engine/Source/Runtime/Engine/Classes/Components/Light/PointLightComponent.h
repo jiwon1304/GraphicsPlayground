@@ -9,7 +9,7 @@ public:
     UPointLightComponent();
     virtual ~UPointLightComponent() override = default;
 
-    void InitShadowDebugView();
+    // void InitShadowDebugView();
 
     virtual UObject* Duplicate(UObject* InOuter) override;
     
@@ -40,9 +40,9 @@ public:
 private:
     FPointLightInfo PointLightInfo;
 
-    TArray<ID3D11Texture2D*> OutputTextures = {};
-    TArray<ID3D11ShaderResourceView*> OutputSRVs = {};
-    ID3D11ShaderResourceView* SliceSRVs[6] = { nullptr };
+    // TArray<ID3D11Texture2D*> OutputTextures = {};
+    // TArray<ID3D11ShaderResourceView*> OutputSRVs = {};
+    // ID3D11ShaderResourceView* SliceSRVs[6] = { nullptr };
 };
 
 

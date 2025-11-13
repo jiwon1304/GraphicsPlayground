@@ -44,7 +44,7 @@
 #include "Contents/Actors/GoalPlatformActor.h"
 #include "Contents/Actors/SkeletalMeshActorTest.h"
 #include "Contents/Actors/TriggerBox.h"
-#include "Renderer/CompositingPass.h"
+// #include "Renderer/CompositingPass.h"
 #include "Classes/Engine/FbxLoader.h"
 
 #include "Contents/Actors/ParticleSystemActor.h"
@@ -343,15 +343,15 @@ void ControlEditorPanel::CreateModifyButton(const ImVec2 ButtonSize, ImFont* Ico
             GEngineLoop.GetLevelEditor()->GetActiveViewportClient()->SetCameraSpeed(CameraSpeed);
         }
 
-        ImGui::Separator();
+        // ImGui::Separator();
 
-        ImGui::Text("Gamma");
-        float Gamma = GEngineLoop.Renderer->CompositingPass->GammaValue;
-        ImGui::SetNextItemWidth(120.0f);
-        if (ImGui::DragFloat("##Gamma", &Gamma, 0.01f, 0.01f, 4.0f, "%.1f"))
-        {
-            GEngineLoop.Renderer->CompositingPass->GammaValue = Gamma;
-        }
+        // ImGui::Text("Gamma");
+        // float Gamma = GEngineLoop.Renderer->CompositingPass->GammaValue;
+        // ImGui::SetNextItemWidth(120.0f);
+        // if (ImGui::DragFloat("##Gamma", &Gamma, 0.01f, 0.01f, 4.0f, "%.1f"))
+        // {
+        //     GEngineLoop.Renderer->CompositingPass->GammaValue = Gamma;
+        // }
 
         ImGui::EndPopup();
     }

@@ -11,6 +11,8 @@
 #include "SlateCore/Widgets/SWindow.h"
 #include "Editor/UnrealEd/EditorViewportClient.h"
 #include "ApplicationCore/Generic/GenericSlateAppMessageHandler.h"
+#include "ApplicationCore/Generic/GenericWindow.h"
+
 
 extern FEngineLoop GEngineLoop;
 
@@ -160,7 +162,7 @@ void SLevelEditor::ResizeViewports()
     }
     else
     {
-        ActiveViewportClient->GetViewport()->ResizeViewport(FRect(0.0f, 72.f, EditorWidth , EditorHeight ));
+        // ActiveViewportClient->GetViewport()->ResizeViewport(FRect(0.0f, 72.f, EditorWidth , EditorHeight ));
     }
 }
 
@@ -177,95 +179,95 @@ bool SLevelEditor::IsMultiViewport() const
 
 void SLevelEditor::LoadConfig()
 {
-    auto Config = ReadIniFile(IniFilePath);
+    // auto Config = ReadIniFile(IniFilePath);
 
-    int32 WindowX = FMath::Max(GetValueFromConfig(Config, "WindowX", 0), 0);
-    int32 WindowY = FMath::Max(GetValueFromConfig(Config, "WindowY", 0), 0);
-    int32 WindowWidth = GetValueFromConfig(Config, "WindowWidth", EditorWidth);
-    int32 WindowHeight = GetValueFromConfig(Config, "WindowHeight", EditorHeight);
-    if (WindowWidth > 100 && WindowHeight > 100)
-    {
-        MoveWindow(GEngineLoop.AppWnd, WindowX, WindowY, WindowWidth, WindowHeight, true);
-    }
-    bool Zoomed = GetValueFromConfig(Config, "Zoomed", false);
-    if (Zoomed)
-    {
-        ShowWindow(GEngineLoop.AppWnd, SW_MAXIMIZE);
-    }
+    // int32 WindowX = FMath::Max(GetValueFromConfig(Config, "WindowX", 0), 0);
+    // int32 WindowY = FMath::Max(GetValueFromConfig(Config, "WindowY", 0), 0);
+    // int32 WindowWidth = GetValueFromConfig(Config, "WindowWidth", EditorWidth);
+    // int32 WindowHeight = GetValueFromConfig(Config, "WindowHeight", EditorHeight);
+    // if (WindowWidth > 100 && WindowHeight > 100)
+    // {
+    //     MoveWindow(GEngineLoop.AppWnd, WindowX, WindowY, WindowWidth, WindowHeight, true);
+    // }
+    // bool Zoomed = GetValueFromConfig(Config, "Zoomed", false);
+    // if (Zoomed)
+    // {
+    //     ShowWindow(GEngineLoop.AppWnd, SW_MAXIMIZE);
+    // }
     
-    FEditorViewportClient::Pivot.X = GetValueFromConfig(Config, "OrthoPivotX", 0.0f);
-    FEditorViewportClient::Pivot.Y = GetValueFromConfig(Config, "OrthoPivotY", 0.0f);
-    FEditorViewportClient::Pivot.Z = GetValueFromConfig(Config, "OrthoPivotZ", 0.0f);
-    FEditorViewportClient::OrthoSize = GetValueFromConfig(Config, "OrthoZoomSize", 10.0f);
+    // FEditorViewportClient::Pivot.X = GetValueFromConfig(Config, "OrthoPivotX", 0.0f);
+    // FEditorViewportClient::Pivot.Y = GetValueFromConfig(Config, "OrthoPivotY", 0.0f);
+    // FEditorViewportClient::Pivot.Z = GetValueFromConfig(Config, "OrthoPivotZ", 0.0f);
+    // FEditorViewportClient::OrthoSize = GetValueFromConfig(Config, "OrthoZoomSize", 10.0f);
 
-    SetActiveViewportClient(GetValueFromConfig(Config, "ActiveViewportIndex", 0));
-    bMultiViewportMode = GetValueFromConfig(Config, "bMultiView", false);
-    if (bMultiViewportMode)
-    {
-        SetEnableMultiViewport(true);
-    }
-    else
-    {
-        SetEnableMultiViewport(false);
-    }
+    // SetActiveViewportClient(GetValueFromConfig(Config, "ActiveViewportIndex", 0));
+    // bMultiViewportMode = GetValueFromConfig(Config, "bMultiView", false);
+    // if (bMultiViewportMode)
+    // {
+    //     SetEnableMultiViewport(true);
+    // }
+    // else
+    // {
+    //     SetEnableMultiViewport(false);
+    // }
     
-    for (size_t i = 0; i < 4; i++)
-    {
-        ViewportClients[i]->LoadConfig(Config);
-    }
+    // for (size_t i = 0; i < 4; i++)
+    // {
+    //     ViewportClients[i]->LoadConfig(Config);
+    // }
     
-    if (HSplitter)
-    {
-        HSplitter->LoadConfig(Config);
-    }
-    if (VSplitter)
-    {
-        VSplitter->LoadConfig(Config);
-    }
+    // if (HSplitter)
+    // {
+    //     HSplitter->LoadConfig(Config);
+    // }
+    // if (VSplitter)
+    // {
+    //     VSplitter->LoadConfig(Config);
+    // }
 
-    ResizeViewports();
+    // ResizeViewports();
 }
 
 void SLevelEditor::SaveConfig()
 {
-    TMap<FString, FString> config;
-    if (HSplitter)
-    {
-        HSplitter->SaveConfig(config);
-    }
-    if (VSplitter)
-    {
-        VSplitter->SaveConfig(config);
-    }
-    for (size_t i = 0; i < 4; i++)
-    {
-        ViewportClients[i]->SaveConfig(config);
-    }
-    ActiveViewportClient->SaveConfig(config);
+    // TMap<FString, FString> config;
+    // if (HSplitter)
+    // {
+    //     HSplitter->SaveConfig(config);
+    // }
+    // if (VSplitter)
+    // {
+    //     VSplitter->SaveConfig(config);
+    // }
+    // for (size_t i = 0; i < 4; i++)
+    // {
+    //     ViewportClients[i]->SaveConfig(config);
+    // }
+    // ActiveViewportClient->SaveConfig(config);
 
-    RECT WndRect = {};
-    GetWindowRect(GEngineLoop.AppWnd, &WndRect);
-    config["WindowX"] = std::to_string(WndRect.left);
-    config["WindowY"] = std::to_string(WndRect.top);
-    config["WindowWidth"] = std::to_string(WndRect.right - WndRect.left);
-    config["WindowHeight"] = std::to_string(WndRect.bottom - WndRect.top);
-    config["Zoomed"] = std::to_string(IsZoomed(GEngineLoop.AppWnd));
+    // RECT WndRect = {};
+    // GetWindowRect(GEngineLoop.AppWnd, &WndRect);
+    // config["WindowX"] = std::to_string(WndRect.left);
+    // config["WindowY"] = std::to_string(WndRect.top);
+    // config["WindowWidth"] = std::to_string(WndRect.right - WndRect.left);
+    // config["WindowHeight"] = std::to_string(WndRect.bottom - WndRect.top);
+    // config["Zoomed"] = std::to_string(IsZoomed(GEngineLoop.AppWnd));
     
-    config["bMultiView"] = std::to_string(bMultiViewportMode);
-    config["ActiveViewportIndex"] = std::to_string(ActiveViewportClient->ViewportIndex);
-    config["ScreenWidth"] = std::to_string(EditorWidth);
-    config["ScreenHeight"] = std::to_string(EditorHeight);
-    config["OrthoPivotX"] = std::to_string(ActiveViewportClient->Pivot.X);
-    config["OrthoPivotY"] = std::to_string(ActiveViewportClient->Pivot.Y);
-    config["OrthoPivotZ"] = std::to_string(ActiveViewportClient->Pivot.Z);
-    config["OrthoZoomSize"] = std::to_string(ActiveViewportClient->OrthoSize);
-    WriteIniFile(IniFilePath, config);
+    // config["bMultiView"] = std::to_string(bMultiViewportMode);
+    // config["ActiveViewportIndex"] = std::to_string(ActiveViewportClient->ViewportIndex);
+    // config["ScreenWidth"] = std::to_string(EditorWidth);
+    // config["ScreenHeight"] = std::to_string(EditorHeight);
+    // config["OrthoPivotX"] = std::to_string(ActiveViewportClient->Pivot.X);
+    // config["OrthoPivotY"] = std::to_string(ActiveViewportClient->Pivot.Y);
+    // config["OrthoPivotZ"] = std::to_string(ActiveViewportClient->Pivot.Z);
+    // config["OrthoZoomSize"] = std::to_string(ActiveViewportClient->OrthoSize);
+    // WriteIniFile(IniFilePath, config);
 }
 
 TMap<FString, FString> SLevelEditor::ReadIniFile(const FString& FilePath)
 {
     TMap<FString, FString> config;
-    std::ifstream file(*FilePath);
+    std::ifstream file(FilePath.ToUTF8String());
     std::string line;
 
     while (std::getline(file, line))
@@ -286,7 +288,7 @@ TMap<FString, FString> SLevelEditor::ReadIniFile(const FString& FilePath)
 
 void SLevelEditor::WriteIniFile(const FString& FilePath, const TMap<FString, FString>& Config)
 {
-    std::ofstream file(*FilePath);
+    std::ofstream file(FilePath.ToUTF8String());
     for (const auto& pair : Config)
     {
         file << pair.Key.ToUTF8String() << "=" << pair.Value.ToUTF8String() << "\n";
@@ -473,7 +475,11 @@ void SLevelEditor::RegisterEditorInputDelegates()
 
     InputDelegatesHandles.Add(Handler->OnRawMouseInputDelegate.AddLambda([this](const FPointerEvent& InMouseEvent)
         {
-			if(GEngineLoop.GetAppMessageHandler()->IsWindowFocused(GEngineLoop.AppWnd)) return;
+			// if(GEngineLoop.GetAppMessageHandler()->IsWindowFocused(GEngineLoop.AppWnd)) return;
+            if (GEngineLoop.MainWindow->IsActive())
+            {
+                return;
+            }
             // Mouse Move 이벤트 일때만 실행
             if (
                 InMouseEvent.GetInputEvent() == IE_Axis

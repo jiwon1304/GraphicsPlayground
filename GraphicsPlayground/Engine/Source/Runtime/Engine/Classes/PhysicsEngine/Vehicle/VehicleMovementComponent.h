@@ -62,7 +62,7 @@ public:
 
     UPROPERTY_WITH_FLAGS(
         EditAnywhere,
-        UINT32, NBWheels // 바퀴 갯수 (m)
+        uint32, NBWheels // 바퀴 갯수 (m)
     )
 
     UPROPERTY_WITH_FLAGS(

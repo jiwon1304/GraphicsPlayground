@@ -4,7 +4,7 @@
 #include "CoreUObject/UObject/Casts.h"
 #include "Launch/EngineLoop.h"
 #include "Runtime/Renderer/RenderMisc.h"
-#include "Windows/D3D11RHI/GraphicDevice.h"
+// #include "Windows/D3D11RHI/GraphicDevice.h"
 #include "Engine/UserInterface/Console.h"
 
 UPointLightComponent::UPointLightComponent()
@@ -181,47 +181,47 @@ UPointLightComponent::UPointLightComponent()
 //     return hr;
 // }
 
-void UPointLightComponent::InitShadowDebugView()
-{
-    for (int i = 0; i < 6; ++i)
-    {
-        D3D11_TEXTURE2D_DESC TexDesc = {};
-        TexDesc.Width = ShadowMapWidth;
-        TexDesc.Height = ShadowMapHeight;
-        TexDesc.MipLevels = 1;
-        TexDesc.ArraySize = 1;
-        TexDesc.Format = DXGI_FORMAT_R32_FLOAT;
-        TexDesc.SampleDesc.Count = 1;
-        TexDesc.Usage = D3D11_USAGE_DEFAULT;
-        TexDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-        TexDesc.CPUAccessFlags = 0;
-        TexDesc.MiscFlags = 0;
+// void UPointLightComponent::InitShadowDebugView()
+// {
+//     for (int i = 0; i < 6; ++i)
+//     {
+//         D3D11_TEXTURE2D_DESC TexDesc = {};
+//         TexDesc.Width = ShadowMapWidth;
+//         TexDesc.Height = ShadowMapHeight;
+//         TexDesc.MipLevels = 1;
+//         TexDesc.ArraySize = 1;
+//         TexDesc.Format = DXGI_FORMAT_R32_FLOAT;
+//         TexDesc.SampleDesc.Count = 1;
+//         TexDesc.Usage = D3D11_USAGE_DEFAULT;
+//         TexDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+//         TexDesc.CPUAccessFlags = 0;
+//         TexDesc.MiscFlags = 0;
 
-        ID3D11Texture2D* Texture = nullptr;
-        auto hr = GEngineLoop.GraphicDevice->Device->CreateTexture2D(&TexDesc, nullptr, &Texture);
-        if (FAILED(hr))
-        {
-            UE_LOG(ELogLevel::Error, TEXT("Failed to create shadow debug texture!"));
-            return;
-        }
-        OutputTextures.Add(Texture);
+//         ID3D11Texture2D* Texture = nullptr;
+//         auto hr = GEngineLoop.GraphicDevice->Device->CreateTexture2D(&TexDesc, nullptr, &Texture);
+//         if (FAILED(hr))
+//         {
+//             UE_LOG(ELogLevel::Error, TEXT("Failed to create shadow debug texture!"));
+//             return;
+//         }
+//         OutputTextures.Add(Texture);
 
-        D3D11_SHADER_RESOURCE_VIEW_DESC SrvDesc = {};
-        SrvDesc.Format = DXGI_FORMAT_R32_FLOAT;
-        SrvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-        SrvDesc.Texture2D.MostDetailedMip = 0;
-        SrvDesc.Texture2D.MipLevels = 1;
+//         D3D11_SHADER_RESOURCE_VIEW_DESC SrvDesc = {};
+//         SrvDesc.Format = DXGI_FORMAT_R32_FLOAT;
+//         SrvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+//         SrvDesc.Texture2D.MostDetailedMip = 0;
+//         SrvDesc.Texture2D.MipLevels = 1;
 
-        ID3D11ShaderResourceView* Srv = nullptr;
-        hr = GEngineLoop.GraphicDevice->Device->CreateShaderResourceView(Texture, &SrvDesc, &Srv);
-        if (FAILED(hr))
-        {
-            UE_LOG(ELogLevel::Error, TEXT("Failed to create shadow debug SRV!"));
-            return;
-        }
-        OutputSRVs.Add(Srv);
-    }
-}
+//         ID3D11ShaderResourceView* Srv = nullptr;
+//         hr = GEngineLoop.GraphicDevice->Device->CreateShaderResourceView(Texture, &SrvDesc, &Srv);
+//         if (FAILED(hr))
+//         {
+//             UE_LOG(ELogLevel::Error, TEXT("Failed to create shadow debug SRV!"));
+//             return;
+//         }
+//         OutputSRVs.Add(Srv);
+//     }
+// }
 
 UObject* UPointLightComponent::Duplicate(UObject* InOuter)
 {
