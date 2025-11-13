@@ -1,4 +1,8 @@
 #pragma once
+#include "Core/HAL/PlatformType.h"
+#include <filesystem>
+
+#if defined(BUILD_PLATFORM_WINDOWS)
 #include <Windows.h>
 #include <tchar.h>
 #include <Shlwapi.h>
@@ -6,7 +10,9 @@
 
 #pragma comment(lib, "Shlwapi.lib")
 #pragma comment(lib, "Shell32.lib")
+#endif
 
+namespace fs = std::filesystem;
 
 namespace LuaScriptFileUtils
 {
@@ -19,30 +25,42 @@ namespace LuaScriptFileUtils
         FString& outScriptName
     )
     {
-        LPCWSTR luaDir = L"LuaScripts";
+        fs::path luaDir = "LuaScripts";
+        fs::path src = luaDir / templateName;
+        if (!fs::exists(src)) return false;
 
-        wchar_t src[MAX_PATH] = { 0 };
-        PathCombineW(src, luaDir, templateName.c_str());
-        if (!PathFileExistsW(src))
-            return false;
-
-        // 대상 파일명: Scene_Actor.lua
-        std::wstring destName = sceneName + L"_" + actorName + L".lua";
+        fs::path destName = sceneName + L"_" + actorName + L".lua";
         outScriptName = FString(destName.c_str());
+        fs::path dst = luaDir / destName;
 
-        wchar_t dst[MAX_PATH] = { 0 };
-        PathCombineW(dst, luaDir, destName.c_str());
-
-        // 복제 (덮어쓰기 허용)
-        /*if (!CopyFileW(src, dst, FALSE))
-            return false;*/
-
-        outScriptPath = FString(dst);
+        outScriptPath = FString(dst.native());
         return true;
+
+        // LPCWSTR luaDir = L"LuaScripts";
+
+        // wchar_t src[MAX_PATH] = { 0 };
+        // PathCombineW(src, luaDir, templateName.c_str());
+        // if (!PathFileExistsW(src))
+        //     return false;
+
+        // // 대상 파일명: Scene_Actor.lua
+        // std::wstring destName = sceneName + L"_" + actorName + L".lua";
+        // outScriptName = FString(destName.c_str());
+
+        // wchar_t dst[MAX_PATH] = { 0 };
+        // PathCombineW(dst, luaDir, destName.c_str());
+
+        // // 복제 (덮어쓰기 허용)
+        // /*if (!CopyFileW(src, dst, FALSE))
+        //     return false;*/
+
+        // outScriptPath = FString(dst);
+        // return true;
     }
 
+#if defined(BUILD_PLATFORM_WINDOWS)
     // 기본 에디터(ShellExecute)로 Lua 파일 열기
-    inline void OpenLuaScriptFile(const LPCTSTR InLuaFilePath)
+    inline void OpenLuaScriptFile(const wchar_t* InLuaFilePath)
     {
         HINSTANCE hInst = ShellExecute(
             NULL,
@@ -57,4 +75,23 @@ namespace LuaScriptFileUtils
             MessageBox(NULL, _T("파일 열기에 실패했습니다."), _T("Error"), MB_OK | MB_ICONERROR);
         }
     }
+#elif defined(BUILD_PLATFORM_MACOS)
+    inline void OpenLuaScriptFile(const wchar_t* InLuaFilePath)
+    {
+        // Convert wchar_t* to UTF-8 std::string for system command
+        std::string utf8Path;
+        try {
+            utf8Path = std::filesystem::path(InLuaFilePath).u8string();
+        } catch (...) {
+            printf("경로 변환에 실패했습니다.\n");
+            return;
+        }
+        std::string Command = "open '" + utf8Path + "'";
+        int Result = system(Command.c_str());
+        if (Result != 0) {
+            // 오류 처리
+            printf("파일 열기에 실패했습니다.\n");
+        }
+    }
+#endif
 }
