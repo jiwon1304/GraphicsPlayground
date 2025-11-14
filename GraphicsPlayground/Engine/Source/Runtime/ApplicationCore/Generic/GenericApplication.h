@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/HAL/PlatformType.h"
+#include <memory>
 
 class FGenericSlateAppMessageHandler;
 class FGenericWindow;
@@ -37,9 +38,30 @@ public:
     // Initialization should be done afterward
     virtual std::shared_ptr<FGenericWindow> MakeWindow(std::shared_ptr<FGenericWindowInitParams> Params) = 0;
 
+    void RegisterMainWindow(std::shared_ptr<FGenericWindow> NewWindow)
+    {
+        // Windows.push_back(NewWindow);
+        MainWindow = NewWindow;
+    }
+
     void SetMessageHandler(std::shared_ptr<FGenericSlateAppMessageHandler> InSlateAppMessageHandler) { SlateAppMessageHandler = InSlateAppMessageHandler; }
 
     std::shared_ptr<FGenericSlateAppMessageHandler> GetMessageHandler() const { return SlateAppMessageHandler; }
+
+    virtual void PumpMessages() = 0;
+
+    void Yield();
+
+    void SleepFor(uint64 Microseconds);
+
+    FORCEINLINE bool IsExitRequested() const { return bExitRequested; }
+
+    void RequestExit() { bExitRequested = true; }
+
 protected:
     std::shared_ptr<FGenericSlateAppMessageHandler> SlateAppMessageHandler;
+
+    std::shared_ptr<FGenericWindow> MainWindow;
+
+    bool bExitRequested = false;
 };

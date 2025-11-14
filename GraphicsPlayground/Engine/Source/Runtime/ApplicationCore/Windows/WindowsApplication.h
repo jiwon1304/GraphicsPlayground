@@ -19,7 +19,9 @@ public:
 
     virtual ~FWindowsApplication() = default;   
 
-    virtual std::shared_ptr<FGenericWindow> MakeWindow() override;
+    virtual std::shared_ptr<FGenericWindow> MakeWindow(std::shared_ptr<FGenericWindowInitParams> Params) override;
+
+    virtual void PumpMessages() override;
 
 private:
     HINSTANCE Instance;
