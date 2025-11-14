@@ -79,14 +79,14 @@ namespace LuaScriptFileUtils
     inline void OpenLuaScriptFile(const wchar_t* InLuaFilePath)
     {
         // Convert wchar_t* to UTF-8 std::string for system command
-        std::string utf8Path;
+        std::string path;
         try {
-            utf8Path = std::filesystem::path(InLuaFilePath).u8string();
+            path = std::filesystem::path(InLuaFilePath).string();
         } catch (...) {
             printf("경로 변환에 실패했습니다.\n");
             return;
         }
-        std::string Command = "open '" + utf8Path + "'";
+        std::string Command = "open '" + path + "'";
         int Result = system(Command.c_str());
         if (Result != 0) {
             // 오류 처리
