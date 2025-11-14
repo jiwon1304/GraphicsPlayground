@@ -7,7 +7,7 @@
       "command": "cmake",
       "args": [
         "-S", "${workspaceFolder}",
-        "-B", "${workspaceFolder}/build/Windows/x64",
+        "-B", "${workspaceFolder}/build",
         "-G", "Visual Studio 17 2022",
         "-A", "x64",
         "-T", "host=x64",
@@ -22,7 +22,7 @@
       "type": "shell",
       "command": "cmake",
       "args": [
-        "--build", "${workspaceFolder}/build/Windows/x64",
+        "--build", "${workspaceFolder}/build",
         "--config", "Debug"
       ],
       "problemMatcher": [],
@@ -42,9 +42,10 @@
       "command": "cmake",
       "args": [
         "-S", "${workspaceFolder}",
-        "-B", "${workspaceFolder}/build/Darwin/arm64",
+        "-B", "${workspaceFolder}/build",
+        "-U", "CMAKE_OSX_SYSROOT",
         "-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE",
-        "-DCMAKE_BUILD_TYPE=Debug"
+        "-DCMAKE_BUILD_TYPE:STRING=Debug"
       ],
       "problemMatcher": [],
       "group": "build",
@@ -55,7 +56,7 @@
       "type": "shell",
       "command": "cmake",
       "args": [
-        "--build", "${workspaceFolder}/build/Darwin/arm64",
+        "--build", "${workspaceFolder}/build",
         "--config", "Debug"
       ],
       "problemMatcher": [],
