@@ -15,7 +15,7 @@
 #include "Classes/Actors/SpotLightActor.h"
 #include "Classes/GameFramework/GameMode.h"
 #include "Classes/Components/TextComponent.h"
-#include "Contents/Actors/Fish.h"
+// #include "Contents/Actors/Fish.h"
 #include "PhysicsCore/PhysxSolversModule.h"
 #include "PhysicsCore/PhysicsScene.h"
 #include "Classes/Camera/PlayerCameraManager.h"
@@ -180,21 +180,21 @@ void UWorld::BeginPlay()
 //                GetMainCamera()->SetFollowCustomTarget(Target);
 //                GetMainCamera()->SetLookTarget(TextLoc);
                 
-                if (bIsWin)
-                {
-                    AFish* Fish = Cast<AFish>(GEngine->ActiveWorld->GetMainPlayer());
+                // if (bIsWin)
+                // {
+                //     AFish* Fish = Cast<AFish>(GEngine->ActiveWorld->GetMainPlayer());
                     
-                    FString Message = FString::Printf(TEXT("Earned Coin %d"), Fish->GetScore());
-                    MainTextComponent->SetText(Message.ToWideString());
-                    //MainCamera->CameraZOffset = 0.0f;
-                } else
-                {
-                    MainTextComponent->SetText(L"Fish roasted");
+                //     FString Message = FString::Printf(TEXT("Earned Coin %d"), Fish->GetScore());
+                //     MainTextComponent->SetText(Message.ToWideString());
+                //     //MainCamera->CameraZOffset = 0.0f;
+                // } else
+                // {
+                //     MainTextComponent->SetText(L"Fish roasted");
                     
-                    AFish* Fish = Cast<AFish>(GEngine->ActiveWorld->GetMainPlayer());
-                    Fish->SetActorLocation(FVector(-110.0f, 0.0f, -4.0f));
-                    Fish->SetActorRotation(FRotator(70.0f, 0.0f, 0.0f));
-                }
+                //     AFish* Fish = Cast<AFish>(GEngine->ActiveWorld->GetMainPlayer());
+                //     Fish->SetActorLocation(FVector(-110.0f, 0.0f, -4.0f));
+                //     Fish->SetActorRotation(FRotator(70.0f, 0.0f, 0.0f));
+                // }
             }
             });
 

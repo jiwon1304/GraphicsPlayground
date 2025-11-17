@@ -1,22 +1,22 @@
 
-#include "FishBodyComponent.h"
+// #include "FishBodyComponent.h"
 
-#include "Classes/Engine/FObjLoader.h"
+// #include "Classes/Engine/FObjLoader.h"
 
-UFishBodyComponent::UFishBodyComponent()
-{
-}
+// UFishBodyComponent::UFishBodyComponent()
+// {
+// }
 
-void UFishBodyComponent::TickComponent(float DeltaTime)
-{
-    UStaticMeshComponent::TickComponent(DeltaTime);
-}
+// void UFishBodyComponent::TickComponent(float DeltaTime)
+// {
+//     UStaticMeshComponent::TickComponent(DeltaTime);
+// }
 
-void UFishBodyComponent::InitializeComponent()
-{
-    UStaticMeshComponent::InitializeComponent();
+// void UFishBodyComponent::InitializeComponent()
+// {
+//     UStaticMeshComponent::InitializeComponent();
 
-    SetStaticMesh(FObjManager::GetStaticMesh(L"Contents/Fish/Fish_Front.obj"));
-    SetRelativeLocation(FVector(-0.5f, 0.f, 0.f));
-    SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
-}
+//     SetStaticMesh(FObjManager::GetStaticMesh(L"Contents/Fish/Fish_Front.obj"));
+//     SetRelativeLocation(FVector(-0.5f, 0.f, 0.f));
+//     SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
+// }

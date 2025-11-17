@@ -1,26 +1,26 @@
 
-#include "FishTailComponent.h"
+// #include "FishTailComponent.h"
 
-#include "Classes/Engine/FObjLoader.h"
+// #include "Classes/Engine/FObjLoader.h"
 
-UFishTailComponent::UFishTailComponent()
-{
-}
+// UFishTailComponent::UFishTailComponent()
+// {
+// }
 
-void UFishTailComponent::TickComponent(float DeltaTime)
-{
-    Super::TickComponent(DeltaTime);
+// void UFishTailComponent::TickComponent(float DeltaTime)
+// {
+//     Super::TickComponent(DeltaTime);
 
-    ElapsedTime += DeltaTime;
+//     ElapsedTime += DeltaTime;
 
-    SetRelativeRotation(FRotator(0.f, FMath::Sin(ElapsedTime * PI * CurrentFrequency) * CurrentYaw, 0.f));
+//     SetRelativeRotation(FRotator(0.f, FMath::Sin(ElapsedTime * PI * CurrentFrequency) * CurrentYaw, 0.f));
 
-    // UE_LOG(ELogLevel::Display, TEXT("ElapsedTime: %f, Yaw: %f"), ElapsedTime, GetRelativeRotation().Yaw);
-}
+//     // UE_LOG(ELogLevel::Display, TEXT("ElapsedTime: %f, Yaw: %f"), ElapsedTime, GetRelativeRotation().Yaw);
+// }
 
-void UFishTailComponent::InitializeComponent()
-{
-    UStaticMeshComponent::InitializeComponent();
+// void UFishTailComponent::InitializeComponent()
+// {
+//     UStaticMeshComponent::InitializeComponent();
     
-    SetStaticMesh(FObjManager::GetStaticMesh(L"Contents/Fish/Fish_Back.obj"));
-}
+//     SetStaticMesh(FObjManager::GetStaticMesh(L"Contents/Fish/Fish_Back.obj"));
+// }

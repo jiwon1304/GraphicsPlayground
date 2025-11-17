@@ -1,17 +1,17 @@
-#pragma once
-#include "Classes/Components/StaticMeshComponent.h"
+// #pragma once
+// #include "Classes/Components/StaticMeshComponent.h"
 
-class UFishBodyComponent : public UStaticMeshComponent
-{
-    DECLARE_CLASS(UFishBodyComponent, UStaticMeshComponent)
+// class UFishBodyComponent : public UStaticMeshComponent
+// {
+//     DECLARE_CLASS(UFishBodyComponent, UStaticMeshComponent)
 
-public:
-    UFishBodyComponent();
-    virtual ~UFishBodyComponent() override = default;
+// public:
+//     UFishBodyComponent();
+//     virtual ~UFishBodyComponent() override = default;
 
-    virtual void TickComponent(float DeltaTime) override;
+//     virtual void TickComponent(float DeltaTime) override;
 
-    virtual void InitializeComponent() override;
+//     virtual void InitializeComponent() override;
 
-protected:
-};
+// protected:
+// };

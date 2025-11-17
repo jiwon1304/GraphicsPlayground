@@ -1,86 +1,86 @@
-#pragma once
-#include "Classes/Actors/Player.h"
+// #pragma once
+// #include "Classes/Actors/Player.h"
 
-class UFishBodyComponent;
-class USphereComponent;
-class UStaticMeshComponent;
-class UFishTailComponent;
+// class UFishBodyComponent;
+// class USphereComponent;
+// class UStaticMeshComponent;
+// class UFishTailComponent;
 
-DECLARE_MULTICAST_DELEGATE_TwoParams(FOnFishHealthChanged, int32 /* CurrentHealth */, int32 /* MaxHealth */);
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnFishDied, bool /* bZeroHealth */);
+// DECLARE_MULTICAST_DELEGATE_TwoParams(FOnFishHealthChanged, int32 /* CurrentHealth */, int32 /* MaxHealth */);
+// DECLARE_MULTICAST_DELEGATE_OneParam(FOnFishDied, bool /* bZeroHealth */);
 
-class AFish : public APlayer
-{
-    DECLARE_CLASS(AFish, APlayer)
+// class AFish : public APlayer
+// {
+//     DECLARE_CLASS(AFish, APlayer)
 
-public:
-    AFish();
-    virtual ~AFish() override = default;
+// public:
+//     AFish();
+//     virtual ~AFish() override = default;
 
-    virtual void PostSpawnInitialize() override;
+//     virtual void PostSpawnInitialize() override;
 
-    UObject* Duplicate(UObject* InOuter) override;
+//     UObject* Duplicate(UObject* InOuter) override;
 
-    void BeginPlay() override;
+//     void BeginPlay() override;
 
-    void Tick(float DeltaTime) override;
+//     void Tick(float DeltaTime) override;
 
-    int32 GetHealth() const { return Health; }
-    void SetHealth(int32 InHealth, bool bShouldNotify = true);
+//     int32 GetHealth() const { return Health; }
+//     void SetHealth(int32 InHealth, bool bShouldNotify = true);
 
-    int32 GetMaxHealth() const { return MaxHealth; }
-    void SetMaxHealth(int32 InMaxHealth);
+//     int32 GetMaxHealth() const { return MaxHealth; }
+//     void SetMaxHealth(int32 InMaxHealth);
 
-    float GetHealthPercent() const { return static_cast<float>(Health) / static_cast<float>(MaxHealth); }
+//     float GetHealthPercent() const { return static_cast<float>(Health) / static_cast<float>(MaxHealth); }
 
-    bool IsDead() const { return Health <= 0; }
+//     bool IsDead() const { return Health <= 0; }
     
-    FOnFishHealthChanged OnHealthChanged;
+//     FOnFishHealthChanged OnHealthChanged;
 
-    FOnFishDied OnDied;
+//     FOnFishDied OnDied;
 
-    void Reset();
+//     void Reset();
 
-    int32 GetScore() const { return Score; }
-    void SetScore(int32 InScore) { Score = InScore; }
+//     int32 GetScore() const { return Score; }
+//     void SetScore(int32 InScore) { Score = InScore; }
 
-    void SetVelocity(FVector InVelocity){Velocity = InVelocity;}
+//     void SetVelocity(FVector InVelocity){Velocity = InVelocity;}
     
-protected:
-    UPROPERTY
-    (USphereComponent*, SphereComponent, = nullptr)
+// protected:
+//     UPROPERTY
+//     (USphereComponent*, SphereComponent, = nullptr)
 
-    UPROPERTY
-    (UFishBodyComponent*, FishBody, = nullptr)
+//     UPROPERTY
+//     (UFishBodyComponent*, FishBody, = nullptr)
 
-    UPROPERTY
-    (UFishTailComponent*, FishTail, = nullptr)
+//     UPROPERTY
+//     (UFishTailComponent*, FishTail, = nullptr)
 
-    FVector Velocity = FVector::ZeroVector;
+//     FVector Velocity = FVector::ZeroVector;
 
-    float JumpZVelocity;
+//     float JumpZVelocity;
 
-    float Gravity;
+//     float Gravity;
 
-    bool bShouldApplyGravity;
+//     bool bShouldApplyGravity;
 
-    void Move(float DeltaTime);
+//     void Move(float DeltaTime);
 
-    void RotateMesh();
+//     void RotateMesh();
 
-    float MeshPitchMax;
+//     float MeshPitchMax;
 
-    float MeshPitch;
+//     float MeshPitch;
     
-    float MeshRotSpeed = 10.f;
+//     float MeshRotSpeed = 10.f;
 
-    int32 MaxHealth;
+//     int32 MaxHealth;
 
-    int32 Health;
+//     int32 Health;
 
-    float KillZ;
+//     float KillZ;
 
-    int32 Score;
+//     int32 Score;
 
-    void ActorBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
-};
+//     void ActorBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
+// };

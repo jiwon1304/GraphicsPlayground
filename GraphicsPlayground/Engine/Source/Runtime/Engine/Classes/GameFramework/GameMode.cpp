@@ -4,7 +4,6 @@
 #include "SoundManager.h"
 #include "InputCore/InputCoreTypes.h"
 #include "Classes/Camera/CameraComponent.h"
-#include "Contents/Actors/Fish.h"
 #include "Contents/Actors/ItemActor.h"
 #include "Classes/Engine/Engine.h"
 #include "Engine/World/World.h"
@@ -94,12 +93,12 @@ void AGameMode::StartMatch()
         }
     }
 
-    AFish* Fish = Cast<AFish>(GEngine->ActiveWorld->GetMainPlayer());
-    Fish->Reset();
-    // GEngine->ActiveWorld->GetMainPlayer()->SetActorLocation(FVector(0, 0, 10));
-    GEngine->ActiveWorld->GetPlayerController()->Possess(GEngine->ActiveWorld->GetMainPlayer());
+    // AFish* Fish = Cast<AFish>(GEngine->ActiveWorld->GetMainPlayer());
+    // Fish->Reset();
+    // // GEngine->ActiveWorld->GetMainPlayer()->SetActorLocation(FVector(0, 0, 10));
+    // GEngine->ActiveWorld->GetPlayerController()->Possess(GEngine->ActiveWorld->GetMainPlayer());
     
-    FSoundManager::GetInstance().PlaySound("fishdream");
+    // FSoundManager::GetInstance().PlaySound("fishdream");
     OnGameStart.Broadcast();
 }
 
@@ -124,9 +123,9 @@ void AGameMode::EndMatch(bool bIsWin)
 
     GameInfo.TotalGameTime = GameInfo.ElapsedGameTime;
 
-    AFish* Fish = Cast<AFish>(GEngine->ActiveWorld->GetMainPlayer());
-    Fish->SetVelocity(FVector(0.0f, 0.0f, 0.0f));
-    GEngine->ActiveWorld->GetPlayerController()->UnPossess();
+    // AFish* Fish = Cast<AFish>(GEngine->ActiveWorld->GetMainPlayer());
+    // Fish->SetVelocity(FVector(0.0f, 0.0f, 0.0f));
+    // GEngine->ActiveWorld->GetPlayerController()->UnPossess();
 
     
     FSoundManager::GetInstance().StopAllSounds();
