@@ -2,35 +2,35 @@
 #include "Vector.h"
 #include "Vector4.h"
 
-template <typename T>
-struct TPoint
-{
-    TPoint() : x(0), y(0) {}
+// template <typename T>
+// struct TPoint
+// {
+//     TPoint() : x(0), y(0) {}
 
-    template <typename U, typename V>
-    TPoint(U _x, V _y)
-        : x(static_cast<T>(_x)), y(static_cast<T>(_y)) {}
+//     template <typename U, typename V>
+//     TPoint(U _x, V _y)
+//         : x(static_cast<T>(_x)), y(static_cast<T>(_y)) {}
 
-    T x, y;
-};
+//     T x, y;
+// };
 
-using FPoint = TPoint<float>;
+// using FPoint = TPoint<float>;
 
-template <typename T>
-struct TRect
-{
-    TRect() : TopLeftX(0), TopLeftY(0), Width(0), Height(0) {}
+// template <typename T>
+// struct TRect
+// {
+//     TRect() : TopLeftX(0), TopLeftY(0), Width(0), Height(0) {}
 
-    template <typename U, typename V, typename W, typename X>
-    TRect(U x, V y, W w, X h)
-        : TopLeftX(static_cast<T>(x)), TopLeftY(static_cast<T>(y)),
-          Width(static_cast<T>(w)), Height(static_cast<T>(h)) {}
+//     template <typename U, typename V, typename W, typename X>
+//     TRect(U x, V y, W w, X h)
+//         : TopLeftX(static_cast<T>(x)), TopLeftY(static_cast<T>(y)),
+//           Width(static_cast<T>(w)), Height(static_cast<T>(h)) {}
 
-    T TopLeftX, TopLeftY, Width, Height;
-};
+//     T TopLeftX, TopLeftY, Width, Height;
+// };
 
-using FRect = TRect<float>;
-using IRect = TRect<int>;
+// using FRect = TRect<float>;
+// using IRect = TRect<int>;
 
 template <typename T>
 struct TOBB
