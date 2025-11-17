@@ -7,8 +7,6 @@ extern const TCHAR* GWindowName;
 extern FString GEditorIni;
 extern FString GEditorIni;
 
-extern FString GWindowName;
-
 extern double GSystemStartTime;
 
 extern uint64 GFrameCounter;
