@@ -265,6 +265,11 @@ void PollEvents()
     glfwPollEvents();
 }
 
+bool ShouldClose(Window* window)
+{
+    return glfwWindowShouldClose(window);
+}
+
 void SetWindowUserPointer(Window* Window, void* Pointer)
 {
     glfwSetWindowUserPointer(Window, Pointer);
