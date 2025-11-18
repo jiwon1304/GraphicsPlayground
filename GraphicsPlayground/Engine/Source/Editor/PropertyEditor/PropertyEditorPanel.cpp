@@ -35,7 +35,7 @@
 #include "Classes/GameFramework/SpringArmComponent.h"
 #include "Editor/LevelEditor/SLevelEditor.h"
 #include "Math/JungleMath.h"
-#include "Renderer/ShadowManager.h"
+// #include "Renderer/ShadowManager.h"
 #include "Editor/UnrealEd/EditorViewportClient.h"
 #include "CoreUObject/UObject/UObjectIterator.h"
 #include "LuaScripts/LuaScriptComponent.h"
@@ -108,7 +108,12 @@ void PropertyEditorPanel::Render()
         {
             constexpr size_t BufferSize = 256;
             char Buffer[BufferSize];
+#if defined(BUILD_PLATFORM_WINDOWS)
             strcpy_s(Buffer, BufferSize, SP->Socket.ToString().ToUTF8String().c_str()); // might be error in compiler other than msvc?
+#else
+            std::strncpy(Buffer, SP->Socket.ToString().ToUTF8String().c_str(), BufferSize - 1);
+            Buffer[BufferSize - 1] = '\0'; 
+#endif
             //FString Label = SP->Socket.ToString();
             if (ImGui::InputText("##Socket", Buffer, BufferSize))
             {
@@ -405,7 +410,7 @@ void PropertyEditorPanel::RenderForActor(AActor* SelectedActor, USceneComponent*
                     std::filesystem::create_directories(Dir);
                 }
 
-                std::ifstream luaTemplateFile(TemplateFilePath.ToWideString());
+                std::ifstream luaTemplateFile(TemplateFilePath.ToUTF8String().c_str());
 
                 std::ofstream file(FilePath);
                 if (file.is_open())
@@ -419,12 +424,14 @@ void PropertyEditorPanel::RenderForActor(AActor* SelectedActor, USceneComponent*
                 }
                 else
                 {
-                    MessageBoxA(nullptr, "Failed to Create Script File for writing: ", "Error", MB_OK | MB_ICONERROR);
+                    UE_LOG(ELogLevel::Error, "Failed to Create Script File for writing: %s", FilePath.string().c_str());
+                    // MessageBoxA(nullptr, "Failed to Create Script File for writing: ", "Error", MB_OK | MB_ICONERROR);
                 }
             }
             catch (const std::filesystem::filesystem_error& e)
             {
-                MessageBoxA(nullptr, "Failed to Create Script File for writing: ", "Error", MB_OK | MB_ICONERROR);
+                UE_LOG(ELogLevel::Error, "Failed to Create Script File for writing: %s", FilePath.string().c_str());
+                // MessageBoxA(nullptr, "Failed to Create Script File for writing: ", "Error", MB_OK | MB_ICONERROR);
             }
             LuaDisplayPath = NewScript->GetDisplayName();
         }
@@ -825,15 +832,15 @@ void PropertyEditorPanel::RenderForDirectionalLightComponent(UDirectionalLightCo
             // 필요하다면, 상태 변경에 따른 즉각적인 렌더링 업데이트 요청 로직 추가
             // 예: PointlightComponent->MarkRenderStateDirty();
         }
-        ImGui::Text("ShadowMap");
+        // ImGui::Text("ShadowMap");
 
-        // 분할된 개수만큼 CSM 해당 SRV 출력
-        uint32 NumCascades = GEngineLoop.Renderer->ShadowManager->GetNumCasCades();
-        for (uint32 i = 0; i < NumCascades; ++i)
-        {
-            ImGui::Image(reinterpret_cast<ImTextureID>(GEngineLoop.Renderer->ShadowManager->GetDirectionalShadowCascadeDepthRHI()->ShadowSRVs[i]), ImVec2(200, 200));
-            //ImGui::SameLine();
-        }
+        // // 분할된 개수만큼 CSM 해당 SRV 출력
+        // uint32 NumCascades = GEngineLoop.Renderer->ShadowManager->GetNumCasCades();
+        // for (uint32 i = 0; i < NumCascades; ++i)
+        // {
+        //     ImGui::Image(reinterpret_cast<ImTextureID>(GEngineLoop.Renderer->ShadowManager->GetDirectionalShadowCascadeDepthRHI()->ShadowSRVs[i]), ImVec2(200, 200));
+        //     //ImGui::SameLine();
+        // }
         ImGui::TreePop();
     }
 
@@ -870,23 +877,23 @@ void PropertyEditorPanel::RenderForPointLightComponent(UPointLightComponent* Poi
             // 예: PointlightComponent->MarkRenderStateDirty();
         }
 
-        ImGui::Text("ShadowMap");
+        // ImGui::Text("ShadowMap");
 
-        FShadowCubeMapArrayRHI* pointRHI = GEngineLoop.Renderer->ShadowManager->GetPointShadowCubeMapRHI();
-        const char* faceNames[] = { "+X", "-X", "+Y", "-Y", "+Z", "-Z" };
-        float imageSize = 128.0f;
-        int index =  PointlightComponent->GetPointLightInfo().ShadowMapArrayIndex;
-        // CubeMap이므로 6개의 ShadowMap을 그립니다.
-        for (int i = 0; i < 6; ++i)
-        {
-            ID3D11ShaderResourceView* faceSRV = pointRHI->ShadowFaceSRVs[index][i];
-            if (faceSRV)
-            {
-                ImGui::Image(reinterpret_cast<ImTextureID>(faceSRV), ImVec2(imageSize, imageSize));
-                ImGui::SameLine(); 
-                ImGui::Text("%s", faceNames[i]);
-            }
-        }
+        // FShadowCubeMapArrayRHI* pointRHI = GEngineLoop.Renderer->ShadowManager->GetPointShadowCubeMapRHI();
+        // const char* faceNames[] = { "+X", "-X", "+Y", "-Y", "+Z", "-Z" };
+        // float imageSize = 128.0f;
+        // int index =  PointlightComponent->GetPointLightInfo().ShadowMapArrayIndex;
+        // // CubeMap이므로 6개의 ShadowMap을 그립니다.
+        // for (int i = 0; i < 6; ++i)
+        // {
+        //     ID3D11ShaderResourceView* faceSRV = pointRHI->ShadowFaceSRVs[index][i];
+        //     if (faceSRV)
+        //     {
+        //         ImGui::Image(reinterpret_cast<ImTextureID>(faceSRV), ImVec2(imageSize, imageSize));
+        //         ImGui::SameLine(); 
+        //         ImGui::Text("%s", faceNames[i]);
+        //     }
+        // }
 
         ImGui::TreePop();
     }
@@ -946,8 +953,8 @@ void PropertyEditorPanel::RenderForSpotLightComponent(USpotLightComponent* SpotL
             // 예: PointlightComponent->MarkRenderStateDirty();
         }
 
-        ImGui::Text("ShadowMap");
-        ImGui::Image(reinterpret_cast<ImTextureID>(GEngineLoop.Renderer->ShadowManager->GetSpotShadowDepthRHI()->ShadowSRVs[0]), ImVec2(200, 200));
+        // ImGui::Text("ShadowMap");
+        // ImGui::Image(reinterpret_cast<ImTextureID>(GEngineLoop.Renderer->ShadowManager->GetSpotShadowDepthRHI()->ShadowSRVs[0]), ImVec2(200, 200));
 
         ImGui::TreePop();
     }
@@ -1049,23 +1056,29 @@ void PropertyEditorPanel::RenderForTextComponent(UTextComponent* TextComponent) 
         {
             TextComponent->SetTexture(L"Assets/Texture/font.png");
             TextComponent->SetRowColumnCount(106, 106);
-            FWString wText = TextComponent->GetText();
-            int Len = WideCharToMultiByte(CP_UTF8, 0, wText.c_str(), -1, nullptr, 0, nullptr, nullptr);
-            std::string u8Text(Len, '\0');
-            WideCharToMultiByte(CP_UTF8, 0, wText.c_str(), -1, u8Text.data(), Len, nullptr, nullptr);
+            std::wstring wText = TextComponent->GetText();
+            std::string u8Str = WStringToString(wText);
+            // int Len = WideCharToMultiByte(CP_UTF8, 0, wText.c_str(), -1, nullptr, 0, nullptr, nullptr);
+            // std::string u8Text(Len, '\0');
+            // WideCharToMultiByte(CP_UTF8, 0, wText.c_str(), -1, u8Text.data(), Len, nullptr, nullptr);
 
             static char Buf[256];
-            strcpy_s(Buf, u8Text.c_str());
-
+#if defined(BUILD_PLATFORM_WINDOWS)
+            strcpy_s(Buf, u8Str.c_str());
+#else
+            std::strncpy(Buf, u8Str.c_str(), sizeof(Buf));
+            Buf[sizeof(Buf) - 1] = '\0';
+#endif
             ImGui::Text("Text: ", Buf);
             ImGui::SameLine();
             ImGui::PushItemFlag(ImGuiItemFlags_NoNavDefaultFocus, true);
             if (ImGui::InputText("##Text", Buf, 256, ImGuiInputTextFlags_EnterReturnsTrue))
             {
                 TextComponent->ClearText();
-                int wLen = MultiByteToWideChar(CP_UTF8, 0, Buf, -1, nullptr, 0);
-                FWString wNewText(wLen, L'\0');
-                MultiByteToWideChar(CP_UTF8, 0, Buf, -1, wNewText.data(), wLen);
+                std::wstring wNewText = StringToWString(Buf);
+                // int wLen = MultiByteToWideChar(CP_UTF8, 0, Buf, -1, nullptr, 0);
+                // FWString wNewText(wLen, L'\0');
+                // MultiByteToWideChar(CP_UTF8, 0, Buf, -1, wNewText.data(), wLen);
                 TextComponent->SetText(wNewText.c_str());
             }
             ImGui::PopItemFlag();

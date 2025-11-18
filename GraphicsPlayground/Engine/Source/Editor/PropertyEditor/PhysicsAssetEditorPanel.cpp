@@ -10,12 +10,31 @@
 
 #include "Developer/PhysicsUtilities/PhysicsAssetUtils.h"
 #include "PhysicalMaterials/Defines.h"
-#include "Renderer/PhysicsAssetViewerRenderPass.h"
+// #include "Renderer/PhysicsAssetViewerRenderPass.h"
 #include "Engine/Classes/Engine/ResourceMgr.h"
 
 const float	DefaultPrimSize = 15.0f;
 const float	DuplicateXOffset = 10.0f;
 const ImVec4 InActiveTextColor = ImVec4(0.3f, 0.3f, 0.3f, 1.0f);
+
+// D3D11 shader resource view icons were Windows-only. The declarations and
+// usages have been commented out so non-Windows builds don't reference D3D11
+// types. If you need to restore Windows behavior, remove the comments below
+// or reintroduce a renderer abstraction.
+/*
+static ID3D11ShaderResourceView* BoneIconSRV = nullptr;
+static ID3D11ShaderResourceView* NonWeightBoneIconSRV = nullptr;
+
+static ID3D11ShaderResourceView* BodySetupIconSRV = nullptr;
+static ID3D11ShaderResourceView* ConstraintIconSRV = nullptr;
+static ID3D11ShaderResourceView* BoxIconSRV = nullptr;
+static ID3D11ShaderResourceView* SphereIconSRV = nullptr;
+static ID3D11ShaderResourceView* SphylIconSRV = nullptr;
+
+static ID3D11ShaderResourceView* BoxPhATIconSRV = nullptr;
+static ID3D11ShaderResourceView* SpherePhATIconSRV = nullptr;
+static ID3D11ShaderResourceView* SphylPhATIconSRV = nullptr;
+*/
 
 FPhysicsAssetEditorPanel::FPhysicsAssetEditorPanel() : UEditorPanel(0, 0)
 {
@@ -35,11 +54,13 @@ void FPhysicsAssetEditorPanel::Render()
         return;
     }
 
+/*
     if (BoneIconSRV == nullptr || NonWeightBoneIconSRV == nullptr || BodySetupIconSRV == nullptr || BoxIconSRV == nullptr || SphereIconSRV == nullptr || SphylIconSRV == nullptr || ConstraintIconSRV == nullptr
         || BoxPhATIconSRV == nullptr || SpherePhATIconSRV == nullptr || SphylPhATIconSRV == nullptr)
     {
         LoadBoneIcon();
     }
+*/
 
     /* Pre Setup */
     float TreePanelWidth = (Width) * 0.2f - 6.0f;
@@ -225,15 +246,15 @@ void FPhysicsAssetEditorPanel::RenderAddPrimitiveButton()
         {
             if (Shape.ShapeType == EAggCollisionShape::Box)
             {
-                ImGui::Image((ImTextureID)BoxPhATIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
+                /* ImGui::Image((ImTextureID)BoxPhATIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기 */
             }
             else if (Shape.ShapeType == EAggCollisionShape::Sphere)
             {
-                ImGui::Image((ImTextureID)SpherePhATIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
+                /* ImGui::Image((ImTextureID)SpherePhATIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기 */
             }
             else if (Shape.ShapeType == EAggCollisionShape::Sphyl)
             {
-                ImGui::Image((ImTextureID)SphylPhATIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
+                /* ImGui::Image((ImTextureID)SphylPhATIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기 */
             }
             ImGui::SameLine();
             if (ImGui::Selectable(Shape.Label))
@@ -567,8 +588,8 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
 
     if (bShowBones)
     {
-        ImGui::Image((ImTextureID)BoneIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
-        ImGui::SameLine();
+    /* ImGui::Image((ImTextureID)BoneIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기 */
+    /* ImGui::SameLine(); */
 
         ImGuiTreeNodeFlags NodeFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen;
 
@@ -651,8 +672,8 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
 
             if (TargetBodySetup != nullptr)
             {
-                ImGui::Image((ImTextureID)BodySetupIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
-                ImGui::SameLine();
+                /* ImGui::Image((ImTextureID)BodySetupIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기 */
+                /* ImGui::SameLine(); */
             
                 bool bBodySetupHasChildren = false;
 
@@ -709,8 +730,8 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
                         EAggCollisionShape::Type PrimitiveType = EAggCollisionShape::Sphere;
                         FKSphereElem& ShapeElem = TargetBodySetup->AggGeom.SphereElems[PrimitiveIndex];
                         ImGui::PushID(GetData(FString::FromInt(static_cast<int32>(PrimitiveType)) + FString::FromInt(PrimitiveIndex)));
-                        ImGui::Image((ImTextureID)SphereIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
-                        ImGui::SameLine();
+                        /* ImGui::Image((ImTextureID)SphereIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기 */
+                        /* ImGui::SameLine(); */
         
                         ImGuiTreeNodeFlags NodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Leaf;
 
@@ -736,8 +757,8 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
                         EAggCollisionShape::Type PrimitiveType = EAggCollisionShape::Box;
                         FKBoxElem& ShapeElem = TargetBodySetup->AggGeom.BoxElems[PrimitiveIndex];
                         ImGui::PushID(GetData(FString::FromInt(static_cast<int32>(PrimitiveType)) + FString::FromInt(PrimitiveIndex)));
-                        ImGui::Image((ImTextureID)BoxIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
-                        ImGui::SameLine();
+                        /* ImGui::Image((ImTextureID)BoxIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기 */
+                        /* ImGui::SameLine(); */
         
                         ImGuiTreeNodeFlags NodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Leaf;
 
@@ -763,8 +784,8 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
                         EAggCollisionShape::Type PrimitiveType = EAggCollisionShape::Sphyl;
                         FKSphylElem& ShapeElem = TargetBodySetup->AggGeom.SphylElems[PrimitiveIndex];
                         ImGui::PushID(GetData(FString::FromInt(static_cast<int32>(PrimitiveType)) + FString::FromInt(PrimitiveIndex)));
-                        ImGui::Image((ImTextureID)SphylIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
-                        ImGui::SameLine();
+                        /* ImGui::Image((ImTextureID)SphylIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기 */
+                        /* ImGui::SameLine(); */
         
                         ImGuiTreeNodeFlags NodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Leaf;
 
@@ -801,8 +822,8 @@ void FPhysicsAssetEditorPanel::RenderTreeRecursive(USkeletalMesh* InSkeletalMesh
                         ImGuiTreeNodeFlags NodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Leaf;
                         UPhysicsConstraintTemplate* ConstraintTemplate = InPhysicsAsset->ConstraintSetup[ConstraintIndex];
                         ImGui::PushID(ConstraintIndex);
-                        ImGui::Image((ImTextureID)ConstraintIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
-                        ImGui::SameLine();
+                        /* ImGui::Image((ImTextureID)ConstraintIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기 */
+                        /* ImGui::SameLine(); */
 
                         TO_UTF8_CHAR(GetCleanBoneName(ConstraintTemplate->DefaultInstance.ConstraintBone1.ToString()), ConstraintBone1NameUTF8);
                         TO_UTF8_CHAR(GetCleanBoneName(ConstraintTemplate->DefaultInstance.ConstraintBone2.ToString()), ConstraintBone2NameUTF8);
@@ -892,20 +913,20 @@ void FPhysicsAssetEditorPanel::DrawPopupBodySetup(UPhysicsAsset* InPhysicsAsset,
             ImGui::PopStyleColor();
 
             
-            ImGui::Image((ImTextureID)BoxPhATIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
-            ImGui::SameLine();
+                /* ImGui::Image((ImTextureID)BoxPhATIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기 */
+                /* ImGui::SameLine(); */
             if (ImGui::MenuItem("Add Box"))
             {
                 AddShape(InPhysicsAsset, InBodySetup, InBoneIndex, EAggCollisionShape::Box);
             }
-            ImGui::Image((ImTextureID)SpherePhATIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
-            ImGui::SameLine();
+            /* ImGui::Image((ImTextureID)SpherePhATIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기 */
+            /* ImGui::SameLine(); */
             if (ImGui::MenuItem("Add Sphere"))
             {
                 AddShape(InPhysicsAsset, InBodySetup, InBoneIndex, EAggCollisionShape::Sphere);
             }
-            ImGui::Image((ImTextureID)SphylPhATIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
-            ImGui::SameLine();
+            /* ImGui::Image((ImTextureID)SphylPhATIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기 */
+            /* ImGui::SameLine(); */
             if (ImGui::MenuItem("Add Capsule"))
             {
                 AddShape(InPhysicsAsset, InBodySetup, InBoneIndex, EAggCollisionShape::Sphyl);
@@ -928,8 +949,8 @@ void FPhysicsAssetEditorPanel::DrawPopupBodySetup(UPhysicsAsset* InPhysicsAsset,
                         continue;
                     }
 
-                    ImGui::Image((ImTextureID)ConstraintIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
-                    ImGui::SameLine();
+                    /* ImGui::Image((ImTextureID)ConstraintIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기 */
+                    /* ImGui::SameLine(); */
                     TO_UTF8_CHAR(GetCleanBoneName(TempBodySetup->BoneName.ToString()), TempBoneNameUTF8);
                     if (ImGui::MenuItem(TempBoneNameUTF8))
                     {
@@ -1016,20 +1037,20 @@ void FPhysicsAssetEditorPanel::DrawPopupBone(UPhysicsAsset* PhysicsAsset, UBodyS
             ImGui::SeparatorText("Shape Type");
             ImGui::Text("Create BodySetup Automatically");
             ImGui::PopStyleColor();
-            ImGui::Image((ImTextureID)BoxPhATIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
-            ImGui::SameLine();
+            /* ImGui::Image((ImTextureID)BoxPhATIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기 */
+            /* ImGui::SameLine(); */
             if (ImGui::MenuItem("Add Box"))
             {
                 AddShape(PhysicsAsset, BodySetup, InBoneIndex, EAggCollisionShape::Box);
             }
-            ImGui::Image((ImTextureID)SpherePhATIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
-            ImGui::SameLine();
+            /* ImGui::Image((ImTextureID)SpherePhATIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기 */
+            /* ImGui::SameLine(); */
             if (ImGui::MenuItem("Add Sphere"))
             {
                 AddShape(PhysicsAsset, BodySetup, InBoneIndex, EAggCollisionShape::Sphere);
             }
-            ImGui::Image((ImTextureID)SphylPhATIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
-            ImGui::SameLine();
+            /* ImGui::Image((ImTextureID)SphylPhATIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기 */
+            /* ImGui::SameLine(); */
             if (ImGui::MenuItem("Add Capsule"))
             {
                 AddShape(PhysicsAsset, BodySetup, InBoneIndex, EAggCollisionShape::Sphyl);
@@ -1174,6 +1195,10 @@ FString FPhysicsAssetEditorPanel::GetCleanBoneName(const FString& InFullName) co
 
 void FPhysicsAssetEditorPanel::LoadBoneIcon()
 {
+    // Icon loading was D3D11-specific and has been commented out for non-Windows
+    // builds. Keep the previous assignments here as reference in case you want
+    // to restore Windows behavior or implement a renderer-agnostic icon loader.
+    /*
     BoneIconSRV = GEngineLoop.ResourceManager->GetTexture(L"Assets/Viewer/Bone_16x.png")->TextureSRV;
     NonWeightBoneIconSRV = GEngineLoop.ResourceManager->GetTexture(L"Assets/Viewer/BoneNonWeighted_16x.png")->TextureSRV;
     BodySetupIconSRV = GEngineLoop.ResourceManager->GetTexture(L"Assets/Viewer/Body_16x.png")->TextureSRV;
@@ -1185,6 +1210,7 @@ void FPhysicsAssetEditorPanel::LoadBoneIcon()
     SpherePhATIconSRV = GEngineLoop.ResourceManager->GetTexture(L"Assets/Viewer/icon_PhAT_Sphere_40x.png")->TextureSRV;
     BoxPhATIconSRV = GEngineLoop.ResourceManager->GetTexture(L"Assets/Viewer/icon_PhAT_Box_40x.png")->TextureSRV;
     SphylPhATIconSRV = GEngineLoop.ResourceManager->GetTexture(L"Assets/Viewer/icon_PhAT_Sphyl_40x.png")->TextureSRV;
+    */
 }
 
 void FPhysicsAssetEditorPanel::AddShape(UPhysicsAsset* InPhysicsAsset, UBodySetup* TargetBodySetup, int32 BoneIndex, EAggCollisionShape::Type InShapeType) const
