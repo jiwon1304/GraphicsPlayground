@@ -27,7 +27,6 @@
 
 #include "Editor/UnrealEd/EditorViewportClient.h"
 #include "Classes/Components/Light/PointLightComponent.h"
-#include "Contents/Actors/Fish.h"
 #include "Classes/Engine/AssetManager.h"
 
 

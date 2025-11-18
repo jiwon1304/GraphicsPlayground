@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Core/HAL/PlatformType.h"
 
 enum OBJECTS : uint8
 {
@@ -19,7 +19,6 @@ enum OBJECTS : uint8
     OBJ_BOX_COLLISION,
     OBJ_SPHERE_COLLISION,
     OBJ_CAPSULE_COLLISION,
-    OBJ_FISH,
     OBJ_PLATFORM,
     OBJ_GOALPLATFORM,
     OBJ_COIN,
