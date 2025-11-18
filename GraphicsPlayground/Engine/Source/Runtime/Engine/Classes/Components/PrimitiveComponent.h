@@ -3,7 +3,7 @@
 #include "Classes/PhysicsEngine/BodyInstance.h"
 #include "Classes/Components/SceneComponent.h"
 #include "Classes/Engine/OverlapInfo.h"
-#include "Math/Primitive.h"
+#include "Math/BoundingBox.h"
 #include "Core/Delegates/DelegateCombination.h"
 
 DECLARE_MULTICAST_DELEGATE_FiveParams(FComponentHitSignature, UPrimitiveComponent* /* HitComponent */, AActor* /* OtherActor */, UPrimitiveComponent* /* OtherComp */, FVector /* NormalImpulse */, const FHitResult& /* Hit */);

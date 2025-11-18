@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Core/Math/MathFwd.h"
-#include "Core/Math/Primitive.h"
+#include "Core/Math/Rect.h"
 #include "Core/Delegates/DelegateCombination.h"
 
 DECLARE_DELEGATE_TwoParams(FOnWindowResizedDelegate, int32 /* NewWidth */, int32 /* NewHeight */);
@@ -46,8 +46,7 @@ protected:
      */
     void OnResize(int32 NewWidth, int32 NewHeight)
     {
-        CurrentWindowRect.Width = static_cast<float>(NewWidth);
-        CurrentWindowRect.Height = static_cast<float>(NewHeight);
+        CurrentWindowRect = FRect({0, 0}, {static_cast<float>(NewWidth), static_cast<float>(NewHeight)});
         OnWindowResized.Execute(NewWidth, NewHeight);
     }
 

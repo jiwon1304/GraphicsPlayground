@@ -49,28 +49,21 @@ void SLevelEditor::Initialize(uint32 InEditorWidth, uint32 InEditorHeight)
         switch (Location)
         {
         case EViewScreenLocation::EVL_TopLeft:
-            Rect.TopLeftX = Left.TopLeftX;
-            Rect.TopLeftY = Top.TopLeftY;
-            Rect.Width = Left.Width;
-            Rect.Height = Top.Height;
+            // Min.x comes from Left.Min.x, Min.y comes from Top.Min.y
+            Rect.Min = FPoint(Left.Min.X, Top.Min.Y);
+            Rect.Max = FPoint(Left.Max.X, Top.Max.Y);
             break;
         case EViewScreenLocation::EVL_TopRight:
-            Rect.TopLeftX = Right.TopLeftX;
-            Rect.TopLeftY = Top.TopLeftY;
-            Rect.Width = Right.Width;
-            Rect.Height = Top.Height;
+            Rect.Min = FPoint(Right.Min.X, Top.Min.Y);
+            Rect.Max = FPoint(Right.Max.X, Top.Max.Y);
             break;
         case EViewScreenLocation::EVL_BottomLeft:
-            Rect.TopLeftX = Left.TopLeftX;
-            Rect.TopLeftY = Bottom.TopLeftY;
-            Rect.Width = Left.Width;
-            Rect.Height = Bottom.Height;
+            Rect.Min = FPoint(Left.Min.X, Bottom.Min.Y);
+            Rect.Max = FPoint(Left.Max.X, Bottom.Max.Y);
             break;
         case EViewScreenLocation::EVL_BottomRight:
-            Rect.TopLeftX = Right.TopLeftX;
-            Rect.TopLeftY = Bottom.TopLeftY;
-            Rect.Width = Right.Width;
-            Rect.Height = Bottom.Height;
+            Rect.Min = FPoint(Right.Min.X, Bottom.Min.Y);
+            Rect.Max = FPoint(Right.Max.X, Bottom.Max.Y);
             break;
         default:
             return;

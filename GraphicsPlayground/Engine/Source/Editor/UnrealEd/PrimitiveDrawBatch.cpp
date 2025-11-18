@@ -6,7 +6,7 @@
 // #include "Launch/EngineLoop.h"
 // #include "Windows/D3D11RHI/GraphicDevice.h"
 // #include "Editor/UnrealEd/EditorViewportClient.h"
-// #include "Math/Primitive.h"
+// #include "Math/Rect.h"
 
 
 // UPrimitiveDrawBatch::~UPrimitiveDrawBatch()

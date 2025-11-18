@@ -17,6 +17,9 @@
 #include "SoundManager.h"
 #include "Engine/Classes/Engine/ResourceMgr.h"
 
+// static ID3D11ShaderResourceView* BoneIconSRV = nullptr;
+// static ID3D11ShaderResourceView* NonWeightBoneIconSRV = nullptr;
+
 SkeletalMeshViewerPanel::SkeletalMeshViewerPanel() : UEditorPanel(0, 0)
 {
     SetSupportedWorldTypes(EWorldTypeBitFlag::SkeletalViewer);
@@ -30,9 +33,9 @@ void SkeletalMeshViewerPanel::Render()
         return;
     }
 
-    if (BoneIconSRV == nullptr || NonWeightBoneIconSRV == nullptr) {
-        LoadBoneIcon();
-    }
+    // if (BoneIconSRV == nullptr || NonWeightBoneIconSRV == nullptr) {
+    //     LoadBoneIcon();
+    // }
 
     /* Pre Setup */
     float PanelWidth = (Width) * 0.2f - 6.0f;
@@ -160,12 +163,12 @@ void SkeletalMeshViewerPanel::ClearRefSkeletalMeshComponent()
     }
 }
 
-void SkeletalMeshViewerPanel::LoadBoneIcon()
-{
-    BoneIconSRV = GEngineLoop.ResourceManager->GetTexture(L"Assets/Viewer/Bone_16x.PNG")->TextureSRV;
-    NonWeightBoneIconSRV = GEngineLoop.ResourceManager->GetTexture(L"Assets/Viewer/BoneNonWeighted_16x.PNG")->TextureSRV;
+// void SkeletalMeshViewerPanel::LoadBoneIcon()
+// {
+//     BoneIconSRV = GEngineLoop.ResourceManager->GetTexture(L"Assets/Viewer/Bone_16x.PNG")->TextureSRV;
+//     NonWeightBoneIconSRV = GEngineLoop.ResourceManager->GetTexture(L"Assets/Viewer/BoneNonWeighted_16x.PNG")->TextureSRV;
 
-}
+// }
 
 void SkeletalMeshViewerPanel::CopyRefSkeleton()
 {
@@ -208,7 +211,7 @@ void SkeletalMeshViewerPanel::RenderBoneTree(const FReferenceSkeleton& RefSkelet
     // 1) ImGui ID 충돌 방지
     ImGui::PushID(BoneIndex);
 
-    ImGui::Image((ImTextureID)BoneIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
+    // ImGui::Image((ImTextureID)BoneIconSRV, ImVec2(16, 16));  // 16×16 픽셀 크기
     ImGui::SameLine();
 
     ImGuiTreeNodeFlags NodeFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen;

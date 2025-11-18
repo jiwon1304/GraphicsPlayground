@@ -17,7 +17,7 @@
 #include "Classes/PhysicsEngine/PhysicsAsset.h"
 #include "World/PhysicsAssetWorld.h"
 #include "PhysicsCore/PhysxSolversModule.h"
-#include "Math/Primitive.h"
+#include "Math/Rect.h"
 #include "ApplicationCore/Generic/GenericSlateAppMessageHandler.h"
 
 extern FEngineLoop GEngineLoop;

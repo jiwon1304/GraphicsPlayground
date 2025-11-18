@@ -1,6 +1,6 @@
 #pragma once
 #include "Core/HAL/PlatformType.h"
-#include "ThirdParty/ImGui/imgui.h"
+#include "ThirdParty/imgui/imgui.h"
 
 class FGraphicsDevice;
 

@@ -1,5 +1,5 @@
 #include "Editor/PropertyEditor/ShowFlags.h"
-#include "ThirdParty/ImGui/imgui.h"
+#include "ThirdParty/imgui/imgui.h"
 
 ShowFlags& ShowFlags::GetInstance()
 {

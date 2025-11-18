@@ -1,6 +1,6 @@
 #include "SkeletalMeshComponent.h"
 
-#include "Math/Primitive.h"
+#include "Math/Rect.h"
 #include "ReferenceSkeleton.h"
 #include "Classes/Animation/AnimSequence.h"
 #include "Classes/Animation/AnimInstance.h"

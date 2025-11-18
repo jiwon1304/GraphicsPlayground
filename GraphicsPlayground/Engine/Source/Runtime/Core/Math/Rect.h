@@ -35,11 +35,22 @@ public:
 
     TPoint<T> Min;
     TPoint<T> Max;
+
+    bool operator==(const TRect& Other) const
+    {
+        return Min == Other.Min && Max == Other.Max;
+    }
+
+    bool operator!=(const TRect& Other) const
+    {
+        return !(*this == Other);
+    }
+
+    T GetWidth() const { return Max.X - Min.X; }
+    T GetHeight() const { return Max.Y - Min.Y; }
 };
 
 using FIntPoint = TPoint<int32>;
 using FIntRect = TRect<int32>;
-using FFloatPoint = TPoint<float>;
-using FFloatRect = TRect<float>;
-using FDoublePoint = TPoint<double>;
-using FDoubleRect = TRect<double>;
+using FPoint = TPoint<float>;
+using FRect = TRect<float>;

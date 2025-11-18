@@ -2,7 +2,7 @@
 #include "Classes/Engine/EditorEngine.h"
 #include "Classes/GameFramework/Actor.h"
 #include "Editor/UnrealEd/EditorPanel.h"
-#include <d3d11.h>
+// #include <d3d11.h>
 
 class USkeletalMesh;
 class FReferenceSkeleton;
@@ -24,7 +24,7 @@ public:
 private:
     USkeletalMesh* SkeletalMesh;
 
-    void LoadBoneIcon();
+    // void LoadBoneIcon();
     void CopyRefSkeleton();
 
     void RenderBoneTree(const FReferenceSkeleton& RefSkeleton, int32 BoneIndex, UEditorEngine* Engine);
@@ -32,9 +32,6 @@ private:
     void RenderAnimationSequence(const FReferenceSkeleton& RefSkeleton, UEditorEngine* Engine); // 
     void RenderAnimationPanel(float PanelPosX, float PanelTopY, float PanelWidth, float PanelHeight);
     FString GetCleanBoneName(const FString& InFullName);
-
-    ID3D11ShaderResourceView* BoneIconSRV = nullptr;
-    ID3D11ShaderResourceView* NonWeightBoneIconSRV = nullptr;
 
     int32 SelectedBoneIndex = INDEX_NONE;
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Launch/Define.h"
-#include "Math/Primitive.h"
+#include "Math/Rect.h"
 
 class SWindow
 {

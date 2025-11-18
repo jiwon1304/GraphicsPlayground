@@ -4,7 +4,7 @@
 
 // #pragma once
 // #include "Core/Container/Array.h"
-// #include "Math/Primitive.h"
+// #include "Math/Rect.h"
 // #include "Launch/Define.h"
 
 // class ID3D11Buffer;

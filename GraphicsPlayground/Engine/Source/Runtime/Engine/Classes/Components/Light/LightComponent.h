@@ -1,7 +1,7 @@
 #pragma once
 #include "Engine/UnrealClient.h"
 #include "Classes/Components/SceneComponent.h"
-#include "Math/Primitive.h"
+#include "Math/Rect.h"
 #include "Runtime/Launch/LightDefine.h"
 #include "Math/Matrix.h"
 

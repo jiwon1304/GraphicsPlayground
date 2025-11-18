@@ -1,5 +1,5 @@
 #include "ViewportTypePanel.h"
-#include "ThirdParty/ImGui/imgui.h"
+#include "ThirdParty/imgui/imgui.h"
 
 
 ViewportTypePanel& ViewportTypePanel::GetInstance()

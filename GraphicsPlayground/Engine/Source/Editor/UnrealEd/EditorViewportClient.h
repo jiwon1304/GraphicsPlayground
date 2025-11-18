@@ -6,7 +6,7 @@
 #include "ViewportClient.h"
 #include "Launch/EngineLoop.h"
 #include "Launch/EngineBaseTypes.h"
-#include "Core/Math/Primitive.h"
+#include "Core/Math/Rect.h"
 #include "SlateCore/Input/Events.h"
 #include "Core/Math/Matrix.h"
 
