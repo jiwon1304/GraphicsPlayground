@@ -196,50 +196,29 @@ void FEngineLoop::Render() const
 
 void FEngineLoop::Tick()
 {
-    LARGE_INTEGER Frequency;
-    const double TargetFrameTime = 1000.0 / TargetFPS; // 한 프레임의 목표 시간 (밀리초 단위)
+    const double SecondsPerCycle = FPlatformTime::GetSecondsPerCycle();
+    const double TargetFrameSeconds = (TargetFPS > 0.0f) ? (1.0 / TargetFPS) : 0.0;
+    const uint64 TargetFrameCycles = TargetFrameSeconds > 0.0
+        ? static_cast<uint64>(TargetFrameSeconds / SecondsPerCycle)
+        : 0;
 
-    QueryPerformanceFrequency(&Frequency);
+    uint64 PreviousFrameStartCycles = FPlatformTime::Cycles64();
 
-    LARGE_INTEGER StartTime, EndTime;
-    double ElapsedTime = 0.0;
-
-    while (bIsExit == false)
+    while (Application->IsExitRequested() == false)
     {
         FProfilerStatsManager::BeginFrame(); // Clear previous frame stats
         if (GPUTimingManager->IsInitialized())
         {
             GPUTimingManager->BeginFrame(); // Start GPU frame timing
         }
+        
+        Application->PumpMessages();
 
-        QueryPerformanceCounter(&StartTime);
-
-        MSG Msg;
-        while (PeekMessage(&Msg, nullptr, 0, 0, PM_REMOVE))
-        {
-            TranslateMessage(&Msg); // 키보드 입력 메시지를 문자메시지로 변경
-            DispatchMessage(&Msg);  // 메시지를 WndProc에 전달
-
-            if (Msg.message == WM_QUIT)
-            {
-                bIsExit = true;
-                break;
-            }
-        }
-
-        if (!bIsExit && ParticleViewerWnd && IsWindowVisible(ParticleViewerWnd))
-        {
-            while (PeekMessage(&Msg, ParticleViewerWnd, 0, 0, PM_REMOVE))
-            {
-                TranslateMessage(&Msg);
-                DispatchMessage(&Msg);
-            }
-        }
-        // Engine loop Break
-        if (bIsExit)
-            break;
-
-        const float DeltaTime = static_cast<float>(ElapsedTime / 1000.f);
+        // Deltatime
+        const uint64 FrameStartCycles = FPlatformTime::Cycles64();
+        const uint64 ElapsedCycles = FrameStartCycles - PreviousFrameStartCycles;
+        PreviousFrameStartCycles = FrameStartCycles;
+        const float DeltaTime = static_cast<float>(ElapsedCycles * SecondsPerCycle);
 
         GEngine->Tick(DeltaTime);
         LevelEditor->Tick(DeltaTime);
@@ -254,8 +233,8 @@ void FEngineLoop::Tick()
 
         UIManager->EndFrame();
 
-        if (ParticleSubEngine->bIsShowing)
-            ParticleSubEngine->Tick(DeltaTime);
+        // if (ParticleSubEngine->bIsShowing)
+        //     ParticleSubEngine->Tick(DeltaTime);
 
         if (CurrentImGuiContext != nullptr)
         {
@@ -272,36 +251,56 @@ void FEngineLoop::Tick()
 
         GraphicDevice->SwapBuffer();
 
-        SubEngineControl();
+        // SubEngineControl();
 
         GRHICommandList.Submit();
-        
-        do
+
+        // Update ElapsedCycles for deltatime in the next frame
+        uint64 FrameDurationCycles = FPlatformTime::Cycles64() - FrameStartCycles;
+
+        if (bFPSLimitEnabled && TargetFrameCycles > 0)
         {
-            Sleep(0);
-            QueryPerformanceCounter(&EndTime);
-            ElapsedTime = (static_cast<double>(EndTime.QuadPart - StartTime.QuadPart) * 1000.f / static_cast<double>(Frequency.QuadPart));
-        } while (ElapsedTime < TargetFrameTime);
+            if (FrameDurationCycles < TargetFrameCycles)
+            {
+                const uint64 RemainingCycles = TargetFrameCycles - FrameDurationCycles;
+                const uint64 SleepMicroseconds = static_cast<uint64>(RemainingCycles * SecondsPerCycle * 1'000'000.0);
+
+                if (SleepMicroseconds > 0)
+                {
+                    Application->SleepFor(SleepMicroseconds);
+                }
+
+                // Re-measure after sleeping to account for timer granularity
+                FrameDurationCycles = FPlatformTime::Cycles64() - FrameStartCycles;
+
+                // Busy-wait/yield until we hit the target duration
+                while (FrameDurationCycles < TargetFrameCycles)
+                {
+                    Application->Yield();
+                    FrameDurationCycles = FPlatformTime::Cycles64() - FrameStartCycles;
+                }
+            }
+        }
     }
     FSoundManager::GetInstance().Update();
 }
 
-void FEngineLoop::OpenParticleSystemViewer()
-{
-    if (ParticleSubEngine->bIsShowSubWindow)
-    {
-        if (ParticleViewerWnd)
-        {
-            ::ShowWindow(ParticleViewerWnd, SW_SHOW);
-        }
-        ParticleSubEngine->bIsShowSubWindow = false;
-    }
-}
+// void FEngineLoop::OpenParticleSystemViewer()
+// {
+//     if (ParticleSubEngine->bIsShowSubWindow)
+//     {
+//         if (ParticleViewerWnd)
+//         {
+//             ::ShowWindow(ParticleViewerWnd, SW_SHOW);
+//         }
+//         ParticleSubEngine->bIsShowSubWindow = false;
+//     }
+// }
 
-void FEngineLoop::SubEngineControl()
-{
-    OpenParticleSystemViewer();
-}
+// void FEngineLoop::SubEngineControl()
+// {
+//     OpenParticleSystemViewer();
+// }
 
 void FEngineLoop::Exit()
 {
@@ -464,6 +463,7 @@ void FEngineLoop::InitApplication(FGenericApplicationInitParams* InAppInitParams
     WindowParams->hInstance = WindowsAppInitParams->hInstance;
 
     MainWindow = Application->MakeWindow(WindowParams);
+    Application->RegisterMainWindow(MainWindow);
 #elif defined(BUILD_PLATFORM_MACOS)
     // Initialize OpenGL RHI first to get the native window handle
 
@@ -479,6 +479,7 @@ void FEngineLoop::InitApplication(FGenericApplicationInitParams* InAppInitParams
     MacWindowParams->WindowHandle = OpenGLDevice->MainContext.Window;
 
     MainWindow = MacApplication->MakeWindow(MacWindowParams);
+    Application->RegisterMainWindow(MainWindow);
 #endif
 }
 

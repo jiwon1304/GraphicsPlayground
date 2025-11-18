@@ -33,8 +33,8 @@ public:
     void Tick();
     void Exit();
 
-    void OpenParticleSystemViewer();
-    void SubEngineControl();
+    // void OpenParticleSystemViewer();
+    // void SubEngineControl();
 
 private:
     // void WindowInit(HINSTANCE hInstance);
@@ -79,8 +79,8 @@ private:
     UnrealEd* UnrealEditor = nullptr;
     FDXDBufferManager* BufferManager = nullptr; // TODO: UEngine으로 옮겨야함.
 
-    bool bIsExit = false;
     // @todo Option으로 선택 가능하도록
+    bool bFPSLimitEnabled = false;
     float TargetFPS = 60.0f;
 
 public:
