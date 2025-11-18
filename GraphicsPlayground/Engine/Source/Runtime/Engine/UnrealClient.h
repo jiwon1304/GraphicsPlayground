@@ -1,35 +1,69 @@
-// #pragma once
+#pragma once
+
+#include "RHI/RHIFwd.h"
+#include "RenderCore/RenderResource.h"
+
+#include "Math/Rect.h"
+#include "Core/Delegates/DelegateCombination.h"
+
+class FViewportClient;
+
+class FRenderTarget
+{
+public:
+    FRenderTarget() = default;
+    virtual ~FRenderTarget() = default;
+
+    const FTextureRHIRef& GetRenderTargetTexture()
+    {
+        return RenderTargetTextureRHI;
+    }
+
+    virtual FIntPoint GetSizeXY() const = 0;
+
+protected:
+    FTextureRHIRef RenderTargetTextureRHI;
+};
+
+/**
+ * Viewport being rendered to the window's screen. 
+ */
+class FViewport : public FRenderTarget, protected FRenderResource
+{
+    DECLARE_MULTICAST_DELEGATE_TwoParams(FOnViewportResized, FViewport*, uint32)
+
+    FOnViewportResized ViewportResizedEvent;
+
+    FViewport(FViewportClient* InViewportClient);
+    virtual ~FViewport();
+
+    void EnqueueBeginRenderFrame();
+    void EnqueueEndRenderFrame();
+
+    void BeginRenderFrame();
+    void EndRenderFrame();
+
+    const FViewportRHIRef& GetViewportRHI() const { return ViewportRHI; }
+
+protected:
+    FViewportClient* ViewportClient;
+
+    FViewportRHIRef ViewportRHI;
+
+    void UpdateViewportRHI(uint32 NewWidth, uint32 NewHeight);
+
+    // FRenderResource interface
+    virtual void InitRHI(FRHICommandListBase& RHICmdList) override;
+    virtual void ReleaseRHI() override;
+};
+
+
 // #include <d3d11.h>
 // #include "Math/Primitive.h"
 
 // #include "Container/Map.h"
 
 // class FViewportResource;
-
-// enum class EViewScreenLocation : uint8
-// {
-//     EVL_TopLeft,
-//     EVL_TopRight,
-//     EVL_BottomLeft,
-//     EVL_BottomRight,
-//     EVL_MAX,
-// };
-
-// // enum class EResourceType : uint8
-// // {
-// //     ERT_Compositing,
-// //     ERT_Scene,
-// //     ERT_PP_Fog,
-// //     ERT_PP_ShapeOverlay,
-// //     ERT_PP_CameraEffect,
-// //     ERT_PP_Blur, // blur는 여러개 쓸수있으니까...
-// //     ERT_Debug,
-// //     ERT_Editor,
-// //     ERT_Gizmo,
-// //     ERT_Overlay,
-// //     ERT_PostProcessCompositing,
-// //     ERT_MAX,
-// // };
 
 // struct FRenderTargetRHI
 // {
