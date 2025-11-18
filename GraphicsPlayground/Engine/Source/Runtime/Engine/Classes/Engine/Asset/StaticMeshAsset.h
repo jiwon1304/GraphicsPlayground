@@ -27,13 +27,15 @@ struct FStaticMeshVertex
 
 struct FStaticMeshRenderData
 {
-    FWString ObjectName;
-    FString DisplayName;
+    FString FileNameNoExtension;
+    FString FilePathWithFileFullName;
+    //FString DisplayName;
+    //FWString FilePath;
 
     TArray<FStaticMeshVertex> Vertices;
     TArray<uint16> Indices;
 
-    TArray<FMaterialInfo> Materials;
+    TArray<FMaterialInfo*> Materials;
     TArray<FMaterialSubset> MaterialSubsets;
 
     FVector BoundingBoxMin;

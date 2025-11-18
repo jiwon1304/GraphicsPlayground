@@ -116,6 +116,7 @@ public:
     //     return utf8.c_str();
     // }
 
+    // FString uses wide char internally, but the allocator is different from std::wstring.
     FORCEINLINE std::wstring ToWideString() const
     {
 #if USE_WIDECHAR

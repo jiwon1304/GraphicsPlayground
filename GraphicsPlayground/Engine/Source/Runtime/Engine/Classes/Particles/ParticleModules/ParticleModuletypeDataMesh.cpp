@@ -1,6 +1,6 @@
 #include "ParticleModuletypeDataMesh.h"
 
-#include "Classes/Engine/Asset/FObjLoader.h"
+#include "Classes/Engine/Asset/ObjLoader.h"
 #include "Classes/Particles/ParticleHelper.h"
 #include "Classes/Particles/ParticleEmitterInstances.h"
 

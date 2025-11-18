@@ -6,7 +6,7 @@
 #include "Classes/Components/SkeletalMeshComponent.h"
 #include "Classes/Components/StaticMeshComponent.h"
 #include "Classes/Engine/Asset/AssetManager.h"
-#include "Classes/Engine/Asset/FObjLoader.h"
+#include "Classes/Engine/Asset/ObjLoader.h"
 #include "Classes/Engine/SkeletalMesh.h"
 #include "Classes/Engine/Asset/SkeletalMeshAsset.h"
 

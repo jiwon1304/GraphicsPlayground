@@ -3,7 +3,7 @@
 
 #include "Classes/Components/SphereComponent.h"
 #include "Classes/Components/StaticMeshComponent.h"
-#include "Classes/Engine/Asset/FObjLoader.h"
+#include "Classes/Engine/Asset/ObjLoader.h"
 
 AItemActor::AItemActor()
 {

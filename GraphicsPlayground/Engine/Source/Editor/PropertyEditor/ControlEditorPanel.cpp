@@ -15,7 +15,7 @@
 #include "Classes/Camera/CameraComponent.h"
 #include "Classes/Components/ProjectileMovementComponent.h"
 
-#include "Classes/Engine/Asset/FObjLoader.h"
+#include "Classes/Engine/Asset/ObjLoader.h"
 #include "Engine/Classes/Engine/StaticMeshActor.h"
 #include "Editor/LevelEditor/SLevelEditor.h"
 #include "Editor/PropertyEditor/ShowFlags.h"

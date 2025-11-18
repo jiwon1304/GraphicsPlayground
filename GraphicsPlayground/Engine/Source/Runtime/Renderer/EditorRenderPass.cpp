@@ -15,7 +15,7 @@
 #include "Classes/Components/CapsuleComponent.h"
 #include "Classes/Components/SphereComponent.h"
 #include "Windows/D3D11RHI/GraphicDevice.h"
-#include "Classes/Engine/Asset/FObjLoader.h"
+#include "Classes/Engine/Asset/ObjLoader.h"
 #include "Classes/Actors/Player.h"
 #include "Classes/Components/Light/LightComponent.h"
 #include "Classes/Components/Light/DirectionalLightComponent.h"

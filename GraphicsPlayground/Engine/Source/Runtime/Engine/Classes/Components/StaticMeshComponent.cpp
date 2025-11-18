@@ -2,7 +2,7 @@
 
 #include "Classes/Components/StaticMeshComponent.h"
 
-#include "Classes/Engine/Asset/FObjLoader.h"
+#include "Classes/Engine/Asset/ObjLoader.h"
 #include "Launch/EngineLoop.h"
 #include "CoreUObject/UObject/Casts.h"
 #include "CoreUObject/UObject/ObjectFactory.h"

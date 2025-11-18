@@ -1,7 +1,7 @@
 #include "EditorEngine.h"
 
 #include "Asset/FbxLoader.h"
-#include "Asset/FObjLoader.h"
+#include "Asset/ObjLoader.h"
 #include "World/World.h"
 #include "Classes/Level.h"
 #include "Classes/Animation/SkeletalMeshActor.h"

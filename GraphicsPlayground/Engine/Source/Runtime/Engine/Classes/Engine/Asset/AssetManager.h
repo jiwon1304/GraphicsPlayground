@@ -2,46 +2,22 @@
 #include "Engine/Classes/Engine/StaticMesh.h"
 #include "CoreUObject/UObject/Object.h"
 #include "CoreUObject/UObject/ObjectMacros.h"
+#include "Core/Delegates/DelegateCombination.h"
+
+
+#include "AssetInfo.h"
 
 class UPhysicsAsset;
 class UAnimationAsset;
 class USkeleton;
 class USkeletalMesh;
 class UParticleSystem;
-enum class EAssetType : uint8
-{
-    StaticMesh,
-    SkeletalMesh,
-    Skeleton,
-    Animation,
-    Texture2D,
-    Material,
-    PhysicsAsset,
-};
 
-struct FAssetInfo
-{
-    FName AssetName;        // Asset의 이름
-    FName PackagePath;      // Asset의 패키지 경로
-    FString SourceFilePath; // 원본 파일 경로
-    EAssetType AssetType;   // Asset의 타입
-    uint32 Size;            // Asset의 크기 (바이트 단위)
+DECLARE_DELEGATE_OneParam(FOnAssetAdded, const FAssetInfo& /*InAssetInfo*/);
 
-    [[nodiscard]] FString GetFullPath() const { return PackagePath.ToString() / AssetName.ToString(); }
+using FAssetKey = FString;
 
-    void Serialize(FArchive& Ar)
-    {
-        int8 Type = static_cast<int8>(AssetType);
-
-        Ar << AssetName
-           << PackagePath
-           << SourceFilePath
-           << Type
-           << Size;
-
-        AssetType = static_cast<EAssetType>(Type);
-    }
-};
+using FAssetRegistry = TMap<FAssetKey, FAssetInfo>;
 
 struct FAssetRegistry
 {
@@ -70,6 +46,8 @@ private:
     std::unique_ptr<FAssetRegistry> AssetRegistry;
 
 public:
+    FOnAssetAdded OnAssetAdded;
+
     UAssetManager() = default;
     virtual ~UAssetManager() override = default;
 
@@ -84,7 +62,6 @@ public:
     void InitAssetManager();
     
     const TMap<FName, FAssetInfo>& GetAssetRegistry();
-    TMap<FName, FAssetInfo>& GetAssetRegistryRef();
     // TODO - Do not use Directly (Deprecate)
     const TMap<FName, UParticleSystem*>& GetParticleSystemMap() { return ParticleSystemMap; }
 
@@ -100,7 +77,8 @@ public:
     void AddAssetInfo(UPhysicsAsset* PhysicsAsset) const;
 
     void RemoveAssetInfo(const UPhysicsAsset* PhysicsAsset) const;
-    
+
+protected:
     void AddSkeleton(const FName& Key, USkeleton* Skeleton);
     void AddSkeletalMesh(const FName& Key, USkeletalMesh* SkeletalMesh);
     void AddMaterial(const FName& Key, UMaterial* Material);

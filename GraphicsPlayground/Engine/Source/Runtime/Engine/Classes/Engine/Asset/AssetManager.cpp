@@ -9,7 +9,7 @@
 #include "Classes/Animation/AnimationAsset.h"
 #include "Classes/Animation/AnimSequence.h"
 #include "Classes/Components/Material/Material.h"
-#include "Classes/Engine/Asset/FObjLoader.h"
+#include "Classes/Engine/Asset/ObjLoader.h"
 #include "CoreUObject/UObject/Casts.h"
 #include "Classes/Engine/Asset/SkeletalMeshAsset.h"
 #include "Classes/Engine/Asset/StaticMeshAsset.h"
@@ -46,17 +46,11 @@ UAssetManager* UAssetManager::GetIfInitialized()
 void UAssetManager::InitAssetManager()
 {
     AssetRegistry = std::make_unique<FAssetRegistry>();
-
     LoadContentFiles();
     LoadLazyContentFiles();
 }
 
 const TMap<FName, FAssetInfo>& UAssetManager::GetAssetRegistry()
-{
-    return AssetRegistry->PathNameToAssetInfo;
-}
-
-TMap<FName, FAssetInfo>& UAssetManager::GetAssetRegistryRef()
 {
     return AssetRegistry->PathNameToAssetInfo;
 }

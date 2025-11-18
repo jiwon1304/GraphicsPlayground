@@ -10,7 +10,7 @@
 #include "Classes/Particles/ParticleModules/ParticleModuleSpawn.h"
 #include "Classes/Components/Material/Material.h"
 #include "Classes/Components/SceneComponent.h"
-#include "Classes/Engine/Asset/FObjLoader.h"
+#include "Classes/Engine/Asset/ObjLoader.h"
 #include "Classes/Particles/ParticleModules/ParticleModuleTypeDataMesh.h"
 #include "ParticleModules/ParticleModuleSubUV.h"
 

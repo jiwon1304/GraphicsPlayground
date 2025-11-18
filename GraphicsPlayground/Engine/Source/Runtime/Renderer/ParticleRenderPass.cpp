@@ -10,7 +10,7 @@
 #include "Engine/UnrealClient.h"
 #include "RendererHelpers.h"
 #include "Classes/Components/ParticleSystemComponent.h"
-#include "Classes/Engine/Asset/FObjLoader.h"
+#include "Classes/Engine/Asset/ObjLoader.h"
 #include "Classes/Engine/StaticMesh.h"
 #include "Classes/Engine/Asset/StaticMeshAsset.h"
 #include "Classes/Particles/ParticleEmitterInstances.h"

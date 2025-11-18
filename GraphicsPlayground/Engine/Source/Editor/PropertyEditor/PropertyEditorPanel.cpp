@@ -20,7 +20,7 @@
 #include "Classes/Components/StaticMeshComponent.h"
 #include "Classes/Components/TextComponent.h"
 #include "Classes/Engine/EditorEngine.h"
-#include "Classes/Engine/Asset/FObjLoader.h"
+#include "Classes/Engine/Asset/ObjLoader.h"
 #include "Editor/UnrealEd/ImGuiWidget.h"
 #include "CoreUObject/UObject/ObjectFactory.h"
 #include "Classes/Engine/Engine.h"

@@ -46,35 +46,6 @@ struct FStaticMaterial
     FName MaterialSlotName;
 };
 
-// OBJ File Raw Data
-struct FObjInfo
-{
-    FWString ObjectName; // OBJ File Name. Path + FileName.obj 
-    FWString FilePath; // OBJ File Paths
-    FString DisplayName; // Display Name
-    FString MatName; // OBJ MTL File Name
-
-    // Group
-    uint32 NumOfGroup = 0; // token 'g' or 'o'
-    TArray<FString> GroupName;
-
-    // Vertex, UV, Normal List
-    TArray<FVector> Vertices;
-    TArray<FVector> Normals;
-    TArray<FVector2D> UVs;
-
-    // Faces
-    TArray<int32> Faces;
-
-    // Index
-    TArray<uint32> VertexIndices;
-    TArray<uint32> NormalIndices;
-    TArray<uint32> UVIndices;
-
-    // Material
-    TArray<FMaterialSubset> MaterialSubsets;
-};
-
 enum class EMaterialTextureFlags : uint16
 {
     MTF_Diffuse      = 1 << 0,

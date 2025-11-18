@@ -1,5 +1,5 @@
 #include "CubeComp.h"
-#include "Classes/Engine/Asset/FObjLoader.h"
+#include "Classes/Engine/Asset/ObjLoader.h"
 #include "CoreUObject/UObject/ObjectFactory.h"
 
 

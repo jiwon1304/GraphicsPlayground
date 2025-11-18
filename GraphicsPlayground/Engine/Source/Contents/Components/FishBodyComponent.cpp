@@ -1,7 +1,7 @@
 
 #include "FishBodyComponent.h"
 
-#include "Classes/Engine/Asset/FObjLoader.h"
+#include "Classes/Engine/Asset/ObjLoader.h"
 
 UFishBodyComponent::UFishBodyComponent()
 {

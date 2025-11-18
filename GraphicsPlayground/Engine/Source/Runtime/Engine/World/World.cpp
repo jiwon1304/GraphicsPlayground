@@ -6,7 +6,7 @@
 #include "InteractiveToolsFramework/BaseGizmos/TransformGizmo.h"
 #include "Classes/Components/StaticMeshComponent.h"
 #include "Classes/Components/SkySphereComponent.h"
-#include "Classes/Engine/Asset/FObjLoader.h"
+#include "Classes/Engine/Asset/ObjLoader.h"
 #include "Classes/Actors/HeightFogActor.h"
 #include "Classes/Engine/EditorEngine.h"
 #include "Classes/Engine/Engine.h"

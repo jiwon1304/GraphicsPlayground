@@ -8,7 +8,7 @@
 #include "Classes/Animation/Skeleton.h"
 #include "Classes/Engine/EditorEngine.h"
 #include "World/World.h"
-#include "Classes/Engine/Asset/FObjLoader.h"
+#include "Classes/Engine/Asset/ObjLoader.h"
 #include "Classes/Engine/SkeletalMesh.h"
 #include "Classes/PhysicsEngine/AggregateGeom.h"
 #include "Classes/PhysicsEngine/BodySetup.h"
