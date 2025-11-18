@@ -1,42 +1,42 @@
-#pragma once
-#include "Core/HAL/PlatformType.h"
-// #include "Windows/D3D11RHI/GraphicDevice.h"
+// #pragma once
+// #include "Core/HAL/PlatformType.h"
+// // #include "Windows/D3D11RHI/GraphicDevice.h"
 
-// @todo : remove dependency on D3D11
+// // @todo : remove dependency on D3D11
 
-class ID3D11ShaderResourceView;
-class ID3D11Texture2D;
-class ID3D11SamplerState;
+// class ID3D11ShaderResourceView;
+// class ID3D11Texture2D;
+// class ID3D11SamplerState;
 
-struct FTexture
-{
-    FTexture(ID3D11ShaderResourceView* SRV, ID3D11Texture2D* Texture2D, ID3D11SamplerState* Sampler, FWString Name, uint32 NewWidth, uint32 NewHeight)
-        : TextureSRV(SRV), Texture(Texture2D), SamplerState(Sampler), Name(Name), Width(NewWidth), Height(NewHeight)
-    {}
-    ~FTexture() = default;
+// struct FTexture
+// {
+//     FTexture(ID3D11ShaderResourceView* SRV, ID3D11Texture2D* Texture2D, ID3D11SamplerState* Sampler, FWString Name, uint32 NewWidth, uint32 NewHeight)
+//         : TextureSRV(SRV), Texture(Texture2D), SamplerState(Sampler), Name(Name), Width(NewWidth), Height(NewHeight)
+//     {}
+//     ~FTexture() = default;
 
-    void Release()
-    {
-        // if (TextureSRV)
-        // {
-        //     TextureSRV->Release();
-        //     TextureSRV = nullptr;
-        // }
-        // if (Texture)
-        // {
-        //     Texture->Release();
-        //     Texture = nullptr;
-        // }
-        // if (SamplerState)
-        // {
-        //     SamplerState->Release();
-        //     SamplerState = nullptr;
-        // }
-    }
-    FWString Name;
-    ID3D11ShaderResourceView* TextureSRV = nullptr;
-    ID3D11Texture2D* Texture = nullptr;
-    ID3D11SamplerState* SamplerState = nullptr;
-    uint32 Width;
-    uint32 Height;
-};
+//     void Release()
+//     {
+//         // if (TextureSRV)
+//         // {
+//         //     TextureSRV->Release();
+//         //     TextureSRV = nullptr;
+//         // }
+//         // if (Texture)
+//         // {
+//         //     Texture->Release();
+//         //     Texture = nullptr;
+//         // }
+//         // if (SamplerState)
+//         // {
+//         //     SamplerState->Release();
+//         //     SamplerState = nullptr;
+//         // }
+//     }
+//     FWString Name;
+//     ID3D11ShaderResourceView* TextureSRV = nullptr;
+//     ID3D11Texture2D* Texture = nullptr;
+//     ID3D11SamplerState* SamplerState = nullptr;
+//     uint32 Width;
+//     uint32 Height;
+// };

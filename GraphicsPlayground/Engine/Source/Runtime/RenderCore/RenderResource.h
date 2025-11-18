@@ -1,6 +1,6 @@
 #pragma once
 
-#include "RHI/RHIFwd.h"
+#include "RHI/RHIResources.h"
 #include "Core/Misc/CoreGlobals.h"
 
 class FRenderResource
@@ -32,6 +32,14 @@ extern void BeginInitResource(FRenderResource* Resource);
 
 extern void BeginReleaseResource(FRenderResource* Resource);
 
+/**
+ * Base class for textures.
+ * Derived classes:
+ * - FTextureResource
+ * - FTextureWithSRV
+ * - FStaticShadowDepthMap (@todo)
+ * - FSkyTextureCubeResource (@todo)
+ */
 class FTexture : public FRenderResource
 {
 protected:
@@ -49,12 +57,13 @@ public:
     uint32 GetSizeZ() const;
 
 protected:
-    virtual void InitRHI(FRHICommandListBase& RHICmdList) override;
-
     // FRenderResource interface
     virtual void ReleaseRHI() override;
 };
 
+/**
+ * Texture which only can be accessed as SRV
+ */
 class FTextureWithSRV : public FTexture
 {
     FTextureWithSRV();
