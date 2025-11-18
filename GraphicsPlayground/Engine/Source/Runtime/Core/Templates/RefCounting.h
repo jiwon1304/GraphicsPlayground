@@ -162,6 +162,10 @@ public:
 		return Reference != nullptr;
 	}
 
+	/**
+	 * The assignment operator in "*this = nullptr;" is called and calls Release() on "this".
+	 * This decreases the reference count and may delete the referenced object.
+	 */
 	FORCEINLINE void SafeRelease()
 	{
 		*this = nullptr;
