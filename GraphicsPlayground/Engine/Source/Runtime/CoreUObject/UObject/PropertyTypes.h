@@ -10,6 +10,12 @@
 #include "ThirdParty/magic_enum/include/magic_enum.hpp"
 #include "Templates/TemplateUtilities.h"
 
+/**
+ * Clang requires complete type for std::derived_from
+ * So we define a concept to check if a type is complete
+ */
+template <typename T>
+concept is_complete_type = requires { sizeof(T); };
 
 enum class EPropertyType : uint8
 {
@@ -87,9 +93,12 @@ consteval EPropertyType GetPropertyType()
         
         // PointedToType가 완전한 타입일 때만 true를 반환.
         // 전방 선언 시 false가 될 수 있음.
-        if constexpr (std::derived_from<PointedToType, UObject>)
+        if constexpr (is_complete_type<PointedToType>)
         {
-            return EPropertyType::Object;
+            if constexpr (std::derived_from<PointedToType, UObject>)
+            {
+                return EPropertyType::Object;
+            }
         }
 
         // 커스텀 구조체 포인터
