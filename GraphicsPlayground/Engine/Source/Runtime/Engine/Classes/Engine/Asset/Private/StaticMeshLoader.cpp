@@ -1,4 +1,4 @@
-#include "ObjLoader.h"
+#include "StaticMeshLoader.h"
 
 #include <fstream>
 #include <sstream>
@@ -17,7 +17,7 @@ FORCEINLINE uint64 HashIndices(IndexType PosIndex, IndexType UVIndex, IndexType 
          | (static_cast<uint64>(NormalIndex) << 0);
 }
 
-bool FStaticMeshLoader::LoadStaticMesh(const FFilePath &InFilePath, FObjLoadResult &OutLoadResult)
+bool FStaticMeshLoader::LoadStaticMesh(const FFilePath &InFilePath, FStaticMeshLoadResult &OutLoadResult)
 {
     FFilePath BinaryPath = InFilePath.string() + ".bin";
     if (std::ifstream(BinaryPath).good())
@@ -29,7 +29,7 @@ bool FStaticMeshLoader::LoadStaticMesh(const FFilePath &InFilePath, FObjLoadResu
         else
         {
             // Clear previous load result on failure
-            OutLoadResult = FObjLoadResult();
+            OutLoadResult = FStaticMeshLoadResult();
         }
     }
 
@@ -50,7 +50,7 @@ bool FStaticMeshLoader::LoadStaticMesh(const FFilePath &InFilePath, FObjLoadResu
     return true;
 }
 
-bool FStaticMeshLoader::LoadObj(const FFilePath& InFilePath, FObjLoadResult& OutLoadResult)
+bool FStaticMeshLoader::LoadObj(const FFilePath& InFilePath, FStaticMeshLoadResult& OutLoadResult)
 {
     std::ifstream ObjFile(InFilePath);
     if (!ObjFile.is_open())
@@ -331,7 +331,7 @@ bool FStaticMeshLoader::LoadObj(const FFilePath& InFilePath, FObjLoadResult& Out
             continue;
         }
 
-        FObjLoadResult::FSubMeshInfo SubmeshInfo{};
+        FSubMeshInfo SubmeshInfo{};
         SubmeshInfo.IndexStart = static_cast<IndexType>(IndexBuffer.Num());
         SubmeshInfo.IndexCount = 0;
 
@@ -435,7 +435,7 @@ bool FStaticMeshLoader::LoadObj(const FFilePath& InFilePath, FObjLoadResult& Out
     return true;
 }
 
-bool FStaticMeshLoader::SaveBinary(const FFilePath &BinaryPath, const FObjLoadResult &InStaticMesh)
+bool FStaticMeshLoader::SaveBinary(const FFilePath &BinaryPath, const FStaticMeshLoadResult &InStaticMesh)
 {
     std::ofstream File(BinaryPath, std::ios::binary);
     if (!File.is_open())
@@ -460,7 +460,7 @@ bool FStaticMeshLoader::SaveBinary(const FFilePath &BinaryPath, const FObjLoadRe
 
     uint32 SubmeshCount = InStaticMesh.SubMeshes.Num();
     File.write(reinterpret_cast<const char*>(&SubmeshCount), sizeof(SubmeshCount));
-    for (const FObjLoadResult::FSubMeshInfo& Submesh : InStaticMesh.SubMeshes)
+    for (const FSubMeshInfo& Submesh : InStaticMesh.SubMeshes)
     {
         File.write(reinterpret_cast<const char*>(&Submesh.IndexStart), sizeof(Submesh.IndexStart));
         File.write(reinterpret_cast<const char*>(&Submesh.IndexCount), sizeof(Submesh.IndexCount));
@@ -468,7 +468,7 @@ bool FStaticMeshLoader::SaveBinary(const FFilePath &BinaryPath, const FObjLoadRe
     }
 }
 
-bool FStaticMeshLoader::LoadBinary(const FFilePath &BinaryPath, FObjLoadResult &OutStaticMesh)
+bool FStaticMeshLoader::LoadBinary(const FFilePath &BinaryPath, FStaticMeshLoadResult &OutStaticMesh)
 {
     std::ifstream File(BinaryPath, std::ios::binary);
     if (!File.is_open())
@@ -497,7 +497,7 @@ bool FStaticMeshLoader::LoadBinary(const FFilePath &BinaryPath, FObjLoadResult &
     uint32 SubmeshCount = 0;
     File.read(reinterpret_cast<char*>(&SubmeshCount), sizeof(SubmeshCount));
     OutStaticMesh.SubMeshes.SetNum(SubmeshCount);
-    for (FObjLoadResult::FSubMeshInfo& Submesh : OutStaticMesh.SubMeshes)
+    for (FSubMeshInfo& Submesh : OutStaticMesh.SubMeshes)
     {
         File.read(reinterpret_cast<char*>(&Submesh.IndexStart), sizeof(Submesh.IndexStart));
         File.read(reinterpret_cast<char*>(&Submesh.IndexCount), sizeof(Submesh.IndexCount));
