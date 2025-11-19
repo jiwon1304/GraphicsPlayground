@@ -1,5 +1,6 @@
 #include "ImageLoader.h"
 
+#include "Core/Container/StringHelpers.h"
 #include "Engine/UserInterface/Console.h"
 
 #if defined(BUILD_PLATFORM_WINDOWS)
@@ -85,6 +86,9 @@ bool FImageLoader::LoadImage(const FWString &InFilePath, EPixelFormat PixelForma
     // Convert FWString (wide string) to UTF-8 std::string for stb_image
     std::string Utf8Path = WStringToString(InFilePath);
 
+    OutLoadResult.FilePath = InFilePath;
+    OutLoadResult.AssetName = FilePathHelpers::GetFileNameNoExtension(InFilePath);
+
     // Request 4 channels (RGBA) to match the Windows path which produces 32bpp RGBA
     int Width = 0;
     int Height = 0;
@@ -156,7 +160,6 @@ bool FImageLoader::LoadImage(const FWString &InFilePath, EPixelFormat PixelForma
     {
         UE_LOG(ELogLevel::Error, "FImageLoader::LoadImage - Unsupported pixel format.\n%s", Utf8Path.c_str());
         // Unsupported format
-        OutLoadResult.bValid = false;
         OutLoadResult.ImageData = nullptr;
         return false;
     }
@@ -164,7 +167,6 @@ bool FImageLoader::LoadImage(const FWString &InFilePath, EPixelFormat PixelForma
     if (!StbData)
     {
         UE_LOG(ELogLevel::Error, "FImageLoader::LoadImage - Failed to load image: %s", Utf8Path.c_str());
-        OutLoadResult.bValid = false;
         OutLoadResult.ImageData = nullptr;
         return false;
     }
@@ -187,7 +189,6 @@ bool FImageLoader::LoadImage(const FWString &InFilePath, EPixelFormat PixelForma
     OutLoadResult.NumChannels = static_cast<uint8>(ChannelsInFile);
     OutLoadResult.BitsPerChannel = BitsPerChannel;
     OutLoadResult.ImageData = ImageData;
-    OutLoadResult.bValid = true;
 
     return true;
 }
