@@ -186,6 +186,7 @@ bool FImageLoader::LoadImage(const FFilePath& InFilePath, EPixelFormat PixelForm
     OutLoadResult.NumChannels = static_cast<uint8>(ChannelsInFile);
     OutLoadResult.BitsPerChannel = BitsPerChannel;
     OutLoadResult.ImageData = ImageData;
+    OutLoadResult.bValid = true;
 
     return true;
 }

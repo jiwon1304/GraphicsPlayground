@@ -331,7 +331,7 @@ bool FStaticMeshLoader::LoadObj(const FFilePath& InFilePath, FStaticMeshLoadResu
             continue;
         }
 
-        FSubMeshInfo SubmeshInfo{};
+        FStaticSubMeshInfo SubmeshInfo{};
         SubmeshInfo.IndexStart = static_cast<IndexType>(IndexBuffer.Num());
         SubmeshInfo.IndexCount = 0;
 
@@ -460,7 +460,7 @@ bool FStaticMeshLoader::SaveBinary(const FFilePath &BinaryPath, const FStaticMes
 
     uint32 SubmeshCount = InStaticMesh.SubMeshes.Num();
     File.write(reinterpret_cast<const char*>(&SubmeshCount), sizeof(SubmeshCount));
-    for (const FSubMeshInfo& Submesh : InStaticMesh.SubMeshes)
+    for (const FStaticSubMeshInfo& Submesh : InStaticMesh.SubMeshes)
     {
         File.write(reinterpret_cast<const char*>(&Submesh.IndexStart), sizeof(Submesh.IndexStart));
         File.write(reinterpret_cast<const char*>(&Submesh.IndexCount), sizeof(Submesh.IndexCount));
@@ -497,7 +497,7 @@ bool FStaticMeshLoader::LoadBinary(const FFilePath &BinaryPath, FStaticMeshLoadR
     uint32 SubmeshCount = 0;
     File.read(reinterpret_cast<char*>(&SubmeshCount), sizeof(SubmeshCount));
     OutStaticMesh.SubMeshes.SetNum(SubmeshCount);
-    for (FSubMeshInfo& Submesh : OutStaticMesh.SubMeshes)
+    for (FStaticSubMeshInfo& Submesh : OutStaticMesh.SubMeshes)
     {
         File.read(reinterpret_cast<char*>(&Submesh.IndexStart), sizeof(Submesh.IndexStart));
         File.read(reinterpret_cast<char*>(&Submesh.IndexCount), sizeof(Submesh.IndexCount));

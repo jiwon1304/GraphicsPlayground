@@ -46,33 +46,33 @@ struct FStaticMaterial
     FName MaterialSlotName;
 };
 
-enum class EMaterialTextureFlags : uint16
-{
-    MTF_Diffuse      = 1 << 0,
-    MTF_Specular     = 1 << 1,
-    MTF_Normal       = 1 << 2,
-    MTF_Emissive     = 1 << 3,
-    MTF_Alpha        = 1 << 4,
-    MTF_Ambient      = 1 << 5,
-    MTF_Shininess    = 1 << 6,
-    MTF_Metallic     = 1 << 7,
-    MTF_Roughness    = 1 << 8,
-    MTF_MAX,
-};
+// enum class EMaterialTextureFlags : uint16
+// {
+//     MTF_Diffuse      = 1 << 0,
+//     MTF_Specular     = 1 << 1,
+//     MTF_Normal       = 1 << 2,
+//     MTF_Emissive     = 1 << 3,
+//     MTF_Alpha        = 1 << 4,
+//     MTF_Ambient      = 1 << 5,
+//     MTF_Shininess    = 1 << 6,
+//     MTF_Metallic     = 1 << 7,
+//     MTF_Roughness    = 1 << 8,
+//     MTF_MAX,
+// };
 
-enum class EMaterialTextureSlots : uint8
-{
-    MTS_Diffuse      = 0,
-    MTS_Specular     = 1,
-    MTS_Normal       = 2,
-    MTS_Emissive     = 3,
-    MTS_Alpha        = 4,
-    MTS_Ambient      = 5,
-    MTS_Shininess    = 6,
-    MTS_Metallic     = 7,
-    MTS_Roughness    = 8,
-    MTS_MAX,
-};
+// enum class EMaterialTextureSlots : uint8
+// {
+//     MTS_Diffuse      = 0,
+//     MTS_Specular     = 1,
+//     MTS_Normal       = 2,
+//     MTS_Emissive     = 3,
+//     MTS_Alpha        = 4,
+//     MTS_Ambient      = 5,
+//     MTS_Shininess    = 6,
+//     MTS_Metallic     = 7,
+//     MTS_Roughness    = 8,
+//     MTS_MAX,
+// };
 
 struct FTextureInfo
 {

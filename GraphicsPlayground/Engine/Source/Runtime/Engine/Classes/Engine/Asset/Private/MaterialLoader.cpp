@@ -59,63 +59,62 @@ bool FMaterialLoader::LoadMaterial(const FFilePath& InFilePath, TArray<FMaterial
 
             // OutStaticMeshRenderData.Materials.Add(Material);
         }
-
-        if (Token == "Kd")
+        else if (Token == "Kd")
         {
             float X, Y, Z;
             LineStream >> X >> Y >> Z;
             MaterialCurrentlyParsed.DiffuseColor = FVector(X, Y, Z);
         }
-        if (Token == "Ks")
+        else if (Token == "Ks")
         {
             float X, Y, Z;
             LineStream >> X >> Y >> Z;
             MaterialCurrentlyParsed.SpecularColor = FVector(X, Y, Z);
         }
-        if (Token == "Ka")
+        else if (Token == "Ka")
         {
             float X, Y, Z;
             LineStream >> X >> Y >> Z;
             MaterialCurrentlyParsed.AmbientColor = FVector(X, Y, Z);
         }
-        if (Token == "Ke")
+        else if (Token == "Ke")
         {
             float X, Y, Z;
             LineStream >> X >> Y >> Z;
             MaterialCurrentlyParsed.EmissiveColor = FVector(X, Y, Z);
         }
-        if (Token == "Ns")
+        else if (Token == "Ns")
         {
             float X;
             LineStream >> X;
             MaterialCurrentlyParsed.Shininess = X;
         }
-        if (Token == "Ni")
+        else if (Token == "Ni")
         {
             float X;
             LineStream >> X;
             MaterialCurrentlyParsed.IOR = X;
         }
-        if (Token == "d" || Token == "Tr")
+        else if (Token == "d" || Token == "Tr")
         {
             float X;
             LineStream >> X;
             MaterialCurrentlyParsed.Transparency = (Token == "Tr") ? X : 1.f - X;
             MaterialCurrentlyParsed.bTransparent = true;
         }
-        if (Token == "illum")
+        else if (Token == "illum")
         {
             uint32 X;
             LineStream >> X;
             MaterialCurrentlyParsed.IlluminanceModel = X;
         }
-        if (Token == "Pm")
+        else if (Token == "Pm")
         {
             float X;
             LineStream >> X;
             MaterialCurrentlyParsed.Metallic = X;
         }
-        if (Token == "Pr")
+        else if (Token == "Pr")
         {
             float X;
             LineStream >> X;
@@ -126,11 +125,12 @@ bool FMaterialLoader::LoadMaterial(const FFilePath& InFilePath, TArray<FMaterial
          * Texture maps
          * Mapping to FTexture will be resolved in UAssetManager.
          */
-        if (Token == "map_Kd")
+        else if (Token == "map_Kd")
         {
             LineStream >> Line;
             FFilePath ResolvedTexturePath = ParentPath / Line;
-            MaterialCurrentlyParsed.DiffuseTexturePath = ResolvedTexturePath;
+            
+            MaterialCurrentlyParsed.TexturePaths.Emplace(ETextureType::Diffuse, ResolvedTexturePath);
 
             // FWString TexturePath = OutObjInfo.FilePath + OutStaticMeshRenderData.Materials[MaterialIndex]->TextureInfos[SlotIdx].TextureName.ToWideString();
             // if (CreateTextureFromFile(TexturePath))
@@ -140,7 +140,7 @@ bool FMaterialLoader::LoadMaterial(const FFilePath& InFilePath, TArray<FMaterial
             //     OutStaticMeshRenderData.Materials[MaterialIndex]->TextureFlag |= static_cast<uint16>(EMaterialTextureFlags::MTF_Diffuse);
             // }
         }
-        if (Token == "map_Bump")
+        else if (Token == "map_Bump")
         {   
             std::string Line;
             while (LineStream >> Line)
@@ -154,46 +154,53 @@ bool FMaterialLoader::LoadMaterial(const FFilePath& InFilePath, TArray<FMaterial
                 else
                 {
                     FFilePath ResolvedTexturePath = ParentPath / Line;
-                    MaterialCurrentlyParsed.NormalTexturePath = ResolvedTexturePath;
+                    MaterialCurrentlyParsed.TexturePaths.Emplace(ETextureType::Normal, ResolvedTexturePath);
                 }
             }
         }
-        if (Token == "map_Ks")
+        else if (Token == "map_Ks")
         {
             LineStream >> Line;
             FFilePath ResolvedTexturePath = ParentPath / Line;
-            MaterialCurrentlyParsed.SpecularTexturePath = ResolvedTexturePath;
+            MaterialCurrentlyParsed.TexturePaths.Emplace(ETextureType::Specular, ResolvedTexturePath);
         }
-        if (Token == "map_Ns")
+        else if (Token == "map_Ns")
         {
             LineStream >> Line;
             FFilePath ResolvedTexturePath = ParentPath / Line;
-            MaterialCurrentlyParsed.ShininessTexturePath = ResolvedTexturePath;
+            MaterialCurrentlyParsed.TexturePaths.Emplace(ETextureType::Shininess, ResolvedTexturePath);
         }
-        if (Token == "map_Ka")
+        else if (Token == "map_Ka")
         {
             LineStream >> Line;
             FFilePath ResolvedTexturePath = ParentPath / Line;
-            MaterialCurrentlyParsed.AmbientTexturePath = ResolvedTexturePath;
+            MaterialCurrentlyParsed.TexturePaths.Emplace(ETextureType::Ambient, ResolvedTexturePath);
         }
-        if (Token == "map_Ke")
+        else if (Token == "map_Ke")
         {
             LineStream >> Line;
             FFilePath ResolvedTexturePath = ParentPath / Line;
-            MaterialCurrentlyParsed.EmissiveTexturePath = ResolvedTexturePath;
+            MaterialCurrentlyParsed.TexturePaths.Emplace(ETextureType::Emissive, ResolvedTexturePath);
         }
-        if (Token == "map_Pm")
+        else if (Token == "map_Pm")
         {
             LineStream >> Line;
             FFilePath ResolvedTexturePath = ParentPath / Line;
-            MaterialCurrentlyParsed.MetallicTexturePath = ResolvedTexturePath;
+            MaterialCurrentlyParsed.TexturePaths.Emplace(ETextureType::Metallic, ResolvedTexturePath);
         }
-        if (Token == "map_Pr")
+        else if (Token == "map_Pr")
         {
             LineStream >> Line;
             FFilePath ResolvedTexturePath = ParentPath / Line;
-            MaterialCurrentlyParsed.RoughnessTexturePath = ResolvedTexturePath;
+            MaterialCurrentlyParsed.TexturePaths.Emplace(ETextureType::Roughness, ResolvedTexturePath);
         }
+        else if (Token.starts_with("map_"))
+        {
+            LineStream >> Line;
+            FFilePath ResolvedTexturePath = ParentPath / Line;
+            MaterialCurrentlyParsed.TexturePaths.Emplace(ETextureType::Unknown, ResolvedTexturePath);
+        }
+
         // TODO: map_d 또는 map_Tr은 나중에 필요할때 구현
     }
 

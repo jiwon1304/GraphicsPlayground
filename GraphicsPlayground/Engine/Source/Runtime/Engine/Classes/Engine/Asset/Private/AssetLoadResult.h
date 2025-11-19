@@ -8,6 +8,7 @@
 #include "Classes/Engine/Asset/AssetInfo.h"
 #include "Classes/Engine/Asset/StaticMeshAsset.h"
 #include "Classes/Engine/Asset/SkeletalMeshAsset.h"
+#include "Engine/ReferenceSkeleton.h"
 
 using FFilePath = std::filesystem::path;
 
@@ -38,12 +39,27 @@ struct FImageLoadResult : public FLoadResult
     uint8 NumChannels = 0;
     uint8 BitsPerChannel = 0; // 8bit image -> 8, 32bit image -> 32
     bool bSRGB = false;
+    bool bValid = false;
 
     /**
      * Raw image data
      * The channel is interleaved format (e.g., RGBA RGBA RGBA...)
      */
     uint8* ImageData; 
+};
+
+enum class ETextureType : uint8
+{
+    Diffuse,
+    Specular,
+    Normal,
+    Emissive,
+    Alpha,
+    Ambient,
+    Shininess,
+    Metallic,
+    Roughness,
+    Unknown
 };
 
 struct FMaterialLoadResult : public FLoadResult
@@ -72,15 +88,16 @@ struct FMaterialLoadResult : public FLoadResult
     /**
      * Texture files will be resolved after parsing mtl file.
      */
-    FFilePath DiffuseTexturePath;    // map_Kd
-    FFilePath SpecularTexturePath;   // map_Ks
-    FFilePath NormalTexturePath;     // map_Bump
-    FFilePath EmissiveTexturePath;   // map_Ke
-    FFilePath AlphaTexturePath;      // map_d
-    FFilePath AmbientTexturePath;    // map_Ka
-    FFilePath ShininessTexturePath;  // map_Ns
-    FFilePath MetallicTexturePath;   // map_Pm
-    FFilePath RoughnessTexturePath;  // map_Pr
+    TArray<std::pair<ETextureType, FFilePath>> TexturePaths;
+    // FFilePath DiffuseTexturePath;    // map_Kd
+    // FFilePath SpecularTexturePath;   // map_Ks
+    // FFilePath NormalTexturePath;     // map_Bump
+    // FFilePath EmissiveTexturePath;   // map_Ke
+    // FFilePath AlphaTexturePath;      // map_d
+    // FFilePath AmbientTexturePath;    // map_Ka
+    // FFilePath ShininessTexturePath;  // map_Ns
+    // FFilePath MetallicTexturePath;   // map_Pm
+    // FFilePath RoughnessTexturePath;  // map_Pr
 };
 
 struct FSubMeshInfo
@@ -88,8 +105,6 @@ struct FSubMeshInfo
     // Index for FStaticMeshLoadResult::Vertices
     IndexType IndexStart;
     IndexType IndexCount;
-    // Will be resolved after parsing
-    FFilePath MaterialPath;
 };
 
 struct FMeshLoadResult : public FLoadResult
@@ -100,15 +115,29 @@ struct FMeshLoadResult : public FLoadResult
     TArray<uint16> PositionOnlyIndices;
 };
 
+struct FStaticSubMeshInfo : public FSubMeshInfo
+{
+    // Path to .mtl file. Will be resolved after parsing
+    FFilePath MaterialPath;
+};
+
 struct FStaticMeshLoadResult : public FMeshLoadResult
 {
     // Full vertex data
     TArray<FStaticMeshVertex> Vertices;    
-    TArray<FSubMeshInfo> SubMeshes;
+    TArray<FStaticSubMeshInfo> SubMeshes;
+};
+
+struct FSkeletalSubMeshInfo : public FSubMeshInfo
+{
+    // Fbx file has internal material data. Textures will be resolved after parsing
+    TArray<FMaterialLoadResult> Materials;
 };
 
 struct FSkeletalMeshLoadResult : public FMeshLoadResult
 {
     TArray<FSkeletalMeshVertex> Vertices;
-    TArray<FSubMeshInfo> SubMeshes;
+    TArray<FSkeletalSubMeshInfo> SubMeshes;
+
+    TArray<FReferenceSkeleton> ReferenceSkeletons;
 };
