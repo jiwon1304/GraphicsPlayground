@@ -38,3 +38,13 @@ FWString GetFileExtension(const FWString& FilePath)
     return FilePath.substr(LastDotIndex + 1);
 }
 } 
+
+namespace StringHelpers
+{
+    FWString ToLower(const FWString& Input)
+    {
+        FWString Result = Input;
+        std::transform(Result.begin(), Result.end(), Result.begin(), [](wchar_t c) { return std::towlower(c); });
+        return Result;
+    }
+}
