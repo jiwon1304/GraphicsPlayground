@@ -78,7 +78,7 @@ void UAnimSingleNodeInstance::NativeUpdateAnimation(float DeltaSeconds, FPoseCon
 
     UAnimSequence* AnimSequence = Cast<UAnimSequence>(CurrentAsset);
     const UAnimDataModel* DataModel = AnimSequence->GetDataModel();
-    const int32 FrameRate = DataModel->GetFrameRate();
+    const double FrameRate = DataModel->GetFrameRate();
     const int32 NumberOfFrames = DataModel->GetNumberOfFrames();
     
     LoopStartFrame = FMath::Clamp(LoopStartFrame, 0, NumberOfFrames - 2);

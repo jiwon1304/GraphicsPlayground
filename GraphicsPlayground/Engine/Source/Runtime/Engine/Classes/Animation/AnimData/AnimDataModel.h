@@ -41,7 +41,7 @@ public:
     virtual double GetPlayLength() const;
     virtual int32 GetNumberOfFrames() const;
     virtual int32 GetNumberOfKeys() const;
-    virtual int32 GetFrameRate() const;
+    virtual double GetFrameRate() const;
 
     virtual UAnimSequence* GetAnimationSequence() const;
 

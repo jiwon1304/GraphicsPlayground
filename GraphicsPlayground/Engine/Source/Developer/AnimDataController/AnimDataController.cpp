@@ -32,8 +32,8 @@ void UAnimDataController::ResizeNumberOfFrames(int32 NewLength, int32 T0, int32 
         {
             if (T0 < T1)
             {
-                Model->NumberOfFrames = NewLength;
-                Model->NumberOfKeys = Model->NumberOfFrames + 1;
+                Model->Data.NumberOfFrames = NewLength;
+                Model->Data.NumberOfKeys = Model->Data.NumberOfFrames + 1;
             }
         }
     }
@@ -61,7 +61,7 @@ int32 UAnimDataController::AddBoneTrack(FName BoneName)
         }
         else
         {
-            const int32 InsertIndex = Model->BoneAnimationTracks.Num();
+            const int32 InsertIndex = Model->Data.BoneAnimationTracks.Num();
             int32 BoneIndex = INDEX_NONE;
 
             if (const UAnimSequence* AnimationSequence = Model->GetAnimationSequence())
@@ -78,7 +78,7 @@ int32 UAnimDataController::AddBoneTrack(FName BoneName)
                 NewTrack.Name = BoneName;
                 NewTrack.BoneTreeIndex = BoneIndex;
 
-                Model->BoneAnimationTracks.Emplace(NewTrack);
+                Model->Data.BoneAnimationTracks.Emplace(NewTrack);
 
                 return InsertIndex;
             }
@@ -99,7 +99,7 @@ bool UAnimDataController::RemoveBoneTrack(FName BoneName)
 
     if (ExistingTrackPtr != nullptr)
     {
-        const int32 TrackIndex = Model->BoneAnimationTracks.IndexOfByPredicate([ExistingTrackPtr](const FBoneAnimationTrack& Track)
+        const int32 TrackIndex = Model->Data.BoneAnimationTracks.IndexOfByPredicate([ExistingTrackPtr](const FBoneAnimationTrack& Track)
         {
             return Track.Name == ExistingTrackPtr->Name;
         });
@@ -112,7 +112,7 @@ bool UAnimDataController::RemoveBoneTrack(FName BoneName)
         TArray<FTransform> BoneTransforms;
         Model->GetBoneTrackTransforms(BoneName, BoneTransforms);
 
-        Model->BoneAnimationTracks.RemoveAt(TrackIndex);
+        Model->Data.BoneAnimationTracks.RemoveAt(TrackIndex);
 
         return true;
     }
@@ -190,7 +190,7 @@ bool UAnimDataController::RemoveBoneTracksMissingFromSkeleton(const USkeleton* S
         TArray<FName> TracksUpdated;
         const FReferenceSkeleton& ReferenceSkeleton = Skeleton->GetReferenceSkeleton();
 
-        for (FBoneAnimationTrack& Track : Model->BoneAnimationTracks)
+        for (FBoneAnimationTrack& Track : Model->Data.BoneAnimationTracks)
         {
             // Try find correct bone index
             const int32 BoneIndex = ReferenceSkeleton.FindBoneIndex(Track.Name);
@@ -227,7 +227,7 @@ void UAnimDataController::UpdateWithSkeleton(USkeleton* TargetSkeleton)
     RemoveBoneTracksMissingFromSkeleton(TargetSkeleton);
 }
 
-inline FFrameTime AsFrameTime(int32 FrameRate, double TimeInSeconds)
+inline FFrameTime AsFrameTime(double FrameRate, double TimeInSeconds)
 {
     // TODO: 계산 식 수정해야 함.
     const int32 Numerator = 60000;
@@ -250,14 +250,14 @@ inline FFrameTime AsFrameTime(int32 FrameRate, double TimeInSeconds)
 
 int32 UAnimDataController::ConvertSecondsToFrameNumber(double Seconds) const
 {
-    const int32& ModelFrameRate = GetModel()->GetFrameRate();
+    const double& ModelFrameRate = GetModel()->GetFrameRate();
     
     const FFrameTime FrameTime = AsFrameTime(ModelFrameRate, Seconds);
 
     return FrameTime.GetFrame();
 }
 
-void UAnimDataController::SetFrameRate(int32 FrameRate)
+void UAnimDataController::SetFrameRate(double FrameRate)
 {
-    Model->FrameRate = FrameRate;
+    Model->Data.FrameRate = FrameRate;
 }

@@ -27,7 +27,7 @@ public:
 
     int32 ConvertSecondsToFrameNumber(double Seconds) const;
 
-    void SetFrameRate(int32 FrameRate);
+    void SetFrameRate(double FrameRate);
 
 private:
     UAnimDataModel* Model;

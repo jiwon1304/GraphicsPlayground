@@ -303,7 +303,7 @@ void UAnimSequenceBase::SerializeAsset(FArchive& Ar)
     Ar << RateScale << bLoop;
 
     TArray<FBoneAnimationTrack> BoneAnimationTracks;
-    int32 FrameRate;
+    double FrameRate;
     int32 NumberOfFrames;
     int32 NumberOfKeys;
 

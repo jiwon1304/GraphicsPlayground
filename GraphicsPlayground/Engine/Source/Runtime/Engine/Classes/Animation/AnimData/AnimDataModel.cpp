@@ -195,7 +195,7 @@ int32 UAnimDataModel::GetNumberOfKeys() const
     return Data.NumberOfKeys;
 }
 
-int32 UAnimDataModel::GetFrameRate() const
+double UAnimDataModel::GetFrameRate() const
 {
     return Data.FrameRate;
 }

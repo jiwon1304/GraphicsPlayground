@@ -301,7 +301,7 @@ void SkeletalMeshViewerPanel::RenderAnimationSequence(const FReferenceSkeleton& 
         PrevAnimDataModel = DataModel;
     }
     
-    const int32 FrameRate = DataModel->GetFrameRate();
+    const double FrameRate = DataModel->GetFrameRate();
     int32 NumFrames = DataModel->GetNumberOfFrames();
     if (NumFrames <= 1)
     {

@@ -18,7 +18,7 @@ void UAnimSequence::GetAnimationPose(FPoseContext& OutPoseContext, const FAnimEx
 void UAnimSequence::GetBonePose(FPoseContext& OutPoseContext, const FAnimExtractContext& ExtractionContext)
 {
     const UAnimDataModel* DataModel = this->GetDataModel();
-    const int32 FrameRate = DataModel->GetFrameRate();
+    const double FrameRate = DataModel->GetFrameRate();
     const int32 NumberOfFrames = DataModel->GetNumberOfFrames();
     
     int32 NumBones = OutPoseContext.Pose.GetNumBones();
