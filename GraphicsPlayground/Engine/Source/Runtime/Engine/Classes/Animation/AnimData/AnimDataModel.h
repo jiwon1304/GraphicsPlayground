@@ -51,17 +51,7 @@ public:
     USkeleton* GetSkeleton() const;
 
 private:
-    // All individual bone animation tracks
-    TArray<FBoneAnimationTrack> BoneAnimationTracks;
-
-    // Rate at which the animated data is sampled
-    int32 FrameRate;
-
-    // Total number of sampled animated frames
-    int32 NumberOfFrames;
-
-    // Total number of sampled animated keys
-    int32 NumberOfKeys;
+    FAnimData Data;
 
     FBoneAnimationTrack* FindMutableBoneTrackByName(FName Name);
     

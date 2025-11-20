@@ -11,26 +11,22 @@
 #include "CoreUObject/UObject/ObjectFactory.h"
 
 UAnimDataModel::UAnimDataModel()
-    : BoneAnimationTracks()
-    , FrameRate(0)
-    , NumberOfFrames(0)
-    , NumberOfKeys(0)
 {
 }
 
 const TArray<FBoneAnimationTrack>& UAnimDataModel::GetBoneAnimationTracks() const
 {
-    return BoneAnimationTracks;
+    return Data.BoneAnimationTracks;
 }
 
 const FBoneAnimationTrack& UAnimDataModel::GetBoneTrackByIndex(int32 TrackIndex) const
 {
-    return BoneAnimationTracks[TrackIndex];
+    return Data.BoneAnimationTracks[TrackIndex];
 }
 
 const FBoneAnimationTrack& UAnimDataModel::GetBoneTrackByName(const FName& TrackName) const
 {
-    const FBoneAnimationTrack* TrackPtr = BoneAnimationTracks.FindByPredicate([TrackName](const FBoneAnimationTrack& Track)
+    const FBoneAnimationTrack* TrackPtr = Data.BoneAnimationTracks.FindByPredicate([TrackName](const FBoneAnimationTrack& Track)
     {
         return Track.Name == TrackName;
     });
@@ -40,7 +36,7 @@ const FBoneAnimationTrack& UAnimDataModel::GetBoneTrackByName(const FName& Track
 
 const FBoneAnimationTrack* UAnimDataModel::FindBoneTrackByName(FName Name) const
 {
-    return BoneAnimationTracks.FindByPredicate([Name](const FBoneAnimationTrack& Track)
+    return Data.BoneAnimationTracks.FindByPredicate([Name](const FBoneAnimationTrack& Track)
     {
         return Track.Name == Name;
     });
@@ -48,7 +44,7 @@ const FBoneAnimationTrack* UAnimDataModel::FindBoneTrackByName(FName Name) const
 
 const FBoneAnimationTrack* UAnimDataModel::FindBoneTrackByIndex(int32 BoneIndex) const
 {
-    const FBoneAnimationTrack* TrackPtr = BoneAnimationTracks.FindByPredicate([BoneIndex](const FBoneAnimationTrack& Track)
+    const FBoneAnimationTrack* TrackPtr = Data.BoneAnimationTracks.FindByPredicate([BoneIndex](const FBoneAnimationTrack& Track)
 	{
 		return Track.BoneTreeIndex == BoneIndex;
 	});
@@ -58,7 +54,7 @@ const FBoneAnimationTrack* UAnimDataModel::FindBoneTrackByIndex(int32 BoneIndex)
 
 int32 UAnimDataModel::GetBoneTrackIndex(const FBoneAnimationTrack& Track) const
 {
-    return BoneAnimationTracks.IndexOfByPredicate([&Track](const FBoneAnimationTrack& SearchTrack)
+    return Data.BoneAnimationTracks.IndexOfByPredicate([&Track](const FBoneAnimationTrack& SearchTrack)
     {
         return SearchTrack.Name == Track.Name;
     });
@@ -76,7 +72,7 @@ int32 UAnimDataModel::GetBoneTrackIndexByName(FName TrackName) const
 
 bool UAnimDataModel::IsValidBoneTrackIndex(int32 TrackIndex) const
 {
-    return BoneAnimationTracks.IsValidIndex(TrackIndex);
+    return Data.BoneAnimationTracks.IsValidIndex(TrackIndex);
 }
 
 FTransform UAnimDataModel::EvaluateBoneTrackTransform(FName TrackName, const FFrameTime& FrameTime, const EAnimInterpolationType& Interpolation) const
@@ -149,11 +145,11 @@ void UAnimDataModel::GetBoneTrackTransforms(FName TrackName, TArray<FTransform>&
         return Track.Name == TrackName;
     });
 	
-    OutTransforms.SetNum(NumberOfKeys);
+    OutTransforms.SetNum(Data.NumberOfKeys);
 
     if (Track)
     {
-        for (int32 KeyIndex = 0; KeyIndex < NumberOfKeys; ++KeyIndex)
+        for (int32 KeyIndex = 0; KeyIndex < Data.NumberOfKeys; ++KeyIndex)
         {
             OutTransforms[KeyIndex] = GetBoneTrackTransform(TrackName, KeyIndex);
         }
@@ -171,14 +167,14 @@ void UAnimDataModel::GetBoneTracksTransform(const TArray<FName>& TrackNames, con
 
 int32 UAnimDataModel::GetNumBoneTracks() const
 {
-    return BoneAnimationTracks.Num();
+    return Data.BoneAnimationTracks.Num();
 }
 
 void UAnimDataModel::GetBoneTrackNames(TArray<FName>& OutNames) const
 {
     OutNames.Empty();
     
-    for (const FBoneAnimationTrack& Track : BoneAnimationTracks)
+    for (const FBoneAnimationTrack& Track : Data.BoneAnimationTracks)
     {
         OutNames.Add(Track.Name);
     }
@@ -186,22 +182,22 @@ void UAnimDataModel::GetBoneTrackNames(TArray<FName>& OutNames) const
 
 double UAnimDataModel::GetPlayLength() const
 {
-    return NumberOfFrames * FrameRate;
+    return Data.NumberOfFrames * Data.FrameRate;
 }
 
 int32 UAnimDataModel::GetNumberOfFrames() const
 {
-    return NumberOfFrames;
+    return Data.NumberOfFrames;
 }
 
 int32 UAnimDataModel::GetNumberOfKeys() const
 {
-    return NumberOfKeys;
+    return Data.NumberOfKeys;
 }
 
 int32 UAnimDataModel::GetFrameRate() const
 {
-    return FrameRate;
+    return Data.FrameRate;
 }
 
 UAnimSequence* UAnimDataModel::GetAnimationSequence() const
@@ -234,7 +230,7 @@ USkeleton* UAnimDataModel::GetSkeleton() const
 
 FBoneAnimationTrack* UAnimDataModel::FindMutableBoneTrackByName(FName Name)
 {
-    return BoneAnimationTracks.FindByPredicate([Name](const FBoneAnimationTrack& Track)
+    return Data.BoneAnimationTracks.FindByPredicate([Name](const FBoneAnimationTrack& Track)
     {
         return Track.Name == Name;
     });
