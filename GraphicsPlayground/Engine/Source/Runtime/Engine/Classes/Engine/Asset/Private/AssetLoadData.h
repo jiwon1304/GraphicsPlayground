@@ -16,7 +16,7 @@ using FFilePath = std::filesystem::path;
  * This struct only has file path for other asset types.
  * The actual data will be loaded after parsing.
  */
-struct FLoadResult
+struct FLoadData
 {
     /**
      * Path of the file that the asset is loaded from
@@ -32,7 +32,7 @@ struct FLoadResult
 };
 
 // Use move sematics to avoid copying large data
-struct FImageLoadResult : public FLoadResult
+struct FTextureLoadData : public FLoadData
 {
     uint32 Width = 0;
     uint32 Height = 0;
@@ -62,9 +62,9 @@ enum class ETextureType : uint8
     Unknown
 };
 
-struct FMaterialLoadResult : public FLoadResult
+struct FMaterialLoadData : public FLoadData
 {
-    // Material name is assigned to AssetName in FLoadResult
+    // Material name is assigned to AssetName in FLoadData
 
     FVector DiffuseColor;   // Kd: Diffuse Color
     FVector SpecularColor;  // Ks: Specular Color
@@ -102,12 +102,12 @@ struct FMaterialLoadResult : public FLoadResult
 
 struct FSubMeshInfo
 {
-    // Index for FStaticMeshLoadResult::Vertices
+    // Index for FStaticMeshLoadData::Vertices
     IndexType IndexStart;
     IndexType IndexCount;
 };
 
-struct FMeshLoadResult : public FLoadResult
+struct FMeshLoadData : public FLoadData
 {
     // Positions only for geometry
     TArray<FVector> PositionOnly;
@@ -121,7 +121,7 @@ struct FStaticSubMeshInfo : public FSubMeshInfo
     FFilePath MaterialPath;
 };
 
-struct FStaticMeshLoadResult : public FMeshLoadResult
+struct FStaticMeshLoadData : public FMeshLoadData
 {
     // Full vertex data
     TArray<FStaticMeshVertex> Vertices;    
@@ -131,10 +131,10 @@ struct FStaticMeshLoadResult : public FMeshLoadResult
 struct FSkeletalSubMeshInfo : public FSubMeshInfo
 {
     // Fbx file has internal material data. Textures will be resolved after parsing
-    TArray<FMaterialLoadResult> Materials;
+    TArray<FMaterialLoadData> Materials;
 };
 
-struct FSkeletalMeshLoadResult : public FMeshLoadResult
+struct FSkeletalMeshLoadData : public FMeshLoadData
 {
     TArray<FSkeletalMeshVertex> Vertices;
     TArray<FSkeletalSubMeshInfo> SubMeshes;

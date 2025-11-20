@@ -7,16 +7,16 @@
 #include "Engine/Classes/Engine/Asset/StaticMeshAsset.h"
 #include "Engine/Classes/Engine/Asset/AssetInfo.h"
 
-struct FStaticMeshLoadResult;
+struct FStaticMeshLoadData;
 
 struct FStaticMeshLoader
 {
-    static bool LoadStaticMesh(const FFilePath& InFilePath, FStaticMeshLoadResult& OutLoadResult);
+    static bool LoadStaticMesh(const FFilePath& InFilePath, FStaticMeshLoadData& OutLoadResult);
 private:
-    static bool LoadObj(const FFilePath& InFilePath, FStaticMeshLoadResult& OutLoadResult);
+    static bool LoadObj(const FFilePath& InFilePath, FStaticMeshLoadData& OutLoadResult);
 
-    static bool SaveBinary(const FFilePath& BinaryPath, const FStaticMeshLoadResult& InStaticMesh);
-    static bool LoadBinary(const FFilePath& BinaryPath, FStaticMeshLoadResult& OutStaticMesh);
+    static bool SaveBinary(const FFilePath& BinaryPath, const FStaticMeshLoadData& InStaticMesh);
+    static bool LoadBinary(const FFilePath& BinaryPath, FStaticMeshLoadData& OutStaticMesh);
 
     static constexpr float DefaultColor[4] = { 0.f, 0.f, 0.f, 1.f };
 

@@ -5,7 +5,7 @@
 #include "Core/Container/StringConv.h"
 #include "Engine/UserInterface/Console.h"
 
-bool FMaterialLoader::LoadMaterial(const FFilePath& InFilePath, TArray<FMaterialLoadResult>& OutLoadResult)
+bool FMaterialLoader::LoadMaterial(const FFilePath& InFilePath, TArray<FMaterialLoadData>& OutLoadResult)
 {
     // std::string FilePathStr = InFilePath.string();
     
@@ -29,7 +29,7 @@ bool FMaterialLoader::LoadMaterial(const FFilePath& InFilePath, TArray<FMaterial
             continue;
         }
 
-        FMaterialLoadResult MaterialCurrentlyParsed;
+        FMaterialLoadData MaterialCurrentlyParsed;
 
         std::istringstream LineStream(Line);
         std::string Token;
@@ -48,7 +48,7 @@ bool FMaterialLoader::LoadMaterial(const FFilePath& InFilePath, TArray<FMaterial
                 OutLoadResult.Add(std::move(MaterialCurrentlyParsed));
             }
 
-            MaterialCurrentlyParsed = FMaterialLoadResult();
+            MaterialCurrentlyParsed = FMaterialLoadData();
 
             MaterialCurrentlyParsed.bValid = true;
             MaterialCurrentlyParsed.AbsoluteFilePath = InFilePath;

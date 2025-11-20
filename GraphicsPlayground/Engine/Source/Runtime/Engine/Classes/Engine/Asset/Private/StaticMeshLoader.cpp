@@ -6,7 +6,7 @@
 #include "Core/Container/Set.h"
 #include "Core/Container/Map.h"
 #include "Engine/UserInterface/Console.h"
-#include "AssetLoadResult.h"
+#include "AssetLoadData.h"
 #include "Classes/Engine/Asset/StaticMeshAsset.h"
 
 FORCEINLINE uint64 HashIndices(IndexType PosIndex, IndexType UVIndex, IndexType NormalIndex)
@@ -17,7 +17,7 @@ FORCEINLINE uint64 HashIndices(IndexType PosIndex, IndexType UVIndex, IndexType 
          | (static_cast<uint64>(NormalIndex) << 0);
 }
 
-bool FStaticMeshLoader::LoadStaticMesh(const FFilePath &InFilePath, FStaticMeshLoadResult &OutLoadResult)
+bool FStaticMeshLoader::LoadStaticMesh(const FFilePath &InFilePath, FStaticMeshLoadData &OutLoadResult)
 {
     FFilePath BinaryPath = InFilePath.string() + ".bin";
     if (std::ifstream(BinaryPath).good())
@@ -29,7 +29,7 @@ bool FStaticMeshLoader::LoadStaticMesh(const FFilePath &InFilePath, FStaticMeshL
         else
         {
             // Clear previous load result on failure
-            OutLoadResult = FStaticMeshLoadResult();
+            OutLoadResult = FStaticMeshLoadData();
         }
     }
 
@@ -50,7 +50,7 @@ bool FStaticMeshLoader::LoadStaticMesh(const FFilePath &InFilePath, FStaticMeshL
     return true;
 }
 
-bool FStaticMeshLoader::LoadObj(const FFilePath& InFilePath, FStaticMeshLoadResult& OutLoadResult)
+bool FStaticMeshLoader::LoadObj(const FFilePath& InFilePath, FStaticMeshLoadData& OutLoadResult)
 {
     std::ifstream ObjFile(InFilePath);
     if (!ObjFile.is_open())
@@ -435,7 +435,7 @@ bool FStaticMeshLoader::LoadObj(const FFilePath& InFilePath, FStaticMeshLoadResu
     return true;
 }
 
-bool FStaticMeshLoader::SaveBinary(const FFilePath &BinaryPath, const FStaticMeshLoadResult &InStaticMesh)
+bool FStaticMeshLoader::SaveBinary(const FFilePath &BinaryPath, const FStaticMeshLoadData &InStaticMesh)
 {
     std::ofstream File(BinaryPath, std::ios::binary);
     if (!File.is_open())
@@ -468,7 +468,7 @@ bool FStaticMeshLoader::SaveBinary(const FFilePath &BinaryPath, const FStaticMes
     }
 }
 
-bool FStaticMeshLoader::LoadBinary(const FFilePath &BinaryPath, FStaticMeshLoadResult &OutStaticMesh)
+bool FStaticMeshLoader::LoadBinary(const FFilePath &BinaryPath, FStaticMeshLoadData &OutStaticMesh)
 {
     std::ifstream File(BinaryPath, std::ios::binary);
     if (!File.is_open())

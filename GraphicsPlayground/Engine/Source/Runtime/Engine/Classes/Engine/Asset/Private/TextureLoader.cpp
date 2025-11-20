@@ -7,7 +7,7 @@
 #if defined(BUILD_PLATFORM_WINDOWS)
 #include "ThirdParty/DirectXTK/Include/DirectXTK/DDSTextureLoader.h"
 
-bool FImageLoader::LoadImage(const FFilePath& InFilePath, EPixelFormat PixelFormat, FImageLoadResult &OutLoadResult)
+bool FTextureLoader::LoadImage(const FFilePath& InFilePath, EPixelFormat PixelFormat, FTextureLoadData &OutLoadResult)
 {
     assert( false ); // SRGB랑 PixelFormat 처리 필요
     IWICImagingFactory* WicFactory = nullptr;
@@ -76,11 +76,11 @@ bool FImageLoader::LoadImage(const FFilePath& InFilePath, EPixelFormat PixelForm
 #define STB_IMAGE_IMPLEMENTATION
 #include "ThirdParty/stb/stb_image.h"
 
-bool FImageLoader::LoadImage(const FFilePath& InFilePath, EPixelFormat PixelFormat, FImageLoadResult &OutLoadResult)
+bool FTextureLoader::LoadImage(const FFilePath& InFilePath, EPixelFormat PixelFormat, FTextureLoadData &OutLoadResult)
 {
     if (PixelFormat == PF_Unknown)
     {
-        UE_LOG(ELogLevel::Warning, "FImageLoader::LoadImage - Pixel format not set. Set to default PF_R8G8B8A8_UINT");
+        UE_LOG(ELogLevel::Warning, "FTextureLoader::LoadImage - Pixel format not set. Set to default PF_R8G8B8A8_UINT");
         PixelFormat = PF_R8G8B8A8_UINT;
     }
 
@@ -101,7 +101,7 @@ bool FImageLoader::LoadImage(const FFilePath& InFilePath, EPixelFormat PixelForm
         StbData8 = stbi_load(InFilePath.c_str(), &Width, &Height, &ChannelsInFile, 4);
         if (ChannelsInFile != 4)
         {
-            UE_LOG(ELogLevel::Warning, "FImageLoader::LoadImage - Loaded image does not have 4 channels as requested. Actual channels: %d\n%s", ChannelsInFile, InFilePath.c_str());
+            UE_LOG(ELogLevel::Warning, "FTextureLoader::LoadImage - Loaded image does not have 4 channels as requested. Actual channels: %d\n%s", ChannelsInFile, InFilePath.c_str());
         }
         StbData = reinterpret_cast<uint8*>(StbData8);
         BitsPerChannel= 8;
@@ -113,7 +113,7 @@ bool FImageLoader::LoadImage(const FFilePath& InFilePath, EPixelFormat PixelForm
         StbData16 = stbi_load_16(InFilePath.c_str(), &Width, &Height, &ChannelsInFile, 4);
         if (ChannelsInFile != 4)
         {
-            UE_LOG(ELogLevel::Warning, "FImageLoader::LoadImage - Loaded image does not have 4 channels as requested. Actual channels: %d\n%s", ChannelsInFile, InFilePath.c_str());
+            UE_LOG(ELogLevel::Warning, "FTextureLoader::LoadImage - Loaded image does not have 4 channels as requested. Actual channels: %d\n%s", ChannelsInFile, InFilePath.c_str());
         }
         StbData = reinterpret_cast<uint8*>(StbData16);
         BitsPerChannel= 16;
@@ -125,7 +125,7 @@ bool FImageLoader::LoadImage(const FFilePath& InFilePath, EPixelFormat PixelForm
         StbData32 = stbi_loadf(InFilePath.c_str(), &Width, &Height, &ChannelsInFile, 4);
         if (ChannelsInFile != 4)
         {
-            UE_LOG(ELogLevel::Warning, "FImageLoader::LoadImage - Loaded image does not have 4 channels as requested. Actual channels: %d\n%s", ChannelsInFile, InFilePath.c_str());
+            UE_LOG(ELogLevel::Warning, "FTextureLoader::LoadImage - Loaded image does not have 4 channels as requested. Actual channels: %d\n%s", ChannelsInFile, InFilePath.c_str());
         }
         StbData = reinterpret_cast<uint8*>(StbData32);
         BitsPerChannel= 32;
@@ -137,7 +137,7 @@ bool FImageLoader::LoadImage(const FFilePath& InFilePath, EPixelFormat PixelForm
         StbData16 = stbi_load_16(InFilePath.c_str(), &Width, &Height, &ChannelsInFile, 2);
         if (ChannelsInFile != 2)
         {
-            UE_LOG(ELogLevel::Warning, "FImageLoader::LoadImage - Loaded image does not have 2 channels as requested. Actual channels: %d\n%s", ChannelsInFile, InFilePath.c_str());
+            UE_LOG(ELogLevel::Warning, "FTextureLoader::LoadImage - Loaded image does not have 2 channels as requested. Actual channels: %d\n%s", ChannelsInFile, InFilePath.c_str());
         }
         StbData = reinterpret_cast<uint8*>(StbData16);
         BitsPerChannel= 16;
@@ -149,14 +149,14 @@ bool FImageLoader::LoadImage(const FFilePath& InFilePath, EPixelFormat PixelForm
         StbData32 = stbi_loadf(InFilePath.c_str(), &Width, &Height, &ChannelsInFile, 1);
         if (ChannelsInFile != 1)
         {
-            UE_LOG(ELogLevel::Warning, "FImageLoader::LoadImage - Loaded image does not have 1 channel as requested. Actual channels: %d\n%s", ChannelsInFile, InFilePath.c_str());
+            UE_LOG(ELogLevel::Warning, "FTextureLoader::LoadImage - Loaded image does not have 1 channel as requested. Actual channels: %d\n%s", ChannelsInFile, InFilePath.c_str());
         }
         StbData = reinterpret_cast<uint8*>(StbData32);
         BitsPerChannel= 32;
     }
     else
     {
-        UE_LOG(ELogLevel::Error, "FImageLoader::LoadImage - Unsupported pixel format.\n%s", InFilePath.c_str());
+        UE_LOG(ELogLevel::Error, "FTextureLoader::LoadImage - Unsupported pixel format.\n%s", InFilePath.c_str());
         // Unsupported format
         OutLoadResult.ImageData = nullptr;
         return false;
@@ -164,7 +164,7 @@ bool FImageLoader::LoadImage(const FFilePath& InFilePath, EPixelFormat PixelForm
 
     if (!StbData)
     {
-        UE_LOG(ELogLevel::Error, "FImageLoader::LoadImage - Failed to load image: %s", InFilePath.c_str());
+        UE_LOG(ELogLevel::Error, "FTextureLoader::LoadImage - Failed to load image: %s", InFilePath.c_str());
         OutLoadResult.ImageData = nullptr;
         return false;
     }
