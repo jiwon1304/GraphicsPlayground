@@ -9,6 +9,7 @@
 #include "Classes/Engine/Asset/StaticMeshAsset.h"
 #include "Classes/Engine/Asset/SkeletalMeshAsset.h"
 #include "Engine/ReferenceSkeleton.h"
+#include "Classes/Animation/AnimTypes.h"
 
 using FFilePath = std::filesystem::path;
 
@@ -118,6 +119,10 @@ struct FStaticSubMeshInfo : public FSubMeshInfo
 {
     // Path to .mtl file. Will be resolved after parsing
     FFilePath MaterialPath;
+
+    // For fbx parsing. 
+    // MaterialPath will be empty for fbx. Use this index to map material.
+    int32 MaterialIndex = -1;
 };
 
 struct FStaticMeshLoadData : public FMeshLoadData
@@ -129,7 +134,10 @@ struct FStaticMeshLoadData : public FMeshLoadData
 
 struct FSkeletalSubMeshInfo : public FSubMeshInfo
 {
-    // Fbx file has internal material data. Textures will be resolved after parsing
+    // Only material index is set in parsing.
+    int32 MaterialIndex = -1;
+
+    // This field will be resolved after parsing
     TArray<FMaterialLoadData> Materials;
 };
 
@@ -138,5 +146,24 @@ struct FSkeletalMeshLoadData : public FMeshLoadData
     TArray<FSkeletalMeshVertex> Vertices;
     TArray<FSkeletalSubMeshInfo> SubMeshes;
 
+    // TArray<FReferenceSkeleton> ReferenceSkeletons;
+};
+
+// Same struct with UAnimDataModel
+struct FAnimationLoadData : public FLoadData
+{
+    // This index 
+    int32 TargetSkeletonIndex = INDEX_NONE;
+
+    FAnimData AnimData;
+};
+
+struct FSkeletalMeshAssetLoadResult
+{
+    TArray<FAnimationLoadData> Animations;
     TArray<FReferenceSkeleton> ReferenceSkeletons;
+    TArray<FSkeletalMeshLoadData> SkeletalMeshes;
+    TArray<FStaticMeshLoadData> StaticMeshes;
+    TArray<FMaterialLoadData> Materials;
+    TArray<FTextureLoadData> Textures;
 };

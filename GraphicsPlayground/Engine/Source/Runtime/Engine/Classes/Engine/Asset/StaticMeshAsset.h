@@ -12,7 +12,6 @@ struct FStaticMeshVertex
     float NormalX, NormalY, NormalZ;
     float TangentX, TangentY, TangentZ, TangentW;
     float U = 0, V = 0;
-    uint32 MaterialIndex;
 
     friend FArchive& operator<<(FArchive& Ar, FStaticMeshVertex& Data)
     {
@@ -20,8 +19,7 @@ struct FStaticMeshVertex
                   << Data.R << Data.G << Data.B << Data.A
                   << Data.NormalX << Data.NormalY << Data.NormalZ
                   << Data.TangentX << Data.TangentY << Data.TangentZ << Data.TangentW
-                  << Data.U << Data.V
-                  << Data.MaterialIndex;
+                  << Data.U << Data.V;
     }
 };
 

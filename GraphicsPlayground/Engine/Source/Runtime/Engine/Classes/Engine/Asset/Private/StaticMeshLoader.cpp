@@ -377,8 +377,6 @@ bool FStaticMeshLoader::LoadObj(const FFilePath& InFilePath, FStaticMeshLoadData
                 Vertex.U = UV.X;
                 Vertex.V = UV.Y;
 
-                Vertex.MaterialIndex = 0; // Will be mapped when materials are resolved
-
                 UniqueVertexRemap.Add(VertexKey, FinalVertexIndex);
                 OutLoadResult.VerticesPositionOnly.Add(Position);
                 OutLoadResult.Vertices.Emplace(Vertex);
