@@ -19,12 +19,12 @@
 #include "Windows/D3D11RHI/GraphicDevice.h"
 #include "Engine/Classes/Engine/ResourceMgr.h"
 
-bool UAssetManager::IsInitialized()
+UAssetManager::UAssetManager()
 {
-    return GEngine && GEngine->AssetManager;
+    AssetRegistry = std::make_unique<FAssetRegistry>();
 }
 
-UAssetManager& UAssetManager::Get()
+UAssetManager &UAssetManager::Get()
 {
     if (UAssetManager* Singleton = GEngine->AssetManager)
     {
@@ -38,14 +38,28 @@ UAssetManager& UAssetManager::Get()
     }
 }
 
-UAssetManager* UAssetManager::GetIfInitialized()
+bool UAssetManager::LoadAsset(std::string InAssetPath)
 {
-    return GEngine ? GEngine->AssetManager : nullptr;
+    FWString Extension = FilePathHelpers::GetExtension(FString(InAssetPath)).ToWideString();
+
+    Extension = StringHelpers::ToLower(Extension);
+    
+    if (Extension == L"obj")
+    {
+        return FObjLoader::LoadObjBinary(FString(InAssetPath), *this);
+    }
+    else if (Extension == L"fbx")
+    {
+        return FFbxLoader::LoadFbxBinary(FString(InAssetPath), *this);
+    }
+    else
+    {
+        UE_LOG(ELogLevel::Warning, "Unsupported asset format: %s", InAssetPath.c_str());
+        return false;
 }
 
 void UAssetManager::InitAssetManager()
 {
-    AssetRegistry = std::make_unique<FAssetRegistry>();
     LoadContentFiles();
     LoadLazyContentFiles();
 }

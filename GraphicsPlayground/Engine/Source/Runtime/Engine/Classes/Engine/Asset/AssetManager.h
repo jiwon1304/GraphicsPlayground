@@ -4,7 +4,6 @@
 #include "CoreUObject/UObject/ObjectMacros.h"
 #include "Core/Delegates/DelegateCombination.h"
 
-
 #include "AssetInfo.h"
 
 class UPhysicsAsset;
@@ -15,14 +14,7 @@ class UParticleSystem;
 
 DECLARE_DELEGATE_OneParam(FOnAssetAdded, const FAssetInfo& /*InAssetInfo*/);
 
-using FAssetKey = FString;
-
-using FAssetRegistry = TMap<FAssetKey, FAssetInfo>;
-
-struct FAssetRegistry
-{
-    TMap<FName, FAssetInfo> PathNameToAssetInfo;
-};
+using FAssetRegistry = TMap<FAssetPathType, FAssetInfo>;
 
 struct FAssetLoadResult
 {
@@ -42,23 +34,30 @@ class UAssetManager : public UObject
 {
     DECLARE_CLASS(UAssetManager, UObject)
 
-private:
-    std::unique_ptr<FAssetRegistry> AssetRegistry;
-
 public:
     FOnAssetAdded OnAssetAdded;
 
-    UAssetManager() = default;
+    UAssetManager();
     virtual ~UAssetManager() override = default;
-
-    static bool IsInitialized();
 
     /** UAssetManager를 가져옵니다. */
     static UAssetManager& Get();
-
-    /** UAssetManager가 존재하면 가져오고, 없으면 nullptr를 반환합니다. */
-    static UAssetManager* GetIfInitialized();
     
+    /** Blocking method */
+    bool LoadAsset(std::string InAssetPath);
+
+    /** Non-Blocking method */
+    // void LoadAssetAsync(std::wstring InAssetPath);
+
+    bool LoadAssetDirectory(const FString& InDirectoryPath);
+
+
+
+
+
+
+
+
     void InitAssetManager();
     
     const TMap<FName, FAssetInfo>& GetAssetRegistry();
@@ -94,10 +93,8 @@ protected:
     bool SavePhysicsAssetBinary(UPhysicsAsset* PhysicsAsset);
     
 private:
-    double FbxLoadTime = 0.0;
-    double BinaryLoadTime = 0.0;
-    double SiuLoadTime = 0.0;
-    
+    std::unique_ptr<FAssetRegistry> AssetRegistry;
+
     void LoadContentFiles();
     void LoadLazyContentFiles();
 
@@ -107,14 +104,6 @@ private:
     bool LoadPhysicsAssetBinary(const FAssetInfo& AssetInfo);
 
     void AddToAssetMap(const FAssetLoadResult& Result, const FString& FileName, const FAssetInfo& BaseAssetInfo);
-
-    inline static TMap<FName, USkeleton*> SkeletonMap;
-    inline static TMap<FName, USkeletalMesh*> SkeletalMeshMap;
-    inline static TMap<FName, UStaticMesh*> StaticMeshMap;
-    inline static TMap<FName, UMaterial*> MaterialMap;
-    inline static TMap<FName, UAnimationAsset*> AnimationMap;
-    inline static TMap<FName, UParticleSystem*> ParticleSystemMap;
-    inline static TMap<FName, UPhysicsAsset*> PhysicsAssetMap;
 
     bool LoadFbxBinary(const FString& FilePath, FAssetLoadResult& Result, const FString& BaseName, const FString& FolderPath);
 

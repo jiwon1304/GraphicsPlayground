@@ -79,7 +79,7 @@ struct FAnimData
     TArray<FBoneAnimationTrack> BoneAnimationTracks;
 
     // Rate at which the animated data is sampled
-    int32 FrameRate;
+    double FrameRate;
 
     // Total number of sampled animated frames
     int32 NumberOfFrames;

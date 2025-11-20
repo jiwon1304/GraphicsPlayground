@@ -1,29 +1,30 @@
+Asset 로드 구조
 
-9/4일 새벽:
-FOpenGLVertexDeclaration같이 
-OpenGLResources.h 만들기
-FDynamicRHI::RHISetStreamSource 만들기
-지피티 답변보고 FDynamicRHI 수정하기
+로드해야하는 파일
+1. obj
+2. fbx
+3. mtl
+4. jpg / png
+5. (physics asset)
 
-OpenGL에서는 버퍼 바인딩 다음 레이아웃 바인딩을 해야하는데, 이를 어떻게 강제할지
+1. jpg / png
+2. mtl -> jpg / png
+3. obj -> mtl
+4. fbx -> mtl
+5. (physics asset)
 
-RHI하면 셰이더코드도 변환시켜야함...
+그러면 
+FImageLoader
+FMaterialLoader
+FObjLoader
+FFbxLoader
+순서대로 만들어야함
 
-일단 목표
-
-macos 컴파일 (windows dependent 다 꺼버리기)
-opengl rhi로 창 띄우기
-메시 띄우기
+Image / Material은 immediate로 로드
 
 
-directx rhi 완성
-정상작동 확인
 
-셰이더 코드 번역기 만들기 ???
+---
 
--- 한 한달걸릴듯... ---
-
-마이그레이션
-physics : jolt physics - cpu-based라서 fallback으로 사용
-opengl + stb - windows환경 아닐때 fallback
-fmod는 macos되도록
+UAssetManager는 U로 시작하는 것만 관리하고 (UMaterial, UTexture, UStaticMesh, ...)
+내부적으로는 F로 시작하는것을 처리

@@ -1,12 +1,15 @@
 #pragma once
 
-#include <fbxsdk.h>
+// #include <fbxsdk.h>
 
-#include "Engine/Classes/Engine/StaticMesh.h"
-#include "HAL/PlatformType.h"
-#include "Container/Array.h"
-#include "Container/Map.h"
-#include "Math/MathFwd.h"
+// #include "Engine/Classes/Engine/StaticMesh.h"
+// #include "HAL/PlatformType.h"
+// #include "Container/Array.h"
+// #include "Container/Map.h"
+// #include "Math/MathFwd.h"
+// #include "Classes/Engine/Asset/AssetInfo.h"
+
+#include "AssetLoadData.h"
 
 class UAnimationAsset;
 struct FSkeletalMeshVertex;
@@ -17,8 +20,29 @@ struct FMeshBoneInfo;
 class USkeleton;
 class FString;
 class USkeletalMesh;
-struct FSkeletalMeshRenderData;
-struct FAssetLoadResult;
+struct FSkeletalMeshLoadData;
+
+struct FSkeletalMeshLoader
+{
+    static void Initialize();
+    static void Cleanup();
+
+    /**
+     * For textures, actual image file should be loaded after parsing.
+     */
+    static bool LoadSkeletalMesh(const FFilePath& InFilePath, FSkeletalMeshAssetLoadResult& OutLoadResult);
+
+private:
+    static bool LoadFbx(const FFilePath& InFilePath, FSkeletalMeshAssetLoadResult& OutLoadResult);
+
+    static bool SaveBinary(const FFilePath& BinaryPath, const FSkeletalMeshAssetLoadResult& InSkeletalMesh);
+    static bool LoadBinary(const FFilePath& BinaryPath, FSkeletalMeshAssetLoadResult& OutSkeletalMesh);
+}
+
+
+
+
+
 
 class FFbxLoader
 {
@@ -26,7 +50,7 @@ public:
     FFbxLoader();
     ~FFbxLoader();
 
-    FAssetLoadResult LoadFBX(const FString& InFilePath);
+    TArray<FAssetInfo> LoadFBX(const FString& InFilePath);
 
 private:
     FbxManager* Manager;
@@ -40,7 +64,7 @@ private:
     FString DisplayName;
 
     // Begin Material
-    void ProcessMaterials(TArray<UMaterial*>& OutMaterials);
+    void ProcessMaterials(TArray<FAssetInfo>& OutMaterials);
 
     FMaterialInfo ExtractMaterialsFromFbx(FbxSurfaceMaterial* FbxMaterial);
 
