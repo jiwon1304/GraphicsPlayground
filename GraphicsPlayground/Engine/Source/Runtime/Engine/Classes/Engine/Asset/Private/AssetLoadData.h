@@ -110,9 +110,8 @@ struct FSubMeshInfo
 struct FMeshLoadData : public FLoadData
 {
     // Positions only for geometry
-    TArray<FVector> PositionOnly;
-    // Indices for PositionOnly
-    TArray<uint16> PositionOnlyIndices;
+    TArray<FVector> VerticesPositionOnly;
+    TArray<uint16> Indices;
 };
 
 struct FStaticSubMeshInfo : public FSubMeshInfo

@@ -267,12 +267,6 @@ bool FStaticMeshLoader::LoadObj(const FFilePath& InFilePath, FStaticMeshLoadData
         Submeshes.Emplace(CurrentSubmesh);
     }
 
-    // Prepare output containers
-    OutLoadResult.Vertices.Empty();
-    OutLoadResult.SubMeshes.Empty();
-    OutLoadResult.PositionOnly.Empty();
-    OutLoadResult.PositionOnlyIndices.Empty();
-
     // Estimate counts to minimize reallocations
     int32 TotalFaceVertices = 0;
     for (const FSubmeshData& Submesh : Submeshes)
@@ -386,7 +380,8 @@ bool FStaticMeshLoader::LoadObj(const FFilePath& InFilePath, FStaticMeshLoadData
                 Vertex.MaterialIndex = 0; // Will be mapped when materials are resolved
 
                 UniqueVertexRemap.Add(VertexKey, FinalVertexIndex);
-                OutLoadResult.Vertices.Add(Vertex);
+                OutLoadResult.VerticesPositionOnly.Add(Position);
+                OutLoadResult.Vertices.Emplace(Vertex);
             }
 
             IndexBuffer.Add(FinalVertexIndex);
@@ -424,13 +419,8 @@ bool FStaticMeshLoader::LoadObj(const FFilePath& InFilePath, FStaticMeshLoadData
         }
     }
 
-    // Store index buffer and position-only stream derived from unique vertices
-    OutLoadResult.PositionOnlyIndices = std::move(IndexBuffer);
-    OutLoadResult.PositionOnly.Reserve(OutLoadResult.Vertices.Num());
-    for (const FStaticMeshVertex& Vertex : OutLoadResult.Vertices)
-    {
-        OutLoadResult.PositionOnly.Add(FVector(Vertex.X, Vertex.Y, Vertex.Z));
-    }
+    // Move IndexBuffer
+    OutLoadResult.Indices = MoveTemp(IndexBuffer);
 
     return true;
 }
@@ -446,13 +436,13 @@ bool FStaticMeshLoader::SaveBinary(const FFilePath &BinaryPath, const FStaticMes
 
     Serializer::WriteFString(File, InStaticMesh.AssetName);
 
-    uint32 PoisitonOnlyCount = InStaticMesh.PositionOnly.Num();
+    uint32 PoisitonOnlyCount = InStaticMesh.VerticesPositionOnly.Num();
     File.write(reinterpret_cast<const char*>(&PoisitonOnlyCount), sizeof(PoisitonOnlyCount));
-    File.write(reinterpret_cast<const char*>(InStaticMesh.PositionOnly.GetData()), PoisitonOnlyCount * sizeof(InStaticMesh.PositionOnly[0]));
+    File.write(reinterpret_cast<const char*>(InStaticMesh.VerticesPositionOnly.GetData()), PoisitonOnlyCount * sizeof(InStaticMesh.VerticesPositionOnly[0]));
 
-    uint32 PositionOnlyIndexCount = InStaticMesh.PositionOnlyIndices.Num();
+    uint32 PositionOnlyIndexCount = InStaticMesh.Indices.Num();
     File.write(reinterpret_cast<const char*>(&PositionOnlyIndexCount), sizeof(PositionOnlyIndexCount));
-    File.write(reinterpret_cast<const char*>(InStaticMesh.PositionOnlyIndices.GetData()), PositionOnlyIndexCount * sizeof(InStaticMesh.PositionOnlyIndices[0]));
+    File.write(reinterpret_cast<const char*>(InStaticMesh.Indices.GetData()), PositionOnlyIndexCount * sizeof(InStaticMesh.Indices[0]));
     
     uint32 VertexCount = InStaticMesh.Vertices.Num();
     File.write(reinterpret_cast<const char*>(&VertexCount), sizeof(VertexCount));
@@ -481,13 +471,13 @@ bool FStaticMeshLoader::LoadBinary(const FFilePath &BinaryPath, FStaticMeshLoadD
 
     uint32 PoisitonOnlyCount = 0;
     File.read(reinterpret_cast<char*>(&PoisitonOnlyCount), sizeof(PoisitonOnlyCount));
-    OutStaticMesh.PositionOnly.SetNum(PoisitonOnlyCount);
-    File.read(reinterpret_cast<char*>(OutStaticMesh.PositionOnly.GetData()), PoisitonOnlyCount * sizeof(OutStaticMesh.PositionOnly[0]));
+    OutStaticMesh.VerticesPositionOnly.SetNum(PoisitonOnlyCount);
+    File.read(reinterpret_cast<char*>(OutStaticMesh.VerticesPositionOnly.GetData()), PoisitonOnlyCount * sizeof(OutStaticMesh.VerticesPositionOnly[0]));
 
     uint32 PositionOnlyIndexCount = 0;
     File.read(reinterpret_cast<char*>(&PositionOnlyIndexCount), sizeof(PositionOnlyIndexCount));
-    OutStaticMesh.PositionOnlyIndices.SetNum(PositionOnlyIndexCount);
-    File.read(reinterpret_cast<char*>(OutStaticMesh.PositionOnlyIndices.GetData()), PositionOnlyIndexCount * sizeof(OutStaticMesh.PositionOnlyIndices[0]));
+    OutStaticMesh.Indices.SetNum(PositionOnlyIndexCount);
+    File.read(reinterpret_cast<char*>(OutStaticMesh.Indices.GetData()), PositionOnlyIndexCount * sizeof(OutStaticMesh.Indices[0]));
 
     uint32 VertexCount = 0;
     File.read(reinterpret_cast<char*>(&VertexCount), sizeof(VertexCount));
