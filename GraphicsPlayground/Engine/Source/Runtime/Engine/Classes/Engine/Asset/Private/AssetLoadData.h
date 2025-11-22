@@ -108,13 +108,6 @@ struct FSubMeshInfo
     IndexType IndexCount;
 };
 
-struct FMeshLoadData : public FLoadData
-{
-    // Positions only for geometry
-    TArray<FVector> VerticesPositionOnly;
-    TArray<uint16> Indices;
-};
-
 struct FStaticSubMeshInfo : public FSubMeshInfo
 {
     // Path to .mtl file. Will be resolved after parsing
@@ -125,13 +118,6 @@ struct FStaticSubMeshInfo : public FSubMeshInfo
     int32 MaterialIndex = -1;
 };
 
-struct FStaticMeshLoadData : public FMeshLoadData
-{
-    // Full vertex data
-    TArray<FStaticMeshVertex> Vertices;    
-    TArray<FStaticSubMeshInfo> SubMeshes;
-};
-
 struct FSkeletalSubMeshInfo : public FSubMeshInfo
 {
     // Only material index is set in parsing.
@@ -139,6 +125,20 @@ struct FSkeletalSubMeshInfo : public FSubMeshInfo
 
     // This field will be resolved after parsing
     TArray<FMaterialLoadData> Materials;
+};
+
+struct FMeshLoadData : public FLoadData
+{
+    // Positions only for geometry
+    TArray<FVector> VerticesPositionOnly;
+    TArray<uint16> Indices;
+};
+
+struct FStaticMeshLoadData : public FMeshLoadData
+{
+    // Full vertex data
+    TArray<FStaticMeshVertex> Vertices;    
+    TArray<FStaticSubMeshInfo> SubMeshes;
 };
 
 struct FSkeletalMeshLoadData : public FMeshLoadData
@@ -152,13 +152,30 @@ struct FSkeletalMeshLoadData : public FMeshLoadData
 // Same struct with UAnimDataModel
 struct FAnimationLoadData : public FLoadData
 {
-    // This index 
-    int32 TargetSkeletonIndex = INDEX_NONE;
+    /**
+     * KeyframeTimesInSeconds and Keyframes are corresponding arrays.
+     * Keyframes[i] is the keyframe data at time KeyframeTimesInSeconds[i].
+     */
+    struct FAnimationTrack
+    {
+        TArray<float> KeyframeTimesInSeconds;
+        struct KeyframeData
+        {
+            FVector Translation;
+            float pad1;
+            FQuat Rotation;
+            FVector Scale;
+            float pad2;
+        };
+        TArray<KeyframeData> Keyframes;
+        
+        static_assert(sizeof(KeyframeData) == 4 * 12, "KeyframeData size must be 48 bytes"); // for packing in GPU
+    };
 
-    FAnimData AnimData;
+    TArray<FAnimationTrack> Tracks;
 };
 
-struct FSkeletalMeshAssetLoadResult
+struct FFbxAssetLoadData
 {
     TArray<FAnimationLoadData> Animations;
     TArray<FReferenceSkeleton> ReferenceSkeletons;
