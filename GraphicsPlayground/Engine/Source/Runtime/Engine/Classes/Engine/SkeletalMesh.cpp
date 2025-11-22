@@ -1,28 +1,73 @@
-
-#include "Classes/Engine/Asset/SkeletalMeshAsset.h"
 #include "SkeletalMesh.h"
 
-void USkeletalMesh::SetRenderData(std::unique_ptr<FSkeletalMeshRenderData> InRenderData)
+UObject* USkeletalMesh::Duplicate(UObject* InOuter)
 {
-    RenderData = std::move(InRenderData);
+
+    // TODO
+    return nullptr;
 }
 
-const FSkeletalMeshRenderData* USkeletalMesh::GetRenderData() const
+const TArray<UMaterial*>& USkeletalMesh::GetMaterials() const
 {
-    return RenderData.get(); 
+    return Materials;
 }
 
-void USkeletalMesh::SerializeAsset(FArchive& Ar)
+uint32 USkeletalMesh::GetMaterialIndex(FString MaterialSlotName) const
 {
-    if (Ar.IsLoading())
-    {
-        if (!RenderData)
-        {
-            RenderData = std::make_unique<FSkeletalMeshRenderData>();
-        }
+    for (uint32 materialIndex = 0; materialIndex < Materials.Num(); materialIndex++) {
+        if (Materials[materialIndex]->GetMaterialInfo().MaterialName == MaterialSlotName)
+            return materialIndex;
     }
 
-    RenderData->Serialize(Ar);
+    return -1;
 }
 
+void USkeletalMesh::GetUsedMaterials(TArray<UMaterial*>& OutMaterial) const
+{
+    for (UMaterial* Material : Materials)
+    {
+        OutMaterial.Emplace(Material);
+    }
+}
 
+void USkeletalMesh::GetRefSkeleton(FReferenceSkeleton& OutRefSkeleton) const
+{
+    OutRefSkeleton = RefSkeleton;
+}
+
+void USkeletalMesh::GetInverseBindPoseMatrices(TArray<FMatrix>& OutMatrices) const
+{
+    OutMatrices = InverseBindPoseMatrices;
+}
+
+void USkeletalMesh::SetCPUSkinned(bool bInCPUSkinned)
+{
+    bCPUSkinned = bInCPUSkinned;
+}
+
+bool USkeletalMesh::GetCPUSkinned() const
+{
+    return bCPUSkinned;
+}
+
+FString USkeletalMesh::GetObjectName() const
+{
+    return RenderData.ObjectName;
+}
+
+void USkeletalMesh::SetData(FSkeletalMeshRenderData InRenderData,
+    FReferenceSkeleton InRefSkeleton, 
+    TArray<FMatrix> InInverseBindPoseMatrices, 
+    TArray<UMaterial*> InMaterials)
+{
+    RenderData = InRenderData;
+    RefSkeleton = InRefSkeleton;
+    InverseBindPoseMatrices = InInverseBindPoseMatrices;
+    Materials = InMaterials;
+    //for (const FSkelMeshRenderSection& Section : RenderData->RenderSections)
+    //{
+    //    DuplicateVerticesSection NewSection;
+    //    NewSection.Vertices = Section.Vertices;
+    //    DuplicatedVertices.Add(NewSection);
+    //}
+}

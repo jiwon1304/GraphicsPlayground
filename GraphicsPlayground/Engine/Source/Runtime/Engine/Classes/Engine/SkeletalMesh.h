@@ -1,63 +1,53 @@
 #pragma once
-#include "SkinnedAsset.h"
-#include "Classes/Animation/Skeleton.h"
-#include "Classes/Engine/Asset/SkeletalMeshAsset.h" 
-#include "Classes/PhysicsEngine/PhysicsAsset.h"
 
-class USkeleton;
-//struct FSkeletalMeshRenderData;
+#include "UObject/Object.h"
+#include "UObject/ObjectMacros.h"
+#include "Components/Material/Material.h"
+#include "Engine/Asset/SkeletalMeshAsset.h"
+#include "Define.h"
 
-class USkeletalMesh : public USkinnedAsset
+class USkeletalMesh : public UObject
 {
-    DECLARE_CLASS(USkeletalMesh, USkinnedAsset)
+    DECLARE_CLASS(USkeletalMesh, UObject)
 
 public:
     USkeletalMesh() = default;
-    virtual ~USkeletalMesh() override = default;
 
-    void SetRenderData(std::unique_ptr<FSkeletalMeshRenderData> InRenderData);
+    virtual UObject* Duplicate(UObject* InOuter) override;
 
-    const FSkeletalMeshRenderData* GetRenderData() const;
+    const TArray<UMaterial*>& GetMaterials() const;
+    uint32 GetMaterialIndex(FString MaterialSlotName) const;
+    void GetUsedMaterials(TArray<UMaterial*>& OutMaterial) const;
+    const FSkeletalMeshRenderData& GetRenderData() const { return RenderData; }
+    void GetRefSkeleton(FReferenceSkeleton& OutRefSkeleton) const;
+    void GetInverseBindPoseMatrices(TArray<FMatrix>& OutMatrices) const;
 
-    USkeleton* GetSkeleton() const { return Skeleton; }
+    void SetCPUSkinned(bool bInCPUSkinned);
+    bool GetCPUSkinned() const;
 
-    void SetSkeleton(USkeleton* InSkeleton) { Skeleton = InSkeleton; }
+    //ObjectName은 경로까지 포함
+    FString GetObjectName() const;
 
-    virtual void SerializeAsset(FArchive& Ar) override;
+    void SetData(FSkeletalMeshRenderData InRenderData,
+        FReferenceSkeleton InRefSkeleton,
+        TArray<FMatrix> InInverseBindPoseMatrices,
+        TArray<UMaterial*> InMaterials);
 
-    virtual UPhysicsAsset* GetPhysicsAsset() const
-    {
-        return PhysicsAsset;
-    }
+private:
+    bool bCPUSkinned : 1 = false;
+private:
+    // TODO : UPROPERTIES
+    // FbxLoader에 저장되어있음
+    // 이건 수정하면 안됨(CPU Skinning에서도 이걸로 수정하면 안됨)
+    FSkeletalMeshRenderData RenderData;
 
-    void SetPhysicsAsset(UPhysicsAsset* InPhysicsAsset)
-    {
-        PhysicsAsset = InPhysicsAsset;
-    }
-    const FReferenceSkeleton* GetRefSkeleton()
-    {
-        if (Skeleton)
-        {
-            return &Skeleton->GetReferenceSkeleton();
-        }
-        return nullptr;
-    }
+    // 로드 당시의 Skeleton로 초기화. Matrix는 매번 생성해서 사용
+    FReferenceSkeleton RefSkeleton;
 
-    
-protected:
-    std::unique_ptr<FSkeletalMeshRenderData> RenderData;
+    // Inverse Bind Pose Matrix : const로 사용
+    TArray<FMatrix> InverseBindPoseMatrices;
 
-    UPROPERTY(
-        VisibleAnywhere | EditInline,
-        USkeleton*,
-        Skeleton,
-        = nullptr
-    )
+    // FSkeletalMaterial를 만들 이유가 없음...
+    TArray<UMaterial*> Materials;
 
-    UPROPERTY(
-        VisibleAnywhere | EditInline,
-        UPhysicsAsset*,
-        PhysicsAsset,
-        = nullptr
-    )
 };

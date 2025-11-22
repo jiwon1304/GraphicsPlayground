@@ -6,6 +6,10 @@
 #include "Math/Transform.h"
 #include "Math/Matrix.h"
 
+/**
+ * Contains the bone's name and its parent index in the reference skeleton.
+ * Index
+ */
 struct FMeshBoneInfo
 {
     // Bone's name.
