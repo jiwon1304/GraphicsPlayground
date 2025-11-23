@@ -333,9 +333,9 @@ void FWindowsSlateAppMessageHandler::ProcessMessage(HWND hWnd, uint32 Msg, WPARA
         CursorPoint.x = GET_X_LPARAM(lParam);
         CursorPoint.y = GET_Y_LPARAM(lParam);
 
-        const FVector2D CursorPos{
-            static_cast<float>(CursorPoint.x),
-            static_cast<float>(CursorPoint.y)
+        const FIntPoint CursorPos{
+            static_cast<int32>(CursorPoint.x),
+            static_cast<int32>(CursorPoint.y)
         };
         OnMouseWheel(static_cast<float>(WheelDelta) * SpinFactor, CursorPos);
         return;

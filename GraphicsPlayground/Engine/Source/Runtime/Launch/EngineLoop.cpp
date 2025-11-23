@@ -276,7 +276,7 @@ void FEngineLoop::Tick()
                 // Busy-wait/yield until we hit the target duration
                 while (FrameDurationCycles < TargetFrameCycles)
                 {
-                    Application->Yield();
+                    Application->YieldThisThread();
                     FrameDurationCycles = FPlatformTime::Cycles64() - FrameStartCycles;
                 }
             }

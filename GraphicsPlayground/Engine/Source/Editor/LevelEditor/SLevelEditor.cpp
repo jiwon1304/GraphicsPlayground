@@ -18,61 +18,62 @@ extern FEngineLoop GEngineLoop;
 
 
 SLevelEditor::SLevelEditor()
-    : HSplitter(nullptr)
-    , VSplitter(nullptr)
+    : RootSplitter(nullptr)
+    , LeftSplitter(nullptr)
+    , RightSplitter(nullptr)
     , bMultiViewportMode(false)
 {
 }
 
 void SLevelEditor::Initialize(uint32 InEditorWidth, uint32 InEditorHeight)
 {
-    EditorWidth = InEditorWidth * 0.8f;
-    EditorHeight = InEditorHeight - 104.f;
-    
-    ResizeEditor(EditorWidth, EditorHeight);
-    
-    VSplitter = new SSplitterV();
-    VSplitter->Initialize(FRect(0.0f, 0.f, EditorWidth, EditorHeight));
-    
-    HSplitter = new SSplitterH();
-    HSplitter->Initialize(FRect(0.f, 0.0f, EditorWidth, EditorHeight));
-    
-    FRect Top = VSplitter->SideLT->GetRect();
-    FRect Bottom = VSplitter->SideRB->GetRect();
-    FRect Left = HSplitter->SideLT->GetRect();
-    FRect Right = HSplitter->SideRB->GetRect();
+    FIntRect InRect(0, 0, InEditorWidth, InEditorHeight);
+
+    SingleWindow = new SWindow(InRect);
+    RootSplitter = new SSplitterH(InRect);
+    LeftSplitter = new SSplitterV(FIntRect());
+    RightSplitter = new SSplitterV(FIntRect());
+
+    MultiViewportsCached[0] = LeftSplitter->SideLT;
+    MultiViewportsCached[1] = RightSplitter->SideLT;
+    MultiViewportsCached[2] = LeftSplitter->SideRB;
+    MultiViewportsCached[3] = RightSplitter->SideRB;
+
+    RootSplitter->SideLT = LeftSplitter;
+    RootSplitter->SideRB = RightSplitter;
+
+    RootSplitter->UpdateChilds();
+    LeftSplitter->UpdateChilds();
+    RightSplitter->UpdateChilds();
+
 
     for (size_t i = 0; i < 4; i++)
     {
-        EViewScreenLocation Location = static_cast<EViewScreenLocation>(i);
-        FRect Rect;
-        switch (Location)
-        {
-        case EViewScreenLocation::EVL_TopLeft:
-            // Min.x comes from Left.Min.x, Min.y comes from Top.Min.y
-            Rect.Min = FPoint(Left.Min.X, Top.Min.Y);
-            Rect.Max = FPoint(Left.Max.X, Top.Max.Y);
-            break;
-        case EViewScreenLocation::EVL_TopRight:
-            Rect.Min = FPoint(Right.Min.X, Top.Min.Y);
-            Rect.Max = FPoint(Right.Max.X, Top.Max.Y);
-            break;
-        case EViewScreenLocation::EVL_BottomLeft:
-            Rect.Min = FPoint(Left.Min.X, Bottom.Min.Y);
-            Rect.Max = FPoint(Left.Max.X, Bottom.Max.Y);
-            break;
-        case EViewScreenLocation::EVL_BottomRight:
-            Rect.Min = FPoint(Right.Min.X, Bottom.Min.Y);
-            Rect.Max = FPoint(Right.Max.X, Bottom.Max.Y);
-            break;
-        default:
-            return;
-        }
+        FIntRect ViewportRect = MultiViewportsCached[i]->GetRect();
+
+        constexpr FVector InitialPosition = FVector(10.f, 10.f, 10.f);
+        FRotator InitialRotation = FRotator::MakeLookAtRotation(
+            InitialPosition,
+            FVector::ZeroVector
+        );
+        FViewportCamera* ViewportCamera = new FViewportPerspectiveCamera(
+            InitialPosition,
+            InitialRotation,
+            static_cast<float>(ViewportRect.GetWidth()) / ViewportRect.GetHeight()
+        );
+
         ViewportClients[i] = std::make_shared<FEditorViewportClient>();
-        ViewportClients[i]->Initialize(Location, Rect,GEngine);
+
+        ViewportClients[i]->Initialize(ViewportRect, ViewportCamera);
     }
-    
+
     ActiveViewportClient = ViewportClients[0];
+    if (!bMultiViewportMode)
+    {
+        FIntRect SingleViewportRect = SingleWindow->GetRect();
+
+        ActiveViewportClient->Resize(SingleViewportRect);
+    }
     
     LoadConfig();
 
@@ -102,8 +103,10 @@ void SLevelEditor::Tick(float DeltaTime)
 
 void SLevelEditor::Release()
 {
-    delete VSplitter;
-    delete HSplitter;
+    delete SingleWindow;
+    delete RootSplitter;
+    delete LeftSplitter;
+    delete RightSplitter;
 }
 
 void SLevelEditor::ResizeEditor(uint32 InEditorWidth, uint32 InEditorHeight)
@@ -112,16 +115,15 @@ void SLevelEditor::ResizeEditor(uint32 InEditorWidth, uint32 InEditorHeight)
     {
         return;
     }
-    
-    EditorWidth = InEditorWidth * 0.8f;
-    EditorHeight = InEditorHeight - 104.f;
 
-    if (HSplitter && VSplitter)
-    {
-        HSplitter->OnResize(EditorWidth, EditorHeight);
-        VSplitter->OnResize(EditorWidth, EditorHeight);
-        ResizeViewports();
-    }
+    SingleWindow->Resize(FIntRect(0, 0, InEditorWidth, InEditorHeight));
+    RootSplitter->Resize(FIntRect(0, 0, InEditorWidth, InEditorHeight));
+
+    RootSplitter->UpdateChilds();
+    LeftSplitter->UpdateChilds();
+    RightSplitter->UpdateChilds();
+
+    ResizeViewports();
 }
 
 void SLevelEditor::SelectViewport(const FIntPoint& Point)
@@ -143,17 +145,12 @@ void SLevelEditor::ResizeViewports()
         for (int i = 0; i < 4; ++i)
         {
             assert(ViewportClients[i]);
-            //ViewportClients[i]->Resize(
-            //    VSplitter->SideLT->GetRect(),
-            //    VSplitter->SideRB->GetRect(),
-            //    HSplitter->SideLT->GetRect(),
-            //    HSplitter->SideRB->GetRect()
-            //);
+            ViewportClients[i]->Resize(MultiViewportsCached[i]->GetRect());
         }
     }
     else
     {
-        // ActiveViewportClient->GetViewport()->ResizeViewport(FRect(0.0f, 72.f, EditorWidth , EditorHeight ));
+        ActiveViewportClient->Resize(SingleWindow->GetRect());
     }
 }
 
@@ -332,15 +329,11 @@ void SLevelEditor::RegisterEditorInputDelegates()
                         }
 
                         // 초기 Actor와 Cursor의 거리차를 저장
-                        const FViewportCamera* ViewTransform = ActiveViewportClient->GetViewportType() == LVT_Perspective
-                                                            ? &ActiveViewportClient->PerspectiveCamera
-                                                            : &ActiveViewportClient->OrthogonalCamera;
-
                         FVector RayOrigin, RayDir;
-                        ActiveViewportClient->DeprojectFVector2D(FWindowsCursor::GetClientPosition(), RayOrigin, RayDir);
+                        ActiveViewportClient->DeprojectScreenToWorld(FWindowsCursor::GetClientPosition(), RayOrigin, RayDir);
 
                         const FVector TargetLocation = TargetComponent->GetComponentLocation();
-                        const float TargetDist = FVector::Distance(ViewTransform->GetLocation(), TargetLocation);
+                        const float TargetDist = FVector::Distance(ActiveViewportClient->GetViewportCamera()->ViewLocation, TargetLocation);
                         const FVector TargetRayEnd = RayOrigin + RayDir * TargetDist;
                         TargetDiff = TargetLocation - TargetRayEnd;
                     }
@@ -361,17 +354,17 @@ void SLevelEditor::RegisterEditorInputDelegates()
             }
 
             // 마우스 이벤트가 일어난 위치의 뷰포트를 선택
-            if (bMultiViewportMode)
-            {
-                // POINT Point;
-                // GetCursorPos(&Point);
-                // ScreenToClient(GEngineLoop.AppWnd, &Point);
-                // FVector2D ClientPos = FVector2D{ static_cast<float>(Point.x), static_cast<float>(Point.y) };
-                FIntPoint ClientPos = InMouseEvent.GetScreenSpacePosition();
-                SelectViewport(ClientPos);
-                VSplitter->OnPressed({ ClientPos.X, ClientPos.Y });
-                HSplitter->OnPressed({ ClientPos.X, ClientPos.Y });
-            }
+            //if (bMultiViewportMode)
+            //{
+            //    // POINT Point;
+            //    // GetCursorPos(&Point);
+            //    // ScreenToClient(GEngineLoop.AppWnd, &Point);
+            //    // FVector2D ClientPos = FVector2D{ static_cast<float>(Point.x), static_cast<float>(Point.y) };
+            //    FIntPoint ClientPos = InMouseEvent.GetScreenSpacePosition();
+            //    SelectViewport(ClientPos);
+            //    VSplitter->OnPress({ ClientPos.X, ClientPos.Y });
+            //    HSplitter->OnPress({ ClientPos.X, ClientPos.Y });
+            //}
         }));
 
     InputDelegatesHandles.Add(Handler->OnMouseMoveDelegate.AddLambda([this](const FPointerEvent& InMouseEvent)
@@ -384,16 +377,16 @@ void SLevelEditor::RegisterEditorInputDelegates()
                 const auto& [DeltaX, DeltaY] = InMouseEvent.GetCursorDelta();
 
                 bool bSplitterDragging = false;
-                if (VSplitter->IsSplitterPressed())
-                {
-                    VSplitter->OnDrag(FPoint(DeltaX, DeltaY));
-                    bSplitterDragging = true;
-                }
-                if (HSplitter->IsSplitterPressed())
-                {
-                    HSplitter->OnDrag(FPoint(DeltaX, DeltaY));
-                    bSplitterDragging = true;
-                }
+                //if (VSplitter->IsSplitterPressed())
+                //{
+                //    VSplitter->OnDrag(FPoint(DeltaX, DeltaY));
+                //    bSplitterDragging = true;
+                //}
+                //if (HSplitter->IsSplitterPressed())
+                //{
+                //    HSplitter->OnDrag(FPoint(DeltaX, DeltaY));
+                //    bSplitterDragging = true;
+                //}
 
                 if (bSplitterDragging)
                 {
@@ -415,11 +408,10 @@ void SLevelEditor::RegisterEditorInputDelegates()
                 // POINT Point;
                 // GetCursorPos(&Point);
                 // ScreenToClient(GEngineLoop.AppWnd, &Point);
-                FVector2D MousePosVector = InMouseEvent.GetScreenSpacePosition();
-                FPoint MousePos = FPoint(MousePosVector.X, MousePosVector.Y);
+                FIntPoint MousePos = InMouseEvent.GetScreenSpacePosition();
                 
-                const bool bIsVerticalHovered = VSplitter->IsSplitterHovered(MousePos);
-                const bool bIsHorizontalHovered = HSplitter->IsSplitterHovered(MousePos);
+                const bool bIsVerticalHovered = RootSplitter->IsInMargin(MousePos);
+                const bool bIsHorizontalHovered = RightSplitter->IsInMargin(MousePos) || LeftSplitter->IsInMargin(MousePos);
 
                 if (bIsHorizontalHovered && bIsVerticalHovered)
                 {
@@ -445,8 +437,8 @@ void SLevelEditor::RegisterEditorInputDelegates()
             {
                 FWindowsCursor::SetShowMouseCursor(true);
                 FWindowsCursor::SetPosition(
-                    static_cast<int32>(MousePinPosition.X),
-                    static_cast<int32>(MousePinPosition.Y)
+                    MousePinPosition.X,
+                    MousePinPosition.Y
                 );
                 return;
             }
@@ -454,8 +446,8 @@ void SLevelEditor::RegisterEditorInputDelegates()
             // Viewport 선택 로직
             case EKeys::LeftMouseButton:
             {
-                VSplitter->OnReleased();
-                HSplitter->OnReleased();
+                //VSplitter->OnRelease();
+                //HSplitter->OnRelease();
                 return;
             }
 
@@ -517,14 +509,10 @@ void SLevelEditor::RegisterEditorInputDelegates()
                             }
                         }
 
-                        const FViewportCamera* ViewTransform = ActiveViewportClient->GetViewportType() == LVT_Perspective
-                                                                ? &ActiveViewportClient->PerspectiveCamera
-                                                                : &ActiveViewportClient->OrthogonalCamera;
-
                         FVector RayOrigin, RayDir;
-                        ActiveViewportClient->DeprojectFVector2D(FWindowsCursor::GetClientPosition(), RayOrigin, RayDir);
+                        ActiveViewportClient->DeprojectScreenToWorld(FWindowsCursor::GetClientPosition(), RayOrigin, RayDir);
 
-                        const float TargetDist = FVector::Distance(ViewTransform->GetLocation(), TargetComponent->GetComponentLocation());
+                        const float TargetDist = FVector::Distance(ActiveViewportClient->GetViewportCamera()->ViewLocation, TargetComponent->GetComponentLocation());
                         const FVector TargetRayEnd = RayOrigin + RayDir * TargetDist;
                         const FVector Result = TargetRayEnd + TargetDiff;
 
@@ -581,10 +569,10 @@ void SLevelEditor::RegisterEditorInputDelegates()
                 // 카메라 속도 조절
                 if (InMouseEvent.IsMouseButtonDown(EKeys::RightMouseButton) && ActiveViewportClient->IsPerspective())
                 {
-                    const float CurrentSpeed = ActiveViewportClient->GetCameraSpeedScalar();
+                    const float CurrentSpeed = ActiveViewportClient->CameraMovementSpeed;
                     const float Adjustment = FMath::Sign(InMouseEvent.GetWheelDelta()) * FMath::Loge(CurrentSpeed + 1.0f) * 0.5f;
 
-                    ActiveViewportClient->SetCameraSpeed(CurrentSpeed + Adjustment);
+                    ActiveViewportClient->CameraMovementSpeed = CurrentSpeed + Adjustment;
                 }
             }
         }));
@@ -598,16 +586,16 @@ void SLevelEditor::RegisterEditorInputDelegates()
             {
                 if (!InMouseEvent.IsMouseButtonDown(EKeys::RightMouseButton))
                 {
-                    const FVector CameraLoc = ActiveViewportClient->PerspectiveCamera.GetLocation();
-                    const FVector CameraForward = ActiveViewportClient->PerspectiveCamera.GetForwardVector();
-                    ActiveViewportClient->PerspectiveCamera.SetLocation(
-                        CameraLoc + CameraForward * InMouseEvent.GetWheelDelta() * 50.0f
-                    );
+                    const FVector CameraLoc = ActiveViewportClient->GetViewportCamera()->ViewLocation;
+                    const FVector CameraForward = ActiveViewportClient->GetViewportCamera()->GetForwardVector();
+                    ActiveViewportClient->GetViewportCamera()->ViewLocation =
+                        CameraLoc + CameraForward * InMouseEvent.GetWheelDelta() * 50.0f;
                 }
             }
             else
             {
-                FEditorViewportClient::SetOthoSize(-InMouseEvent.GetWheelDelta());
+                // @todo 
+                //FEditorViewportClient::SetOthoSize(-InMouseEvent.GetWheelDelta());
             }
         }));
 

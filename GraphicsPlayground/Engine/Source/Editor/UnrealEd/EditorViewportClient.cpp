@@ -33,15 +33,11 @@ FEditorViewportClient::~FEditorViewportClient()
 {
 }
 
-void FEditorViewportClient::Initialize(const FIntRect& InRect, UEngine* InEngine)
+void FEditorViewportClient::Initialize(const FIntRect& InRect, FViewportCamera* InCamera)
 {
-    constexpr FVector DefaultCameraLocation = FVector(8.0f, 8.0f, 8.f);
-    constexpr FRotator DefaultCameraRotation = FRotator(-30.f, 45.f, 0.f);
-    const float AspectRatio = static_cast<float>(InRect.GetWidth()) / static_cast<float>(InRect.GetHeight());
-    ViewportCamera = new FViewportCamera(DefaultCameraLocation, DefaultCameraRotation, AspectRatio);
+    FViewportClient::Initialize(InRect, InCamera);
 
-    GizmoActor = FObjectFactory::ConstructObject<ATransformGizmo>(InEngine); // TODO : EditorEngine 외의 다른 Engine 형태가 추가되면 GEngine 대신 다른 방식으로 넣어주어야 함.
-    Engine = InEngine;
+    GizmoActor = FObjectFactory::ConstructObject<ATransformGizmo>(GEngine); // TODO : EditorEngine 외의 다른 Engine 형태가 추가되면 GEngine 대신 다른 방식으로 넣어주어야 함.
     GizmoActor->Initialize(this);
 }
 
@@ -348,20 +344,35 @@ void FEditorViewportClient::MouseMove(const FPointerEvent& InMouseEvent)
     //}
 }
 
-void FEditorViewportClient::DeprojectFVector2D(const FVector2D& ScreenPos, FVector& OutWorldOrigin, FVector& OutWorldDir) const
+void FEditorViewportClient::DeprojectScreenToWorld(const FIntPoint& ScreenPos, FVector& OutWorldOrigin, FVector& OutWorldDir) const
 {
-    const float TopLeftX = ViewportRect.Min.X;
-    const float TopLeftY = ViewportRect.Min.Y;
-    const float Width = ViewportRect.GetWidth();
-    const float Height = ViewportRect.GetHeight();
+    const int32 TopLeftX = ViewportRect.Min.X;
+    const int32 TopLeftY = ViewportRect.Min.Y;
+    const int32 Width = ViewportRect.GetWidth();
+    const int32 Height = ViewportRect.GetHeight();
 
     // 뷰포트의 NDC 위치
     const FVector2D NDCPos = {
-        ((ScreenPos.X - TopLeftX) / Width * 2.0f) - 1.0f,
-        1.0f - ((ScreenPos.Y - TopLeftY) / Height * 2.0f)
+        (static_cast<float>(ScreenPos.X - TopLeftX) / Width * 2.0f) - 1.0f,
+        1.0f - (static_cast<float>(ScreenPos.Y - TopLeftY) / Height * 2.0f)
     };
 
     ViewportCamera->DeprojectNDCToWorld(NDCPos, OutWorldOrigin, OutWorldDir);
+}
+
+void FEditorViewportClient::DeprojectScreenToView(const FIntPoint& ScreenPos, FVector& OutViewOrigin, FVector& OutViewDir) const
+{
+    const int32 TopLeftX = ViewportRect.Min.X;
+    const int32 TopLeftY = ViewportRect.Min.Y;
+    const int32 Width = ViewportRect.GetWidth();
+    const int32 Height = ViewportRect.GetHeight();
+
+    const FVector2D NDCPos = {
+        (static_cast<float>(ScreenPos.X - TopLeftX) / Width * 2.0f) - 1.0f,
+        1.0f - (static_cast<float>(ScreenPos.Y - TopLeftY) / Height * 2.0f)
+    };
+
+    ViewportCamera->DeprojectNDCToView(NDCPos, OutViewOrigin, OutViewDir);
 }
 
 void FEditorViewportClient::GetViewInfo(FMinimalViewInfo& OutViewInfo) const

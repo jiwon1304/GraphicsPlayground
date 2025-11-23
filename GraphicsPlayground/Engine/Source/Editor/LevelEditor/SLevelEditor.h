@@ -6,6 +6,7 @@
 #include "Core/Math/Vector2.h"
 #include "Core/Math/Rect.h"
 
+class SWindow;
 class SSplitterH;
 class SSplitterV;
 class UWorld;
@@ -24,6 +25,7 @@ public:
     void ResizeEditor(uint32 InEditorWidth, uint32 InEditorHeight);
     void SelectViewport(const FIntPoint& Point);
 
+    // Resize FEditoViewportClient based on its SWindow
     void ResizeViewports();
     void SetEnableMultiViewport(bool bIsEnable);
     bool IsMultiViewport() const;
@@ -32,19 +34,30 @@ public:
     void RegisterPIEInputDelegates();
 
 private:
-    SSplitterH* HSplitter;
-    SSplitterV* VSplitter;
+    bool bMultiViewportMode;
+
+    // For single viewport
+    SWindow* SingleWindow;
+
+    // For multi viewport
+    // Have left and right vertical splitters
+    SSplitterH* RootSplitter;
+    SSplitterV* LeftSplitter;
+    SSplitterV* RightSplitter;
+
+    // TopLeft, TopRight, BottomLeft, BottomRight order
+    // Just for easy access
+    SWindow* MultiViewportsCached[4];
     
     std::shared_ptr<FEditorViewportClient> ViewportClients[4];
     std::shared_ptr<FEditorViewportClient> ActiveViewportClient;
 
     /** 우클릭 시 캡처된 마우스 커서의 초기 위치 (스크린 좌표계) */
-    FVector2D MousePinPosition;
+    FIntPoint MousePinPosition;
 
     /** 좌클릭시 커서와 선택된 Actor와의 거리 차 */
     FVector TargetDiff;
 
-    bool bMultiViewportMode;
     
     uint32 EditorWidth;
     uint32 EditorHeight;

@@ -32,9 +32,10 @@ public:
     FVector GetUpVector() const;
 
     FMatrix GetViewMatrix() const;
-    virtual FMatrix GetProjectionMatrix() {}
+    virtual FMatrix GetProjectionMatrix() = 0;
 
     void DeprojectNDCToWorld(const FVector2D& InNDCPosition, FVector OutWorldOrigin, FVector& OutWorldDir);
+    void DeprojectNDCToView(const FVector2D& InNDCPosition, FVector OutViewOrigin, FVector& OutViewDir);
 
     FVector ViewLocation;
     FRotator ViewRotation;
@@ -49,6 +50,11 @@ public:
 struct FViewportPerspectiveCamera : public FViewportCamera
 {
 public:
+    FViewportPerspectiveCamera(FVector InLocation, FRotator InRotation, float InAspectRatio)
+        : FViewportCamera(InLocation, InRotation, InAspectRatio)
+    {
+    }
+
     virtual FMatrix GetProjectionMatrix() override;
 
     float FOVDegree = 90.0f;
@@ -57,6 +63,11 @@ public:
 struct FViewportOrthographicCamera : public FViewportCamera
 {
 public:
+    FViewportOrthographicCamera(FVector InLocation, FRotator InRotation, float InAspectRatio)
+        : FViewportCamera(InLocation, InRotation, InAspectRatio)
+    {
+    }
+
     virtual FMatrix GetProjectionMatrix() override;
 
     float Width = 100.f;
@@ -66,7 +77,9 @@ public:
 class FViewportClient
 {
 public:
-    virtual ~FViewportClient() = default;
+    virtual ~FViewportClient();
+
+    virtual void Initialize(const FIntRect& InRect, FViewportCamera* InCamera);
 
     virtual UWorld* GetWorld() const { return nullptr; }
 
@@ -75,8 +88,6 @@ public:
     void Resize(const FIntRect& InRect);
 
     FViewportCamera* GetViewportCamera() const { return ViewportCamera; }
-    virtual FViewportPerspectiveCamera* GetPerspectiveCamera() const { return nullptr; }
-    virtual FViewportOrthographicCamera* GetOrthographicCamera() const { return nullptr; }
 
     FIntRect GetViewportRect() const { return ViewportRect; }
 protected:

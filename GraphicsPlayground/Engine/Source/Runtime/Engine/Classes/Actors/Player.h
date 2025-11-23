@@ -33,7 +33,6 @@ class AEditorPlayer : public AActor
 
 private:
     static int RayIntersectsObject(const FVector& PickPosition, USceneComponent* Component, float& HitDistance, int& IntersectCount);
-    void ScreenToViewSpace(int32 ScreenX, int32 ScreenY, std::shared_ptr<FEditorViewportClient> ActiveViewport, FVector& RayOrigin);
     void PickedObjControl(FVector2D DeltaPoint);
     void PickedBoneControl(FVector2D DeltaPoint);
     void ControlPickedPhysicsAsset(FVector2D DeltaPoint);

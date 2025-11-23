@@ -39,7 +39,7 @@ public:
     virtual ~FEditorViewportClient() override;
 
     virtual UWorld* GetWorld() const override { return nullptr; }
-    void Initialize(const FIntRect& InRect, UEngine* InEngine);
+    virtual void Initialize(const FIntRect& InRect, FViewportCamera* InCamera) override;
     void Tick(float DeltaTime);
 
     /**
@@ -49,18 +49,19 @@ public:
 public:
     void InputKey(const FKeyEvent& InKeyEvent);
     void MouseMove(const FPointerEvent& InMouseEvent);
-
-private:
-    // Currently pressed keys. (Pressed but not yet released)
-    TSet<EKeys::Type> PressedKeys;
-
     /**
      * ScreenPos를 World Space로 Deprojection 합니다.
      * @param ScreenPos Point on the application's window (not this viewport/split)
      * @param OutWorldOrigin Origin Vector (World Space)
      * @param OutWorldDir Direction Vector (World Space)
      */
-    void DeprojectFVector2D(const FVector2D& ScreenPos, FVector& OutWorldOrigin, FVector& OutWorldDir) const;
+    void DeprojectScreenToWorld(const FIntPoint& ScreenPos, FVector& OutWorldOrigin, FVector& OutWorldDir) const;
+
+    void DeprojectScreenToView(const FIntPoint& ScreenPos, FVector& OutViewOrigin, FVector& OutViewDir) const;
+
+private:
+    // Currently pressed keys. (Pressed but not yet released)
+    TSet<EKeys::Type> PressedKeys;
 
     // Camera
 public:
@@ -71,9 +72,6 @@ public:
     void SetViewportType(ELevelViewportType InViewportType);
 
     bool IsPerspective() const;
-    virtual FViewportPerspectiveCamera* GetPerspectiveCamera() const;
-    virtual FViewportOrthographicCamera* GetOrthographicCamera() const;
-
 protected:
     void UpdateCamera(float DeltaTime);
 

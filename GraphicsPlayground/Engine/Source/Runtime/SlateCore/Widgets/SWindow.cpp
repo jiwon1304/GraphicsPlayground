@@ -1,32 +1,10 @@
 #include "SWindow.h"
 
-SWindow::SWindow(FRect InRect)
+SWindow::SWindow(const FIntRect& InRect)
     : Rect(InRect)
 {}
 
-void SWindow::Initialize(FRect InitRect)
+bool SWindow::Contains(const FIntPoint& InPoint) 
 {
-    Rect = InitRect;
-}
-
-void SWindow::OnResize(uint32 InWidth, uint32 InHeight)
-{
-    Rect.SetWidth(InWidth);
-    Rect.SetHeight(InHeight);
-}
-
-bool SWindow::IsHover(const FPoint& InPoint) 
-{
-    bIsHovered = Rect.Contains(InPoint);
-    return bIsHovered;
-}
-
-bool SWindow::OnPressed(const FPoint& InPoint)
-{
-    return false;
-}
-
-bool SWindow::OnReleased() 
-{
-    return false;
+    return Rect.Contains(InPoint);
 }

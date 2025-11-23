@@ -3,211 +3,115 @@
 
 extern FEngineLoop GEngineLoop;
 
-void SSplitter::Initialize(FRect InitRect)
+SSplitter::SSplitter(const FIntRect& InRect)
+    : SWindow(InRect), SideLT(nullptr), SideRB(nullptr)
 {
-    SWindow::Initialize(InitRect);
-    
-    if (SideLT == nullptr)
-    {
-        SideLT = new SWindow();
-    }
-    if (SideRB == nullptr)
-    {
-        SideRB = new SWindow();
-    }
 }
 
-void SSplitter::OnResize(uint32 InWidth, uint32 InHeight)
+void SSplitter::SetSplitRatio(float InRatio)
 {
-    Rect.Max = Rect.Min + TPoint<float>(static_cast<float>(InWidth), static_cast<float>(InHeight));
+    SplitRatio = FMath::Clamp(InRatio, SplitterMinRatio, 1.0f - SplitterMinRatio);
 }
 
-bool SSplitter::OnPressed(const FPoint& InPoint)
+SSplitterH::SSplitterH(const FIntRect& InRect)
+    : SSplitter(InRect)
 {
-    if (!IsHover(InPoint))
-    {
-        return false;
-    }
-
-    bIsSplitterPressed = IsSplitterHovered(InPoint);
-    
-    return bIsPressed = true;
+    UpdateChilds();
 }
 
-bool SSplitter::OnReleased()
+uint32 SSplitterH::GetSplitValue()
 {
-    bIsPressed = false;
-    bIsSplitterPressed = false;
-    
-    return false;
+    return Rect.GetWidth() * GetSplitRatio();
 }
 
-bool SSplitter::IsSplitterHovered(const FPoint& InPoint) const
+void SSplitterH::SetSplitValue(uint32 InValue)
 {
-    if (SideLT && SideLT->IsHover(InPoint))
-    {
-        return false;
-    }
-    if (SideRB && SideRB->IsHover(InPoint))
-    {
-        return false;
-    }
-    return true;
+    SetSplitRatio(static_cast<float>(InValue) / Rect.GetWidth());
 }
 
-void SSplitter::LoadConfig(const TMap<FString, FString>& Config) {}
-void SSplitter::SaveConfig(TMap<FString, FString>& Config) const {}
-
-
-void SSplitterH::Initialize(FRect InRect)
+bool SSplitterH::IsInMargin(const FIntPoint& InPoint)
 {
-    SWindow::Initialize(InRect);
-
-    UpdateChildRects();
+    const uint32 SplitterCenter = GetSplitValue();
+    return (
+        InPoint.X >= SplitterCenter - SplitterHalfThickness
+        && InPoint.X <= SplitterCenter + SplitterHalfThickness
+        );
 }
 
-void SSplitterH::ClampSplitRatio()
-{
-    SplitRatio = FMath::Max(SplitRatio, static_cast<float>(SplitterLimitLT) / Rect.GetWidth());
-    SplitRatio = FMath::Min(SplitRatio, (Rect.GetWidth() - static_cast<float>(SplitterLimitLT)) / Rect.GetWidth());
-}
-
-float SSplitterH::GetSplitterLTCenter()
-{
-    ClampSplitRatio();
-    return Rect.GetWidth() * SplitRatio;
-}
-
-void SSplitterH::LoadConfig(const TMap<FString, FString>& Config)
-{
-    SplitRatio = GetValueFromConfig(Config, "SplitterH.SplitRatio", 0.5f);
-
-    UpdateChildRects();
-}
-
-void SSplitterH::SaveConfig(TMap<FString, FString>& Config) const
-{
-    Config["SplitterH.SplitRatio"] = std::to_string(SplitRatio);
-}
-
-void SSplitterH::OnResize(uint32 InWidth, uint32 InHeight)
-{
-    SWindow::OnResize(InWidth, InHeight);
-    
-    UpdateChildRects();
-}
-
-void SSplitterH::OnDrag(const FPoint& Delta)
-{
-    // 수평 스플리터의 경우, 좌우로 이동
-    float CenterX = GetSplitterLTCenter();
-    CenterX += Delta.X;
-
-    // 픽셀 단위 이동을 위해 정수형으로 변환 후 계산
-    SplitRatio = std::trunc(CenterX) / Rect.GetWidth();
-    
-    UpdateChildRects();
-}
-
-void SSplitterH::UpdateChildRects()
+void SSplitterH::UpdateChilds()
 {
     // 픽셀 단위로 계산하기 위해 정수형으로 변환
-    const uint32 SplitterCenterX = static_cast<uint32>(GetSplitterLTCenter());
-    
+    const uint32 SplitterCenter = GetSplitValue();
+
+    // Left
     if (SideLT)
     {
-        SideLT->Initialize(FRect(
+        SideLT->Resize(FIntRect(
             0.0f,
             0.0f,
-            static_cast<float>(SplitterCenterX - SplitterHalfThickness),
-            std::trunc(Rect.GetHeight())
+            SplitterCenter - SplitterHalfThickness,
+            Rect.GetHeight()
         ));
     }
+    // Right
     if (SideRB)
     {
-        const float Offset = static_cast<float>(SplitterCenterX + SplitterHalfThickness);
-        
-        SideRB->Initialize(FRect(
-            Offset,
+        SideRB->Resize(FIntRect(
+            SplitterCenter + SplitterHalfThickness,
             0.0f,
-            std::trunc(Rect.GetWidth() - Offset),
-            std::trunc(Rect.GetHeight())
+            Rect.GetWidth() - (SplitterCenter + SplitterHalfThickness),
+            Rect.GetHeight()
         ));
     }
 }
 
-void SSplitterV::Initialize(FRect InRect)
+SSplitterV::SSplitterV(const FIntRect& InRect)
+    : SSplitter(InRect)
 {
-    SWindow::Initialize(InRect);
-
-    UpdateChildRects();
 }
 
-void SSplitterV::ClampSplitRatio()
+uint32 SSplitterV::GetSplitValue()
 {
-    SplitRatio = FMath::Max(SplitRatio, static_cast<float>(SplitterLimitLT) / Rect.GetHeight());
-    SplitRatio = FMath::Min(SplitRatio, (Rect.GetHeight() - static_cast<float>(SplitterLimitLT)) / Rect.GetHeight());
+    return Rect.GetWidth() * GetSplitRatio();
 }
 
-float SSplitterV::GetSplitterLTCenter()
+void SSplitterV::SetSplitValue(uint32 InValue)
 {
-    ClampSplitRatio();
-    return Rect.GetHeight() * SplitRatio;
+    SetSplitRatio(static_cast<float>(InValue) / Rect.GetWidth());
 }
 
-void SSplitterV::LoadConfig(const TMap<FString, FString>& Config)
+bool SSplitterV::IsInMargin(const FIntPoint& InPoint)
 {
-    SplitRatio = GetValueFromConfig(Config, "SplitterV.SplitRatio", 0.5f);
-
-    UpdateChildRects();
+    const uint32 SplitterCenter = GetSplitValue();
+    return (
+        InPoint.Y >= SplitterCenter - SplitterHalfThickness
+        && InPoint.Y <= SplitterCenter + SplitterHalfThickness
+        );
 }
 
-void SSplitterV::SaveConfig(TMap<FString, FString>& Config) const
-{
-    Config["SplitterV.SplitRatio"] = std::to_string(SplitRatio);
-}
-
-void SSplitterV::OnResize(uint32 InWidth, uint32 InHeight)
-{
-    SWindow::OnResize(InWidth, InHeight);
-    
-    UpdateChildRects();
-}
-
-void SSplitterV::OnDrag(const FPoint& Delta)
-{
-    float CenterY = GetSplitterLTCenter();
-    CenterY += Delta.Y;
-
-    // 픽셀 단위 이동을 위해 정수형으로 변환 후 계산
-    SplitRatio = std::trunc(CenterY) / Rect.GetHeight();
-    
-    UpdateChildRects();
-}
-
-void SSplitterV::UpdateChildRects()
+void SSplitterV::UpdateChilds()
 {
     // 픽셀 단위로 계산하기 위해 정수형으로 변환
-    const uint32 SplitterCenterY = static_cast<uint32>(GetSplitterLTCenter());
-    
+    const uint32 SplitterCenter = GetSplitValue();
+
+    // Left
     if (SideLT)
     {
-        SideLT->Initialize(FRect(
+        SideLT->Resize(FIntRect(
             0.0f,
             0.0f,
-            std::trunc(Rect.GetWidth()),
-            static_cast<float>(SplitterCenterY - SplitterHalfThickness)
+            Rect.GetWidth(),
+            SplitterCenter - SplitterHalfThickness
         ));
     }
+    // Right
     if (SideRB)
     {
-        const float Offset = static_cast<float>(SplitterCenterY + SplitterHalfThickness);
-        
-        SideRB->Initialize(FRect(
+        SideRB->Resize(FIntRect(
             0.0f,
-            Offset,
-            std::trunc(Rect.GetWidth()),
-            std::trunc(Rect.GetHeight() - Offset)
+            SplitterCenter + SplitterHalfThickness,
+            Rect.GetWidth(),
+            Rect.GetHeight() - (SplitterCenter + SplitterHalfThickness)
         ));
     }
 }

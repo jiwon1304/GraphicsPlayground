@@ -67,6 +67,20 @@ void FViewportCamera::DeprojectNDCToWorld(const FVector2D& InNDCPosition, FVecto
     OutWorldDir = (RayEnd - RayOrigin).GetSafeNormal();
 }
 
+void FViewportCamera::DeprojectNDCToView(const FVector2D& InNDCPosition, FVector OutViewOrigin, FVector& OutViewDir)
+{
+    FVector RayOrigin = { InNDCPosition.X, InNDCPosition.Y, 0.0f };
+    FVector RayEnd = { InNDCPosition.X, InNDCPosition.Y, 1.0f };
+
+    const FMatrix Projection = GetProjectionMatrix();
+    const FMatrix ProjectionInv = FMatrix::Inverse(Projection);
+    RayOrigin = ProjectionInv.TransformPosition(RayOrigin);
+    RayEnd = ProjectionInv.TransformPosition(RayEnd);
+
+    OutViewOrigin = RayOrigin;
+    OutViewDir = (RayEnd - RayOrigin).GetSafeNormal();
+}
+
 FMatrix FViewportPerspectiveCamera::GetProjectionMatrix()
 {
     return JungleMath::CreateProjectionMatrix(
@@ -85,6 +99,21 @@ FMatrix FViewportOrthographicCamera::GetProjectionMatrix()
         NearClip,
         FarClip
     );
+}
+
+FViewportClient::~FViewportClient()
+{
+    if (ViewportCamera)
+    {
+        delete ViewportCamera;
+    }
+}
+
+void FViewportClient::Initialize(const FIntRect& InRect, FViewportCamera* InCamera)
+{
+    ViewportCamera = InCamera;
+    ViewportRect = InRect;
+    ViewportCamera->AspectRatio = static_cast<float>(ViewportRect.GetWidth()) / static_cast<float>(ViewportRect.GetHeight());
 }
 
 void FViewportClient::Resize(const FIntRect& InRect)

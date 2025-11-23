@@ -3,6 +3,7 @@
 #include "CoreUObject/UObject/Casts.h"
 #include "Windows/D3D11RHI/DXDBufferManager.h"
 #include "Engine/Classes/Engine/ResourceMgr.h"
+#include "RenderCore/RenderResource.h"
 
 // 생성자: 기본 값 설정
 UParticleSubUVComponent::UParticleSubUVComponent()
@@ -111,8 +112,8 @@ void UParticleSubUVComponent::TickComponent(float DeltaTime)
         return;
 
     // 텍스처 크기를 기반으로 셀 크기 계산 (행, 열)
-    uint32 CellWidth = Texture->Width / CellsPerColumn;
-    uint32 CellHeight = Texture->Height / CellsPerRow;
+    uint32 CellWidth = Texture->GetSizeX() / CellsPerColumn;
+    uint32 CellHeight = Texture->GetSizeY() / CellsPerRow;
 
     float UVSaleX = 1.0f / static_cast<float>(CellsPerColumn);
     float UVSaleY = 1.0f / static_cast<float>(CellsPerRow);

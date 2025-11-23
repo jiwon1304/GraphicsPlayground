@@ -4,93 +4,80 @@
 #include "fstream"
 #include "sstream"
 
+// Contains two SWindow
 class SSplitter : public SWindow
 {
 public:
+    // LT and RB windows are not set in constructor
+    SSplitter(const FIntRect& InRect);
+
     SWindow* SideLT; // Left or Top
     SWindow* SideRB; // Right or Bottom
 
-    float SplitRatio = 0.5f; // 값 범위: [0, 1]
+    float GetSplitRatio() const { return SplitRatio; }
+    void SetSplitRatio(float InRatio);
+    
+    // Size in screen pixels
+    virtual uint32 GetSplitValue() = 0;
+    virtual void SetSplitValue(uint32 InValue) = 0;
 
-    uint32 SplitterLimitLT = 100; // Pixel Value
+    // Not recursive. Update LT and RB's rect based on the split ratio
+    virtual void UpdateChilds() = 0;
+    
+    void SetSplitterHalfThickness(uint32 InThickness) { SplitterHalfThickness = InThickness; }
+    
+    virtual bool IsInMargin(const FIntPoint& InPoint) = 0;
 
+    //virtual void LoadConfig(const TMap<FString, FString>& Config);
+    //virtual void SaveConfig(TMap<FString, FString>& Config) const;
+
+    //template <typename T>
+    //T GetValueFromConfig(const TMap<FString, FString>& Config, const FString& Key, T DefaultValue) {
+    //    if (const FString* Value = Config.Find(Key))
+    //    {
+    //        std::istringstream Stream(Value->ToUTF8String());
+    //        T ConfigValue;
+    //        if (Stream >> ConfigValue)
+    //        {
+    //            return ConfigValue;
+    //        }
+    //    }
+    //    return DefaultValue;
+    //}
+
+protected:
     uint32 SplitterHalfThickness = 5; // Pixel Value
 
-    bool bIsSplitterPressed = false;
+private:
+    float SplitRatio = 0.5f; // 값 범위: [0, 1]
 
-    virtual void Initialize(FRect InitRect) override;
-
-    virtual void ClampSplitRatio() {}
-    
-    virtual float GetSplitterLTCenter() = 0;
-
-    virtual void OnDragStart(const FPoint& MousePos) { /* 초기화 */ }
-    virtual void OnDrag(const FPoint& Delta) = 0; // 가로/세로에 따라 구현 다름.
-    virtual void OnResize(uint32 InWidth, uint32 InHeight) override;
-    virtual bool OnPressed(const FPoint& InPoint) override;
-    virtual bool OnReleased() override;
-
-    virtual bool IsSplitterHovered(const FPoint& InPoint) const;
-
-    virtual bool IsSplitterPressed() const { return bIsSplitterPressed; }
-
-    virtual void OnDragEnd() {}
-
-    virtual void LoadConfig(const TMap<FString, FString>& Config);
-    virtual void SaveConfig(TMap<FString, FString>& Config) const;
-
-    // 스플리터가 포함된 영역에 따라 자식 창의 Rect를 재계산하는 함수
-    virtual void UpdateChildRects() = 0;
-
-    template <typename T>
-    T GetValueFromConfig(const TMap<FString, FString>& Config, const FString& Key, T DefaultValue) {
-        if (const FString* Value = Config.Find(Key))
-        {
-            std::istringstream Stream(Value->ToUTF8String());
-            T ConfigValue;
-            if (Stream >> ConfigValue)
-            {
-                return ConfigValue;
-            }
-        }
-        return DefaultValue;
-    }
+    constexpr static float SplitterMinRatio = 0.2f; // 최소 비율
 };
 
+// Two windows are arranged horizontally
 class SSplitterH : public SSplitter
 {
 public:
-    virtual void Initialize(FRect InRect) override;
+    SSplitterH(const FIntRect& InRect);
 
-    virtual void ClampSplitRatio() override;
-    
-    virtual float GetSplitterLTCenter() override;
-    
-    virtual void OnResize(uint32 InWidth, uint32 InHeight) override;
+    virtual uint32 GetSplitValue() override;
+    virtual void SetSplitValue(uint32 InValue) override;
 
-    virtual void LoadConfig(const TMap<FString, FString>& Config) override;
-    virtual void SaveConfig(TMap<FString, FString>& Config) const override;
+    virtual bool IsInMargin(const FIntPoint& InPoint) override;
 
-    virtual void OnDrag(const FPoint& Delta) override;
-
-    virtual void UpdateChildRects() override;
+    virtual void UpdateChilds() override;
 };
 
+// Two windows are arranged vertically
 class SSplitterV : public SSplitter
 {
 public:
-    virtual void Initialize(FRect InRect) override;
+    SSplitterV(const FIntRect& InRect);
 
-    virtual void ClampSplitRatio() override;
+    virtual uint32 GetSplitValue() override;
+    virtual void SetSplitValue(uint32 InValue) override;
 
-    virtual float GetSplitterLTCenter() override;
-    
-    virtual void OnResize(uint32 InWidth, uint32 InHeight) override;
+    virtual bool IsInMargin(const FIntPoint& InPoint) override;
 
-    virtual void LoadConfig(const TMap<FString, FString>& Config) override;
-    virtual void SaveConfig(TMap<FString, FString>& Config) const override;
-
-    virtual void OnDrag(const FPoint& Delta) override;
-
-    virtual void UpdateChildRects() override;
+    virtual void UpdateChilds() override;
 };

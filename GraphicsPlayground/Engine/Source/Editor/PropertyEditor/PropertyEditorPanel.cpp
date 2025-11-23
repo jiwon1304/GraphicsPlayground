@@ -973,13 +973,8 @@ void PropertyEditorPanel::RenderForLightCommon(ULightComponentBase* LightCompone
         FVector LightLocation = LightComponent->GetComponentLocation();
 
         FVector Forward = FVector(1.f, 0.f, 0.0f);
-        Forward = JungleMath::FVectorRotate(Forward, LightLocation);
-        FVector LightForward = Forward;
+        FVector LightForward = JungleMath::FVectorRotate(Forward, LightLocation);
         FRotator LightRotation = LightComponent->GetComponentRotation();
-        FVector LightRotationVector;
-        LightRotationVector.X = LightRotation.Roll;
-        LightRotationVector.Y = -LightRotation.Pitch;
-        LightRotationVector.Z = LightRotation.Yaw;
 
         // 2. 활성 에디터 뷰포트 클라이언트 가져오기 (!!! 엔진별 구현 필요 !!!)
         std::shared_ptr<FEditorViewportClient> ViewportClient = GEngineLoop.GetLevelEditor()->GetActiveViewportClient(); // 위에 정의된 헬퍼 함수 사용 (또는 직접 구현)
@@ -987,8 +982,8 @@ void PropertyEditorPanel::RenderForLightCommon(ULightComponentBase* LightCompone
         // 3. 뷰포트 클라이언트가 유효하면 카메라 설정
         if (ViewportClient)
         {
-            ViewportClient->PerspectiveCamera.SetLocation(LightLocation + LightForward); // 카메라 위치 설정 함수 호출
-            ViewportClient->PerspectiveCamera.SetRotation(LightRotationVector); // 카메라 회전 설정 함수 호출
+            ViewportClient->GetViewportCamera()->ViewLocation = LightLocation + LightForward;
+            ViewportClient->GetViewportCamera()->ViewRotation = LightRotation;
 
             // 필요시 뷰포트 강제 업데이트/다시 그리기 호출
             // ViewportClient->Invalidate();
