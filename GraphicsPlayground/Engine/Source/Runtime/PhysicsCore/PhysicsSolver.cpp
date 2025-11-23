@@ -275,8 +275,8 @@ physx::PxJoint* FPhysicsSolver::CreateJoint(FPhysScene* InScene, PxActor* Child,
     }
 
     // 각도 제한
-    Joint->setMotion(physx::PxD6Axis::eSWING1, FPhysicsAssetUtils::MapAngularMotionToPx(ConeLimitProps.Swing1Motion));
-    Joint->setMotion(physx::PxD6Axis::eSWING2, FPhysicsAssetUtils::MapAngularMotionToPx(ConeLimitProps.Swing2Motion));
+    Joint->setMotion(physx::PxD6Axis::eSWING1, FPhysicsAssetUtilsPhysx::MapAngularMotionToPx(ConeLimitProps.Swing1Motion));
+    Joint->setMotion(physx::PxD6Axis::eSWING2, FPhysicsAssetUtilsPhysx::MapAngularMotionToPx(ConeLimitProps.Swing2Motion));
 
     if (ConeLimitProps.Swing1Motion != EAngularConstraintMotion::ACM_Free ||
         ConeLimitProps.Swing2Motion != EAngularConstraintMotion::ACM_Free)
@@ -326,7 +326,7 @@ physx::PxJoint* FPhysicsSolver::CreateJoint(FPhysScene* InScene, PxActor* Child,
     }
 
     // 트위스트 제한
-    Joint->setMotion(physx::PxD6Axis::eTWIST, FPhysicsAssetUtils::MapAngularMotionToPx(TwistLimitProps.TwistMotion));
+    Joint->setMotion(physx::PxD6Axis::eTWIST, FPhysicsAssetUtilsPhysx::MapAngularMotionToPx(TwistLimitProps.TwistMotion));
 
     if (TwistLimitProps.TwistMotion != EAngularConstraintMotion::ACM_Free)
     {

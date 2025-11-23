@@ -1,4 +1,4 @@
-#include "PhysicsUtilities/PhysicsAssetUtils.h"
+#include "Developer/PhysicsUtilities/PhysicsAssetUtils.h"
 #include "ThirdParty/physx/include/extensions/PxD6Joint.h"
 
 namespace FPhysicsAssetUtilsPhysx
