@@ -26,7 +26,8 @@ protected:
 };
 
 /**
- * Viewport being rendered to the window's screen. 
+ * Viewport class represents a rectangular only with width and height.
+ * Where to draw in the application's window is decided by FViewportClient.
  */
 class FViewport : public FRenderTarget, protected FRenderResource
 {
@@ -45,10 +46,18 @@ class FViewport : public FRenderTarget, protected FRenderResource
 
     const FViewportRHIRef& GetViewportRHI() const { return ViewportRHI; }
 
+    virtual FIntPoint GetSizeXY() const override
+    {
+        return FIntPoint(SizeX, SizeY);
+    }
+
 protected:
     FViewportClient* ViewportClient;
 
     FViewportRHIRef ViewportRHI;
+
+    uint32 SizeX = 0;
+    uint32 SizeY = 0;
 
     void UpdateViewportRHI(uint32 NewWidth, uint32 NewHeight);
 

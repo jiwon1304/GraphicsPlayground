@@ -1,6 +1,4 @@
 #include "BillboardComponent.h"
-#include <DirectXMath.h>
-#include <d3d11.h>
 #include "Launch/Define.h"
 #include "World/World.h"
 #include "Classes/Actors/Player.h"
@@ -8,9 +6,9 @@
 #include "Math/MathUtility.h"
 #include "Editor/UnrealEd/EditorViewportClient.h"
 #include "Launch/EngineLoop.h"
-#include "Windows/D3D11RHI/GraphicDevice.h"
 #include "Engine/Classes/Engine/ResourceMgr.h"
 #include "ApplicationCore/Generic/GenericSlateAppMessageHandler.h"
+#include "ApplicationCore/Generic/GenericWindow.h"
 
 UBillboardComponent::UBillboardComponent()
 {
@@ -26,7 +24,7 @@ UObject* UBillboardComponent::Duplicate(UObject* InOuter)
     {
         NewComponent->FinalIndexU = FinalIndexU;
         NewComponent->FinalIndexV = FinalIndexV;
-        NewComponent->Texture = GEngineLoop.ResourceManager->GetTexture(TexturePath.ToWideString());
+        NewComponent->Texture = Texture;
         NewComponent->TexturePath = TexturePath;
         NewComponent->UUIDParent = UUIDParent;
         NewComponent->bIsEditorBillboard = bIsEditorBillboard;
@@ -103,7 +101,7 @@ void UBillboardComponent::SetUUIDParent(USceneComponent* InUUIDParent)
 FMatrix UBillboardComponent::CreateBillboardMatrix() const
 {
     // 카메라 뷰 행렬을 가져와서 위치 정보를 제거한 후 전치하여 LookAt 행렬 생성
-    FMatrix CameraView = GEngineLoop.GetLevelEditor()->GetActiveViewportClient()->GetViewMatrix();
+    FMatrix CameraView = GEngineLoop.GetLevelEditor()->GetActiveViewportClient()->GetViewportCamera()->GetViewMatrix();
     CameraView.M[0][3] = CameraView.M[1][3] = CameraView.M[2][3] = 0.0f;
     CameraView.M[3][0] = CameraView.M[3][1] = CameraView.M[3][2] = 0.0f;
     CameraView.M[3][3] = 1.0f;
@@ -129,57 +127,55 @@ FMatrix UBillboardComponent::CreateBillboardMatrix() const
 
 bool UBillboardComponent::CheckPickingOnNDC(const TArray<FVector>& QuadVertices, float& HitDistance) const
 {
-    // TODO: 이 로직으로는 멀티 뷰포트에서 빌보드 피킹 안됨.
-    
-    // 마우스 위치를 클라이언트 좌표로 가져온 후 NDC 좌표로 변환
-    // POINT MousePos;
-    // GetCursorPos(&MousePos);
-    // ScreenToClient(GEngineLoop.AppWnd, &MousePos);
-    FVector2D MousePos = GEngineLoop.GetAppMessageHandler()->GetCursorPos();
-
-    D3D11_VIEWPORT Viewport;
-    UINT NumViewports = 1;
-    GEngineLoop.GraphicDevice->DeviceContext->RSGetViewports(&NumViewports, &Viewport);
-
-    // NDC 좌표 계산: X, Y는 [-1,1] 범위로 매핑
-    const float NdcX = (2.0f * MousePos.X / Viewport.Width) - 1.0f;
-    const float NdcY = -((2.0f * MousePos.Y / Viewport.Height) - 1.0f);
-
-    // MVP 행렬 계산
-    const std::shared_ptr<FEditorViewportClient> ActiveViewport = GEngineLoop.GetLevelEditor()->GetActiveViewportClient();
-    const FMatrix M = CreateBillboardMatrix();
-    const FMatrix V = ActiveViewport->GetViewMatrix();
-    const FMatrix P = ActiveViewport->GetProjectionMatrix();
-    const FMatrix MVP = M * V * P;
-
-    // quadVertices를 MVP로 변환하여 NDC 공간에서의 최소/최대값 구하기
-    float MinX = FLT_MAX, MaxX = -FLT_MAX;
-    float MinY = FLT_MAX, MaxY = -FLT_MAX;
-    float AvgZ = 0.0f;
-
-    for (const FVector& V : QuadVertices)
-    {
-        FVector4 ClipPos = FMatrix::TransformVector(FVector4(V, 1.0f), MVP);
-        if (ClipPos.W != 0.0f)
-        {
-            ClipPos = ClipPos / ClipPos.W;
-        }
-        MinX = FMath::Min(MinX, ClipPos.X);
-        MaxX = FMath::Max(MaxX, ClipPos.X);
-        MinY = FMath::Min(MinY, ClipPos.Y);
-        MaxY = FMath::Max(MaxY, ClipPos.Y);
-        AvgZ += ClipPos.Z;
-    }
-
-    AvgZ /= QuadVertices.Num();
-
-    // 마우스 NDC 좌표가 quad의 NDC 경계 사각형 내에 있는지 검사
-    if (NdcX >= MinX && NdcX <= MaxX && NdcY >= MinY && NdcY <= MaxY)
-    {
-        const FVector WorldLocation = GetComponentLocation();
-        const FVector CameraLocation = ActiveViewport->GetCameraLocation();
-        HitDistance = (WorldLocation - CameraLocation).Length();
-        return true;
-    }
     return false;
+    // TODO: 이 로직으로는 멀티 뷰포트에서 빌보드 피킹 안됨.
+    //
+    //// 마우스 위치를 클라이언트 좌표로 가져온 후 NDC 좌표로 변환
+    //// POINT MousePos;
+    //// GetCursorPos(&MousePos);
+    //// ScreenToClient(GEngineLoop.AppWnd, &MousePos);
+    //FIntPoint MousePos = GEngineLoop.GetAppMessageHandler()->GetCursorPos();
+    //GEngineLoop.MainWindow->Get
+
+    //// NDC 좌표 계산: X, Y는 [-1,1] 범위로 매핑
+    //const float NdcX = (2.0f * MousePos.X / Viewport.Width) - 1.0f;
+    //const float NdcY = -((2.0f * MousePos.Y / Viewport.Height) - 1.0f);
+
+    //// MVP 행렬 계산
+    //const std::shared_ptr<FEditorViewportClient> ActiveViewport = GEngineLoop.GetLevelEditor()->GetActiveViewportClient();
+    //const FMatrix M = CreateBillboardMatrix();
+    //const FMatrix V = ActiveViewport->GetViewMatrix();
+    //const FMatrix P = ActiveViewport->GetProjectionMatrix();
+    //const FMatrix MVP = M * V * P;
+
+    //// quadVertices를 MVP로 변환하여 NDC 공간에서의 최소/최대값 구하기
+    //float MinX = FLT_MAX, MaxX = -FLT_MAX;
+    //float MinY = FLT_MAX, MaxY = -FLT_MAX;
+    //float AvgZ = 0.0f;
+
+    //for (const FVector& V : QuadVertices)
+    //{
+    //    FVector4 ClipPos = FMatrix::TransformVector(FVector4(V, 1.0f), MVP);
+    //    if (ClipPos.W != 0.0f)
+    //    {
+    //        ClipPos = ClipPos / ClipPos.W;
+    //    }
+    //    MinX = FMath::Min(MinX, ClipPos.X);
+    //    MaxX = FMath::Max(MaxX, ClipPos.X);
+    //    MinY = FMath::Min(MinY, ClipPos.Y);
+    //    MaxY = FMath::Max(MaxY, ClipPos.Y);
+    //    AvgZ += ClipPos.Z;
+    //}
+
+    //AvgZ /= QuadVertices.Num();
+
+    //// 마우스 NDC 좌표가 quad의 NDC 경계 사각형 내에 있는지 검사
+    //if (NdcX >= MinX && NdcX <= MaxX && NdcY >= MinY && NdcY <= MaxY)
+    //{
+    //    const FVector WorldLocation = GetComponentLocation();
+    //    const FVector CameraLocation = ActiveViewport->GetCameraLocation();
+    //    HitDistance = (WorldLocation - CameraLocation).Length();
+    //    return true;
+    //}
+    //return false;
 }

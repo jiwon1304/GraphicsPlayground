@@ -1,9 +1,5 @@
 #pragma once
-#include "Matrix.h"
-#include "Vector.h"
-#include "Vector4.h"
-#include "Rotator.h"
-#include "Quat.h"
+#include "MathFwd.h"
 
 //  Near Clip Plane 값을 정의한 헤더
 #ifndef NEAR_PLANE
@@ -13,18 +9,18 @@
 class JungleMath
 {
 public:
-    static FVector4 ConvertV3ToV4(FVector vec3);
-    static FMatrix CreateModelMatrix(FVector translation, FVector rotation, FVector scale);
-    static FMatrix CreateModelMatrix(FVector translation, FQuat rotation, FVector scale);
-    static FMatrix CreateViewMatrix(FVector eye, FVector target, FVector up);
-    static FMatrix CreateProjectionMatrix(float fov, float aspect, float nearPlane, float farPlane);
-    static FMatrix CreateOrthoProjectionMatrix(float width, float height, float nearPlane, float farPlane);
-    static FMatrix CreateOrthographicOffCenter(float left, float right, float bottom, float top, float nearPlane, float farPlane);
+    static FVector4 ConvertV3ToV4(const FVector& vec3);
+    static FMatrix CreateModelMatrix(const FVector& translation, const FVector& rotation, const FVector& scale);
+    static FMatrix CreateModelMatrix(const FVector& translation, const FQuat& rotation, const FVector& scale);
+    static FMatrix CreateViewMatrix(const FVector& eye, const FVector& target, const FVector& PseudoUp);
+    static FMatrix CreateProjectionMatrix(const float fov, const float aspect, const float nearPlane, const float farPlane);
+    static FMatrix CreateOrthoProjectionMatrix(const float width, const float height, const float nearPlane, const float farPlane);
+    static FMatrix CreateOrthographicOffCenter(const float left, const float right, const float bottom, const float top, const float nearPlane, const float farPlane);
 
-    static FVector FVectorRotate(FVector& origin, const FVector& InRotation);
-    static FVector FVectorRotate(FVector& origin, const FRotator& InRotation);
-    static FVector FVectorRotate(FVector& origin, const FQuat& InRotation);
-    static FMatrix CreateRotationMatrix(FVector rotation);
+    static FVector FVectorRotate(const FVector& origin, const FVector& InRotation);
+    static FVector FVectorRotate(const FVector& origin, const FRotator& InRotation);
+    static FVector FVectorRotate(const FVector& origin, const FQuat& InRotation);
+    static FMatrix CreateRotationMatrix(const FVector& rotation);
     static FQuat EulerToQuaternion(const FVector& eulerDegrees);
     static FVector QuaternionToEuler(const FQuat& quat);
 };

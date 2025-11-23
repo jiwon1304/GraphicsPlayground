@@ -4,6 +4,7 @@
 #include "Container/Array.h"
 #include "Core/Math/Vector.h"
 #include "Core/Math/Vector2.h"
+#include "Core/Math/Rect.h"
 
 class SSplitterH;
 class SSplitterV;
@@ -21,7 +22,7 @@ public:
     void Release();
 
     void ResizeEditor(uint32 InEditorWidth, uint32 InEditorHeight);
-    void SelectViewport(const FVector2D& Point);
+    void SelectViewport(const FIntPoint& Point);
 
     void ResizeViewports();
     void SetEnableMultiViewport(bool bIsEnable);

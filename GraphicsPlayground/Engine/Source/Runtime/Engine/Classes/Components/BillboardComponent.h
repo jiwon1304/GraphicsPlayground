@@ -1,9 +1,8 @@
 #pragma once
 
-// #define _TCHAR_DEFINED
-// #include <wrl.h>
 #include "PrimitiveComponent.h"
-#include "Classes/Engine/Texture.h"
+
+class FTexture;
 
 class UBillboardComponent : public UPrimitiveComponent
 {
@@ -26,7 +25,7 @@ public:
 
     float FinalIndexU = 0.0f;
     float FinalIndexV = 0.0f;
-    std::shared_ptr<FTexture> Texture;
+    FTexture* Texture;
 
     bool bIsEditorBillboard = false;
 

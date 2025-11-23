@@ -124,11 +124,11 @@ void SLevelEditor::ResizeEditor(uint32 InEditorWidth, uint32 InEditorHeight)
     }
 }
 
-void SLevelEditor::SelectViewport(const FVector2D& Point)
+void SLevelEditor::SelectViewport(const FIntPoint& Point)
 {
     for (int i = 0; i < 4; i++)
     {
-        if (ViewportClients[i]->IsSelected(Point))
+        if (ViewportClients[i]->GetViewportRect().Contains(Point))
         {
             SetActiveViewportClient(i);
             return;
@@ -140,17 +140,15 @@ void SLevelEditor::ResizeViewports()
 {
     if (bMultiViewportMode)
     {
-        if (GetViewports()[0])
+        for (int i = 0; i < 4; ++i)
         {
-            for (int i = 0; i < 4; ++i)
-            {
-                GetViewports()[i]->ResizeViewport(
-                    VSplitter->SideLT->GetRect(),
-                    VSplitter->SideRB->GetRect(),
-                    HSplitter->SideLT->GetRect(),
-                    HSplitter->SideRB->GetRect()
-                );
-            }
+            assert(ViewportClients[i]);
+            //ViewportClients[i]->Resize(
+            //    VSplitter->SideLT->GetRect(),
+            //    VSplitter->SideRB->GetRect(),
+            //    HSplitter->SideLT->GetRect(),
+            //    HSplitter->SideRB->GetRect()
+            //);
         }
     }
     else
@@ -369,7 +367,7 @@ void SLevelEditor::RegisterEditorInputDelegates()
                 // GetCursorPos(&Point);
                 // ScreenToClient(GEngineLoop.AppWnd, &Point);
                 // FVector2D ClientPos = FVector2D{ static_cast<float>(Point.x), static_cast<float>(Point.y) };
-                FVector2D ClientPos = InMouseEvent.GetScreenSpacePosition();
+                FIntPoint ClientPos = InMouseEvent.GetScreenSpacePosition();
                 SelectViewport(ClientPos);
                 VSplitter->OnPressed({ ClientPos.X, ClientPos.Y });
                 HSplitter->OnPressed({ ClientPos.X, ClientPos.Y });

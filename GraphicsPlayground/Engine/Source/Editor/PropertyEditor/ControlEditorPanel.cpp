@@ -316,32 +316,38 @@ void ControlEditorPanel::CreateModifyButton(const ImVec2 ButtonSize, ImFont* Ico
 
     if (ImGui::BeginPopup("SliderControl"))
     {
+        std::shared_ptr<FEditorViewportClient> ActiveViewportClient = GEngineLoop.GetLevelEditor()->GetActiveViewportClient();
         ImGui::Text("Grid Scale");
-        GridScale = GEngineLoop.GetLevelEditor()->GetActiveViewportClient()->GetGridSize();
+        float GridScale = 0.1f; // = GEngineLoop.GetLevelEditor()->GetActiveViewportClient()->GetGridSize();
         ImGui::SetNextItemWidth(120.0f);
         if (ImGui::DragFloat("##Grid Scale", &GridScale, 0.1f, 1.0f, 20.0f, "%.1f"))
         {
-            GEngineLoop.GetLevelEditor()->GetActiveViewportClient()->SetGridSize(GridScale);
+            //GEngineLoop.GetLevelEditor()->GetActiveViewportClient()->SetGridSize(GridScale);
         }
 
         ImGui::Separator();
 
-        ImGui::Text("Camera FOV");
-        FOV = &GEngineLoop.GetLevelEditor()->GetActiveViewportClient()->ViewFOV;
-        ImGui::SetNextItemWidth(120.0f);
-        if (ImGui::DragFloat("##Fov", FOV, 0.1f, 30.0f, 120.0f, "%.1f"))
+        if (ActiveViewportClient->IsPerspective())
         {
-            //GEngineLoop.GetWorld()->GetCamera()->SetFOV(FOV);
+            ImGui::Text("Camera FOV");
+            FViewportPerspectiveCamera* PerspectiveCamera = static_cast<FViewportPerspectiveCamera*>(ActiveViewportClient->GetViewportCamera());
+            assert(PerspectiveCamera);
+            float FOV = PerspectiveCamera->FOVDegree;
+            ImGui::SetNextItemWidth(120.0f);
+            if (ImGui::DragFloat("##Fov", &FOV, 0.1f, 30.0f, 120.0f, "%.1f"))
+            {
+                PerspectiveCamera->FOVDegree = FOV;
+            }
         }
 
         ImGui::Spacing();
 
         ImGui::Text("Camera Speed");
-        CameraSpeed = GEngineLoop.GetLevelEditor()->GetActiveViewportClient()->GetCameraSpeedScalar();
+        float CameraSpeed = GEngineLoop.GetLevelEditor()->GetActiveViewportClient()->CameraMovementSpeed;
         ImGui::SetNextItemWidth(120.0f);
         if (ImGui::DragFloat("##CamSpeed", &CameraSpeed, 0.1f, 0.198f, 192.0f, "%.1f"))
         {
-            GEngineLoop.GetLevelEditor()->GetActiveViewportClient()->SetCameraSpeed(CameraSpeed);
+            GEngineLoop.GetLevelEditor()->GetActiveViewportClient()->CameraMovementSpeed = CameraSpeed;
         }
 
         // ImGui::Separator();

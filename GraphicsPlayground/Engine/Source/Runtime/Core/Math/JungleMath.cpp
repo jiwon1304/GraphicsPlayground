@@ -2,12 +2,16 @@
 #include <DirectXMath.h>
 #include "MathUtility.h"
 
+#include "Vector.h"
+#include "Vector4.h"
 #include "Rotator.h"
+#include "Quat.h"
+#include "Matrix.h"
 
 using namespace DirectX;
 
 
-FVector4 JungleMath::ConvertV3ToV4(FVector vec3)
+FVector4 JungleMath::ConvertV3ToV4(const FVector& vec3)
 {
     FVector4 newVec4;
     newVec4.X = vec3.X;
@@ -16,7 +20,7 @@ FVector4 JungleMath::ConvertV3ToV4(FVector vec3)
     return newVec4;
 }
 
-FMatrix JungleMath::CreateModelMatrix(FVector translation, FVector rotation, FVector scale)
+FMatrix JungleMath::CreateModelMatrix(const FVector& translation, const FVector& rotation, const FVector& scale)
 {
     FMatrix Translation = FMatrix::CreateTranslationMatrix(translation);
 
@@ -27,17 +31,17 @@ FMatrix JungleMath::CreateModelMatrix(FVector translation, FVector rotation, FVe
     return Scale * Rotation * Translation;
 }
 
-FMatrix JungleMath::CreateModelMatrix(FVector translation, FQuat rotation, FVector scale)
+FMatrix JungleMath::CreateModelMatrix(const FVector& translation, const FQuat& rotation, const FVector& scale)
 {
     FMatrix Translation = FMatrix::CreateTranslationMatrix(translation);
     FMatrix Rotation = rotation.ToMatrix();
     FMatrix Scale = FMatrix::CreateScaleMatrix(scale);
     return Scale * Rotation * Translation;
 }
-FMatrix JungleMath::CreateViewMatrix(FVector eye, FVector target, FVector up)
+FMatrix JungleMath::CreateViewMatrix(const FVector& eye, const FVector& target, const FVector& PseudoUp)
 {
     FVector zAxis = (target - eye).GetSafeNormal();  // DirectX는 LH이므로 -z가 아니라 +z 사용
-    FVector xAxis = (up.Cross(zAxis)).GetSafeNormal();
+    FVector xAxis = (PseudoUp.Cross(zAxis)).GetSafeNormal();
     FVector yAxis = zAxis.Cross(xAxis);
 
     FMatrix View;
@@ -52,7 +56,7 @@ FMatrix JungleMath::CreateViewMatrix(FVector eye, FVector target, FVector up)
     return View;
 }
 
-FMatrix JungleMath::CreateProjectionMatrix(float fov, float aspect, float nearPlane, float farPlane)
+FMatrix JungleMath::CreateProjectionMatrix(const float fov, const float aspect, const float nearPlane, const float farPlane)
 {
     float tanHalfFOV = tan(fov / 2.0f);
     float depth = farPlane - nearPlane;
@@ -68,7 +72,7 @@ FMatrix JungleMath::CreateProjectionMatrix(float fov, float aspect, float nearPl
     return Projection;
 }
 
-FMatrix JungleMath::CreateOrthoProjectionMatrix(float width, float height, float nearPlane, float farPlane)
+FMatrix JungleMath::CreateOrthoProjectionMatrix(const float width, const float height, const float nearPlane, const float farPlane)
 {
     float r = width * 0.5f;
     float t = height * 0.5f;
@@ -93,8 +97,8 @@ FMatrix JungleMath::CreateOrthoProjectionMatrix(float width, float height, float
  * @param nearPlane  near plane 거리
  * @param farPlane   far plane 거리
  */
-FMatrix JungleMath::CreateOrthographicOffCenter( float left, float right, float bottom, float top,
-    float nearPlane, float farPlane)
+FMatrix JungleMath::CreateOrthographicOffCenter(const float left, const float right, const float bottom, const float top,
+    const float nearPlane, const float farPlane)
 {
     float width = right - left;
     float height = top - bottom;
@@ -115,7 +119,7 @@ FMatrix JungleMath::CreateOrthographicOffCenter( float left, float right, float 
     return Projection;
 }
 
-FVector JungleMath::FVectorRotate(FVector& origin, const FVector& InRotation)
+FVector JungleMath::FVectorRotate(const FVector& origin, const FVector& InRotation)
 {
     FQuat quaternion = JungleMath::EulerToQuaternion(InRotation);
     // 쿼터니언을 이용해 벡터 회전 적용
@@ -178,17 +182,17 @@ FVector JungleMath::QuaternionToEuler(const FQuat& quat)
     return euler;
 }
 
-FVector JungleMath::FVectorRotate(FVector& origin, const FRotator& InRotation)
+FVector JungleMath::FVectorRotate(const FVector& origin, const FRotator& InRotation)
 {
     return InRotation.Quaternion().RotateVector(origin);
 }
 
-FVector JungleMath::FVectorRotate(FVector& origin, const FQuat& InRotation)
+FVector JungleMath::FVectorRotate(const FVector& origin, const FQuat& InRotation)
 {
     return InRotation.RotateVector(origin);
 }
 
-FMatrix JungleMath::CreateRotationMatrix(FVector rotation)
+FMatrix JungleMath::CreateRotationMatrix(const FVector& rotation)
 {
     XMVECTOR quatX = XMQuaternionRotationAxis(XMVectorSet(1, 0, 0, 0), FMath::DegreesToRadians(rotation.X));
     XMVECTOR quatY = XMQuaternionRotationAxis(XMVectorSet(0, 1, 0, 0), FMath::DegreesToRadians(rotation.Y));

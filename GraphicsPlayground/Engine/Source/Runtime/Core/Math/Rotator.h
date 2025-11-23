@@ -17,11 +17,11 @@ struct TRotator
     T Yaw;
     T Roll;
 
-    explicit TRotator()
+    constexpr explicit TRotator()
         : Pitch(0), Yaw(0), Roll(0)
     {}
 
-    explicit TRotator(T InPitch, T InYaw, T InRoll)
+    constexpr explicit TRotator(T InPitch, T InYaw, T InRoll)
         : Pitch(InPitch), Yaw(InYaw), Roll(InRoll)
     {}
 
