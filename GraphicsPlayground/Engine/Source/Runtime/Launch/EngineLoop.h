@@ -12,7 +12,7 @@ class SSplitterH;
 class FGraphicDevice;
 class SLevelEditor;
 class FDXDBufferManager;
-class USubEngine;
+//class USubEngine;
 class IGPUTimingManager;
 class FEngineProfiler;
 class FResourceManager;
