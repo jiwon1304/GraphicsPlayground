@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Container/Map.h"
+#include "RHI/RHIResources.h"
 
 struct FRenderTarget;
 struct FRenderTargetDesc;

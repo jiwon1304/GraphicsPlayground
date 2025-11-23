@@ -4,6 +4,8 @@
 
 FRenderTargetPool GRenderTargetPool;
 
+static float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+
 void FRenderTargetPool::Initialize(const FRHITextureCreateDesc &InDesc)
 {
     assert(InDesc.InitialState & (ERHIAccess::SRVMask | ERHIAccess::RTV));
@@ -43,7 +45,8 @@ FRenderTarget* FRenderTargetPool::CreateRenderTarget(FRHICommandListBase& RHICmd
 
     FRHITexture* Texture = RHICreateTexture(RHICmdList, InDesc, nullptr);
 
-    FRenderTarget* RenderTarget = new(FPlatformMemory::Malloc<EAT_Renderer>(sizeof(FRenderTarget))) FRenderTarget(Texture, InDesc);
+    FRenderTargetDesc Translated(ClearColor, InDesc.DimX, InDesc.DimY, InDesc.Format);
+    FRenderTarget* RenderTarget = new(FPlatformMemory::Malloc<EAT_Renderer>(sizeof(FRenderTarget))) FRenderTarget(Texture, Translated);
 
     return RenderTarget;
 }

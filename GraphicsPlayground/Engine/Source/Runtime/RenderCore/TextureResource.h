@@ -71,6 +71,8 @@ protected:
     FName TextureName;
 
     FTextureCreateDesc State;
+
+    UTexture2D* Owner;
 };
 
 class FTextureRenderTargetResource : public FTextureResource, public FRenderTarget

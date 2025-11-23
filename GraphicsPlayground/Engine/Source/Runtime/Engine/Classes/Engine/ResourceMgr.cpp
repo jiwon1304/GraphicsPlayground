@@ -8,6 +8,7 @@
 // #include "Windows/D3D11RHI/GraphicDevice.h"
 // #include "ThirdParty/DirectXTK/Include/DirectXTK/DDSTextureLoader.h"
 #include "Classes/Engine/FObjLoader.h"
+#include "RenderCore/RenderResource.h"
 
 
 void FResourceManager::Initialize(FRenderer* Renderer, FGraphicsDevice* Device)
@@ -49,8 +50,8 @@ void FResourceManager::Release(FRenderer* Renderer)
 {
     for (const auto& Pair : TextureMap)
     {
-        FTexture* Texture = Pair.Value.get();
-        Texture->Release();
+        FTexture* Texture = Pair.Value;
+        Texture->ReleaseRHI();
     }
     TextureMap.Empty();
 }
@@ -77,7 +78,7 @@ struct TupleHash
     }
 };
 
-std::shared_ptr<FTexture> FResourceManager::GetTexture(const FWString& Name) const
+FTexture* FResourceManager::GetTexture(const FWString& Name) const
 {
     auto* TempValue = TextureMap.Find(Name);
     return TempValue ? *TempValue : nullptr;

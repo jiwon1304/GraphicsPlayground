@@ -32,6 +32,7 @@ extern void BeginInitResource(FRenderResource* Resource);
 
 extern void BeginReleaseResource(FRenderResource* Resource);
 
+class FResourceManager;
 /**
  * Base class for textures.
  * Derived classes:
@@ -42,6 +43,7 @@ extern void BeginReleaseResource(FRenderResource* Resource);
  */
 class FTexture : public FRenderResource
 {
+    friend class FResourceManager; // @todo  지우기
 protected:
     FTextureRHIRef TextureRHI;
     FSamplerStateRHIRef SamplerStateRHI;
