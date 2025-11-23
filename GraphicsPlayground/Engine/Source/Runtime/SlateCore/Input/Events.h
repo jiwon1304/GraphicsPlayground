@@ -1,8 +1,7 @@
 #pragma once
 #include "Container/Set.h"
 #include "InputCore/InputCoreTypes.h"
-#include "Math/Vector.h"
-#include "Math/Vector2.h"
+#include "Core/Math/Rect.h"
 
 class FKeySet : public TSet<EKeys::Type>
 {
@@ -206,9 +205,9 @@ struct FPointerEvent : public FInputEvent
 {
     FPointerEvent()
         : FInputEvent(FModifierKeysState{}, IE_None)
-        , ScreenSpacePosition(FVector2D::ZeroVector)
-        , LastScreenSpacePosition(FVector2D::ZeroVector)
-        , CursorDelta(FVector2D::ZeroVector)
+        , ScreenSpacePosition(FIntPoint())
+        , LastScreenSpacePosition(FIntPoint())
+        , CursorDelta(FIntPoint())
         , PressedButtons(&FKeySet::EmptySet)
         , EffectingButton(EKeys::Invalid)
         , WheelDelta(0.0f)
@@ -216,9 +215,9 @@ struct FPointerEvent : public FInputEvent
     }
 
     FPointerEvent(
-        FVector2D InScreenSpacePosition,
-        FVector2D InLastScreenSpacePosition,
-        FVector2D InCursorDelta,
+        FIntPoint InScreenSpacePosition,
+        FIntPoint InLastScreenSpacePosition,
+        FIntPoint InCursorDelta,
         float InWheelDelta,
         EKeys::Type InEffectingButton,
         const TSet<EKeys::Type>& InPressedButtons,
@@ -236,8 +235,8 @@ struct FPointerEvent : public FInputEvent
     }
 
     FPointerEvent(
-        FVector2D InScreenSpacePosition,
-        FVector2D InLastScreenSpacePosition,
+        FIntPoint InScreenSpacePosition,
+        FIntPoint InLastScreenSpacePosition,
         float InWheelDelta,
         EKeys::Type InEffectingButton,
         const TSet<EKeys::Type>& InPressedButtons,
@@ -255,13 +254,13 @@ struct FPointerEvent : public FInputEvent
     }
 
     /** 현재 마우스 포인터의 위치를 가져옵니다. */
-    const FVector2D& GetScreenSpacePosition() const { return ScreenSpacePosition; }
+    const FIntPoint& GetScreenSpacePosition() const { return ScreenSpacePosition; }
 
     /** 한 프레임 전의 마우스 포인터의 위치를 가져옵니다. */
-    const FVector2D& GetLastScreenSpacePosition() const { return LastScreenSpacePosition; }
+    const FIntPoint& GetLastScreenSpacePosition() const { return LastScreenSpacePosition; }
 
     /** 마우스 포인터의 이동량을 가져옵니다. */
-    const FVector2D& GetCursorDelta() const { return CursorDelta; }
+    const FIntPoint& GetCursorDelta() const { return CursorDelta; }
 
     /** Button이 눌려 있는지 검사합니다. */
     bool IsMouseButtonDown(EKeys::Type Button) const { return PressedButtons->Contains(Button); }
@@ -275,9 +274,9 @@ struct FPointerEvent : public FInputEvent
     virtual bool IsPointerEvent() const override { return true; }
 
 private:
-    FVector2D ScreenSpacePosition;
-    FVector2D LastScreenSpacePosition;
-    FVector2D CursorDelta;
+    FIntPoint ScreenSpacePosition;
+    FIntPoint LastScreenSpacePosition;
+    FIntPoint CursorDelta;
     const TSet<EKeys::Type>* PressedButtons;
     EKeys::Type EffectingButton;
     float WheelDelta;

@@ -1,6 +1,6 @@
 #include "RunnableThread.h"
 
-uint32 GetCurrentThreadId()
+uint32 GetThisThreadId()
 {
     std::thread::id Tid = std::this_thread::get_id();
     return std::hash<std::thread::id>()(Tid);
@@ -47,7 +47,7 @@ FRunnableThread::FRunnableThread(std::unique_ptr<FRunnable> InRunnable, const TC
     }
 
     Thread = std::thread([this]() {
-        ThreadID = GetCurrentThreadId();
+        ThreadID = GetThisThreadId();
         bIsRunning.store(true, std::memory_order_release);
 
         assert(Runnable);

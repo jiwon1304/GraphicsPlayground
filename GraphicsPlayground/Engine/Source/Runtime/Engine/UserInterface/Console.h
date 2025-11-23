@@ -23,7 +23,6 @@ static consteval std::string_view GetFileName(std::string_view PathView)
 // TODO: 테스트 해야함
 #define UE_LOGFMT(Level, Fmt, ...) FConsole::GetInstance().AddLogFmt(Level, "[{}:{}] " Fmt, FILENAME, __LINE__ __VA_OPT__(,)  __VA_ARGS__)
 
-
 enum class ELogLevel : uint8
 {
     Display,

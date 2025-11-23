@@ -111,7 +111,7 @@ bool IsInRHIThread()
 /** Rendering thread main loop */
 void RenderingThreadMain()
 {
-    GRenderingThreadId = GetCurrentThreadId();
+    GRenderingThreadId = GetThisThreadId();
 
     // TODO : delegate 등록하기
     while (!bStopRenderingThread)
@@ -184,7 +184,7 @@ static void ShutdownRHIThread()
 /** RHI thread main loop */
 void RHIThreadMain()
 {
-    GRHIThreadId = GetCurrentThreadId();
+    GRHIThreadId = GetThisThreadId();
 
     RHIInit();
 

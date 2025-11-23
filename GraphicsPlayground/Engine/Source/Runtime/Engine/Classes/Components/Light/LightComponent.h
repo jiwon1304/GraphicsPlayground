@@ -4,6 +4,7 @@
 #include "Math/Rect.h"
 #include "Runtime/Launch/LightDefine.h"
 #include "Math/Matrix.h"
+#include "Math/BoundingBox.h"
 
 #define NUM_FACES 6
 

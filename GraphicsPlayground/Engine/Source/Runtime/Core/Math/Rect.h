@@ -19,6 +19,16 @@ public:
         return !(*this == Other);
     }
 
+    TPoint<T> operator+(const TPoint<T>& Other) const
+    {
+        return TPoint<T>(X + Other.X, Y + Other.Y);
+    }
+
+    TPoint<T> operator-(const TPoint<T>& Other) const
+    {
+        return TPoint<T>(X - Other.X, Y - Other.Y);
+    }
+
     T X;
     T Y;
 };
@@ -48,6 +58,15 @@ public:
 
     T GetWidth() const { return Max.X - Min.X; }
     T GetHeight() const { return Max.Y - Min.Y; }
+
+    void SetWidth(T InWidth) { Max.X = Min.X + InWidth; }
+    void SetHeight(T InHeight) { Max.Y = Min.Y + InHeight; }
+
+    bool Contains(const TPoint<T>& Point) const
+    {
+        return (Min.X <= Point.X && Point.X < Max.X) &&
+            (Min.Y <= Point.Y && Point.Y < Max.Y);
+    }
 };
 
 using FIntPoint = TPoint<int32>;

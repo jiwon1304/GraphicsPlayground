@@ -50,7 +50,7 @@ public:
 
     virtual void PumpMessages() = 0;
 
-    void Yield();
+    void YieldThisThread();
 
     void SleepFor(uint64 Microseconds);
 

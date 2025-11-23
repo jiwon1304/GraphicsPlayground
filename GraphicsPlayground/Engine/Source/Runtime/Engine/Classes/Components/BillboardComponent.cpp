@@ -142,8 +142,8 @@ bool UBillboardComponent::CheckPickingOnNDC(const TArray<FVector>& QuadVertices,
     GEngineLoop.GraphicDevice->DeviceContext->RSGetViewports(&NumViewports, &Viewport);
 
     // NDC 좌표 계산: X, Y는 [-1,1] 범위로 매핑
-    const float NdcX = (2.0f * MousePos.x / Viewport.Width) - 1.0f;
-    const float NdcY = -((2.0f * MousePos.y / Viewport.Height) - 1.0f);
+    const float NdcX = (2.0f * MousePos.X / Viewport.Width) - 1.0f;
+    const float NdcY = -((2.0f * MousePos.Y / Viewport.Height) - 1.0f);
 
     // MVP 행렬 계산
     const std::shared_ptr<FEditorViewportClient> ActiveViewport = GEngineLoop.GetLevelEditor()->GetActiveViewportClient();

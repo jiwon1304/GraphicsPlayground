@@ -8,8 +8,8 @@ DECLARE_DELEGATE_TwoParams(FOnWindowResizedDelegate, int32 /* NewWidth */, int32
 
 struct FGenericWindowInitParams
 {
-    const char* Title = "GraphicsPlayground";
-    FRect InitialWindowRect;
+    const wchar_t* Title = L"GraphicsPlayground";
+    FRect InitialWindowRect = FRect(0, 0, 1200, 800);
 };
 
 /**

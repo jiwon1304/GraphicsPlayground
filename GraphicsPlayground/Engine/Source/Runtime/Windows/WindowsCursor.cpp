@@ -1,19 +1,19 @@
-﻿#include "Windows/WindowsCursor.h"
+#include "Windows/WindowsCursor.h"
 
 #include "Launch/Define.h"
 #include "CoreUObject/UObject/Object.h"
+#include "ApplicationCore/Windows/WindowsWindow.h"
 
 bool FWindowsCursor::bShowCursor = true;
 
-
-FVector2D FWindowsCursor::GetPosition()
+FIntPoint FWindowsCursor::GetPosition()
 {
     POINT CursorPos;
     ::GetCursorPos(&CursorPos);
 
     return {
-        static_cast<float>(CursorPos.x),
-        static_cast<float>(CursorPos.y)
+        static_cast<int32>(CursorPos.x),
+        static_cast<int32>(CursorPos.y)
     };
 }
 
@@ -22,22 +22,24 @@ void FWindowsCursor::SetPosition(const int32 X, const int32 Y)
     ::SetCursorPos(X, Y);
 }
 
-FVector2D FWindowsCursor::GetClientPosition()
+FIntPoint FWindowsCursor::GetClientPosition()
 {
+    HWND Handle = std::static_pointer_cast<FWindowsWindow>(GEngineLoop.MainWindow)->WindowHandle;
     POINT CursorPos;
     ::GetCursorPos(&CursorPos);
-    ::ScreenToClient(GEngineLoop.AppWnd, &CursorPos);
+    ::ScreenToClient(Handle, &CursorPos);
 
     return {
-        static_cast<float>(CursorPos.x),
-        static_cast<float>(CursorPos.y)
+        static_cast<int32>(CursorPos.x),
+        static_cast<int32>(CursorPos.y)
     };
 }
 
 void FWindowsCursor::SetClientPosition(const int32 X, const int32 Y)
 {
+    HWND Handle = std::static_pointer_cast<FWindowsWindow>(GEngineLoop.MainWindow)->WindowHandle;
     POINT CursorPos = { X, Y };
-    ::ClientToScreen(GEngineLoop.AppWnd, &CursorPos);
+    ::ClientToScreen(Handle, &CursorPos);
     ::SetCursorPos(CursorPos.x, CursorPos.y);
 }
 

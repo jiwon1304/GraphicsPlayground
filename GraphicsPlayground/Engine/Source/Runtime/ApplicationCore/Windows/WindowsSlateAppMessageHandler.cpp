@@ -9,6 +9,7 @@
 #include "Math/Vector.h"
 #include "Windows/RawInput.h"
 #include "SlateCore/Input/Events.h"
+#include "ApplicationCore/Windows/WindowsWindow.h"
 
 extern FEngineLoop GEngineLoop;
 
@@ -16,7 +17,9 @@ extern FEngineLoop GEngineLoop;
 FWindowsSlateAppMessageHandler::FWindowsSlateAppMessageHandler()
     : FGenericSlateAppMessageHandler()
 {
-    RawInputHandler = std::make_unique<FRawInput>(GEngineLoop.AppWnd, [this](const RAWINPUT& RawInput)
+    HWND Handle = std::static_pointer_cast<FWindowsWindow>(GEngineLoop.MainWindow)->WindowHandle;
+
+    RawInputHandler = std::make_unique<FRawInput>(Handle, [this](const RAWINPUT& RawInput)
     {
         HandleRawInput(RawInput);
     });
@@ -238,9 +241,9 @@ void FWindowsSlateAppMessageHandler::ProcessMessage(HWND hWnd, uint32 Msg, WPARA
 
         ClientToScreen(hWnd, &CursorPoint);
 
-        const FVector2D CursorPos{
-            static_cast<float>(CursorPoint.x),
-            static_cast<float>(CursorPoint.y)
+        const FIntPoint CursorPos{
+            static_cast<int32>(CursorPoint.x),
+            static_cast<int32>(CursorPoint.y)
         };
 
         EMouseButtons::Type MouseButton = EMouseButtons::Invalid;
@@ -345,12 +348,12 @@ void FWindowsSlateAppMessageHandler::ProcessMessage(HWND hWnd, uint32 Msg, WPARA
         return;
     }
 
-    case WM_ACTIVATE:
-    {
-        const bool bIsFocused = (LOWORD(wParam) != WA_INACTIVE);
-        OnWindowFocus(bIsFocused);
-        return;
-    }
+    //case WM_ACTIVATE:
+    //{
+    //    const bool bIsFocused = (LOWORD(wParam) != WA_INACTIVE);
+    //    OnWindowFocus(bIsFocused);
+    //    return;
+    //}
 
     default:
     {
@@ -554,9 +557,11 @@ void FWindowsSlateAppMessageHandler::OnRawMouseInput(const RAWMOUSE& RawMouseInp
     {
         if (PressedMouseButtons.IsEmpty())
         {
+            HWND Handle = std::static_pointer_cast<FWindowsWindow>(GEngineLoop.MainWindow)->WindowHandle;
+
             // 커서가 화면 안에 있는지 검사
             RECT WindowRect;
-            ::GetWindowRect(GEngineLoop.AppWnd, &WindowRect);
+            ::GetWindowRect(Handle, &WindowRect);
     
             POINT Pos;
             ::GetCursorPos(&Pos);
@@ -653,7 +658,7 @@ void FWindowsSlateAppMessageHandler::OnRawMouseInput(const RAWMOUSE& RawMouseInp
         OnRawMouseInputDelegate.Broadcast(FPointerEvent{
             GetCursorPos(),
             GetLastCursorPos(),
-            FVector2D::ZeroVector,
+            FIntPoint(),
             WheelDelta,
             EffectingButton,
             PressedMouseButtons,
@@ -681,9 +686,9 @@ void FWindowsSlateAppMessageHandler::OnRawMouseInput(const RAWMOUSE& RawMouseInp
         OnRawMouseInputDelegate.Broadcast(FPointerEvent{
             GetCursorPos(),
             GetLastCursorPos(),
-            FVector2D{
-                static_cast<float>(RawMouseInput.lLastX),
-                static_cast<float>(RawMouseInput.lLastY)
+            FIntPoint{
+                static_cast<int32>(RawMouseInput.lLastX),
+                static_cast<int32>(RawMouseInput.lLastY)
             },
             WheelDelta,
             EffectingButton,

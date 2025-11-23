@@ -11,14 +11,13 @@ void SWindow::Initialize(FRect InitRect)
 
 void SWindow::OnResize(uint32 InWidth, uint32 InHeight)
 {
-    Rect.Width = InWidth;
-    Rect.Height = InHeight;
+    Rect.SetWidth(InWidth);
+    Rect.SetHeight(InHeight);
 }
 
 bool SWindow::IsHover(const FPoint& InPoint) 
 {
-    bIsHovered = (Rect.TopLeftX <= InPoint.x && InPoint.x < Rect.TopLeftX + Rect.Width) &&
-                 (Rect.TopLeftY <= InPoint.y && InPoint.y < Rect.TopLeftY + Rect.Height);
+    bIsHovered = Rect.Contains(InPoint);
     return bIsHovered;
 }
 

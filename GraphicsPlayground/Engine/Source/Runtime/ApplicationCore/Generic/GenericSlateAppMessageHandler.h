@@ -2,8 +2,8 @@
 #include "Core/Delegates/DelegateCombination.h"
 #include "HAL/PlatformType.h"
 #include "InputCore/InputCoreTypes.h"
-#include "Math/Vector.h"
 #include "SlateCore/Input/Events.h"
+#include "Core/Math/Rect.h"
 
 namespace EMouseButtons
 {
@@ -56,6 +56,13 @@ public:
 
     // @todo : cache state with callback function
     virtual bool IsWindowFocused(void* NativeWindowPtr) const = 0;
+
+    /** 현재 마우스 포인터의 위치를 가져옵니다. */
+    FORCEINLINE FIntPoint GetCursorPos() const { return CurrentPosition; }
+
+    /** 한 프레임 전의 마우스 포인터의 위치를 가져옵니다. */
+    FORCEINLINE FIntPoint GetLastCursorPos() const { return PreviousPosition; }
+
 protected:
     /**
      * Handles input before broadcast to delegates
@@ -64,24 +71,18 @@ protected:
     void OnKeyChar(const TCHAR Character, const bool IsRepeat);
     void OnKeyDown(uint32 KeyCode, const uint32 CharacterCode, const bool IsRepeat);
     void OnKeyUp(uint32 KeyCode, const uint32 CharacterCode, const bool IsRepeat);
-    void OnMouseDown(const EMouseButtons::Type Button, const FVector2D CursorPos);
-    void OnMouseUp(const EMouseButtons::Type Button, const FVector2D CursorPos);
-    void OnMouseDoubleClick(const EMouseButtons::Type Button, const FVector2D CursorPos);
-    void OnMouseWheel(const float Delta, const FVector2D CursorPos);
+    void OnMouseDown(const EMouseButtons::Type Button, const FIntPoint CursorPos);
+    void OnMouseUp(const EMouseButtons::Type Button, const FIntPoint CursorPos);
+    void OnMouseDoubleClick(const EMouseButtons::Type Button, const FIntPoint CursorPos);
+    void OnMouseWheel(const float Delta, const FIntPoint CursorPos);
     void OnMouseMove();
 
     /** Cursor와 관련된 변수를 업데이트 합니다. */
-    FORCEINLINE void UpdateCursorPosition(const FVector2D& NewPos)
+    FORCEINLINE void UpdateCursorPosition(const FIntPoint& NewPos)
     {
         PreviousPosition = CurrentPosition;
         CurrentPosition = NewPos;
     }
-
-    /** 현재 마우스 포인터의 위치를 가져옵니다. */
-    FORCEINLINE FVector2D GetCursorPos() const { return CurrentPosition; }
-
-    /** 한 프레임 전의 마우스 포인터의 위치를 가져옵니다. */
-    FORCEINLINE FVector2D GetLastCursorPos() const { return PreviousPosition; }
 
     // TODO : use bitshift
     /** ModifierKeys의 상태를 가져옵니다. */
@@ -119,8 +120,8 @@ protected:
     };
 
     // Cursor Position
-    FVector2D CurrentPosition;
-    FVector2D PreviousPosition;
+    FIntPoint CurrentPosition;
+    FIntPoint PreviousPosition;
 
     bool ModifierKeyState[EModifierKey::Count];
     TSet<EKeys::Type> PressedMouseButtons;

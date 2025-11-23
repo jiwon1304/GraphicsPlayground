@@ -41,7 +41,7 @@ void AEditorPlayer::Input()
             // GetCursorPos(&mousePos);
             // GetCursorPos(&LastMousePos);
             // ScreenToClient(GEngineLoop.AppWnd, &mousePos);
-            FVector2D mousePos = GEngineLoop.GetAppMessageHandler()->GetCursorPos();
+            FIntPoint mousePos = GEngineLoop.GetAppMessageHandler()->GetCursorPos();
 
             /*
             uint32 UUID = GEngineLoop.GraphicDevice.GetPixelUUID(mousePos);
@@ -97,11 +97,8 @@ void AEditorPlayer::Input()
         }
         else
         {
-            POINT CurrentMousePos;
-            GetCursorPos(&CurrentMousePos);
-            const float DeltaX = static_cast<float>(CurrentMousePos.x - LastMousePos.x);
-            const float DeltaY = static_cast<float>(CurrentMousePos.y - LastMousePos.y);
-            const FVector2D DeltaPoint = FVector2D(DeltaX, DeltaY);
+            FIntPoint CurrentMousePos = GEngineLoop.GetAppMessageHandler()->GetCursorPos();
+            const FIntPoint DeltaPoint = CurrentMousePos - LastMousePos;
             
             UEditorEngine* Engine = Cast<UEditorEngine>(GEngine);
             if (Engine->ActiveWorld->WorldType == EWorldType::Editor)

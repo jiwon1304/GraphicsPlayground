@@ -4,6 +4,7 @@
 #include "Classes/PhysicsEngine/ShapeElem.h"
 #include "CoreUObject/UObject/ObjectMacros.h"
 #include "CoreUObject/UObject/ObjectTypes.h"
+#include "Core/Math/Rect.h"
 
 class USkeletalMeshComponent;
 class UCameraComponent;
@@ -55,7 +56,7 @@ private:
     
     bool bLeftMouseDown = false;
 
-    int32 LastMousePos[2] = { 0, 0 };
+    TPoint<int32> LastMousePos = { 0, 0 };
     EControlMode ControlMode = CM_TRANSLATION;
     ECoordMode CoordMode = CDM_WORLD;
     FQuat InitialBoneRotationForGizmo;

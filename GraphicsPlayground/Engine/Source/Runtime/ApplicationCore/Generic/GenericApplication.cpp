@@ -3,7 +3,7 @@
 #include <chrono>
 #include <thread>
 
-void FGenericApplication::Yield()
+void FGenericApplication::YieldThisThread()
 {
     std::this_thread::yield();
 }

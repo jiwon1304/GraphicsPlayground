@@ -1,7 +1,6 @@
-﻿#pragma once
+#pragma once
 #include "HAL/PlatformType.h"
-#include "Math/Vector.h"
-
+#include "Core/Math/Rect.h"
 
 enum class ECursorType : uint8
 {
@@ -24,13 +23,13 @@ enum class ECursorType : uint8
 struct FWindowsCursor
 {
     /** 현재 Cursor의 위치를 가져옵니다. */
-    static FVector2D GetPosition();
+    static FIntPoint GetPosition();
 
     /** Cursor의 위치를 설정합니다. */
     static void SetPosition(const int32 X, const int32 Y);
 
     /** 현재 클라이언트 기준으로 Cursor의 위치를 가져옵니다. */
-    static FVector2D GetClientPosition();
+    static FIntPoint GetClientPosition();
 
     /** 현재 클라이언트의 기준으로 Cursor의 위치를 설정합니다. */
     static void SetClientPosition(const int32 X, const int32 Y);

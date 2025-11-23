@@ -77,4 +77,4 @@ private:
     std::atomic<bool> bFinished;
 };
 
-extern uint32 GetCurrentThreadId();
+extern uint32 GetThisThreadId();

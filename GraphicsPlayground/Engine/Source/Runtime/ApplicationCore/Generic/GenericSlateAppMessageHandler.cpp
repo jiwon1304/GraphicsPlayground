@@ -1,8 +1,8 @@
 #include "GenericSlateAppMessageHandler.h"
 
 FGenericSlateAppMessageHandler::FGenericSlateAppMessageHandler()
-    : CurrentPosition(FVector2D::ZeroVector)
-    , PreviousPosition(FVector2D::ZeroVector)
+    : CurrentPosition(FIntPoint())
+    , PreviousPosition(FIntPoint())
 {
     for (bool& KeyState : ModifierKeyState)
     {
@@ -40,7 +40,7 @@ void FGenericSlateAppMessageHandler::OnKeyUp(const uint32 KeyCode, const uint32 
     });
 }
 
-void FGenericSlateAppMessageHandler::OnMouseDown(const EMouseButtons::Type Button, const FVector2D CursorPos)
+void FGenericSlateAppMessageHandler::OnMouseDown(const EMouseButtons::Type Button, const FIntPoint CursorPos)
 {
     if (ImGui::GetIO().WantCaptureMouse)
     {
@@ -81,7 +81,7 @@ void FGenericSlateAppMessageHandler::OnMouseDown(const EMouseButtons::Type Butto
     });
 }
 
-void FGenericSlateAppMessageHandler::OnMouseUp(const EMouseButtons::Type Button, const FVector2D CursorPos)
+void FGenericSlateAppMessageHandler::OnMouseUp(const EMouseButtons::Type Button, const FIntPoint CursorPos)
 {
     if (ImGui::GetIO().WantCaptureMouse)
     {
@@ -122,7 +122,7 @@ void FGenericSlateAppMessageHandler::OnMouseUp(const EMouseButtons::Type Button,
     });
 }
 
-void FGenericSlateAppMessageHandler::OnMouseDoubleClick(const EMouseButtons::Type Button, const FVector2D CursorPos)
+void FGenericSlateAppMessageHandler::OnMouseDoubleClick(const EMouseButtons::Type Button, const FIntPoint CursorPos)
 {
     EKeys::Type EffectingButton = EKeys::Invalid;
     switch (Button)
@@ -159,7 +159,7 @@ void FGenericSlateAppMessageHandler::OnMouseDoubleClick(const EMouseButtons::Typ
     });
 }
 
-void FGenericSlateAppMessageHandler::OnMouseWheel(const float Delta, const FVector2D CursorPos)
+void FGenericSlateAppMessageHandler::OnMouseWheel(const float Delta, const FIntPoint CursorPos)
 {
     OnMouseWheelDelegate.Broadcast(FPointerEvent{
         CursorPos,

@@ -17,6 +17,6 @@ private:
      * CPU 주파수를 반환하는 함수
      * @return uint64 CPU 주파수
      */
-    virtual uint64 GetFrequency() override;
+    virtual uint64 GetFrequency();
 };
 #endif
