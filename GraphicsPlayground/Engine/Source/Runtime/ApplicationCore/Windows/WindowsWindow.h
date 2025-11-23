@@ -1,5 +1,7 @@
 #include "ApplicationCore/Generic/GenericWindow.h"
 
+class FWindowsApplication;
+
 struct FWindowsWindowInitParams : public FGenericWindowInitParams
 {
     HINSTANCE hInstance;

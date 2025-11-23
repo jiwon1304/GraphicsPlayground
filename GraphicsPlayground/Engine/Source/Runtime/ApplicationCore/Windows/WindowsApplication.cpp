@@ -3,7 +3,9 @@
 
 std::shared_ptr<FGenericWindow> FWindowsApplication::MakeWindow(std::shared_ptr<FGenericWindowInitParams> Params)
 {
-    return std::make_shared<FWindowsWindow>(Params);
+    FWindowsWindow* Window = new FWindowsWindow(Params);
+
+    return std::shared_ptr<FGenericWindow>(Window);
 }
 
 void FWindowsApplication::PumpMessages()
