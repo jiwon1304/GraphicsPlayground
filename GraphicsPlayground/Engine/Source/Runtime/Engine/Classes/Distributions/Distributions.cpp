@@ -1,4 +1,4 @@
-﻿// ReSharper disable CppClangTidyClangDiagnosticFloatConversion
+// ReSharper disable CppClangTidyClangDiagnosticFloatConversion
 // ReSharper disable CppClangTidyClangDiagnosticImplicitIntConversion
 // ReSharper disable CppClangTidyBugproneNarrowingConversions
 // ReSharper disable CppClangTidyClangDiagnosticImplicitIntFloatConversion
@@ -1029,11 +1029,13 @@ void UDistributionVector::GetRange(FVector& OutMin, FVector& OutMax) const
     OutMax = FVector::ZeroVector;
 }
 
+#if	WITH_EDITOR
 void UDistributionVector::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
     Super::PostEditChangeProperty(PropertyChangedEvent);
     bIsDirty = true;
 }
+#endif
 
 void UDistributionVectorUniform::PostInitProperties()
 {
@@ -1760,11 +1762,13 @@ void UDistributionFloat::GetOutRange(float& MinOut, float& MaxOut) const
     MaxOut = 0.0f;
 }
 
+#if	WITH_EDITOR
 void UDistributionFloat::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
     Super::PostEditChangeProperty(PropertyChangedEvent);
     bIsDirty = true;
 }
+#endif
 
 uint32 UDistributionFloat::InitializeRawEntry(float Time, float* Values) const
 {

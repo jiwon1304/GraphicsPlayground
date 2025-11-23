@@ -2,6 +2,7 @@
 
 #include <memory>
 #include "Core/Templates/RefCounting.h"
+#include "Core/Container/Array.h"
 
 // ---------------------------------------------------------------------------
 // Command
