@@ -12,6 +12,7 @@
 #include "CoreUObject/UObject/Casts.h"
 #include "Classes/PhysicsEngine/ConstraintInstance.h"
 #include "Developer/PhysicsUtilities/PhysicsAssetUtils.h"
+#include "Developer/PhysicsUtilities/Physx/PhysxUtils.h"
 #include "Classes/PhysicsEngine/Vehicle/VehicleMovementComponent.h"
 #include "Engine/Source/Runtime/PhysicsVehicle/Vehicle4W.h"
 #include "Classes/PhysicsEngine/Vehicle/WheeledVehiclePawn.h"
