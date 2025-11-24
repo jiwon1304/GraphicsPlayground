@@ -69,10 +69,8 @@ endif()
 
 if (USE_OPENGL)
     message(STATUS "Graphics API: OpenGL")
-    set(BUILD_RENDER_BACKEND_STR "OPENGL3")
 elseif(USE_DIRECTX11)
     message(STATUS "Graphics API: DirectX11")
-    set(BUILD_RENDER_BACKEND_STR "DX11")
 endif()
 
 # -----------------------------------------------------------------------------------------------
@@ -135,6 +133,8 @@ endif()
 if (NOT APPLE)
     list(FILTER PROJECT_SOURCE_FILES EXCLUDE REGEX ".*/Mac/.*")
     list(FILTER PROJECT_HEADER_FILES EXCLUDE REGEX ".*/Mac/.*")
+    list(FILTER PROJECT_SOURCE_FILES EXCLUDE REGEX ".*/Unix/.*")
+    list(FILTER PROJECT_HEADER_FILES EXCLUDE REGEX ".*/Unix/.*")
 endif()
 
 # -----------------------------------------------------------------------------------------------
@@ -294,7 +294,6 @@ target_compile_definitions(${PROJECT_NAME}
         UNICODE
         _UNICODE
         _CONSOLE
-        # BUILD_RENDER_BACKEND=\"${BUILD_RENDER_BACKEND_STR}\"
 )
 if (USE_OPENGL)
     target_compile_definitions(${PROJECT_NAME} PRIVATE 
@@ -344,15 +343,15 @@ target_link_directories(${PROJECT_NAME} PRIVATE
     "${THIRD_PARTY_DIR}/fbxsdk/lib/${BUILD_PREFIX_DIR}"
     "${THIRD_PARTY_DIR}/fmod/lib/${BUILD_PREFIX_DIR}"
     "${THIRD_PARTY_DIR}/freetype/lib/${BUILD_PREFIX_DIR}"
-    # "${THIRD_PARTY_DIR}/lua/lib/${BUILD_PREFIX_DIR}"
+    "${THIRD_PARTY_DIR}/lua/lib/${BUILD_PREFIX_DIR}"
     "${THIRD_PARTY_DIR}/sol2/lib/${BUILD_PREFIX_DIR}"
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     freetype
-    # lua
     $<$<CONFIG:Debug>:fmodL_vc>
     $<$<NOT:$<CONFIG:Debug>>:fmod_vc>
+    lua
     libfbxsdk   
     libxml2
     zlib
@@ -438,7 +437,7 @@ endmacro()
 
 
 
-# copy_bin("lua")
+copy_bin("lua")
 copy_bin("fmod")
 copy_bin("fbxsdk")
 

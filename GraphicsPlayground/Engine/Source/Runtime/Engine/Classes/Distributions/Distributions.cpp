@@ -852,7 +852,6 @@ bool FRawDistributionVector::IsCreated()
     return HasLookupTable(/*bInitializeIfNeeded=*/ false) || (Distribution != nullptr);
 }
 
-#if WITH_EDITOR
 FRawDistributionVector::~FRawDistributionVector()
 {
     if (IsValid(Distribution))
@@ -861,6 +860,7 @@ FRawDistributionVector::~FRawDistributionVector()
     }
 }
 
+#if WITH_EDITOR
 void FRawDistributionVector::Initialize()
 {
     // Nothing to do if we don't have a distribution.

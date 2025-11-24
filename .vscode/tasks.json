@@ -17,6 +17,23 @@
       "group": "build",
       "presentation": { "reveal": "always" }
     },
+        {
+      "label": "CMake: configure Windows/x64/Debug(OpenGL)",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "-S", "${workspaceFolder}",
+        "-B", "${workspaceFolder}/build",
+        "-G", "Visual Studio 17 2022",
+        "-A", "x64",
+        "-T", "host=x64",
+        "-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE",
+        "-DAPI_FALLBACK=ON"
+      ],
+      "problemMatcher": [],
+      "group": "build",
+      "presentation": { "reveal": "always" }
+    },
     {
       "label": "CMake: build Windows/x64/Debug",
       "type": "shell",

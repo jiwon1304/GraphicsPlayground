@@ -2,6 +2,14 @@
 #include "RHI/DynamicRHI.h"
 #include "RHI/RHIResources.h"
 
+FTexture::FTexture()
+{
+}
+
+FTexture::~FTexture()
+{
+}
+
 uint32 FTexture::GetSizeX() const
 {
     return TextureRHI->GetDesc().DimX;
@@ -31,6 +39,10 @@ void FVertexBuffer::ReleaseRHI(){
     VertexBufferRHI->Release();
 }
 
+FTextureWithSRV::FTextureWithSRV()
+{
+}
+
 FTextureWithSRV::~FTextureWithSRV()
 {
 }
@@ -45,5 +57,21 @@ FIndexBuffer::~FIndexBuffer()
 }
 
 void FIndexBuffer::ReleaseRHI()
+{
+}
+
+FRenderResource::FRenderResource()
+{
+}
+
+FRenderResource::~FRenderResource()
+{
+}
+
+void FRenderResource::InitResource(FRHICommandListBase &RHICmdList)
+{
+}
+
+void FRenderResource::ReleaseResource()
 {
 }
