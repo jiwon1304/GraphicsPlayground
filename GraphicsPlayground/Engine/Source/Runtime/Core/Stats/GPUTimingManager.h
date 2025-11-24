@@ -24,6 +24,8 @@ struct FGPUTimingInitParams
 class IGPUTimingManager
 {
 public:
+    static IGPUTimingManager* CreateGPUTimingManager(const FGPUTimingInitParams& Params);
+    
     virtual ~IGPUTimingManager() = default;
 
     virtual bool Initialize(const FGPUTimingInitParams& Params) = 0;
@@ -38,7 +40,6 @@ public:
     virtual double GetElapsedTimeMs(const TStatId& StatId) const = 0;
 };
 
-IGPUTimingManager* CreateGPUTimingManager(const FGPUTimingInitParams& Params);
 
 
 // #pragma once

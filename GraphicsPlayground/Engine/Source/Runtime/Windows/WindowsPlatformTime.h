@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include "HAL/PlatformTime.h"
 
-#ifdef BUILD_PLATFORM_WINDOWS
 /**
  * Windows 플랫폼에서의 시간 관련 기능을 제공하는 클래스
  */
@@ -19,4 +18,3 @@ private:
      */
     virtual uint64 GetFrequency();
 };
-#endif

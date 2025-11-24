@@ -40,6 +40,9 @@ protected:
 
     static double SecondsPerCycle;
     static bool bInitialized;
+
+private:
+    static FPlatformTime* CreatePlatformTime();
 };
 
 extern FPlatformTime* GPlatformTime;

@@ -6,16 +6,16 @@
 #include "Platform/MacOS/GPUTimingManagerGL.h"
 #endif
 
-IGPUTimingManager *CreateGPUTimingManager(const FGPUTimingInitParams &Params)
+IGPUTimingManager* IGPUTimingManager::CreateGPUTimingManager(const FGPUTimingInitParams &Params)
 {
-#if defined(BUILD_PLATFORM_WINDOWS)
+#if defined(USE_D3D11)
     IGPUTimingManager* Manager = new FGPUTimingManagerD3D11();
     if (Manager->Initialize(Params))
         return Manager;
 
     delete Manager;
     return nullptr;
-#elif defined(BUILD_PLATFORM_MACOS)
+#elif defined(USE_OPENGL)
     IGPUTimingManager* Manager = new FGPUTimingManagerGL();
     if (Manager->Initialize(Params))
         return Manager;

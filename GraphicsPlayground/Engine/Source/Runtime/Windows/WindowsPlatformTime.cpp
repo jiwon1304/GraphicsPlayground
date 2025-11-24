@@ -1,5 +1,4 @@
-﻿#ifdef BUILD_PLATFORM_WINDOWS
-#include "Windows/WindowsPlatformTime.h"
+﻿#include "Windows/WindowsPlatformTime.h"
 
 void FWindowsPlatformTime::InitTiming_Internal()
 {
@@ -30,5 +29,3 @@ uint64 FWindowsPlatformTime::Cycles_Internal()
     QueryPerformanceCounter(&CycleCount);
     return static_cast<uint64>(CycleCount.QuadPart);
 }
-
-#endif

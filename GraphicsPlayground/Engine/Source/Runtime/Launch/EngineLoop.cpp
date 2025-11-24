@@ -52,7 +52,7 @@ extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT Msg, WPARAM wParam
 #include "OpenGLDrv/OpenGLDrv.h"
 #include "OpenGLDrv/Platform/Mac/MacOpenGLPlatform.h"
 
-#ifdef BUILD_RENDER_BACKEND == OPENGL3
+#if USE_OPENGL
 #include "Runtime/OpenGLDrv/Platform/Mac/MacOpenGLPlatform.h"
 #endif // USE_OPENGL
 
@@ -81,6 +81,8 @@ int32 FEngineLoop::Init(FGenericApplicationInitParams* InAppInitParams)
     InitRenderingThread();
 
     InitApplication(InAppInitParams);
+
+    GPUTimingManager = IGPUTimingManager::CreateGPUTimingManager(FGPUTimingInitParams{ 3 });
 
     // /* must be initialized before window. */
     // WindowInit(hInstance);
@@ -207,7 +209,7 @@ void FEngineLoop::Tick()
     while (Application->IsExitRequested() == false)
     {
         FProfilerStatsManager::BeginFrame(); // Clear previous frame stats
-        if (GPUTimingManager->IsInitialized())
+        if (GPUTimingManager && GPUTimingManager->IsInitialized())
         {
             GPUTimingManager->BeginFrame(); // Start GPU frame timing
         }
@@ -244,7 +246,7 @@ void FEngineLoop::Tick()
         // Pending 처리된 오브젝트 제거
         GUObjectArray.ProcessPendingDestroyObjects();
 
-        if (GPUTimingManager->IsInitialized())
+        if (GPUTimingManager && GPUTimingManager->IsInitialized())
         {
             GPUTimingManager->EndFrame(); // End GPU frame timing
         }

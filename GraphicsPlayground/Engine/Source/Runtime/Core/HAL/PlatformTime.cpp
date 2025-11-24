@@ -1,4 +1,6 @@
 #include "PlatformTime.h"
+#include "Windows/WindowsPlatformTime.h"
+#include "Unix/UnixPlatformTime.h"
 
 FPlatformTime* GPlatformTime = nullptr;
 double FPlatformTime::SecondsPerCycle = 0.0;
@@ -6,6 +8,7 @@ bool FPlatformTime::bInitialized = false;
 
 void FPlatformTime::InitTiming()
 {
+    GPlatformTime = FPlatformTime::CreatePlatformTime();
     GPlatformTime->InitTiming_Internal();
 }
 
@@ -35,4 +38,13 @@ uint64 FPlatformTime::Cycles64()
 uint32 FPlatformTime::Cycles32()
 {
     return static_cast<uint32>(Cycles64());
+}
+
+FPlatformTime *FPlatformTime::CreatePlatformTime()
+{
+#ifdef BUILD_PLATFORM_WINDOWS
+    return new FWindowsPlatformTime();
+#else
+    return new FUnixPlatformTime();
+#endif
 }
