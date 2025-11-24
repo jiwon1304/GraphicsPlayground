@@ -16,7 +16,6 @@
 #include "Editor/UnrealEd/EditorViewportClient.h"
 #include "Classes/PhysicsEngine/PhysicsAsset.h"
 #include "World/PhysicsAssetWorld.h"
-#include "PhysicsCore/PhysX/PhysxSolversModule.h"
 #include "Math/Rect.h"
 #include "ApplicationCore/Generic/GenericSlateAppMessageHandler.h"
 
@@ -154,9 +153,9 @@ void UEditorEngine::StartPIE()
     PIEWorld = Cast<UWorld>(EditorWorld->Duplicate(this));
     PIEWorld->WorldType = EWorldType::PIE;
     PIEWorld->CreatePhysicsScene();
-#ifdef _DEBUG
-    FPhysxSolversModule::GetModule()->ConnectToPVD();
-#endif
+// #ifdef _DEBUG
+//     FPhysxSolversModule::GetModule()->ConnectToPVD();
+// #endif
     PIEWorldContext.SetCurrentWorld(PIEWorld);
     ActiveWorld = PIEWorld;
     

@@ -5,7 +5,6 @@
 #include "Editor/UnrealEd/SceneManager.h"
 #include "CoreUObject/UObject/Casts.h"
 #include "World/World.h"
-#include "PhysicsCore/PhysX/PhysxSolversModule.h"
 
 UEngine* GEngine = nullptr;
 
@@ -23,7 +22,7 @@ void UEngine::Init()
     }
 
     // PhysX 초기화
-    FPhysxSolversModule::GetModule();
+    // FPhysxSolversModule::GetModule();
 
     // 컴파일 타임에 확정되지 못한 타입을 런타임에 검사
     UStruct::ResolvePendingProperties();
