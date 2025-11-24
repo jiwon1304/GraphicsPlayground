@@ -1,6 +1,8 @@
 #pragma once
 
 #include "RHI/RHIResources.h"
+#include "RHI/RHIFwd.h"
+#include "OpenGLFwd.h"
 #include "OpenGL3.h"
 #include "RHI/RHICommandList.h"
 #include "Core/HAL/PlatformMemory.h"
@@ -70,7 +72,7 @@ typedef void (BufferBindFunc)( GLenum target, GLuint buffer );
  * for bind function, use template parameter "BufferBindFunc"
  */
 // template </* typename BaseType, */ BufferBindFunc>
-template <typename BaseType, BufferBindFunc>
+template <typename BaseType>
 class TOpenGLBuffer : public BaseType
 {
 public:
@@ -119,10 +121,7 @@ public:
         }
     }
 
-    void Bind()
-    {
-        BufferBindFunc(Type, Resource);
-    }
+    void Bind();
 };
 
 // /**
@@ -155,7 +154,7 @@ public:
     }
 };
 
-using FOpenGLBuffer = TOpenGLBuffer<FOpenGLBaseBuffer, FOpenGL::BindBuffer>;
+using FOpenGLBuffer = TOpenGLBuffer<FOpenGLBaseBuffer>;
 
 class FOpenGLUniformBuffer : public FRHIUniformBuffer, public FOpenGLViewableResource
 {

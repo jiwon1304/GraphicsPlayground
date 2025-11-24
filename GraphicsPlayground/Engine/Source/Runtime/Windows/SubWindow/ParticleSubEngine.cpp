@@ -21,7 +21,7 @@
 //{
 //}
 //
-//void UParticleSubEngine::Initialize(HWND& hWnd, FGraphicsDevice* InGraphics, FDXDBufferManager* InBufferManager, UImGuiManager* InSubWindow,
+//void UParticleSubEngine::Initialize(HWND& hWnd, FGraphicsDevice* InGraphics, FDXDBufferManager* InBufferManager, FImGuiManager* InSubWindow,
 //    UnrealEd* InUnrealEd)
 //{
 //    Super::Initialize(hWnd, InGraphics, InBufferManager, InSubWindow, InUnrealEd);

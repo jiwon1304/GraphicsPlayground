@@ -167,5 +167,11 @@ struct FOpenGLContextState final : public FOpenGLCommonState
 	bool							bFramebufferSetupInvalid;
 
 	TRefCountPtr<FOpenGLBoundShaderState>	BoundShaderState;
-	TRefCountPtr<FOpenGLComputeShader>		CurrentComputeShader;
+	// TRefCountPtr<FOpenGLComputeShader>		CurrentComputeShader; // OpenGL3.3 does not support compute shader
+
+    // ??? 할까말까
+    // // Cached attributes for currently bound vertex declaration
+    // TMap<GLuint, FOpenGLCachedAttr> CachedAttrs;
+
+    // FOpenGLContextState();
 };

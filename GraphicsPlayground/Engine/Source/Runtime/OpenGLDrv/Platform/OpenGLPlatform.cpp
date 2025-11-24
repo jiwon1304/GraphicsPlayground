@@ -1,7 +1,7 @@
+#include "OpenGLPlatform.h"
 #include "OpenGLDrv/Platform/OpenGLDrvPrivate.h"
 #include "OpenGLDrv/OpenGLThirdParty.h"
 #include "OpenGLDrv/OpenGL3.h"
-#include "MacOpenGLPlatform.h"
 
 FPlatformOpenGLDevice* GOpenGLDevice = nullptr;
 

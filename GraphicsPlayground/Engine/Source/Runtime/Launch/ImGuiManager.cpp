@@ -1,66 +1,12 @@
 #include "ThirdParty/imgui/imgui.h"
-#include "ThirdParty/imgui/backends/imgui_impl_dx11.h"
-#include "ThirdParty/imgui/backends/imgui_impl_win32.h"
+
 #include "Launch/ImGuiManager.h"
 #include "Font/RawFonts.h"
 #include "Font/IconDefs.h"
-#include "Windows/D3D11RHI/GraphicDevice.h"
-
-void UImGuiManager::Initialize(HWND hWnd, FGraphicsDevice* InGraphics)
-{
-    IMGUI_CHECKVERSION();
-    ImGuiContext = ImGui::CreateContext();
-    ImGuiIO& IO = ImGui::GetIO();
-    ImGui_ImplWin32_Init(hWnd);
-    ImGui_ImplDX11_Init(InGraphics->Device, InGraphics->DeviceContext);
-    SharedFont = IO.Fonts->AddFontFromFileTTF(R"(C:\Windows\Fonts\malgun.ttf)", 18.0f, nullptr, IO.Fonts->GetGlyphRangesKorean());
-
-    unsigned char* pixels;
-    int w, h;
-    IO.Fonts->GetTexDataAsRGBA32(&pixels, &w, &h); // 여기서 atlas 생성됨
-
-    ImFontConfig FeatherFontConfig;
-    FeatherFontConfig.PixelSnapH = true;
-    FeatherFontConfig.FontDataOwnedByAtlas = false;
-    FeatherFontConfig.GlyphOffset = ImVec2(0, 0);
-    static constexpr ImWchar IconRanges[] = {
-        ICON_MOVE,      ICON_MOVE + 1,
-        ICON_ROTATE,    ICON_ROTATE + 1,
-        ICON_SCALE,     ICON_SCALE + 1,
-        ICON_MONITOR,   ICON_MONITOR + 1,
-        ICON_BAR_GRAPH, ICON_BAR_GRAPH + 1,
-        ICON_NEW,       ICON_NEW + 1,
-        ICON_SAVE,      ICON_SAVE + 1,
-        ICON_LOAD,      ICON_LOAD + 1,
-        ICON_MENU,      ICON_MENU + 1,
-        ICON_SLIDER,    ICON_SLIDER + 1,
-        ICON_PLUS,      ICON_PLUS + 1,
-        ICON_PLAY,      ICON_PLAY + 1,
-        ICON_STOP,      ICON_STOP + 1,
-        ICON_SQUARE,    ICON_SQUARE + 1,
-        ICON_TRASHBIN2, ICON_TRASHBIN2 + 1,
-        0 };
-
-    IO.Fonts->AddFontFromMemoryTTF(FeatherRawData, FontSizeOfFeather, 22.0f, &FeatherFontConfig, IconRanges);
-    PreferenceStyle();
-}
-
-void UImGuiManager::BeginFrame() const
-{
-    ImGui::SetCurrentContext(ImGuiContext);
-    ImGui_ImplDX11_NewFrame();
-    ImGui_ImplWin32_NewFrame();
-    ImGui::NewFrame();
-}
-
-void UImGuiManager::EndFrame() const
-{
-    ImGui::Render();
-    ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-}
+#include "ImGuiManager.h"
 
 /* GUI Style Preference */
-void UImGuiManager::PreferenceStyle() const
+void FImGuiManager::PreferenceStyle() const
 {
     ImGuiStyle& Style = ImGui::GetStyle();
 
@@ -123,20 +69,12 @@ void UImGuiManager::PreferenceStyle() const
     ImGui::GetStyle().Colors[ImGuiCol_TabUnfocusedActive] = ImVec4{ 0.0f, 0.0f, 0.0f, 0.15f };
 }
 
-ImGuiContext* UImGuiManager::GetContext() const
+ImGuiContext* FImGuiManager::GetContext() const
 {
     return ImGuiContext;
 }
 
-void UImGuiManager::Shutdown()
-{
-    ImGui::SetCurrentContext(ImGuiContext);
-    ImGui_ImplDX11_Shutdown();
-    ImGui_ImplWin32_Shutdown();
-    ImGui::DestroyContext(ImGuiContext);
-}
-
-void UImGuiManager::ApplySharedStyle(::ImGuiContext* Context1, ::ImGuiContext* Context2)
+void FImGuiManager::ApplySharedStyle(::ImGuiContext* Context1, ::ImGuiContext* Context2)
 {
     ImGui::SetCurrentContext(Context1);
     ImGuiStyle& Style = ImGui::GetStyle();
@@ -145,3 +83,37 @@ void UImGuiManager::ApplySharedStyle(::ImGuiContext* Context1, ::ImGuiContext* C
     ImGui::GetStyle() = Style;
 }
 
+void FImGuiManager::InitializeStyle()
+{
+    ImGuiIO& IO = ImGui::GetIO();
+    SharedFont = IO.Fonts->AddFontFromFileTTF(R"(C:\Windows\Fonts\malgun.ttf)", 18.0f, nullptr, IO.Fonts->GetGlyphRangesKorean());
+
+    unsigned char* pixels;
+    int w, h;
+    IO.Fonts->GetTexDataAsRGBA32(&pixels, &w, &h); // 여기서 atlas 생성됨
+
+    ImFontConfig FeatherFontConfig;
+    FeatherFontConfig.PixelSnapH = true;
+    FeatherFontConfig.FontDataOwnedByAtlas = false;
+    FeatherFontConfig.GlyphOffset = ImVec2(0, 0);
+    static constexpr ImWchar IconRanges[] = {
+        ICON_MOVE,      ICON_MOVE + 1,
+        ICON_ROTATE,    ICON_ROTATE + 1,
+        ICON_SCALE,     ICON_SCALE + 1,
+        ICON_MONITOR,   ICON_MONITOR + 1,
+        ICON_BAR_GRAPH, ICON_BAR_GRAPH + 1,
+        ICON_NEW,       ICON_NEW + 1,
+        ICON_SAVE,      ICON_SAVE + 1,
+        ICON_LOAD,      ICON_LOAD + 1,
+        ICON_MENU,      ICON_MENU + 1,
+        ICON_SLIDER,    ICON_SLIDER + 1,
+        ICON_PLUS,      ICON_PLUS + 1,
+        ICON_PLAY,      ICON_PLAY + 1,
+        ICON_STOP,      ICON_STOP + 1,
+        ICON_SQUARE,    ICON_SQUARE + 1,
+        ICON_TRASHBIN2, ICON_TRASHBIN2 + 1,
+        0 };
+
+    IO.Fonts->AddFontFromMemoryTTF(FeatherRawData, FontSizeOfFeather, 22.0f, &FeatherFontConfig, IconRanges);
+    PreferenceStyle();
+}

@@ -14,7 +14,7 @@
 //    USubEngine();
 //    ~USubEngine();
 //
-//    virtual void Initialize(HWND& hWnd, FGraphicsDevice* InGraphics, FDXDBufferManager* InBufferManager, UImGuiManager* InSubWindow, UnrealEd* InUnrealEd);
+//    virtual void Initialize(HWND& hWnd, FGraphicsDevice* InGraphics, FDXDBufferManager* InBufferManager, FImGuiManager* InSubWindow, UnrealEd* InUnrealEd);
 //    virtual void Tick(float DeltaTime);
 //    virtual void Input(float DeltaTime);
 //    virtual void Render();

@@ -7,7 +7,7 @@
 #include "OpenGLDrv.h"
 #include "Core/Container/Map.h"
 #include "OpenGL3.h"
-#include "BoundShaderStateCache.h"
+#include "RHI/BoundShaderStateCache.h"
 
 TMap<uint16, FOpenGLShader*> GOpenGLCompiledShaderCache;
 TMap<uint64, FOpenGLLinkedProgram*> GOpenGLLinkedProgramCache;

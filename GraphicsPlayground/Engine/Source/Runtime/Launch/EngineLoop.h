@@ -4,7 +4,7 @@
 
 class FGenericSlateAppMessageHandler;
 class UnrealEd;
-class UImGuiManager;
+class FImGuiManager;
 class UWorld;
 class FEditorViewportClient;
 class SSplitterV;
@@ -45,7 +45,6 @@ private:
     void UpdateUI();
 
 public:
-    FGraphicsDevice* GraphicDevice = nullptr;
     FRenderer* Renderer = nullptr;
     // static UPrimitiveDrawBatch PrimitiveDrawBatch;
     FResourceManager* ResourceManager = nullptr;
@@ -70,7 +69,7 @@ public:
     // USubEngine* ParticleSubEngine = nullptr;
 
 private:
-    UImGuiManager* UIManager = nullptr;
+    FImGuiManager* UIManager = nullptr;
     struct ImGuiContext *CurrentImGuiContext = nullptr;
     // TODO: GWorld 제거, Editor들 EditorEngine으로 넣기
 

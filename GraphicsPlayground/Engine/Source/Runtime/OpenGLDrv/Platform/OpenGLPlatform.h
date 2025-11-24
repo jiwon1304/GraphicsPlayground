@@ -2,6 +2,7 @@
 
 #include "OpenGLDrv/OpenGLThirdParty.h"
 #include "OpenGLDrv/OpenGLFwd.h"
+#include "RHI/PixelFormat.h"
 
 /**
  * OpenGL does not have explicit context.

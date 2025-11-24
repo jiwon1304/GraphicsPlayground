@@ -1,9 +1,9 @@
 #include "GPUTimingManager.h"
 
 #if defined(USE_D3D11)
-#include "Platform/Windows/GPUTimingManagerD3D11.h"
+#include "Platform/D3D11/GPUTimingManagerD3D11.h"
 #elif defined(USE_OPENGL)
-#include "Platform/Mac/GPUTimingManagerGL.h"
+#include "Platform/OpenGL/GPUTimingManagerGL.h"
 #endif
 
 IGPUTimingManager* IGPUTimingManager::CreateGPUTimingManager(const FGPUTimingInitParams &Params)
@@ -12,15 +12,20 @@ IGPUTimingManager* IGPUTimingManager::CreateGPUTimingManager(const FGPUTimingIni
     IGPUTimingManager* Manager = new FGPUTimingManagerD3D11();
     if (Manager->Initialize(Params))
         return Manager;
-
-    delete Manager;
-    return nullptr;
+    else
+    {
+        delete Manager;
+        return nullptr;
+    }
 #elif defined(USE_OPENGL)
     IGPUTimingManager* Manager = new FGPUTimingManagerGL();
     if (Manager->Initialize(Params))
         return Manager;
-    delete Manager;
-    return nullptr;
+    else
+    {
+        delete Manager;
+        return nullptr;
+    }
 #endif
 }
 

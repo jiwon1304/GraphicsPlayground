@@ -23,7 +23,7 @@
 //{
 //}
 //
-//void USubEngine::Initialize(HWND& hWnd, FGraphicsDevice* InGraphics, FDXDBufferManager* InBufferManager, UImGuiManager* InSubWindow, UnrealEd* InUnrealEd)
+//void USubEngine::Initialize(HWND& hWnd, FGraphicsDevice* InGraphics, FDXDBufferManager* InBufferManager, FImGuiManager* InSubWindow, UnrealEd* InUnrealEd)
 //{
 //    Graphics = InGraphics;
 //    BufferManager = InBufferManager;
@@ -31,7 +31,7 @@
 //    SubRenderer = new FSubRenderer;
 //    UnrealEditor = InUnrealEd;
 //    SubUI = new FImGuiSubWindow(hWnd, InGraphics->Device, InGraphics->DeviceContext);
-//    UImGuiManager::ApplySharedStyle(InSubWindow->GetContext(), SubUI->Context);
+//    FImGuiManager::ApplySharedStyle(InSubWindow->GetContext(), SubUI->Context);
 //    SubRenderer->Initialize(InGraphics, InBufferManager, this);
 //
 //    ViewportClient = std::make_shared<FEditorViewportClient>();

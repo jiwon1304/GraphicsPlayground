@@ -4,6 +4,7 @@
 #include "RHI/RHI.h"
 #include "RHI/RHIContext.h"
 #include "IOpenGLDynamicRHI.h"
+#include "OpenGLResources.h"
 // #include "OpenGLState.h"
 
 class FOpenGLDynamicRHI : public IOpenGLDynamicRHI, public IRHICommandContextPSOFallback
@@ -26,8 +27,12 @@ public:
     template<typename TRHIType>
 	static auto* ResourceCast(TRHIType* Resource)
 	{
+#ifdef _MSC_VER
+        return reinterpret_cast<typename TOpenGLResourceTraits<TRHIType>::TConcreteType*>(Resource);
+#else
 		return static_cast<typename TOpenGLResourceTraits<TRHIType>::TConcreteType*>(Resource);
-	}
+#endif
+    }
 
 	static FOpenGLTexture* ResourceCast(FRHITexture* TextureRHI)
 	{
@@ -146,7 +151,6 @@ public:
     virtual void RHISetDepthStencilState(FRHIDepthStencilState* NewState, uint32 StencilRef) override;
     virtual void RHISetBlendState(FRHIBlendState* NewState, const FLinearColor& BlendFactor) override;
 	virtual void RHISetRasterizerState(FRHIRasterizerState* NewState) override;
-	virtual void RHISetBlendState(FRHIBlendState* NewState, const FLinearColor& BlendFactor) override;
 	virtual void RHIEnableDepthBoundsTest(bool bEnable) override;
 	virtual void RHISetComputeShader(FRHIComputeShader* ComputeShader) override;
 

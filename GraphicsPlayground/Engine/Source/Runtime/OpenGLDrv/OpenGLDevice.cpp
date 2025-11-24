@@ -1,5 +1,5 @@
 #include "OpenGLDrv.h"
-#include "Private/OpenGLDrvPrivate.h"
+#include "Platform/OpenGLDrvPrivate.h"
 
 FOpenGLDynamicRHI::FOpenGLDynamicRHI()
 {

@@ -1,8 +1,6 @@
 #include "Launch/EngineLoop.h"
 #include "Launch/ImGuiManager.h"
 #include "Engine/UnrealClient.h"
-#include "Windows/WindowsPlatformTime.h"
-#include "Windows/D3D11RHI/GraphicDevice.h"
 #include "Classes/Engine/EditorEngine.h"
 #include "Editor/LevelEditor/SLevelEditor.h"
 #include "Editor/PropertyEditor/ViewportTypePanel.h"
@@ -35,6 +33,7 @@
 #include "ApplicationCore/Generic/GenericWindow.h"
 #include "RHI/DynamicRHI.h"
 #include "RHI/RHIFwd.h"
+#include "Core/HAL/PlatformTime.h"
 
 
 // Plaform-specific
@@ -101,7 +100,7 @@ int32 FEngineLoop::Init(FGenericApplicationInitParams* InAppInitParams)
     // EngineProfiler = new FEngineProfiler;
     // ParticleSubEngine = new USubEngine;
 
-    // UIManager = new UImGuiManager;
+    // UIManager = new FImGuiManager;
     // AppMessageHandler = new FGenericSlateAppMessageHandler;
     // LevelEditor = new SLevelEditor;
     // UnrealEditor = new UnrealEd;
@@ -170,8 +169,6 @@ int32 FEngineLoop::Init(FGenericApplicationInitParams* InAppInitParams)
 
 void FEngineLoop::Render() const
 {
-    GraphicDevice->Prepare();
-
     if (LevelEditor->IsMultiViewport())
     {
         const std::shared_ptr<FEditorViewportClient> ActiveViewportCache = GetLevelEditor()->GetActiveViewportClient();
@@ -251,8 +248,6 @@ void FEngineLoop::Tick()
             GPUTimingManager->EndFrame(); // End GPU frame timing
         }
 
-        GraphicDevice->SwapBuffer();
-
         // SubEngineControl();
 
         GRHICommandList.Submit();
@@ -314,7 +309,6 @@ void FEngineLoop::Exit()
     UIManager->Shutdown();
     ResourceManager->Release(Renderer);
     Renderer->Release();
-    GraphicDevice->Release();
 
     GEngine->Release();
 
