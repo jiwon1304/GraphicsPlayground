@@ -16,7 +16,7 @@
 #include "Classes/GameFramework/GameMode.h"
 #include "Classes/Components/TextComponent.h"
 // #include "Contents/Actors/Fish.h"
-#include "PhysicsCore/PhysxSolversModule.h"
+#include "PhysicsCore/PhysicsSolver.h"
 #include "PhysicsCore/PhysicsScene.h"
 #include "Classes/Camera/PlayerCameraManager.h"
 #include "Core/Stats/Stats.h"
@@ -358,9 +358,9 @@ void UWorld::CheckOverlap(const UPrimitiveComponent* Component, TArray<FOverlapR
 
 void UWorld::CreatePhysicsScene()
 {
-    PhysicsScene = new FPhysScene();
+    // PhysicsScene = new FPhysScene();
 
-    PhysicsScene->Init(FPhysxSolversModule::GetModule()->CreateSolver(), FPhysxSolversModule::GetModule()->CreateScene());
+    // PhysicsScene->Init(FPhysxSolversModule::GetModule()->CreateSolver(), FPhysxSolversModule::GetModule()->CreateScene());
 }
 
 void UWorld::ReleasePhysicsScene()

@@ -1,8 +1,8 @@
 #include "GPUTimingManager.h"
 
-#if defined(BUILD_PLATFORM_WINDOWS)
+#if defined(USE_D3D11)
 #include "Platform/Windows/GPUTimingManagerD3D11.h"
-#elif defined(BUILD_PLATFORM_MACOS)
+#elif defined(USE_OPENGL)
 #include "Platform/Mac/GPUTimingManagerGL.h"
 #endif
 

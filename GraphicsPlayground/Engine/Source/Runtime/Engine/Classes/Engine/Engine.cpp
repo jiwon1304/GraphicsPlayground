@@ -5,7 +5,7 @@
 #include "Editor/UnrealEd/SceneManager.h"
 #include "CoreUObject/UObject/Casts.h"
 #include "World/World.h"
-#include "PhysicsCore/PhysxSolversModule.h"
+#include "PhysicsCore/PhysX/PhysxSolversModule.h"
 
 UEngine* GEngine = nullptr;
 

@@ -16,7 +16,7 @@
 #include "Editor/UnrealEd/EditorViewportClient.h"
 #include "Classes/PhysicsEngine/PhysicsAsset.h"
 #include "World/PhysicsAssetWorld.h"
-#include "PhysicsCore/PhysxSolversModule.h"
+#include "PhysicsCore/PhysX/PhysxSolversModule.h"
 #include "Math/Rect.h"
 #include "ApplicationCore/Generic/GenericSlateAppMessageHandler.h"
 

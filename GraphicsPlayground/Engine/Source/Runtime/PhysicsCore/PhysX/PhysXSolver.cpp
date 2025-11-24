@@ -1,64 +1,34 @@
-#include "PhysicsSolver.h"
-#include "Classes/PhysicsEngine/ShapeElem.h"
-#include "PhysicsScene.h"
-#include "PhysicsCore/PhysxSolversModule.h"
-#include "Classes/PhysicsEngine/BodySetup.h"
-#include "Classes/Components/PrimitiveComponent.h"
-#include "Classes/PhysicsEngine/BodyInstance.h"
-#include "PhysicalMaterials/PhysicalMaterial.h"
-#include "Classes/Components/StaticMeshComponent.h"
-#include "Classes/Components/SkeletalMeshComponent.h"
-#include "Classes/Engine/SkeletalMesh.h"
-#include "CoreUObject/UObject/Casts.h"
-#include "Classes/PhysicsEngine/ConstraintInstance.h"
-#include "Developer/PhysicsUtilities/PhysicsAssetUtils.h"
+#include "PhysXSolver.h"
+
+#include "ThirdParty/physx/include/PxPhysicsAPI.h"
+#include "PhysXScene.h"
+#include "PhysxSolversModule.h"
 #include "Developer/PhysicsUtilities/Physx/PhysxUtils.h"
-#include "Classes/PhysicsEngine/Vehicle/VehicleMovementComponent.h"
-#include "Engine/Source/Runtime/PhysicsVehicle/Vehicle4W.h"
+
+
+#include "Classes/PhysicsEngine/ShapeElem.h"
+#include "Classes/PhysicsEngine/BodyInstance.h"
+#include "Classes/PhysicsEngine/AggregateGeom.h"
 #include "Classes/PhysicsEngine/Vehicle/WheeledVehiclePawn.h"
 
-void FPhysicsSolver::Init()
-{
+#include "Classes/Components/StaticMeshComponent.h"
+#include "Classes/Components/SkeletalMeshComponent.h"
+#include "UserInterface/Console.h"
 
-}
+using namespace physx;
 
-void FPhysicsSolver::Release()
-{
-
-}
-
-
-void FPhysicsSolver::InitScene(FPhysScene* InScene) const
-{
-    if (!InScene)
-    {
-        UE_LOG(ELogLevel::Error, "InScene is null!");
-        return;
-    }
-
-    physx::PxScene* NewPxScene = FPhysxSolversModule::GetModule()->CreateScene();
-    if (InScene == nullptr || NewPxScene == nullptr)
-    {
-        UE_LOG(ELogLevel::Error, "Failed to create FPhysScene or PxScene!");
-        return;
-    }
-    InScene->Init(const_cast<FPhysicsSolver*>(this), NewPxScene);
-}
-
-// TODO : 일단 FBodyInstance를 사용해서 함
-// 이후에 Register를 UstaticMesh, USkeletalMesh, 또는 Actor단위로 받아서 할 것.
-physx::PxActor* FPhysicsSolver::RegisterObject(FPhysScene* InScene, const FBodyInstance* NewInstance, const FMatrix& InitialMatrix)
+void* FPhysXSolver::RegisterObject(FPhysScene* InScene, const FBodyInstance* NewInstance, const FMatrix& InitialMatrix)
 {
     if (!NewInstance)
     {
-        UE_LOG(ELogLevel::Error, "NewInstance is null!");
+        UE_LOG(ELogLevel::Error, TEXT("NewInstance is null!"));
         return nullptr;
     }
 
-    PxScene* Scene = InScene->PhysxScene;
+    PxScene* Scene = static_cast<FPhysXScene*>(InScene)->PhysxScene;
     if (!Scene)
     {
-        UE_LOG(ELogLevel::Error, "PxScene is null!");
+        UE_LOG(ELogLevel::Error, TEXT("PxScene is null!"));
         return nullptr;
     }
 
@@ -186,19 +156,172 @@ physx::PxActor* FPhysicsSolver::RegisterObject(FPhysScene* InScene, const FBodyI
     return NewRigidActor;
 }
 
-PxActor* FPhysicsSolver::RegisterObject(FPhysScene* InScene, FBodyInstance* NewInstance, UVehicleMovementComponent* InVehicleMovementComponent, const FMatrix& InitialMatrix)
+// void *FPhysXSolver::RegisterObject(FPhysScene *InScene, FBodyInstance *NewInstance, UVehicleMovementComponent *InVehicleMovementComponent, const FMatrix &InitialMatrix)
+// {
+//     FVehicle4W* Vehicle = new FVehicle4W();
+//     Vehicles.Add(Vehicle);
+
+//     FPhysxSolversModule* PhysxSolverModule = FPhysxSolversModule::GetModule();
+
+//     return Vehicle->InitVehicle(InVehicleMovementComponent, NewInstance, InitialMatrix, PhysxSolverModule->Physics, PhysxSolverModule->Foundation
+//         , InScene->PhysxScene, &PhysxSolverModule->Allocator, PhysxSolverModule->DefaultMaterial);
+// }
+
+void FPhysXSolver::AdvanceOneTimeStep(FPhysScene *InScene, float Dt)
 {
-    FVehicle4W* Vehicle = new FVehicle4W();
-    Vehicles.Add(Vehicle);
-
-    FPhysxSolversModule* PhysxSolverModule = FPhysxSolversModule::GetModule();
-
-    return Vehicle->InitVehicle(InVehicleMovementComponent, NewInstance, InitialMatrix, PhysxSolverModule->Physics, PhysxSolverModule->Foundation
-        , InScene->PhysxScene, &PhysxSolverModule->Allocator, PhysxSolverModule->DefaultMaterial);
+    PxScene* Scene = static_cast<FPhysXScene*>(InScene)->PhysxScene;
+    
+    //for (int VehicleNum = 0; VehicleNum < Vehicles.Num(); VehicleNum++) 
+    //{
+    //    Vehicles[VehicleNum]->StepPhysics(Dt, Scene);
+    //}
+    
+    Scene->simulate(Dt);
 }
 
-physx::PxJoint* FPhysicsSolver::CreateJoint(FPhysScene* InScene, PxActor* Child, PxActor* Parent, const FConstraintInstance* NewInstance)
+void FPhysXSolver::FetchData(FPhysScene *InScene)
 {
+    //PxSceneReadLock scopedReadLock(*InScene->PhysxScene);
+    PxScene* Scene = static_cast<FPhysXScene*>(InScene)->PhysxScene;
+
+    PxU32 TotalActors = Scene->getNbActors(
+        PxActorTypeFlag::eRIGID_DYNAMIC
+    );
+    PxActor** Actors = new PxActor* [TotalActors];
+
+    PxU32 NumReturnActors = Scene->getActors(
+        PxActorTypeFlag::eRIGID_DYNAMIC,
+        Actors, TotalActors
+    );
+
+    for (PxU32 i = 0; i < NumReturnActors; ++i)
+    {
+        PxRigidDynamic* DynamicActor = Actors[i]->is<PxRigidDynamic>();
+        PxTransform Transform = DynamicActor->getGlobalPose();
+
+        FBodyInstance* BodyInstance = static_cast<FBodyInstance*>(DynamicActor->userData);
+
+        if (BodyInstance->OwnerComponent)
+        {
+            if (BodyInstance->bCar) 
+            {
+                FQuat PhysicQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w);
+
+                BodyInstance->OwnerComponent->SetWorldTransform(
+                    FTransform(
+                        PhysicQuat * BodyInstance->InvPhysXQuat,
+                        FVector(Transform.p.x, Transform.p.y, Transform.p.z),
+                        FVector(BodyInstance->Scale3D.X, BodyInstance->Scale3D.Y, BodyInstance->Scale3D.Z)
+                    )
+                );
+                
+            //     // TODO 아래는 Vehicle이 1개일 때만 작동! 무 조 건 고쳐야함
+            //     FVehicle4W* Vehicle4W = Vehicles[0];
+
+            //     AWheeledVehiclePawn* WheelPawn = Cast<AWheeledVehiclePawn>(BodyInstance->OwnerComponent->GetOwner());
+
+            //     TArray<UStaticMeshComponent*> StaticMeshComps;
+
+            //     for (auto iter : WheelPawn->GetComponents()) 
+            //     {
+            //         if (UStaticMeshComponent* StaticMeshComp = Cast<UStaticMeshComponent>(iter)) 
+            //         {
+            //             StaticMeshComps.Add(StaticMeshComp);
+            //         }
+            //     }
+            //     PxTransform Transform;
+            //     for (auto StaticMesh : StaticMeshComps) 
+            //     {
+            //         if (StaticMesh == BodyInstance->OwnerComponent) continue;
+
+            //         if (StaticMesh->GetRelativeLocation() == WheelPawn->ForwardLeftTireLocation)
+            //         {
+            //             Transform = Vehicle4W->WheelShapes[0]->getLocalPose();
+            //         }
+            //         else if (StaticMesh->GetRelativeLocation() == WheelPawn->ForwardRightTireLocation)
+            //         {
+            //             Transform = Vehicle4W->WheelShapes[1]->getLocalPose();
+            //         }
+            //         else if (StaticMesh->GetRelativeLocation() == WheelPawn->RearLeftTireLocation)
+            //         {
+            //             Transform = Vehicle4W->WheelShapes[2]->getLocalPose();
+            //         }
+            //         else if (StaticMesh->GetRelativeLocation() == WheelPawn->RearRightTireLocation)
+            //         {
+            //             Transform = Vehicle4W->WheelShapes[3]->getLocalPose();
+            //         }
+
+            //         /*Transform.q = Transform.q * PxQuat(BodyInstance->InvPhysXQuat.X, BodyInstance->InvPhysXQuat.Y, BodyInstance->InvPhysXQuat.Z, BodyInstance->InvPhysXQuat.W);
+
+            //         StaticMesh->SetRelativeRotation(FQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w));*/
+            //     }
+
+                continue;
+            }
+
+            if (UStaticMeshComponent* StaticMeshComp = Cast<UStaticMeshComponent>(BodyInstance->OwnerComponent))
+            {
+                FQuat PhysicQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w);
+
+                BodyInstance->OwnerComponent->SetWorldTransform(
+                    FTransform(
+                        PhysicQuat * BodyInstance->InvPhysXQuat,
+                        FVector(Transform.p.x, Transform.p.y, Transform.p.z),
+                        BodyInstance->OwnerComponent->GetComponentScale3D()
+                    )
+                );
+            }
+            else if (USkeletalMeshComponent* SkeletalMeshComp = Cast<USkeletalMeshComponent>(BodyInstance->OwnerComponent))
+            {
+                USkeletalMesh* SkeletalMesh = SkeletalMeshComp->GetSkeletalMeshAsset();
+                int16 BoneIndex = BodyInstance->InstanceBoneIndex;
+                const FReferenceSkeleton& RefSkeleton = SkeletalMesh->GetSkeleton()->GetReferenceSkeleton();
+                int16 ParentIndex = RefSkeleton.GetRawRefBoneInfo()[BoneIndex].ParentIndex;
+
+                // 부모 본의 컴포넌트 공간 트랜스폼
+                FTransform ParentComponentSpaceTransform =
+                    (ParentIndex != INDEX_NONE)
+                    ? SkeletalMeshComp->GetBoneComponentSpaceTransform(ParentIndex)
+                    : FTransform::Identity;
+
+                // 시뮬레이션 결과(월드 좌표계)
+                FQuat PhysicQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w);
+                FVector PhysicPos(Transform.p.x, Transform.p.y, Transform.p.z);
+
+                // PhysX에서 넘어온 쿼터니언은 보정이 필요할 수 있음
+                FQuat CorrectedQuat = PhysicQuat * BodyInstance->InvPhysXQuat;
+
+                // 현재 본의 스케일 유지
+                FTransform CachedBoneWorldTransform =
+                    SkeletalMeshComp->GetComponentTransform() *
+                    SkeletalMeshComp->GetBoneComponentSpaceTransform(BoneIndex);
+
+                FVector OriginScale = CachedBoneWorldTransform.GetScale3D();
+
+                // 시뮬레이션 월드 변환
+                FTransform SimulatedWorldTransform(CorrectedQuat, PhysicPos, OriginScale);
+
+                // 월드 → 컴포넌트 공간
+                FTransform SimulatedComponentSpace =
+                    SimulatedWorldTransform.GetRelativeTransform(SkeletalMeshComp->GetComponentTransform());
+
+                // 컴포넌트 공간 → 부모 본 로컬 공간
+                FTransform NewBoneLocal =
+                    SimulatedComponentSpace.GetRelativeTransform(ParentComponentSpaceTransform);
+
+                // 본 위치 갱신
+                SkeletalMeshComp->GetBonePoseContext().Pose[BoneIndex] = NewBoneLocal;
+            }
+            
+        }
+    }
+}
+
+void* FPhysXSolver::CreateJoint(FPhysScene *InScene, void* InChild, void* InParent, const FConstraintInstance *NewInstance)
+{
+    PxActor* Parent = static_cast<PxActor*>(InParent);
+    PxActor* Child = static_cast<PxActor*>(InChild);
+
     PxRigidDynamic* ParentDynamic = Parent->is<PxRigidDynamic>();
     PxRigidDynamic* ChildDynamic = Child->is<PxRigidDynamic>();
     if (!ParentDynamic || !ChildDynamic)
@@ -367,167 +490,4 @@ physx::PxJoint* FPhysicsSolver::CreateJoint(FPhysScene* InScene, PxActor* Child,
     Joint->setConstraintFlag(physx::PxConstraintFlag::eVISUALIZATION, true);
 #endif
     return Joint;
-}
-
-void FPhysicsSolver::AdvanceOneTimeStep(FPhysScene* InScene, float Dt)
-{
-    //PxSceneWriteLock scopedWriteLock(*InScene->PhysxScene);
-    
-    for (int VehicleNum = 0; VehicleNum < Vehicles.Num(); VehicleNum++) 
-    {
-        Vehicles[VehicleNum]->StepPhysics(Dt, InScene->PhysxScene);
-    }
-    
-    InScene->PhysxScene->simulate(Dt);
-}
-
-void FPhysicsSolver::FetchData(FPhysScene* InScene)
-{
-    //PxSceneReadLock scopedReadLock(*InScene->PhysxScene);
-    InScene->PhysxScene->fetchResults(true);
-
-    PxScene* Scene = InScene->PhysxScene;
-    PxU32 TotalActors = Scene->getNbActors(
-        PxActorTypeFlag::eRIGID_DYNAMIC
-    );
-    PxActor** Actors = new PxActor* [TotalActors];
-
-    PxU32 NumReturnActors = Scene->getActors(
-        PxActorTypeFlag::eRIGID_DYNAMIC,
-        Actors, TotalActors
-    );
-
-    for (PxU32 i = 0; i < NumReturnActors; ++i)
-    {
-        PxRigidDynamic* DynamicActor = Actors[i]->is<PxRigidDynamic>();
-        PxTransform Transform = DynamicActor->getGlobalPose();
-
-        FBodyInstance* BodyInstance = static_cast<FBodyInstance*>(DynamicActor->userData);
-
-        if (BodyInstance->OwnerComponent)
-        {
-            if (BodyInstance->bCar) 
-            {
-                FQuat PhysicQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w);
-
-                BodyInstance->OwnerComponent->SetWorldTransform(
-                    FTransform(
-                        PhysicQuat * BodyInstance->InvPhysXQuat,
-                        FVector(Transform.p.x, Transform.p.y, Transform.p.z),
-                        FVector(BodyInstance->Scale3D.X, BodyInstance->Scale3D.Y, BodyInstance->Scale3D.Z)
-                    )
-                );
-                
-                // TODO 아래는 Vehicle이 1개일 때만 작동! 무 조 건 고쳐야함
-                FVehicle4W* Vehicle4W = Vehicles[0];
-
-                AWheeledVehiclePawn* WheelPawn = Cast<AWheeledVehiclePawn>(BodyInstance->OwnerComponent->GetOwner());
-
-                TArray<UStaticMeshComponent*> StaticMeshComps;
-
-                for (auto iter : WheelPawn->GetComponents()) 
-                {
-                    if (UStaticMeshComponent* StaticMeshComp = Cast<UStaticMeshComponent>(iter)) 
-                    {
-                        StaticMeshComps.Add(StaticMeshComp);
-                    }
-                }
-                PxTransform Transform;
-                for (auto StaticMesh : StaticMeshComps) 
-                {
-                    if (StaticMesh == BodyInstance->OwnerComponent) continue;
-
-                    if (StaticMesh->GetRelativeLocation() == WheelPawn->ForwardLeftTireLocation)
-                    {
-                        Transform = Vehicle4W->WheelShapes[0]->getLocalPose();
-                    }
-                    else if (StaticMesh->GetRelativeLocation() == WheelPawn->ForwardRightTireLocation)
-                    {
-                        Transform = Vehicle4W->WheelShapes[1]->getLocalPose();
-                    }
-                    else if (StaticMesh->GetRelativeLocation() == WheelPawn->RearLeftTireLocation)
-                    {
-                        Transform = Vehicle4W->WheelShapes[2]->getLocalPose();
-                    }
-                    else if (StaticMesh->GetRelativeLocation() == WheelPawn->RearRightTireLocation)
-                    {
-                        Transform = Vehicle4W->WheelShapes[3]->getLocalPose();
-                    }
-
-                    /*Transform.q = Transform.q * PxQuat(BodyInstance->InvPhysXQuat.X, BodyInstance->InvPhysXQuat.Y, BodyInstance->InvPhysXQuat.Z, BodyInstance->InvPhysXQuat.W);
-
-                    StaticMesh->SetRelativeRotation(FQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w));*/
-                }
-
-                continue;
-            }
-
-            if (UStaticMeshComponent* StaticMeshComp = Cast<UStaticMeshComponent>(BodyInstance->OwnerComponent))
-            {
-                FQuat PhysicQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w);
-
-                BodyInstance->OwnerComponent->SetWorldTransform(
-                    FTransform(
-                        PhysicQuat * BodyInstance->InvPhysXQuat,
-                        FVector(Transform.p.x, Transform.p.y, Transform.p.z),
-                        BodyInstance->OwnerComponent->GetComponentScale3D()
-                    )
-                );
-            }
-            else if (USkeletalMeshComponent* SkeletalMeshComp = Cast<USkeletalMeshComponent>(BodyInstance->OwnerComponent))
-            {
-                USkeletalMesh* SkeletalMesh = SkeletalMeshComp->GetSkeletalMeshAsset();
-                int16 BoneIndex = BodyInstance->InstanceBoneIndex;
-                const FReferenceSkeleton& RefSkeleton = SkeletalMesh->GetSkeleton()->GetReferenceSkeleton();
-                int16 ParentIndex = RefSkeleton.GetRawRefBoneInfo()[BoneIndex].ParentIndex;
-
-                // 부모 본의 컴포넌트 공간 트랜스폼
-                FTransform ParentComponentSpaceTransform =
-                    (ParentIndex != INDEX_NONE)
-                    ? SkeletalMeshComp->GetBoneComponentSpaceTransform(ParentIndex)
-                    : FTransform::Identity;
-
-                // 시뮬레이션 결과(월드 좌표계)
-                FQuat PhysicQuat(Transform.q.x, Transform.q.y, Transform.q.z, Transform.q.w);
-                FVector PhysicPos(Transform.p.x, Transform.p.y, Transform.p.z);
-
-                // PhysX에서 넘어온 쿼터니언은 보정이 필요할 수 있음
-                FQuat CorrectedQuat = PhysicQuat * BodyInstance->InvPhysXQuat;
-
-                // 현재 본의 스케일 유지
-                FTransform CachedBoneWorldTransform =
-                    SkeletalMeshComp->GetComponentTransform() *
-                    SkeletalMeshComp->GetBoneComponentSpaceTransform(BoneIndex);
-
-                FVector OriginScale = CachedBoneWorldTransform.GetScale3D();
-
-                // 시뮬레이션 월드 변환
-                FTransform SimulatedWorldTransform(CorrectedQuat, PhysicPos, OriginScale);
-
-                // 월드 → 컴포넌트 공간
-                FTransform SimulatedComponentSpace =
-                    SimulatedWorldTransform.GetRelativeTransform(SkeletalMeshComp->GetComponentTransform());
-
-                // 컴포넌트 공간 → 부모 본 로컬 공간
-                FTransform NewBoneLocal =
-                    SimulatedComponentSpace.GetRelativeTransform(ParentComponentSpaceTransform);
-
-                // 본 위치 갱신
-                SkeletalMeshComp->GetBonePoseContext().Pose[BoneIndex] = NewBoneLocal;
-            }
-            
-        }
-    }
-}
-
-PxGeometryType::Enum FPhysicsSolver::GetPxType(const FKShapeElem* InShape)
-{
-    if (InShape->StaticStruct()->IsChildOf(FKBoxElem::StaticStruct()))
-    {
-        return PxGeometryType::eBOX;
-    }
-    else
-    {
-        assert(0);
-    }
 }

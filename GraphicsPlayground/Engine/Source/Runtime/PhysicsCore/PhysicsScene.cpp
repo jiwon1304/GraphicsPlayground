@@ -2,9 +2,7 @@
 #include "Classes/Components/ShapeComponent.h"
 #include "Classes/Components/ProjectileMovementComponent.h"
 #include "Classes/GameFramework/Actor.h"
-#include "PhysicsCore/PhysXIntegration.h"
 #include "PhysicsSolver.h"
-#include "PhysxSolversModule.h"
 #include "Classes/Components/StaticMeshComponent.h"
 #include "Classes/PhysicsEngine/BodySetup.h"
 #include "Classes/Components/SkeletalMeshComponent.h"
@@ -13,9 +11,9 @@
 #include "Classes/PhysicsEngine/BodySetup.h"
 #include "Classes/PhysicsEngine/ConstraintInstance.h"
 #include "Classes/PhysicsEngine/PhysicsConstraintTemplate.h"
-#include "Classes/PhysicsEngine/Vehicle/WheeledVehiclePawn.h"
+//#include "Classes/PhysicsEngine/Vehicle/WheeledVehiclePawn.h"
 
-void FPhysScene::Init(FPhysicsSolver* InSceneSolver, physx::PxScene* InScene)
+void FPhysScene::Init(IPhysicsSolver* InSceneSolver)
 {
     if (!InSceneSolver)
     {
@@ -24,17 +22,10 @@ void FPhysScene::Init(FPhysicsSolver* InSceneSolver, physx::PxScene* InScene)
     }
 
     SceneSolver = InSceneSolver;
-
-    PhysxScene = InScene;
 }
 
 void FPhysScene::Release()
 {
-    if (PhysxScene)
-    {
-        PhysxScene->release();
-    }
-
     if (SceneSolver)
     {
         delete SceneSolver;
@@ -44,11 +35,11 @@ void FPhysScene::Release()
 void FPhysScene::AddActor(AActor* Actor)
 {
     // AWheeledVehiclePawn인 경우에 처리를 다르게 해줘야 하므로 함수 분리
-    if (AWheeledVehiclePawn* WheeledVehiclePawn = Cast<AWheeledVehiclePawn>(Actor)) 
-    {
-        AddVehicle(WheeledVehiclePawn);
-        return;
-    }
+    //if (AWheeledVehiclePawn* WheeledVehiclePawn = Cast<AWheeledVehiclePawn>(Actor)) 
+    //{
+    //    AddVehicle(WheeledVehiclePawn);
+    //    return;
+    //}
 
     TSet<UActorComponent*> ActorComponents = Actor->GetComponents();
 
@@ -78,7 +69,7 @@ void FPhysScene::AddActor(AActor* Actor)
             FBodyInstance* BodyInstance = new FBodyInstance(StaticMesh->GetBodySetup()->DefaultInstance);
             
             BodyInstance->OwnerComponent = StaticMeshComponent;
-            PxActor* RegisteredActor = SceneSolver->RegisterObject(this, BodyInstance, StaticMeshComponent->GetWorldMatrix().GetMatrixWithoutScale());
+            void* RegisteredActor = SceneSolver->RegisterObject(this, BodyInstance, StaticMeshComponent->GetWorldMatrix().GetMatrixWithoutScale());
 
             //StaticMeshComponent->BodyInstance = BodyInstance;
             //RegisteredInstances.Add(BodyInstance, RegisteredActor);
@@ -111,7 +102,7 @@ void FPhysScene::AddActor(AActor* Actor)
                 continue;
             }
 
-            TMap<FName, PxActor*> RegisteredActors;
+            TMap<FName, void*> RegisteredActors;
             for (const auto& BodySetup : PhysicsAsset->BodySetup)
             {
                 // 복사해서 붙여줌
@@ -129,7 +120,7 @@ void FPhysScene::AddActor(AActor* Actor)
 
                 FMatrix InitialMatrix = /**/ SkeletalMeshComponent->GetBoneComponentSpaceTransform(BoneIndex).ToMatrixNoScale() * SkeletalMeshComponent->GetWorldMatrix();
 
-                PxActor* RegisteredActor = SceneSolver->RegisterObject(this, BodyInstance, InitialMatrix);
+                void* RegisteredActor = SceneSolver->RegisterObject(this, BodyInstance, InitialMatrix);
 
                 if (RegisteredActor)
                 {
@@ -149,7 +140,7 @@ void FPhysScene::AddActor(AActor* Actor)
             {
                 FConstraintInstance* ConstraintInstance = new FConstraintInstance(ConstraintSetup->DefaultInstance);
                 FName ChildBone = ConstraintInstance->ConstraintBone1;
-                PxActor* ChildActor = nullptr;
+                void* ChildActor = nullptr;
                 if (RegisteredActors.Find(ChildBone))
                 {
                     ChildActor = RegisteredActors[ChildBone];
@@ -161,7 +152,7 @@ void FPhysScene::AddActor(AActor* Actor)
                     continue;
                 }
                 FName ParentBone = ConstraintInstance->ConstraintBone2;
-                PxActor* ParentActor = nullptr;
+                void* ParentActor = nullptr;
                 if (RegisteredActors.Find(ParentBone))
                 {
                     ParentActor = RegisteredActors[ParentBone];
@@ -172,7 +163,7 @@ void FPhysScene::AddActor(AActor* Actor)
                     delete ConstraintInstance; // 메모리 해제
                     continue;
                 }
-                PxJoint* NewJoint = SceneSolver->CreateJoint(this, ChildActor, ParentActor, ConstraintInstance);
+                SceneSolver->CreateJoint(this, ChildActor, ParentActor, ConstraintInstance);
 
                 SkeletalMeshComponent->Constraints.Add(ConstraintInstance);
             }
@@ -180,36 +171,36 @@ void FPhysScene::AddActor(AActor* Actor)
     }
 }
 
-void FPhysScene::AddVehicle(AWheeledVehiclePawn* Vehicle)
-{
-    USceneComponent* MeshComponent = Vehicle->GetRootComponent();
-
-    USkeletalMeshComponent* SkeletalMeshComponent = Cast<USkeletalMeshComponent>(MeshComponent);
-    UStaticMeshComponent* StaticMeshComponent = Cast<UStaticMeshComponent>(MeshComponent);
-
-
-    // 현재는 FBodyInstance는 OwnerComponent 연결 부분으로만 사용하는데
-    // 이후 수정 필요할듯
-    FBodyInstance* VehicleMainBodyInstance = new FBodyInstance();
-    FMatrix InitialMatrix;
-
-    VehicleMainBodyInstance->bCar = true;
-
-    if (SkeletalMeshComponent != nullptr) 
-    {
-        VehicleMainBodyInstance->OwnerComponent = SkeletalMeshComponent;
-        InitialMatrix = SkeletalMeshComponent->GetWorldMatrix();
-        VehicleMainBodyInstance->Scale3D = SkeletalMeshComponent->GetRelativeScale3D();
-    }
-    else if (StaticMeshComponent != nullptr) 
-    {
-        VehicleMainBodyInstance->OwnerComponent = StaticMeshComponent;
-        InitialMatrix = StaticMeshComponent->GetWorldMatrix();
-        VehicleMainBodyInstance->Scale3D = StaticMeshComponent->GetRelativeScale3D();
-    }
-
-    SceneSolver->RegisterObject(this, VehicleMainBodyInstance, Vehicle->GetVehicleMovementComponent(), InitialMatrix);
-}
+//void FPhysScene::AddVehicle(AWheeledVehiclePawn* Vehicle)
+//{
+//    USceneComponent* MeshComponent = Vehicle->GetRootComponent();
+//
+//    USkeletalMeshComponent* SkeletalMeshComponent = Cast<USkeletalMeshComponent>(MeshComponent);
+//    UStaticMeshComponent* StaticMeshComponent = Cast<UStaticMeshComponent>(MeshComponent);
+//
+//
+//    // 현재는 FBodyInstance는 OwnerComponent 연결 부분으로만 사용하는데
+//    // 이후 수정 필요할듯
+//    FBodyInstance* VehicleMainBodyInstance = new FBodyInstance();
+//    FMatrix InitialMatrix;
+//
+//    VehicleMainBodyInstance->bCar = true;
+//
+//    if (SkeletalMeshComponent != nullptr) 
+//    {
+//        VehicleMainBodyInstance->OwnerComponent = SkeletalMeshComponent;
+//        InitialMatrix = SkeletalMeshComponent->GetWorldMatrix();
+//        VehicleMainBodyInstance->Scale3D = SkeletalMeshComponent->GetRelativeScale3D();
+//    }
+//    else if (StaticMeshComponent != nullptr) 
+//    {
+//        VehicleMainBodyInstance->OwnerComponent = StaticMeshComponent;
+//        InitialMatrix = StaticMeshComponent->GetWorldMatrix();
+//        VehicleMainBodyInstance->Scale3D = StaticMeshComponent->GetRelativeScale3D();
+//    }
+//
+//    SceneSolver->RegisterObject(this, VehicleMainBodyInstance, Vehicle->GetVehicleMovementComponent(), InitialMatrix);
+//}
 
 void FPhysScene::AdvanceAndDispatch_External(float DeltaTime)
 {
@@ -223,17 +214,4 @@ void FPhysScene::SyncBodies()
 
 void FPhysScene::SetGeometryToWorld(UBodySetup* BodySetup)
 {
-}
-
-void FPhysScene::SetGravity(FVector InGravity)
-{
-    if (PhysxScene)
-    {
-        PhysxScene->setGravity(PxVec3(InGravity.X, InGravity.Y, InGravity.Z));
-        Gravity = InGravity;
-    }
-    else
-    {
-        UE_LOG(ELogLevel::Error, "PhysxScene is null!");
-    }
 }

@@ -576,9 +576,9 @@ void ControlEditorPanel::CreateModifyButton(const ImVec2 ButtonSize, ImFont* Ico
                 }
                 case OBJ_VEHICLE4W:
                 {
-                    SpawnedActor = World->SpawnActor<AWheeledVehiclePawn>();
-                    SpawnedActor->SetActorLabel("WHEELED_VEHICLE");
-                    break;
+                    // SpawnedActor = World->SpawnActor<AWheeledVehiclePawn>();
+                    // SpawnedActor->SetActorLabel("WHEELED_VEHICLE");
+                    // break;
                 }
                 case OBJ_CAMERA:
                 case OBJ_PLAYER:

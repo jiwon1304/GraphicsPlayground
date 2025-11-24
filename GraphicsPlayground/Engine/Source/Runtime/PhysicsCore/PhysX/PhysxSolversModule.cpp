@@ -1,8 +1,10 @@
 #include "PhysxSolversModule.h"
-#include "PhysicsSolver.h"
+#include "PhysXSolver.h"
 
 #define PVD_HOST "127.0.0.1"
 #define PX_NUM_DISPATCHER 2
+
+using namespace physx;
 
 // 싱글톤 인스턴스를 생성하고 초기화하는 함수
 FPhysxSolversModule* FPhysxSolversModule::GetModule()
@@ -39,9 +41,8 @@ void FPhysxSolversModule::Initialize()
 
 void FPhysxSolversModule::Shutdown()
 {
-    for (FPhysicsSolver* Solver : Solvers)
+    for (IPhysicsSolver* Solver : Solvers)
     {
-        Solver->Release();
         delete Solver;
     }
     Solvers.Empty();
@@ -73,11 +74,9 @@ void FPhysxSolversModule::ConnectToPVD()
     Pvd->connect(*PvdTransport, PxPvdInstrumentationFlag::eALL);
 }
 
-FPhysicsSolver* FPhysxSolversModule::CreateSolver()
+IPhysicsSolver* FPhysxSolversModule::CreateSolver()
 {
-    FPhysicsSolver* NewSolver = new FPhysicsSolver();
-
-    NewSolver->Init();
+    FPhysXSolver* NewSolver = new FPhysXSolver();
 
     return NewSolver;
 }
