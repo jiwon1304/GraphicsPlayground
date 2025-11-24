@@ -142,7 +142,7 @@ bool SceneManager::SaveSceneToJsonFile(const std::filesystem::path& FilePath, co
     std::ofstream outFile(FilePath);
     if (!outFile)
     {
-        MessageBoxA(nullptr, "Failed to open file for writing: ", "Error", MB_OK | MB_ICONERROR);
+        UE_LOG(ELogLevel::Error, "Failed to open file for writing: %s", FilePath.c_str());
         return false;
     }
 

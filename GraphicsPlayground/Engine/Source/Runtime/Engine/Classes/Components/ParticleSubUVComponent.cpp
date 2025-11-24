@@ -1,7 +1,6 @@
 #include "ParticleSubUVComponent.h"
 #include "Launch/EngineLoop.h"
 #include "CoreUObject/UObject/Casts.h"
-#include "Windows/D3D11RHI/DXDBufferManager.h"
 #include "Engine/Classes/Engine/ResourceMgr.h"
 #include "RenderCore/RenderResource.h"
 

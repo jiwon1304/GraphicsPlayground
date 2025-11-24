@@ -89,7 +89,8 @@ void FEditorViewportClient::UpdateCamera(const float DeltaTime)
 
 void FEditorViewportClient::InputKey(const FKeyEvent& InKeyEvent)
 {
-    if (GetKeyState(VK_RBUTTON) & 0x8000)
+    // if (GetKeyState(VK_RBUTTON) & 0x8000)
+    if (true) // TODO: 우클릭 상태인지 확인하는 부분 수정 필요
     {
         switch (InKeyEvent.GetCharacter())
         {
@@ -275,9 +276,9 @@ void FEditorViewportClient::InputKey(const FKeyEvent& InKeyEvent)
 
         // Virtual Key
         UEditorEngine* EdEngine = CastChecked<UEditorEngine>(GEngine);
-        switch (InKeyEvent.GetKeyCode())
+        switch (InKeyEvent.GetKey())
         {
-        case VK_DELETE:
+        case EKeys::Delete:
         {
             if (GEngine->ActiveWorld->WorldType == EWorldType::SkeletalViewer || GEngine->ActiveWorld->WorldType == EWorldType::PhysicsAssetEditor)
                 return;
@@ -315,7 +316,7 @@ void FEditorViewportClient::InputKey(const FKeyEvent& InKeyEvent)
             }
             break;
         }
-        case VK_SPACE:
+        case EKeys::SpaceBar:
         {
             EdEngine->GetEditorPlayer()->AddControlMode();
             break;
@@ -653,7 +654,7 @@ void FEditorViewportClient::SaveConfig(TMap<FString, FString>& Config) const
 TMap<FString, FString> FEditorViewportClient::ReadIniFile(const FString& FilePath)
 {
     TMap<FString, FString> Config;
-    std::ifstream File(*FilePath);
+    std::ifstream File(FilePath.ToUTF8String());
     std::string Line;
 
     while (std::getline(File, Line))
@@ -674,7 +675,7 @@ TMap<FString, FString> FEditorViewportClient::ReadIniFile(const FString& FilePat
 
 auto FEditorViewportClient::WriteIniFile(const FString& FilePath, const TMap<FString, FString>& Config) -> void
 {
-    std::ofstream File(*FilePath);
+    std::ofstream File(FilePath.ToUTF8String());
     for (const auto& Pair : Config)
     {
         File << Pair.Key.ToUTF8String() << "=" << Pair.Value.ToUTF8String() << "\n";

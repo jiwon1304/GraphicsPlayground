@@ -1,6 +1,8 @@
 #include "MacSlateAppMessageHandler.h"
 #include <OpenGLDrv/OpenGL3.h>
 
+#include "Core/Math/Rect.h"
+
 FMacSlateAppMessageHandler::~FMacSlateAppMessageHandler()
 {
     if (Window)
@@ -79,7 +81,7 @@ void FMacSlateAppMessageHandler::MouseButtonCallback(GLFWwindow* wnd, int button
 
     double x, y;
     glfwGetCursorPos(wnd, &x, &y);
-    const FVector2D pos{static_cast<float>(x), static_cast<float>(y)};
+    const TPoint<int> pos = TPoint<int>{static_cast<int>(x), static_cast<int>(y)};
     const auto mb = ToMouseButton(button);
 
     if (action == GLFW_PRESS)
@@ -99,7 +101,7 @@ void FMacSlateAppMessageHandler::CursorPosCallback(GLFWwindow* wnd, double xpos,
     auto* self = GetSelf(wnd);
     if (!self) return;
 
-    self->UpdateCursorPosition(FVector2D{static_cast<float>(xpos), static_cast<float>(ypos)});
+    self->UpdateCursorPosition(TPoint<int>{static_cast<int>(xpos), static_cast<int>(ypos)});
     self->OnMouseMove();
 }
 
@@ -111,7 +113,7 @@ void FMacSlateAppMessageHandler::ScrollCallback(GLFWwindow* wnd, double xoffset,
 
     double x, y;
     glfwGetCursorPos(wnd, &x, &y);
-    const FVector2D pos{static_cast<float>(x), static_cast<float>(y)};
+    const TPoint<int> pos = TPoint<int>{static_cast<int>(x), static_cast<int>(y)};
     self->OnMouseWheel(static_cast<float>(yoffset), pos);
 }
 

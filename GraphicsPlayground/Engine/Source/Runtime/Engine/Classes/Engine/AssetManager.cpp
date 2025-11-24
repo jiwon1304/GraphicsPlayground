@@ -16,7 +16,6 @@
 #include "Classes/PhysicsEngine/PhysicsAsset.h"
 #include "Serialization/MemoryArchive.h"
 #include "CoreUObject/UObject/ObjectFactory.h"
-#include "Windows/D3D11RHI/GraphicDevice.h"
 #include "Engine/Classes/Engine/ResourceMgr.h"
 
 bool UAssetManager::IsInitialized()
@@ -282,7 +281,7 @@ void UAssetManager::LoadContentFiles()
         }
     }
 
-    OutputDebugStringA(std::format("FBX Load Time: {:.2f} s\nBinary Load Time: {:.2f} s", FbxLoadTime / 1000.0, BinaryLoadTime / 1000.0).c_str());
+    // OutputDebugStringA(std::format("FBX Load Time: {:.2f} s\nBinary Load Time: {:.2f} s", FbxLoadTime / 1000.0, BinaryLoadTime / 1000.0).c_str());
 }
 
 void UAssetManager::LoadLazyContentFiles()
@@ -347,40 +346,15 @@ void UAssetManager::HandleFBX(const FAssetInfo& AssetInfo)
     FAssetLoadResult Result;
     if (bIsBinaryValid)
     {
-        LARGE_INTEGER StartTime;
-        LARGE_INTEGER EndTime;
-        
-        QueryPerformanceCounter(&StartTime);
-
         // bin 파일 읽기
         bIsBinaryValid = LoadFbxBinary(BinFilePath, Result, BaseName, FolderPath);
-        
-        QueryPerformanceCounter(&EndTime);
-
-        LARGE_INTEGER Frequency;
-        QueryPerformanceFrequency(&Frequency);
-        if (bIsBinaryValid)
-        {
-            BinaryLoadTime += (static_cast<double>(EndTime.QuadPart - StartTime.QuadPart) * 1000.f / static_cast<double>(Frequency.QuadPart));
-        }
     }
     
     if (!bIsBinaryValid)
     {
-        LARGE_INTEGER StartTime;
-        LARGE_INTEGER EndTime;
-        
-        QueryPerformanceCounter(&StartTime);
-        
         // FBX 로더로 파일 읽기
         FFbxLoader Loader;
         Result = Loader.LoadFBX(AssetInfo.SourceFilePath);
-
-        QueryPerformanceCounter(&EndTime);
-
-        LARGE_INTEGER Frequency;
-        QueryPerformanceFrequency(&Frequency);
-        FbxLoadTime += (static_cast<double>(EndTime.QuadPart - StartTime.QuadPart) * 1000.f / static_cast<double>(Frequency.QuadPart));
     }
 
     // 로드된 에셋 등록
@@ -398,22 +372,8 @@ void UAssetManager::HandleSIU(const FAssetInfo& AssetInfo)
     bool bIsSIUValid;
     
     {
-        LARGE_INTEGER StartTime;
-        LARGE_INTEGER EndTime;
-        
-        QueryPerformanceCounter(&StartTime);
-
         // siu 파일 읽기
         bIsSIUValid = LoadPhysicsAssetBinary(AssetInfo);
-        
-        QueryPerformanceCounter(&EndTime);
-
-        LARGE_INTEGER Frequency;
-        QueryPerformanceFrequency(&Frequency);
-        if (bIsSIUValid)
-        {
-            SiuLoadTime += (static_cast<double>(EndTime.QuadPart - StartTime.QuadPart) * 1000.f / static_cast<double>(Frequency.QuadPart));
-        }
     }
     
     if (bIsSIUValid)
@@ -855,7 +815,7 @@ bool UAssetManager::SerializeAssetLoadResult(FArchive& Ar, FAssetLoadResult& Res
             }
             else
             {
-                UE_LOG(ELogLevel::Error, "Failed assign skeleton to {}", SkeletalMesh->GetName());
+                UE_LOG(ELogLevel::Error, "Failed assign skeleton to %s", *SkeletalMesh->GetName());
             }
 
             /**
@@ -974,7 +934,7 @@ bool UAssetManager::SerializeAssetLoadResult(FArchive& Ar, FAssetLoadResult& Res
             }
             else
             {
-                UE_LOG(ELogLevel::Error, "Failed assign skeleton to {}", Animation->GetName());
+                UE_LOG(ELogLevel::Error, "Failed assign skeleton to %s", *Animation->GetName());
             }
         }
 

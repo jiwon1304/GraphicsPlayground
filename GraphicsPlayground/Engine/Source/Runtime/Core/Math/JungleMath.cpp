@@ -1,5 +1,4 @@
 #include "Math/JungleMath.h"
-#include <DirectXMath.h>
 #include "MathUtility.h"
 
 #include "Vector.h"
@@ -7,9 +6,6 @@
 #include "Rotator.h"
 #include "Quat.h"
 #include "Matrix.h"
-
-using namespace DirectX;
-
 
 FVector4 JungleMath::ConvertV3ToV4(const FVector& vec3)
 {
@@ -190,26 +186,4 @@ FVector JungleMath::FVectorRotate(const FVector& origin, const FRotator& InRotat
 FVector JungleMath::FVectorRotate(const FVector& origin, const FQuat& InRotation)
 {
     return InRotation.RotateVector(origin);
-}
-
-FMatrix JungleMath::CreateRotationMatrix(const FVector& rotation)
-{
-    XMVECTOR quatX = XMQuaternionRotationAxis(XMVectorSet(1, 0, 0, 0), FMath::DegreesToRadians(rotation.X));
-    XMVECTOR quatY = XMQuaternionRotationAxis(XMVectorSet(0, 1, 0, 0), FMath::DegreesToRadians(rotation.Y));
-    XMVECTOR quatZ = XMQuaternionRotationAxis(XMVectorSet(0, 0, 1, 0), FMath::DegreesToRadians(rotation.Z));
-
-    XMVECTOR rotationQuat = XMQuaternionMultiply(quatZ, XMQuaternionMultiply(quatY, quatX));
-    rotationQuat = XMQuaternionNormalize(rotationQuat);  // 정규화 필수
-
-    XMMATRIX rotationMatrix = XMMatrixRotationQuaternion(rotationQuat);
-    FMatrix result = FMatrix::Identity;  // 기본값 설정 (단위 행렬)
-
-    for (int i = 0; i < 4; i++)
-    {
-        for (int j = 0; j < 4; j++)
-        {
-            result.M[i][j] = rotationMatrix.r[i].m128_f32[j];  // XMMATRIX에서 FMatrix로 값 복사
-        }
-    }
-    return result;
 }

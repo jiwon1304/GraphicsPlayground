@@ -2,11 +2,11 @@
 #pragma once
 #include "CoreUObject/UObject/Object.h"
 #include "CoreUObject/UObject/ObjectMacros.h"
+#include "Classes/Animation/AnimTypes.h"
 
 struct FFrameTime;
 enum class EAnimInterpolationType : uint8;
 class UAnimSequence;
-struct FBoneAnimationTrack;
 class USkeleton;
 struct FTransform;
 class UAnimDataController;

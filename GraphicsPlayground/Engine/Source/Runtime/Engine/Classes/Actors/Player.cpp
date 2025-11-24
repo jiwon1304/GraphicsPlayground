@@ -31,7 +31,8 @@ void AEditorPlayer::Input()
     if (io.WantCaptureMouse) return;
     if (io.WantCaptureKeyboard) return;
 
-    if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
+    // if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
+    if (true) // @todo 
     {
         if (!bLeftMouseDown)
         {   

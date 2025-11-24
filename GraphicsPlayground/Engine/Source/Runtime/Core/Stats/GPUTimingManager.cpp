@@ -3,7 +3,7 @@
 #if defined(BUILD_PLATFORM_WINDOWS)
 #include "Platform/Windows/GPUTimingManagerD3D11.h"
 #elif defined(BUILD_PLATFORM_MACOS)
-#include "Platform/MacOS/GPUTimingManagerGL.h"
+#include "Platform/Mac/GPUTimingManagerGL.h"
 #endif
 
 IGPUTimingManager* IGPUTimingManager::CreateGPUTimingManager(const FGPUTimingInitParams &Params)

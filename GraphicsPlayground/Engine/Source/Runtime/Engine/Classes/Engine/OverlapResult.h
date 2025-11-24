@@ -36,7 +36,7 @@ struct FOverlapResult
 
     FOverlapResult()
     {
-        ZeroMemory(this, sizeof(FOverlapResult));
+        FPlatformMemory::Memset(this, 0, sizeof(FOverlapResult));
     }
 };
 

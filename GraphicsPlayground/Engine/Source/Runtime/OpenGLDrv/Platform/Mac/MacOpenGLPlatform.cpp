@@ -3,10 +3,6 @@
 #include "OpenGLDrv/OpenGL3.h"
 #include "MacOpenGLPlatform.h"
 
-#ifndef BUILD_PLATFORM_MACOS
-static_assert(false, "This file is only for MacOS");
-#endif
-
 FPlatformOpenGLDevice* GOpenGLDevice = nullptr;
 
 static void ErrorCallback(int Error, const char* Description)
@@ -37,10 +33,13 @@ bool PlatformInitOpenGL()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+    
+#ifdef BUILD_PLATFORM_MACOS
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE); // macOS 필수
-
-    // HiDPI(레티나)에서 content scale 적용 예시
-    glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_TRUE);
+    glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_TRUE); // HiDPI(레티나)에서 content scale 적용 예시
+#endif
 }
 
 FPlatformOpenGLDevice* PlatformCreateOpenGLDevice()
